@@ -2,12 +2,19 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Setup
 Add firebase info to a .env file in the root directory for the environment variables provided by firebase:
+
 REACT_APP_FB_API_KEY
+
 REACT_APP_FB_AUTH_DOMAIN
+
 REACT_APP_FB_DATABASE_URL
+
 REACT_APP_FB_PROJECT_ID
+
 REACT_APP_FB_STORAGE_BUCKET
+
 REACT_APP_FB_MESSAGING_SENDER_ID
+
 REACT_APP_FB_APP_ID
 
 ## Available Scripts
