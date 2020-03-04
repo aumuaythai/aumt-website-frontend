@@ -12,7 +12,7 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
     constructor(props: any) {
         super(props)
         this.state = {
-            current: 'Home'
+            current: 'About'
         }
         this.unlisten = null
     }
@@ -35,10 +35,10 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
     setStateFromPathChange = (windowPath: string) => {
         const pathname = windowPath.slice(1)
         const formattedPath = pathname.charAt(0).toUpperCase() + pathname.slice(1)
-        if (['Signups', 'Events', 'Home'].indexOf(formattedPath) > -1) {
+        if (['Signups', 'Events', 'About'].indexOf(formattedPath) > -1) {
             this.setState({current: formattedPath})
         } else {
-            this.setState({current: 'Home'})
+            this.setState({current: 'About'})
         }
     }
 
@@ -51,8 +51,8 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
   render() {
     return (
       <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
-        <Menu.Item key="Home">
-          <Link to='/'>Home</Link>
+        <Menu.Item key="About">
+          <Link to='/'>About</Link>
         </Menu.Item>
         <Menu.Item key="Signups">
           <Link to='/signups'>Sign-ups</Link>

@@ -16,8 +16,7 @@ export interface HeaderState {
 
 export class Header extends Component<HeaderProps, HeaderState> {
     fbClick = () => {
-        console.log(this.props.authedUser)
-        // window.open('https://www.facebook.com/aumuaythai/', '_blank')
+        window.open('https://www.facebook.com/aumuaythai/', '_blank')
     }
     igClick = () => {
         window.open('https://www.instagram.com/aumuaythai', '_blank')

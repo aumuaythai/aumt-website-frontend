@@ -3,8 +3,10 @@ import * as firebase from "firebase/app";
 import { User } from 'firebase/app'
 import 'firebase/auth';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import { Header } from './Header'
-import LoginForm from './LoginForm'
+import { Header } from './Header/Header'
+import LoginForm from './Header/LoginForm'
+import About from './Content/About'
+import './Aumt.css'
 
 export interface AumtProps {
 
@@ -48,7 +50,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                   <Route path="/*">
                     <Header authedUser={this.state.authedUser}></Header>
                     <Switch>
-                      <Route path="/home">
+                      <Route path="/about">
                         <Redirect to='/'/>
                       </Route>
                       <Route path="/signups">
@@ -58,7 +60,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         <h2>events route</h2>
                       </Route>
                       <Route path="/">
-                        <h2>No route</h2>
+                        <About></About>
                       </Route>
                     </Switch>
                   </Route>

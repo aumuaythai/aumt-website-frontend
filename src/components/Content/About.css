@@ -1,0 +1,16 @@
+.introContainer {
+    max-width: 403px;
+    margin: 0 auto;
+    margin-top: -33px;
+}
+.listContainer {
+    text-align: left;
+    max-width: 689px;
+    margin: 0 auto
+}
+
+@media only screen and (max-width: 500px) {
+    .introContainer {
+        margin-top: 0;
+    }
+}

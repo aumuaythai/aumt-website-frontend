@@ -45,9 +45,10 @@ export default class ResetPasswordLink extends Component {
       })
       .catch((err) => {
         let errDisplay = 'Error sending reset email'
+        console.log(err)
         if (err.code === 'auth/user-not-found') {
             errDisplay = 'No user found for email. Contact AUMT to make sure your email is registered.'
-        } else if (err.code === 'auth/invalid email') {
+        } else if (err.code === 'auth/invalid-email') {
             errDisplay = 'Invalid Email.'
         }
         this.setState({

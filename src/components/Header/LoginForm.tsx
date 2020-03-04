@@ -19,6 +19,7 @@ export interface LoginState {
 }
 
 export default class LoginFormNoRouter extends Component<LoginProps, LoginState> {
+    private emailInput: Input | null = null;
     constructor(props: LoginProps) {
         super(props)
         this.state = {
@@ -30,7 +31,9 @@ export default class LoginFormNoRouter extends Component<LoginProps, LoginState>
         }
     }
     componentDidMount() {
-
+        if (this.emailInput) {
+            this.emailInput.focus()
+        }
     }
     onUnChange = (e: any) => {
         this.setState({
@@ -85,7 +88,7 @@ export default class LoginFormNoRouter extends Component<LoginProps, LoginState>
                         <LoginErrorMessage errorCode={this.state.errorCode}></LoginErrorMessage> :
                         ''
                 }
-                <Input placeholder="email" onChange={this.onUnChange} onPressEnter={this.onLoginClick} prefix={<UserOutlined />} />
+                <Input ref={(input) => { this.emailInput = input; }} placeholder="email" onChange={this.onUnChange} onPressEnter={this.onLoginClick} prefix={<UserOutlined />} />
                 <br/>
                 <Input.Password onChange={this.onPwChange} onPressEnter={this.onLoginClick} placeholder="password" />
                 <ResetPasswordLink></ResetPasswordLink>
