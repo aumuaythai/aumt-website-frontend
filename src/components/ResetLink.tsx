@@ -47,7 +47,7 @@ export default class ResetPasswordLink extends Component {
           onOk={this.handleLoginClick}
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
-          okText='Reset'
+          okText='Send Reset Email'
         >
         <Input placeholder="email" prefix={<UserOutlined />} />
         </Modal>

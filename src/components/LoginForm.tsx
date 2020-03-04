@@ -5,6 +5,7 @@ import {UserOutlined} from '@ant-design/icons'
 import ResetPasswordLink from './ResetLink'
 import './LoginForm.css'
 import { Redirect } from 'react-router-dom'
+import { LoginErrorMessage } from './LoginErrorMessage'
 
 export interface LoginProps {
 
@@ -13,6 +14,8 @@ export interface LoginState {
     username: string
     password: string
     isAuthed: boolean
+    authing: boolean
+    errorCode: string
 }
 
 export default class LoginForm extends Component<LoginProps, LoginState> {
@@ -21,6 +24,8 @@ export default class LoginForm extends Component<LoginProps, LoginState> {
         this.state = {
             username: '',
             password: '',
+            errorCode: '',
+            authing: false,
             isAuthed: !!firebase.auth().currentUser
         }
     }
@@ -38,17 +43,29 @@ export default class LoginForm extends Component<LoginProps, LoginState> {
     }
     onLoginClick = () => {
         console.log('clicked login and trying login un, pw as ', this.state.username, this.state.password)
+        this.setState({
+            ...this.state,
+            authing: true,
+            errorCode: ''
+            
+        })
         firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password)
             .then((userInfo) => {
                 this.setState({
                     ...this.state,
-                    isAuthed: true
+                    isAuthed: true,
+                    authing: false
                 })
             })
             .catch((error) => {
                 // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
+                const errorCode = error.code;
+                console.log(error.message, error.code)
+                this.setState({
+                    ...this.state,
+                    errorCode: errorCode,
+                    authing: false
+                })
                 // ...
             });
     }
@@ -60,11 +77,16 @@ export default class LoginForm extends Component<LoginProps, LoginState> {
             <div className="loginContainer">
                 <img src={'./logorectangle.png'} className='logo' alt=""/>
                 <h3>Sign In</h3>
+                {
+                    this.state.errorCode ?
+                        <LoginErrorMessage errorCode={this.state.errorCode}></LoginErrorMessage> :
+                        ''
+                }
                 <Input placeholder="email" onChange={this.onUnChange} onPressEnter={this.onLoginClick} prefix={<UserOutlined />} />
                 <br/>
                 <Input.Password onChange={this.onPwChange} onPressEnter={this.onLoginClick} placeholder="password" />
                 <ResetPasswordLink></ResetPasswordLink>
-                <Button className="loginButton" onClick={this.onLoginClick}>Log in</Button>
+                <Button className="loginButton" onClick={this.onLoginClick} loading={this.state.authing}>Log in</Button>
                 {/* <Button className="loginButton"><Link to='/'>Cancel</Link></Button> */}
             </div>
         )
