@@ -18,7 +18,7 @@ export interface LoginState {
     errorCode: string
 }
 
-export default class LoginForm extends Component<LoginProps, LoginState> {
+export default class LoginFormNoRouter extends Component<LoginProps, LoginState> {
     constructor(props: LoginProps) {
         super(props)
         this.state = {
@@ -28,6 +28,9 @@ export default class LoginForm extends Component<LoginProps, LoginState> {
             authing: false,
             isAuthed: !!firebase.auth().currentUser
         }
+    }
+    componentDidMount() {
+
     }
     onUnChange = (e: any) => {
         this.setState({

@@ -7,7 +7,7 @@ export interface TopMenuState {
     current: string
 }
 
-class TopMenu extends Component<any, TopMenuState> {
+class TopMenuWithoutRouter extends Component<any, TopMenuState> {
     private unlisten: null | Function = null;
     constructor(props: any) {
         super(props)
@@ -65,6 +65,6 @@ class TopMenu extends Component<any, TopMenuState> {
   }
 }
 
-const TopMenuRouter = withRouter(TopMenu)
+const TopMenu = withRouter(TopMenuWithoutRouter)
 
-export default TopMenuRouter
+export default TopMenu
