@@ -1,0 +1,10 @@
+.loginContainer {
+    margin: 0 auto;
+    max-width: 300px
+}
+.logo {
+    max-width: 150px;
+}
+.loginButton {
+    float:right;
+}
