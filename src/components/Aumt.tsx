@@ -6,6 +6,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './Header/Header'
 import LoginForm from './Header/LoginForm'
 import About from './Content/About'
+import Signups from './Content/Signups'
 import './Aumt.css'
 
 export interface AumtProps {
@@ -54,7 +55,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         <Redirect to='/'/>
                       </Route>
                       <Route path="/signups">
-                        <h2>signups route</h2>
+                        {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <h4>You must sign in to be able to sign up for trainings!</h4>}
                       </Route>
                       <Route path="/events">
                         <h2>events route</h2>

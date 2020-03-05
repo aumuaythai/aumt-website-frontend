@@ -12,7 +12,7 @@ export class LoginErrorMessage extends Component<LoginErrorMessageProps, LoginSt
     getMessage = () => {
         switch(this.props.errorCode) {
             case 'auth/user-not-found':
-                return <Alert type='error' message='There is no user with this email address. Contact the club to make sure you have signed up and paid'></Alert>
+                return <Alert type='error' message='There is no user with this email address. Contact the club to make sure you are signed up'></Alert>
             case 'auth/invalid-email':
                 return <Alert type='error' message='Email is not valid.'></Alert>
             case 'auth/wrong-password':

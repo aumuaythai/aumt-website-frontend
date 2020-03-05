@@ -43,13 +43,13 @@ export default class About extends Component {
                     <h4>{this.membershipStr}</h4>
                     <div className="listContainer">
                         <ul>
-                            {this.trainingList.map((item) => (<li>{item}</li>))}
+                            {this.trainingList.map((item, i) => (<li key={i}>{item}</li>))}
                         </ul>
                     </div>
                     <h4>{this.eventsStr}</h4>
                     <div className="listContainer">
                         <ul>
-                            {this.eventsList.map((item) => (<li>{item}</li>))}
+                            {this.eventsList.map((item, i) => (<li key={i}>{item}</li>))}
                         </ul>
                     </div>
                 </div>
