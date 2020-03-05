@@ -1,0 +1,12 @@
+.optionsContainer {
+    text-align: left;
+    max-width: 289px;
+    margin: 0 auto;
+}
+.formContainer {
+    max-width: 689px;
+    margin: 0 auto;
+}
+.optionLine {
+    margin: 10px;
+}
