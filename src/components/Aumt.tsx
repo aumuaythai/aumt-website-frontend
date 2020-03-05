@@ -7,6 +7,7 @@ import { Header } from './Header/Header'
 import LoginForm from './Header/LoginForm'
 import About from './Content/About'
 import Signups from './Content/Signups'
+import Faq from './Content/Faq'
 import './Aumt.css'
 
 export interface AumtProps {
@@ -59,6 +60,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                       </Route>
                       <Route path="/events">
                         <p>Events page coming soon! </p>
+                      </Route>
+                      <Route path="/faq">
+                        <Faq></Faq>
                       </Route>
                       <Route path="/">
                         <About></About>

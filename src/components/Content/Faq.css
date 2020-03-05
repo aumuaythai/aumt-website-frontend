@@ -1,0 +1,14 @@
+.faqContainer {
+    text-align: left;
+    max-width: 560px;
+    margin: 0 auto;
+}
+.questionContainer {
+    margin: 0 auto;
+}
+.question {
+    font-weight: bold;
+}
+.answer {
+    /* font-style: italic; */
+}
