@@ -1,4 +1,4 @@
-import React, {Component, ChangeEvent} from 'react'
+import React, {Component} from 'react'
 import { User } from 'firebase/app'
 import './Signups.css'
 import { SignupForm, SignupFormProps } from './SignupForm'

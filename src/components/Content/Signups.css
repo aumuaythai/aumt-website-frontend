@@ -5,7 +5,7 @@
 }
 .formContainer {
     max-width: 689px;
-    margin: 0 auto;
+    margin: 0 auto 30px auto;
 }
 .optionLine {
     margin: 10px;

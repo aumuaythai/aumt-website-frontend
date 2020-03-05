@@ -55,7 +55,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         <Redirect to='/'/>
                       </Route>
                       <Route path="/signups">
-                        {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <h4>You must sign in to be able to sign up for trainings!</h4>}
+                        {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>}
                       </Route>
                       <Route path="/events">
                         <p>Events page coming soon! </p>

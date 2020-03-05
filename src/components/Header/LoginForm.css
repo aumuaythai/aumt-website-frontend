@@ -8,3 +8,6 @@
 .loginButton {
     float:right;
 }
+.loginInput {
+    margin-bottom: 10px;
+}

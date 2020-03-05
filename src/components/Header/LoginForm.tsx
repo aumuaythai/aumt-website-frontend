@@ -88,9 +88,9 @@ export default class LoginFormNoRouter extends Component<LoginProps, LoginState>
                         <LoginErrorMessage errorCode={this.state.errorCode}></LoginErrorMessage> :
                         ''
                 }
-                <Input ref={(input) => { this.emailInput = input; }} placeholder="email" onChange={this.onUnChange} onPressEnter={this.onLoginClick} prefix={<UserOutlined />} />
+                <Input className='loginInput' ref={(input) => { this.emailInput = input; }} placeholder="email" onChange={this.onUnChange} onPressEnter={this.onLoginClick} prefix={<UserOutlined />} />
                 <br/>
-                <Input.Password onChange={this.onPwChange} onPressEnter={this.onLoginClick} placeholder="password" />
+                <Input.Password className='loginInput' onChange={this.onPwChange} onPressEnter={this.onLoginClick} placeholder="password" />
                 <ResetPasswordLink></ResetPasswordLink>
                 <Button className="loginButton" onClick={this.onLoginClick} loading={this.state.authing}>Log in</Button>
                 {/* <Button className="loginButton"><Link to='/'>Cancel</Link></Button> */}

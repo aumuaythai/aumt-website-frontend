@@ -1,4 +1,4 @@
-import React, {Component, ChangeEvent} from 'react'
+import React, {Component} from 'react'
 import { User } from 'firebase/app'
 import { Radio, Button, Tooltip, Alert } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons'
@@ -56,7 +56,6 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         })
         .then((res) => {
             const {signedUpOption} = res
-            console.log(signedUpOption, ' as signedUpOption')
             if (signedUpOption && this.props.options.find((option) => option.id === signedUpOption)) {
                 this.setState({
                     ...this.state,
@@ -80,9 +79,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             errorMessage: '',
             submittingState: true
         })
-        const optionText = this.props.options.find((option) => {
-            return option.id === optionSelected
-        })?.text
+        // const optionText = this.props.options.find((option) => {
+        //     return option.id === optionSelected
+        // })?.text
         fetch('http://localhost:8000/submitsignup', {
             method: 'POST',
             headers: {
@@ -91,7 +90,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             body: JSON.stringify({
                 email: this.props.authedUser.email,
                 formId: this.props.id,
-                optionId: this.state.currentOption
+                optionId: this.state.currentOption,
+                previousOptionId: this.state.signedUpOption || null
             })
         })
         .then((res) => {

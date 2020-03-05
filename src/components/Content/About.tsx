@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import { List } from 'antd'
 import './About.css'
 
 export default class About extends Component {
