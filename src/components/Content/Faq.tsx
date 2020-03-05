@@ -6,7 +6,7 @@ export default class Faq extends Component {
     private  questions = [
         {
             q: 'When and where are trainings?',
-            a: 'There is a 6:30 Beginners training and a 7:30 Advanced training every Thursday and Friday. Trainigs are held at the Hawk\'s Nest Gym, located at Level 3/492 Queen Street, Auckland CBD, Auckland 1010'
+            a: 'There is a 6:30 Beginners training and a 7:30 Advanced training every Thursday and Friday. Trainings are held at the Hawk\'s Nest Gym, located at Level 3/492 Queen Street, Auckland CBD, Auckland 1010'
         },
         {
             q: 'blah blah?',
