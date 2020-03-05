@@ -1,3 +1,10 @@
 .spotsLeft {
     color: rgba(255, 0, 0, 0.5);
 }
+.messageContainer {
+    max-width: 300px;
+    margin: 5px auto;
+}
+.check {
+    color: lightgreen;
+}

@@ -1,6 +1,7 @@
 import React, {Component, ChangeEvent} from 'react'
 import { User } from 'firebase/app'
-import { Radio, Button, Tooltip } from 'antd';
+import { Radio, Button, Tooltip, Alert } from 'antd';
+import { CheckCircleOutlined } from '@ant-design/icons'
 import './Signups.css'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
@@ -21,7 +22,9 @@ export interface SignupFormProps {
 
 interface SignupFormState {
     currentOption: string
+    signedUpOption: string
     submittingState: boolean
+    errorMessage: string
 }
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
@@ -29,8 +32,41 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         super(props)
         this.state = {
             currentOption: '',
+            errorMessage: '',
+            signedUpOption: '',
             submittingState: false
         }
+    }
+    componentDidMount() {
+        fetch('http://localhost:8000/hassignedup', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                formId: this.props.id,
+                email: this.props.authedUser.email
+            })
+        })
+        .then((res) => {
+            if (res.ok) {
+                return res.json()
+            }
+            throw new Error()
+        })
+        .then((res) => {
+            const {signedUpOption} = res
+            console.log(signedUpOption, ' as signedUpOption')
+            if (signedUpOption && this.props.options.find((option) => option.id === signedUpOption)) {
+                this.setState({
+                    ...this.state,
+                    signedUpOption: signedUpOption
+                })
+            }
+        })
+        .catch((err) => {
+            console.log('error checking if has signed up')
+        })
     }
     onOptionChange = (e: RadioChangeEvent) => {
         this.setState({
@@ -41,9 +77,44 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         const optionSelected = this.state.currentOption
         this.setState({
             ...this.state,
+            errorMessage: '',
             submittingState: true
         })
-        console.log(optionSelected)
+        const optionText = this.props.options.find((option) => {
+            return option.id === optionSelected
+        })?.text
+        fetch('http://localhost:8000/submitsignup', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: this.props.authedUser.email,
+                formId: this.props.id,
+                optionId: this.state.currentOption
+            })
+        })
+        .then((res) => {
+            if (res.ok) {
+                return res.json()
+            }
+            return res.json().then(err => Promise.reject(err))
+        })
+        .then((res) => {
+            this.setState({
+                ...this.state,
+                submittingState: false,
+                signedUpOption: optionSelected
+            })
+        })
+        .catch((err) => {
+            console.log('error caught', err)
+            this.setState({
+                ...this.state,
+                errorMessage: err.message,
+                submittingState: false
+            })
+        })
     }
     render() {
         return (
@@ -65,6 +136,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                                                         {(`(${spotsLeft} spots left)`)}
                                                     </span> : 
                                                     '' 
+                                            })()} {(() => {
+                                                return this.state.signedUpOption === option.id ? 
+                                                    <span className='check'><CheckCircleOutlined/> Signed Up</span> : ''
                                             })()}
                                         </Radio>
                                     </Tooltip>
@@ -73,7 +147,10 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                         })}
                     </Radio.Group>
                 </div>
-                <Button onClick={this.onSubmitClick}>Submit</Button>
+                <div className="messageContainer">
+                    {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
+                </div>
+                <Button loading={this.state.submittingState} onClick={this.onSubmitClick}>Submit</Button>
             </div>
         )
     }

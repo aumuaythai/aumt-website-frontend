@@ -33,7 +33,7 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
     }
 
     setStateFromPathChange = (windowPath: string) => {
-        const pathname = windowPath.slice(1)
+        const pathname = windowPath.split('/')[1]
         const formattedPath = pathname.charAt(0).toUpperCase() + pathname.slice(1)
         if (['Signups', 'Events', 'About'].indexOf(formattedPath) > -1) {
             this.setState({current: formattedPath})
