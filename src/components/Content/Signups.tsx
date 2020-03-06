@@ -22,7 +22,14 @@ export default class Signups extends Component<SignupProps, SignupState> {
         }
     }
     componentDidMount() {
-        fetch('http://localhost:8000/activeforms').then(res => res.json()).then((response) => {
+        fetch(`${process.env.REACT_APP_SERVER_API}/activeforms`)
+        .then((res) => {
+            if (res.ok) {
+                return res.json()
+            }
+            return res.json().then(err => Promise.reject(err))
+        })
+        .then((response) => {
             if (response.forms) {
                 this.setState({
                     forms: response.forms,
@@ -34,6 +41,15 @@ export default class Signups extends Component<SignupProps, SignupState> {
                     messageText: 'There are no active signup forms at this time'
                 })
             }
+        }).catch((err) => {
+            let messageText = 'There was an error retrieving the signups - Please use our google form (posted on facebook) instead'
+            if (err.message) {
+                messageText = err.message
+            }
+            this.setState({
+                forms: [],
+                messageText
+            })
         })
     }
     render() {

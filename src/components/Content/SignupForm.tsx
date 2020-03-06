@@ -38,7 +38,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         }
     }
     componentDidMount() {
-        fetch('http://localhost:8000/hassignedup', {
+        fetch(`${process.env.REACT_APP_SERVER_API}/hassignedup`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
@@ -82,7 +82,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         // const optionText = this.props.options.find((option) => {
         //     return option.id === optionSelected
         // })?.text
-        fetch('http://localhost:8000/submitsignup', {
+        fetch(`${process.env.REACT_APP_SERVER_API}/submitsignup`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

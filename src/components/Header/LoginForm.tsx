@@ -18,6 +18,10 @@ export interface LoginState {
     errorCode: string
 }
 
+const logoPath = process.env.REACT_APP_LOGO_PATH 
+
+const logoUrl = logoPath ? `./${logoPath}/logorectangle.png` : './logorectangle.png'
+
 export default class LoginFormNoRouter extends Component<LoginProps, LoginState> {
     private emailInput: Input | null = null;
     constructor(props: LoginProps) {
@@ -81,7 +85,7 @@ export default class LoginFormNoRouter extends Component<LoginProps, LoginState>
         }
         return (
             <div className="loginContainer">
-                <img src={'./logorectangle.png'} className='logo' alt=""/>
+                <img src={logoUrl} className='logo' alt=""/>
                 <h3>Sign In</h3>
                 {
                     this.state.errorCode ?

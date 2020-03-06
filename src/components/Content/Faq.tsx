@@ -17,8 +17,8 @@ export default class Faq extends Component {
         return (
             <div className='faqContainer'>
                 {(() => {
-                    return this.questions.map((question) => {
-                        return (<div className="questionContainer">
+                    return this.questions.map((question, i) => {
+                        return (<div key={i} className="questionContainer">
                             <p className="question">Q: {question.q}</p>
                             <p className="answer">A: {question.a}</p>
                             <Divider/>

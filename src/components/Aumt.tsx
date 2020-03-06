@@ -34,7 +34,6 @@ export class Aumt extends Component<AumtProps, AumtState> {
         firebase.initializeApp(firebaseConfig);
         this.state = { authedUser }
         firebase.auth().onAuthStateChanged((user: User | null) => {
-            console.log('changed auth status, user as ', user)
             this.setState({
                 authedUser: user
             })

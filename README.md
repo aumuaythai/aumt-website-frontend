@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Setup
-Add firebase info to a .env file in the root directory for the environment variables provided by firebase:
+Add firebase info to a .env.production and .env.development file in the root directory for the environment variables provided by firebase:
 
 REACT_APP_FB_API_KEY
 
@@ -16,6 +16,10 @@ REACT_APP_FB_STORAGE_BUCKET
 REACT_APP_FB_MESSAGING_SENDER_ID
 
 REACT_APP_FB_APP_ID
+
+And the server url as a base for the api (e.g. http://localhost:8000 in .env.development, https://aumuaythai.com in .env.production)
+
+REACT_APP_SERVER_API=
 
 ## Available Scripts
 
