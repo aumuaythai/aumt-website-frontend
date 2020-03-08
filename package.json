@@ -25,9 +25,10 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "deploy": "aws s3 sync build/ s3://aumt",
+    "deploy": "aws s3 rm --recursive s3://aumt && aws s3 sync build/ s3://aumt",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
@@ -47,6 +48,7 @@
     ]
   },
   "devDependencies": {
-    "less": "^3.11.1"
+    "less": "^3.11.1",
+    "source-map-explorer": "^2.3.1"
   }
 }

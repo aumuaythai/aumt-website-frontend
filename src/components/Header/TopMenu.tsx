@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
-import { Menu } from 'antd';
+import Menu from 'antd/es/menu';
 
 export interface TopMenuState {
     current: string

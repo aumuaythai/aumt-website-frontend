@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 import { User } from 'firebase/app'
 import * as firebase from 'firebase/app'
-import { Menu, Dropdown } from 'antd';
-import { DownOutlined } from '@ant-design/icons'
+import Menu from 'antd/es/menu'
+import Dropdown from 'antd/es/dropdown';
+import DownOutlined from '@ant-design/icons/DownOutlined'
 import ResetLink from './ResetLink'
 import './UserInfo.css'
 interface UserInfoProps {

@@ -1,7 +1,10 @@
 import React, {Component} from 'react'
 import { User } from 'firebase/app'
-import { Radio, Button, Tooltip, Alert } from 'antd';
-import { CheckCircleOutlined } from '@ant-design/icons'
+import Radio from 'antd/es/radio'
+import Button from 'antd/es/button'
+import Tooltip from 'antd/es/tooltip'
+import Alert from 'antd/es/alert'
+import CheckCircleOutlined from '@ant-design/icons/CheckCircleOutlined'
 import './Signups.css'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'

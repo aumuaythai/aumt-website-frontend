@@ -1,7 +1,8 @@
 .faqContainer {
     text-align: left;
-    max-width: 560px;
+    max-width: 580px;
     margin: 0 auto;
+    padding: 0 10px;
 }
 .questionContainer {
     margin: 0 auto;

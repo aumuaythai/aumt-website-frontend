@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Divider } from 'antd'
+import Divider from 'antd/es/divider'
 import { Links } from '../../services/links'
 import './Faq.css'
 

@@ -1,7 +1,9 @@
 import React, {Component, ChangeEvent} from 'react'
-import { Modal, Input, Alert } from 'antd';
+import Modal from 'antd/es/modal'
+import Input from 'antd/es/input'
+import Alert from 'antd/es/alert';
 import * as firebase from 'firebase/app'
-import { UserOutlined } from '@ant-design/icons'
+import UserOutlined from '@ant-design/icons/UserOutlined'
 import './ResetLink.css'
 
 
