@@ -2,11 +2,11 @@ import React, {Component} from 'react'
 import './About.css'
 
 export default class About extends Component {
-    private introTitle = `Welcome to our brand new AUMT website!`
+    private introTitle = `Welcome to Our Brand New AUMT Website!`
     private introStr = 
         `Here we will be sharing signups and other exclusive club member content. 
         Our club strives to provide the best of the best for our members through every aspect, from thoroughly planned trainings to easy online communication.`
-    private membershipTitle = `Your membership gets you...`
+    private membershipTitle = `Your Membership Gets You...`
     private membershipStr = `An hour of training a week with our professional head trainer, Victor!`
     private trainingList = [`
     Trainings consist of up to 30 members with 5-7 trainers. This ratio allows for lots of personal feedback from several skilled fighters, resulting in easy learning and quick improvement for members of all skill levels.

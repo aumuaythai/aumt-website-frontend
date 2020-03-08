@@ -20,7 +20,7 @@ export interface LoginState {
 
 const logoPath = process.env.REACT_APP_LOGO_PATH 
 
-const logoUrl = logoPath ? `./${logoPath}/logorectangle.png` : './logorectangle.png'
+const logoUrl = './logorectangle.png'
 
 export default class LoginFormNoRouter extends Component<LoginProps, LoginState> {
     private emailInput: Input | null = null;
@@ -52,7 +52,6 @@ export default class LoginFormNoRouter extends Component<LoginProps, LoginState>
         })
     }
     onLoginClick = () => {
-        console.log('clicked login and trying login un, pw as ', this.state.username, this.state.password)
         this.setState({
             ...this.state,
             authing: true,
