@@ -5,6 +5,7 @@ import { FacebookFilled, InstagramFilled } from '@ant-design/icons'
 import { Button } from 'antd'
 import TopMenu from './TopMenu'
 import UserInfo from './UserInfo'
+import { Links } from '../../services/links'
 import './Header.css'
 
 export interface HeaderProps {
@@ -16,10 +17,10 @@ export interface HeaderState {
 
 export class Header extends Component<HeaderProps, HeaderState> {
     fbClick = () => {
-        window.open('https://www.facebook.com/aumuaythai/', '_blank')
+        Links.openAumtFb()
     }
     igClick = () => {
-        window.open('https://www.instagram.com/aumuaythai', '_blank')
+        Links.openAumtInsta()
     }
     render() {
         return (

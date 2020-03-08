@@ -12,3 +12,7 @@
 .answer {
     /* font-style: italic; */
 }
+.socialLink {
+    color: #008080;
+    cursor: pointer;
+}

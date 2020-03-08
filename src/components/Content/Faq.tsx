@@ -1,15 +1,26 @@
 import React, {Component} from 'react'
 import { Divider } from 'antd'
+import { Links } from '../../services/links'
 import './Faq.css'
 
 export default class Faq extends Component {
+    fbClick = () => {
+        Links.openAumtFb()
+    }
+    igClick = () => {
+        Links.openAumtInsta()
+    }
+    mapClick = () => {
+        Links.openAumtAddress()
+    }
     render() {
         return (
             <div className='faqContainer'>
                 <div className="questionContainer">
                     <p className="question">Q: When and where are trainings?</p>
                     <p className="answer">
-                        A: There is a 6:30 Beginners training and a 7:30 Advanced training every Thursday and Friday. Trainings are held at the Hawk's Nest Gym, located at the third floor of <a href="https://goo.gl/maps/Noef6jfQPwvy4y296" target="_blank">492 Queen Street</a>
+                        A: There is a 6:30 Beginners training and a 7:30 Advanced training every Thursday and Friday. Trainings are held at the Hawk's Nest Gym, located at the third floor of&nbsp;
+                        <span className='socialLink' onClick={this.mapClick}>492 Queen Street</span>
                     </p>
                     <Divider/>
                 </div>
@@ -45,10 +56,10 @@ export default class Faq extends Component {
                         Q: Who do I contact if I have additional questions?
                     </p>
                     <p className="answer">
-                        A: The committee members will be more than happy to answer if you approach them at trainings or events, otherwise you can message our 
-                        <a href="https://www.facebook.com/aumuaythai/" target='_blank'> facebook </a>
-                        or
-                        <a href="https://www.instagram.com/aumuaythai" target='_blank'> instagram page.</a>
+                        A: The committee members will be more than happy to answer if you approach them at trainings or events, otherwise you can message our&nbsp;
+                        <span className='socialLink' onClick={this.fbClick}>facebook</span>
+                        &nbsp;or&nbsp;
+                        <span className='socialLink' onClick={this.igClick}>instagram page.</span>
                     </p>
                     <Divider/>
                 </div>

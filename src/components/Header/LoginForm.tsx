@@ -4,7 +4,7 @@ import { Button, Input } from 'antd'
 import {UserOutlined} from '@ant-design/icons'
 import ResetPasswordLink from './ResetLink'
 import './LoginForm.css'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { LoginErrorMessage } from './LoginErrorMessage'
 
 export interface LoginProps {
@@ -84,7 +84,7 @@ export default class LoginFormNoRouter extends Component<LoginProps, LoginState>
         }
         return (
             <div className="loginContainer">
-                <img src={logoUrl} className='logo' alt=""/>
+                <Link to='/'><img src={logoUrl} className='logo' alt="aumt logo"/></Link>
                 <h3>Sign In</h3>
                 {
                     this.state.errorCode ?
