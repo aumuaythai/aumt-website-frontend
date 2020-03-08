@@ -26,11 +26,7 @@
     }
 
     public static openAumtAddress = () => {
-        if (Links.isDesktop) {
-            window.open('https://goo.gl/maps/Noef6jfQPwvy4y296', '_blank')
-        } else if (Links.isAndroid) {
-            window.open("https://google.com/maps/search/?api=1&query=492+Queen+street");
-        }
+        window.open("https://maps.apple.com/?address=Hawks+Nest+Gym");
     }
 }
 export default new Links()
