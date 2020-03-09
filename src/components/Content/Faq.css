@@ -16,4 +16,5 @@
 .socialLink {
     color: #008080;
     cursor: pointer;
+    text-decoration: underline;
 }
