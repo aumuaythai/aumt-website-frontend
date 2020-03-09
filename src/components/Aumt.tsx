@@ -19,6 +19,9 @@ export interface AumtState {
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {
+    private iframeStr =  {
+      __html: `<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdwanlZn5RuHVePL5fWpgR2RnQKmCyaiu0xNo3enbxdDU6yHQ/viewform?embedded=true" width="600" height="1350" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>`
+    }
     constructor(props: AumtProps) {
         super(props)
         let authedUser = null
@@ -55,7 +58,8 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         <Redirect to='/'/>
                       </Route>
                       <Route path="/signups">
-                        {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>}
+                        {/* {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>} */}
+                        <div dangerouslySetInnerHTML={this.iframeStr}></div>
                       </Route>
                       <Route path="/events">
                         <p>Events page coming soon! </p>
