@@ -28,9 +28,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "build-gzip": "react-app-rewired build && sh gzipbuild.sh",
-    "deploy": "aws s3 rm --recursive s3://aumt && aws s3 sync build/ s3://aumt",
-    "deploy-gzip": "sh deploy.sh",
+    "deploy": "firebase deploy",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
