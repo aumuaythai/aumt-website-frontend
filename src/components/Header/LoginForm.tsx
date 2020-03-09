@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import * as firebase from 'firebase/app'
-import Button from 'antd/es/button'
-import Input from 'antd/es/input'
+import {Button, Input} from 'antd'
 import UserOutlined from '@ant-design/icons/UserOutlined'
 import ResetPasswordLink from './ResetLink'
 import './LoginForm.css'
