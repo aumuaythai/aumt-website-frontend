@@ -12,9 +12,9 @@ export default class Team extends Component {
                         <div className='personContainer'>
                             <p className="name">Victor Ng - Head Trainer</p>
                             <div className="imgContainer">
-                                <div className="aboutText">
+                                {/* <div className="aboutText">
                                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo magni magnam dolor non quisquam deleniti nostrum voluptatibus dignissimos ducimus, sapiente ullam libero at voluptas amet rem, sint beatae, aperiam quod. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Exercitationem libero repellat voluptatum reprehenderit error aliquid cupiditate nemo harum modi id eum, voluptas voluptates, tempora architecto quibusdam vero, facere optio voluptatibus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita recusandae beatae dicta quaerat a eaque voluptatum fugiat tempore rem tempora, cum ab, reiciendis doloribus enim quasi. Sed ea at vel.
-                                </div>
+                                </div> */}
                                 <img className='headshot' src="./photos/victor.jpg" alt="Victor Ng"/>
                             </div>
                         </div>
