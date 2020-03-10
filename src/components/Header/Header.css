@@ -5,7 +5,7 @@
     width: 155px;
     float: left;
 }
-img {
+.logoImg {
     width: 100%;
 }
 .topMenuContainer {
@@ -32,8 +32,9 @@ img {
         display: none;
     }
     .topMenuContainer {
-        float: right;
+        float: left;
         max-width: calc(100% - 155px);
+        width: 100%;
     }
     .socialsContainer {
         float: right;

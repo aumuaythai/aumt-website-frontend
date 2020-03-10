@@ -9,6 +9,7 @@ import About from './Content/About'
 import Signups from './Content/Signups'
 import Faq from './Content/Faq'
 import './Aumt.css'
+import Team from './Content/Team';
 
 export interface AumtProps {
 
@@ -53,6 +54,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                     <Switch>
                       <Route path="/about">
                         <Redirect to='/'/>
+                      </Route>
+                      <Route path="/team">
+                        <Team></Team>
                       </Route>
                       <Route path="/signups">
                         {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>}
