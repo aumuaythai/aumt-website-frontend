@@ -33,7 +33,7 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
 
     setStateFromPathChange = (windowPath: string) => {
         const pathname = windowPath.split('/')[1]
-        const menuPages = ['About', 'Signups', 'Events', 'FAQ']
+        const menuPages = ['About', 'Signups', 'Events', 'FAQ', 'Team']
         for (const page of menuPages) {
           if (page.toLowerCase() === pathname.toLowerCase()) {
             this.setState({
@@ -54,9 +54,14 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
   render() {
     return (
       <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
-        <Menu.Item key="About">
-          <Link to='/'>About</Link>
-        </Menu.Item>
+        <Menu.SubMenu title='About'>
+          <Menu.Item key="About">
+            <Link to='/'>Club Info</Link>
+          </Menu.Item>
+          <Menu.Item key="Team">
+            <Link to='/team'>Our Team</Link>
+          </Menu.Item>
+        </Menu.SubMenu>
         <Menu.Item key="Signups">
           <Link to='/signups'>Sign-ups</Link>
         </Menu.Item>

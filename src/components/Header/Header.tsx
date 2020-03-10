@@ -27,7 +27,7 @@ export class Header extends Component<HeaderProps, HeaderState> {
         return (
             <div className="headerContainer">
                 <div className="imageContainer">
-                    <Link to='/'><img src={"./logorectangle.png"} alt=""/></Link>
+                    <Link to='/'><img className='logoImg' src={"./logorectangle.png"} alt=""/></Link>
                 </div>
                 <div className="topMenuContainer">
                     <TopMenu></TopMenu>
