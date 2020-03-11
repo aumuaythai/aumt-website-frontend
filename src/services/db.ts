@@ -1,12 +1,15 @@
 import * as firebase from 'firebase'
+class DB {
+    private database: firebase.database.Database |  null = null;
 
-export class DB {
-    private database: firebase.database.Database;
-    
-    constructor() {
-        this.database = firebase.database();
-        console.log(this.database)
+    public initialize = () => {
+        if (!this.database) {
+            this.database = firebase.database()
+
+        }
     }
 
     // all database interaction methods go here (or sibling files)
 }
+
+export default new DB()
