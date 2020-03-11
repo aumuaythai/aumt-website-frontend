@@ -1,6 +1,7 @@
 import {AumtMember, AumtAdmin} from './AumtMember'
 import {AumtWeeklyTraining} from './AumtWeeklyTraining'
 import {AumtAttendanceRecord} from './AumtAttendanceRecord'
+import { AumtEvent } from './AumtEvent'
 
 export interface AumtDB {
     users: {
@@ -16,9 +17,14 @@ export interface AumtDB {
         [trainingId: string]: AumtWeeklyTraining
     }
     attendance: {
-        [uid: string]: AumtAttendanceRecord
+        members: {
+            [uid: string]: AumtAttendanceRecord
+        }
+        trainers: {
+            [uid: string]: AumtAttendanceRecord
+        }
     }
     events: {
-
+        [eventId: string]: AumtEvent
     }
 }
