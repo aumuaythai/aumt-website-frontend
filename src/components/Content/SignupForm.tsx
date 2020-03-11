@@ -34,6 +34,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         }
     }
     componentDidMount() {
+        // TODO
         // check if has signed up
         // sign up
     }
