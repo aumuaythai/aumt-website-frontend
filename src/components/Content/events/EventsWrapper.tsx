@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { RouteComponentProps, Switch, Route, withRouter } from 'react-router-dom';
+import { RouteComponentProps, Switch, Route, withRouter, BrowserRouterProps } from 'react-router-dom';
 import EventsList from './EventsList'
 import './EventsWrapper.css'
 import { AumtEvent } from '../../../types'
@@ -46,15 +46,17 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
             }]
         })
     }
+    renderEvent = (routerProps: RouteComponentProps) => {
+        const {eventId}: any = routerProps.match.params
+        return <p>{eventId}</p>
+    }
     render() {
         const { path, url } = this.props.match;
 
         return (
         <div>
             <Switch>
-                <Route path={`${path}/:eventId`}>
-                    <p>asdfasdfasdfasdf</p>
-                </Route>
+                <Route path={`${path}/:eventId`} render={routerProps => this.renderEvent(routerProps)}/>
                 <Route path={path}>
                     <div className="eventsListContainer upcomingEventsContainer">
                         <h2>Upcoming Events</h2>
