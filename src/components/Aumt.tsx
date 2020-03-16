@@ -8,7 +8,7 @@ import { Header } from './Header/Header'
 import {LoginForm} from './Header/LoginForm'
 import {About} from './Content/info/About'
 import {Signups} from './Content/signups/Signups'
-import {EventWrapper} from './Content/events/EventsWrapper'
+import EventsWrapper from './Content/events/EventsWrapper'
 import {Faq} from './Content/info/Faq'
 import './Aumt.css'
 import {Team} from './Content/info/Team';
@@ -68,7 +68,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>}
                       </Route>
                       <Route path="/events">
-                        <EventWrapper></EventWrapper>
+                        <EventsWrapper></EventsWrapper>
                       </Route>
                       <Route path="/faq">
                         <Faq></Faq>

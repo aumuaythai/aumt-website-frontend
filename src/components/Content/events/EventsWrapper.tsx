@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { BrowserRouter, Switch, Route, Redirect, useRouteMatch, withRouter } from 'react-router-dom';
 import {EventsList} from './EventsList'
 import './EventsWrapper.css'
 import { AumtEvent } from '../../../types'
@@ -11,8 +12,8 @@ interface EventWrapperState {
     pastEvents: AumtEvent[]
 }
 
-export class EventWrapper extends Component<EventWrapperProps, EventWrapperState> {
-    constructor(props: EventWrapperProps) {
+export class EventsWrapperWithoutRouter extends Component<any, EventWrapperState> {
+    constructor(props: any) {
         super(props)
         this.state = {
             upcomingEvents: [],
@@ -45,19 +46,32 @@ export class EventWrapper extends Component<EventWrapperProps, EventWrapperState
         })
     }
     render() {
-        return (<div>
-            <div className="eventsListContainer upcomingEventsContainer">
-                <h2>Upcoming Events</h2>
-                {this.state.upcomingEvents.length ?
-                <EventsList events={this.state.upcomingEvents}></EventsList> :
-                <p>There are no upcoming club events at this time. Please check our Facebook page.</p>}
-            </div>
-            <div className="eventsListContainer">
-                <h2>Past Events</h2>
-                {this.state.pastEvents.length ?
-                <EventsList events={this.state.pastEvents}></EventsList> :
-                <p>There are no past club events up now</p>}
-            </div>
-        </div>)
+        const { path, url } = this.props.match;
+
+        return (
+        <div>
+            <Switch>
+                <Route path={`${path}/:eventId`}>
+                    <p>asdfasdfasdfasdf</p>
+                </Route>
+                <Route path={path}>
+                    <div className="eventsListContainer upcomingEventsContainer">
+                        <h2>Upcoming Events</h2>
+                        {this.state.upcomingEvents.length ?
+                        <EventsList events={this.state.upcomingEvents}></EventsList> :
+                        <p>There are no upcoming club events at this time. Please check our Facebook page.</p>}
+                    </div>
+                    <div className="eventsListContainer">
+                        <h2>Past Events</h2>
+                        {this.state.pastEvents.length ?
+                        <EventsList events={this.state.pastEvents}></EventsList> :
+                        <p>There are no past club events up now</p>}
+                    </div>
+                </Route>
+            </Switch>
+        </div>
+        )
     }
 }
+
+export default withRouter(EventsWrapperWithoutRouter)

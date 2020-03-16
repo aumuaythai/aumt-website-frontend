@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Link } from 'react-router-dom'
 import { Divider } from 'antd'
 import { AumtEvent } from '../../../types'
 import './EventsList.css'
@@ -20,18 +21,22 @@ export class EventsList extends Component<EventListProps, EventListState> {
             {this.props.events.map((event) => {
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 const dateString = event.date.toLocaleDateString(undefined, options)
-                return (<div key={event.id} className='eventPreviewContainer'>
-                    <div className="eventHeader">
-                        <h3 className="eventTitle">{event.title}</h3>
-                        <div className="eventDateContainer">
-                            {dateString}
+                return (
+                    <Link to={`/events/${event.urlPath}`} key={event.id}>
+                        <div className='eventPreviewContainer'>
+                            <div className="eventHeader">
+                                <h3 className="eventTitle">{event.title}</h3>
+                                <div className="eventDateContainer">
+                                    {dateString}
+                                </div>
+                            </div>
+                            <Divider></Divider>
+                            <div className='eventBody'>
+                                <p className="eventDescription">{event.description}</p>
+                            </div>
                         </div>
-                    </div>
-                    <Divider></Divider>
-                    <div className='eventBody'>
-                        <p className="eventDescription">{event.description}</p>
-                    </div>
-                </div>)
+                    </Link>
+                )
             })}
         </div>)
     }
