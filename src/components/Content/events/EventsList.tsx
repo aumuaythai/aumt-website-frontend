@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
-import { Link } from 'react-router-dom'
+import { useHistory, withRouter, RouteComponentProps } from 'react-router-dom'
 import { Divider } from 'antd'
 import { AumtEvent } from '../../../types'
 import './EventsList.css'
 
-interface EventListProps {
+interface EventListProps extends RouteComponentProps {
     events: AumtEvent[]
 }
 
@@ -12,7 +12,10 @@ interface EventListState {
     
 }
 
-export class EventsList extends Component<EventListProps, EventListState> {
+class EventsList extends Component<EventListProps, EventListState> {
+    onEventClick = (eventPath: string) => {
+        this.props.history.push(`/events/${eventPath}`)
+    }
     render() {
         if (this.props.events.length === 0) {
             return (<p>There are no club events up at this time</p>)
@@ -22,22 +25,21 @@ export class EventsList extends Component<EventListProps, EventListState> {
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 const dateString = event.date.toLocaleDateString(undefined, options)
                 return (
-                    <Link to={`/events/${event.urlPath}`} key={event.id}>
-                        <div className='eventPreviewContainer'>
-                            <div className="eventHeader">
-                                <h3 className="eventTitle">{event.title}</h3>
-                                <div className="eventDateContainer">
-                                    {dateString}
-                                </div>
-                            </div>
-                            <Divider></Divider>
-                            <div className='eventBody'>
-                                <p className="eventDescription">{event.description}</p>
+                    <div className='eventPreviewContainer' key={event.id} onClick={e => this.onEventClick(event.urlPath)}>
+                        <div className="eventHeader">
+                            <h3 className="eventTitle">{event.title}</h3>
+                            <div className="eventDateContainer">
+                                {dateString}
                             </div>
                         </div>
-                    </Link>
+                        <Divider></Divider>
+                        <div className='eventBody'>
+                            <p className="eventDescription">{event.description}</p>
+                        </div>
+                    </div>
                 )
             })}
         </div>)
     }
 }
+export default withRouter(EventsList)

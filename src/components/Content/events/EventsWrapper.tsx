@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
-import { BrowserRouter, Switch, Route, Redirect, useRouteMatch, withRouter } from 'react-router-dom';
-import {EventsList} from './EventsList'
+import { RouteComponentProps, Switch, Route, withRouter } from 'react-router-dom';
+import EventsList from './EventsList'
 import './EventsWrapper.css'
 import { AumtEvent } from '../../../types'
 
-interface EventWrapperProps {
+interface EventWrapperProps extends RouteComponentProps {
+    
 }
 
 interface EventWrapperState {
@@ -12,8 +13,8 @@ interface EventWrapperState {
     pastEvents: AumtEvent[]
 }
 
-export class EventsWrapperWithoutRouter extends Component<any, EventWrapperState> {
-    constructor(props: any) {
+export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapperState> {
+    constructor(props: EventWrapperProps) {
         super(props)
         this.state = {
             upcomingEvents: [],
