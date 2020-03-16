@@ -33,6 +33,14 @@ export class EventWrapper extends Component<EventWrapperProps, EventWrapperState
                 date: new Date(2020, 1, 25, 19),
                 urlPath: 'first-dinner',
                 location: 'Sky World Entertainment Centre'
+            }, {
+                title: '2020 Omori Retreat',
+                id: 's0df80e9f',
+                description: `
+                Camp is back and we're so excited to for you to come with us! We promise a week of high-quality training to help you achieve peak form, Huka Prawn Park, and a cute pupper for you to swoon over.`,
+                date: new Date(2020, 5, 17),
+                urlPath: 'camp2020',
+                location: 'Taupo, NZ'
             }]
         })
     }
