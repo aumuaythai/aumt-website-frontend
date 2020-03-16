@@ -5,12 +5,13 @@ import 'firebase/auth';
 import 'firebase/database'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './Header/Header'
-import LoginForm from './Header/LoginForm'
-import About from './Content/About'
-import Signups from './Content/Signups'
-import Faq from './Content/Faq'
+import {LoginForm} from './Header/LoginForm'
+import {About} from './Content/info/About'
+import {Signups} from './Content/signups/Signups'
+import {EventWrapper} from './Content/events/EventsWrapper'
+import {Faq} from './Content/info/Faq'
 import './Aumt.css'
-import Team from './Content/Team';
+import {Team} from './Content/info/Team';
 import DB from '../services/db'
 
 export interface AumtProps {
@@ -67,7 +68,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>}
                       </Route>
                       <Route path="/events">
-                        <p>Events page coming soon! </p>
+                        <EventWrapper></EventWrapper>
                       </Route>
                       <Route path="/faq">
                         <Faq></Faq>

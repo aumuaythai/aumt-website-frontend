@@ -4,7 +4,7 @@ import {Radio, Button, Tooltip, Alert} from 'antd'
 import CheckCircleOutlined from '@ant-design/icons/CheckCircleOutlined'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
-import { AumtTrainingSession } from '../../types'
+import { AumtTrainingSession } from '../../../types'
 
 export interface SignupFormProps {
     title: string

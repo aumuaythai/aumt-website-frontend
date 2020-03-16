@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {Divider} from 'antd'
-import { Links } from '../../services/links'
+import { Links } from '../../../services/links'
 import './Faq.css'
 
-export default class Faq extends Component {
+export class Faq extends Component {
     fbClick = () => {
         Links.openAumtFb()
     }

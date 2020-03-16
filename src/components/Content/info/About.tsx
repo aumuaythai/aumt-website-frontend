@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './About.css'
 
-export default class About extends Component {
+export class About extends Component {
     private introTitle = `Welcome to Our Brand New AUMT Website!`
     private introStr = 
         `Here we will be sharing signups and other exclusive club member content. 

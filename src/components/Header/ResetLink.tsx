@@ -6,7 +6,7 @@ import './ResetLink.css'
 
 
 
-export default class ResetPasswordLink extends Component {
+export class ResetPasswordLink extends Component {
   state = {
     visible: false,
     confirmLoading: false,

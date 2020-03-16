@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { User } from 'firebase/app'
 import './Signups.css'
 import { SignupForm } from './SignupForm'
-import { AumtWeeklyTraining } from '../../types'
+import { AumtWeeklyTraining } from '../../../types'
 
 
 interface SignupProps {
@@ -14,7 +14,7 @@ interface SignupState {
     messageText: string
 }
 
-export default class Signups extends Component<SignupProps, SignupState> {
+export class Signups extends Component<SignupProps, SignupState> {
     constructor(props: SignupProps) {
         super(props)
         this.state = {
