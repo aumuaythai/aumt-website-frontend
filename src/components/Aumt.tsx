@@ -14,6 +14,7 @@ import './Aumt.css'
 import Team from './Content/Team';
 import DB from '../services/db'
 import { AumtMember } from '../types';
+import {MainAdmin} from './Admin/MainAdmin';
 
 export interface AumtProps {
 
@@ -114,7 +115,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                       <Route path="/admin">
                         {
                           this.state.userIsAdmin ?
-                            <p>Admin content here</p> :
+                            <MainAdmin></MainAdmin> :
                             <Redirect to='/'/>
                         }
                       </Route>

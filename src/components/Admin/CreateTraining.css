@@ -1,0 +1,9 @@
+.createTrainingContainer {
+    margin: 0 auto;
+    max-width: 600px;
+    height: auto;
+}
+.createTrainingContainer.collapsed {
+    height: 0;
+    overflow: hidden;
+}
