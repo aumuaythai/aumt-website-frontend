@@ -17,9 +17,6 @@ REACT_APP_FB_MESSAGING_SENDER_ID
 
 REACT_APP_FB_APP_ID
 
-And the server url as a base for the api (e.g. http://localhost:8000 in .env.development, https://aumuaythai.com in .env.production)
-
-REACT_APP_SERVER_API=
 
 ## Available Scripts
 

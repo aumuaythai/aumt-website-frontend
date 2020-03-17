@@ -18,8 +18,6 @@ export interface LoginState {
     errorCode: string
 }
 
-const logoPath = process.env.REACT_APP_LOGO_PATH 
-
 const logoUrl = './logorectangle.png'
 
 export default class LoginFormNoRouter extends Component<LoginProps, LoginState> {

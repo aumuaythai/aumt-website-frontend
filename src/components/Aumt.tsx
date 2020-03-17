@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import * as firebase from "firebase/app";
 import { User } from 'firebase/app'
 import 'firebase/auth';
+import 'firebase/database'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './Header/Header'
 import LoginForm from './Header/LoginForm'
@@ -10,6 +11,7 @@ import Signups from './Content/Signups'
 import Faq from './Content/Faq'
 import './Aumt.css'
 import Team from './Content/Team';
+import DB from '../services/db'
 
 export interface AumtProps {
 
@@ -32,13 +34,16 @@ export class Aumt extends Component<AumtProps, AumtState> {
             messagingSenderId: process.env.REACT_APP_FB_MESSAGING_SENDER_ID,
             appId: process.env.REACT_APP_FB_APP_ID
         }
-        firebase.initializeApp(firebaseConfig);
         this.state = { authedUser }
-        firebase.auth().onAuthStateChanged((user: User | null) => {
-            this.setState({
-                authedUser: user
-            })
-        });
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+          DB.initialize()
+          firebase.auth().onAuthStateChanged((user: User | null) => {
+              this.setState({
+                  authedUser: user
+              })
+          });
+        }
     }
 
     render() {
