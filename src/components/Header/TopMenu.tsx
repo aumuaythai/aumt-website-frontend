@@ -33,7 +33,7 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
 
     setStateFromPathChange = (windowPath: string) => {
         const pathname = windowPath.split('/')[1]
-        const menuPages = ['About', 'Signups', 'Events', 'FAQ', 'Team']
+        const menuPages = ['About', 'Signups', 'Events', 'FAQ', 'Team', 'Admin']
         for (const page of menuPages) {
           if (page.toLowerCase() === pathname.toLowerCase()) {
             this.setState({
@@ -71,6 +71,12 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
         <Menu.Item key="FAQ">
           <Link to='/faq'>FAQ</Link>
         </Menu.Item>
+        {this.props.isAdmin ?
+          (
+            <Menu.Item key="Admin">
+              <Link to='/admin'>Admin</Link>
+            </Menu.Item>
+          ) : ''}
       </Menu>
     );
   }

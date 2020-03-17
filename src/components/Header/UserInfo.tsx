@@ -11,7 +11,6 @@ interface UserInfoProps {
 
 export default class UserInfo extends Component<UserInfoProps, object> {
     onSignOutClick = () => {
-        console.log('signing out')
         firebase.auth().signOut().then(() => {
             console.log('Signing out success')
         }).catch((signOutError) => {

@@ -11,6 +11,7 @@ import { AumtMember } from '../../types'
 
 export interface HeaderProps {
     authedUser: AumtMember | null
+    isAdmin: boolean
 }
 
 export interface HeaderState {
@@ -30,7 +31,7 @@ export class Header extends Component<HeaderProps, HeaderState> {
                     <Link to='/'><img className='logoImg' src={"./logorectangle.png"} alt=""/></Link>
                 </div>
                 <div className="topMenuContainer">
-                    <TopMenu></TopMenu>
+                    <TopMenu isAdmin={this.props.isAdmin}></TopMenu>
                 </div>
                 <div className="socialsContainer">
                     {

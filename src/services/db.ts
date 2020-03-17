@@ -30,6 +30,20 @@ class DB {
             }
         })
     }
+
+    public getIsAdmin = (userId: string): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                this.db.collection('admin').doc(userId).get()
+                    .then((doc) => {
+                        resolve(doc.exists)
+                    })
+                    .catch((err) => {
+                        console.log('error getting isadmin', err)
+                    })
+            }
+        })
+    }
 }
 
 export default new DB()

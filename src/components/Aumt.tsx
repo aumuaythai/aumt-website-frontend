@@ -21,6 +21,7 @@ export interface AumtProps {
 
 export interface AumtState {
     authedUser: AumtMember | null
+    userIsAdmin: boolean
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {
@@ -37,17 +38,27 @@ export class Aumt extends Component<AumtProps, AumtState> {
             messagingSenderId: process.env.REACT_APP_FB_MESSAGING_SENDER_ID,
             appId: process.env.REACT_APP_FB_APP_ID
         }
-        this.state = { authedUser }
+        this.state = { authedUser, userIsAdmin: false }
         if (!firebase.apps.length) {
           firebase.initializeApp(firebaseConfig);
           DB.initialize()
-          firebase.auth().onAuthStateChanged((user: User | null) => {
-            if (user) {
-              DB.getUserInfo(user).then((userInfo: AumtMember) => {
-                this.setState({authedUser: userInfo})
+          firebase.auth().onAuthStateChanged((fbUser: User | null) => {
+            if (fbUser) {
+              DB.getUserInfo(fbUser).then((userInfo: AumtMember) => {
+                this.setState({
+                  ...this.state,
+                  authedUser: userInfo
+                })
+                DB.getIsAdmin(fbUser.uid).then((isAdmin: boolean) => {
+                  console.log('setting isadmin', isAdmin)
+                  this.setState({
+                    ...this.state,
+                    userIsAdmin: isAdmin
+                  })
+                })
               })
               .catch((err) => {
-                if (err == 'No User for uid') {
+                if (err === 'No User for uid') {
                   notification.error({
                     message: 'Error logging in',
                     description: 'User is registered but not in database! Message the AUMT team on facebook as this should not happen :)'
@@ -57,10 +68,18 @@ export class Aumt extends Component<AumtProps, AumtState> {
                     message: 'Error logging in - Please contact AUMT team on facebook'
                   })
                 }
-                this.setState({authedUser: null})
+                this.setState({
+                  ...this.state,
+                  authedUser: null,
+                  userIsAdmin: false
+                })
               })
             } else {
-              this.setState({authedUser: null})
+              this.setState({
+                ...this.state,
+                authedUser: null,
+                userIsAdmin: false
+              })
             }
           });
         }
@@ -75,7 +94,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                     <LoginForm></LoginForm>
                   </Route>
                   <Route path="/*">
-                    <Header authedUser={this.state.authedUser}></Header>
+                    <Header authedUser={this.state.authedUser} isAdmin={this.state.userIsAdmin}></Header>
                     <Switch>
                       <Route path="/about">
                         <Redirect to='/'/>
@@ -91,6 +110,13 @@ export class Aumt extends Component<AumtProps, AumtState> {
                       </Route>
                       <Route path="/faq">
                         <Faq></Faq>
+                      </Route>
+                      <Route path="/admin">
+                        {
+                          this.state.userIsAdmin ?
+                            <p>Admin content here</p> :
+                            <Redirect to='/'/>
+                        }
                       </Route>
                       <Route path="/">
                         <About></About>
