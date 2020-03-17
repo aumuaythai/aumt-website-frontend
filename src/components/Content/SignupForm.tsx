@@ -1,10 +1,9 @@
 import React, {Component} from 'react'
-import { User } from 'firebase/app'
 import {Radio, Button, Tooltip, Alert} from 'antd'
 import CheckCircleOutlined from '@ant-design/icons/CheckCircleOutlined'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
-import { AumtTrainingSession } from '../../types'
+import { AumtTrainingSession, AumtMember } from '../../types'
 
 export interface SignupFormProps {
     title: string
@@ -13,7 +12,7 @@ export interface SignupFormProps {
     sessions: {
         [sessionId: string]: AumtTrainingSession
     }
-    authedUser: User
+    authedUser: AumtMember
 }
 
 interface SignupFormState {

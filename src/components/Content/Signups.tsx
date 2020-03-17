@@ -1,12 +1,11 @@
 import React, {Component} from 'react'
-import { User } from 'firebase/app'
 import './Signups.css'
 import { SignupForm } from './SignupForm'
-import { AumtWeeklyTraining } from '../../types'
+import { AumtWeeklyTraining, AumtMember } from '../../types'
 
 
 interface SignupProps {
-    authedUser: User
+    authedUser: AumtMember
 }
 
 interface SignupState {

@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
-import { User } from 'firebase/app'
 import * as firebase from 'firebase/app'
 import {Menu, Dropdown} from 'antd'
 import DownOutlined from '@ant-design/icons/DownOutlined'
 import ResetLink from './ResetLink'
 import './UserInfo.css'
+import { AumtMember } from '../../types'
 interface UserInfoProps {
-    authedUser: User
+    authedUser: AumtMember
 }
 
 export default class UserInfo extends Component<UserInfoProps, object> {
@@ -34,7 +34,7 @@ export default class UserInfo extends Component<UserInfoProps, object> {
         return (
             <Dropdown overlay={this.menu} placement="bottomRight">
                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                    {this.props.authedUser.email?.split('@')[0]} <DownOutlined />
+                    {this.props.authedUser.preferredName || this.props.authedUser.firstName || this.props.authedUser.displayName} <DownOutlined />
                 </a>
             </Dropdown>
         )

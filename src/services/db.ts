@@ -1,15 +1,35 @@
 import * as firebase from 'firebase'
+import { AumtMember } from '../types';
 class DB {
-    private db: firebase.database.Database |  null = null;
+    private db: firebase.firestore.Firestore |  null = null;
 
     public initialize = () => {
         if (!this.db) {
-            this.db = firebase.database()
+            this.db = firebase.firestore()
 
         }
     }
 
-    // all database interaction methods go here (or sibling files)
+    public getUserInfo = (fbUser: firebase.User): Promise<AumtMember> => {
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                this.db.collection('members').doc(fbUser.uid).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const docData: any = doc.data()
+                            resolve(docData)
+                        } else {
+                            console.log('No User exists for uid ', fbUser.uid)
+                            reject('No User for uid')
+                        }
+                    })
+                    .catch((err) => {
+                        console.log('error getting user by uid', err)
+                        reject(err)
+                    })
+            }
+        })
+    }
 }
 
 export default new DB()

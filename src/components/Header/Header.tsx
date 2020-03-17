@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { User } from 'firebase/app'
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import {Button} from 'antd'
@@ -8,9 +7,10 @@ import TopMenu from './TopMenu'
 import UserInfo from './UserInfo'
 import { Links } from '../../services/links'
 import './Header.css'
+import { AumtMember } from '../../types'
 
 export interface HeaderProps {
-    authedUser: User | null
+    authedUser: AumtMember | null
 }
 
 export interface HeaderState {

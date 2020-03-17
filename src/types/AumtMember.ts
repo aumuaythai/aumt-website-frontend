@@ -1,11 +1,19 @@
 export interface AumtMember {
-    name: string
+    EmergencyContactName: string
+    EmergencyContactNumber: string
+    Relationship: string
+    UPI: string
+    disabled: boolean
+    displayName: string
     email: string
-    membershipType: 'SEM1' | 'SEM2' | 'FULLYEAR' | null
-    
-    // admin/trainer uid string for the isAdmin
-    isAdmin: string | null
-    isTrainer: string | null
+    emailVerified: boolean
+    firstName: string
+    isReturningMember: 'Yes' | 'No'
+    isUoAStudent: 'Yes' | 'No'
+    lastName: string
+    membership: 'S1' | 'S2' | 'FY' | null
+    password: string
+    preferredName: string
 }
 
 export interface AumtAdmin {

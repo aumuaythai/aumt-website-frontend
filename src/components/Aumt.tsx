@@ -3,6 +3,7 @@ import * as firebase from "firebase/app";
 import { User } from 'firebase/app'
 import 'firebase/auth';
 import 'firebase/database'
+import {notification} from 'antd'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './Header/Header'
 import LoginForm from './Header/LoginForm'
@@ -12,13 +13,14 @@ import Faq from './Content/Faq'
 import './Aumt.css'
 import Team from './Content/Team';
 import DB from '../services/db'
+import { AumtMember } from '../types';
 
 export interface AumtProps {
 
 }
 
 export interface AumtState {
-    authedUser: User | null
+    authedUser: AumtMember | null
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {
@@ -26,6 +28,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
         super(props)
         let authedUser = null
         const firebaseConfig = {
+
             apiKey: process.env.REACT_APP_FB_API_KEY,
             authDomain: process.env.REACT_APP_FB_AUTH_DOMAIN,
             databaseURL: process.env.REACT_APP_FB_DATABASE_URL,
@@ -39,9 +42,26 @@ export class Aumt extends Component<AumtProps, AumtState> {
           firebase.initializeApp(firebaseConfig);
           DB.initialize()
           firebase.auth().onAuthStateChanged((user: User | null) => {
-              this.setState({
-                  authedUser: user
+            if (user) {
+              DB.getUserInfo(user).then((userInfo: AumtMember) => {
+                this.setState({authedUser: userInfo})
               })
+              .catch((err) => {
+                if (err == 'No User for uid') {
+                  notification.error({
+                    message: 'Error logging in',
+                    description: 'User is registered but not in database! Message the AUMT team on facebook as this should not happen :)'
+                  })
+                } else {
+                  notification.error({
+                    message: 'Error logging in - Please contact AUMT team on facebook'
+                  })
+                }
+                this.setState({authedUser: null})
+              })
+            } else {
+              this.setState({authedUser: null})
+            }
           });
         }
     }
