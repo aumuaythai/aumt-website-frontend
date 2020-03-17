@@ -26,15 +26,15 @@ class EventsList extends Component<EventListProps, EventListState> {
                 const dateString = event.date.toLocaleDateString(undefined, options)
                 return (
                     <div className='eventPreviewContainer' key={event.id} onClick={e => this.onEventClick(event.urlPath)}>
-                        <div className="eventHeader">
-                            <h3 className="eventTitle">{event.title}</h3>
-                            <div className="eventDateContainer">
+                        <div className="eventPreviewHeader">
+                            <h3 className="eventPreviewTitle">{event.title}</h3>
+                            <div className="eventPreviewDateContainer">
                                 {dateString}
                             </div>
                         </div>
                         <Divider></Divider>
-                        <div className='eventBody'>
-                            <p className="eventDescription">{event.description}</p>
+                        <div className='eventPreviewBody'>
+                            <p className="eventPreviewDescription">{event.description}</p>
                         </div>
                     </div>
                 )

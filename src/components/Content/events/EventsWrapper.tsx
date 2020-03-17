@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import { RouteComponentProps, Switch, Route, withRouter, BrowserRouterProps } from 'react-router-dom';
+import { RouteComponentProps, Switch, Route, withRouter, Link } from 'react-router-dom';
 import EventsList from './EventsList'
+import { Event } from './Event'
 import './EventsWrapper.css'
 import { AumtEvent } from '../../../types'
 
@@ -48,7 +49,22 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
     }
     renderEvent = (routerProps: RouteComponentProps) => {
         const {eventId}: any = routerProps.match.params
-        return <p>{eventId}</p>
+        if (!eventId) {
+            return (<p>Error displaying event - <Link to='/events'>Go Back to events page</Link></p>)
+        }
+        const foundEvent = this.state.upcomingEvents.concat(this.state.pastEvents).find((a) => a.urlPath === eventId)
+        if (foundEvent) {
+            return <Event
+                    urlPath={foundEvent.urlPath}
+                    description={foundEvent.description}
+                    date={foundEvent.date}
+                    fbLink={foundEvent.fbLink}
+                    location={foundEvent.location}
+                    title={foundEvent.title}
+                    id={foundEvent.id}
+                ></Event>
+        }
+        return (<p>Error displaying event - <Link to='/events'>Go Back to events page</Link></p>)        
     }
     render() {
         const { path, url } = this.props.match;

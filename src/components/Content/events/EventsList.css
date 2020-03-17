@@ -3,18 +3,18 @@
     margin: 0 auto;
     padding: 0 30px;
 }
-.eventDateContainer {
+.eventPreviewDateContainer {
     max-width: 200px;
     float: left;
     margin-top: 3px;
     text-overflow: clip;
 }
-.eventTitle {
+.eventPreviewTitle {
     min-width: calc(100% - 200px);
     float: left;
     text-align: left;
 }
-.eventBody {
+.eventPreviewBody {
     max-height: 100px;
     overflow-y: auto;
     white-space: pre-line;
