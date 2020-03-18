@@ -22,8 +22,8 @@ interface CreateTrainingState {
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
-const TRAINING_0_OPENS_DATE = new Date(2020, 2, 1, 0, 0, 0)
-const TRAINING_0_CLOSES_DATE = new Date(2020, 2, 6, 23, 59, 59)
+const TRAINING_0_OPENS_DATE = new Date(2020, 1, 23, 0, 0, 0)
+const TRAINING_0_CLOSES_DATE = new Date(2020, 1, 28, 23, 59, 59)
 
 export class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {
@@ -53,10 +53,10 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             currentCloses: newCloses,
             currentTitle: `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrThu}-${dateStrFri}`,
             currentSessions: [
-                this.createSession('Thursday 6:30 (Beginners)'),
-                this.createSession('Thursday 7:30 (Beginners)'),
-                this.createSession('Friday 6:30 (Beginners)'),
-                this.createSession('Friday 6:30 (Advanced)'),
+                this.createSession(`Thursday 6:30 (Beginners)`),
+                this.createSession(`Thursday 7:30 (Beginners)`),
+                this.createSession(`Friday 6:30 (Beginners)`),
+                this.createSession(`Friday 6:30 (Advanced)`),
 
             ]
         })
