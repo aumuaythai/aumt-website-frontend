@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { Button, Input, InputNumber, DatePicker, notification } from 'antd'
+import moment from 'moment'
 import { MinusCircleOutlined} from '@ant-design/icons'
 import './CreateTraining.css'
 import { AumtTrainingSession } from '../../types'
@@ -17,9 +18,12 @@ interface CreateTrainingState {
     isSubmitting: boolean
     submitButtonText: string
     currentNotes: string
+    currentPopulateWeekValue: number
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
+const TRAINING_0_OPENS_DATE = new Date(2020, 2, 1, 0, 0, 0)
+const TRAINING_0_CLOSES_DATE = new Date(2020, 2, 6, 23, 59, 59)
 
 export class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {
@@ -31,8 +35,31 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             currentSessions: [],
             isSubmitting: false,
             submitButtonText: 'Submit Form',
-            currentNotes: ''
+            currentNotes: '',
+            currentPopulateWeekValue: 1
         }
+    }
+    populateWeeklyDefaults = () => {
+        console.log(this.state.currentPopulateWeekValue)
+        const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * this.state.currentPopulateWeekValue))
+        const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * this.state.currentPopulateWeekValue))
+        const dateThursday = new Date(newOpens.getTime() + (1000 * 60 * 60 * 24 * 4))
+        const dateFriday = new Date(newOpens.getTime() + (1000 * 60 * 60 * 24 * 5))
+        const dateStrThu = `${dateThursday.getDate()}/${dateThursday.getMonth() + 1}`
+        const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
+        this.setState({
+            ...this.state,
+            currentOpens: newOpens,
+            currentCloses: newCloses,
+            currentTitle: `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrThu}-${dateStrFri}`,
+            currentSessions: [
+                this.createSession('Thursday 6:30 (Beginners)'),
+                this.createSession('Thursday 7:30 (Beginners)'),
+                this.createSession('Friday 6:30 (Beginners)'),
+                this.createSession('Friday 6:30 (Advanced)'),
+
+            ]
+        })
     }
     componentDidMount = () => {
         this.onAddSessionClick()
@@ -44,6 +71,9 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             id += digits[Math.floor(Math.random() * digits.length)]
         }
         return id
+    }
+    onPopulateWeekChange = (n: number | undefined) => {
+        this.setState({...this.state, currentPopulateWeekValue: n || 1})
     }
     onOpenDateChange = (d: Date | undefined) => {
         if (d) {
@@ -97,16 +127,20 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             currentSessions: this.state.currentSessions.filter(s => s.sessionId !== sessionId)
         })
     }
-    onAddSessionClick = () => {
+    createSession = (sessionTitle: string) => {
         const newSession: AumtTrainingSession = {
             limit: DEFAULT_TRAINING_LIMIT,
             sessionId: this.generateSessionId(10),
-            title: '',
-            trainers: {},
-            members: {},
-            waitlist: {},
-            feedback: {}
+            title: sessionTitle,
+            trainers: [],
+            members: [],
+            waitlist: [],
+            feedback: []
         }
+        return newSession
+    }
+    onAddSessionClick = () => {
+        const newSession = this.createSession('')
 
         this.setState({
             ...this.state,
@@ -137,7 +171,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
         })
         db.submitNewForm({
             title: this.state.currentTitle,
-            sessions: sessionsObject,
+            sessions: this.state.currentSessions as any,
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             notes: this.state.currentNotes,
@@ -168,15 +202,16 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
     render() {
         return (
             <div className='createTrainingContainer'>
+                <span>Populate weekly training defaults for week: </span><InputNumber onChange={this.onPopulateWeekChange} className='populateInput' defaultValue={1} min={1}/><Button onClick={this.populateWeeklyDefaults}>Populate</Button>
                 <h4 className='formSectionTitle'>Form Options</h4>
-                <Input placeholder="Form Title" onChange={e => this.onTrainingTitleChange(e.target.value)}></Input>
+                <Input placeholder="Form Title" value={this.state.currentTitle} onChange={e => this.onTrainingTitleChange(e.target.value)}></Input>
                 <div>
                     <span className="formItemTitle">Opens: </span>
-                    <DatePicker showTime onChange={d => this.onOpenDateChange(d?.toDate())} />
+                    <DatePicker value={moment(this.state.currentOpens)} showTime onChange={d => this.onOpenDateChange(d?.toDate())} />
                 </div>
                 <div>
                     <span className="formItemTitle">Closes: </span>
-                    <DatePicker showTime onChange={d => this.onClosesDateChange(d?.toDate())} />
+                    <DatePicker value={moment(this.state.currentCloses)} showTime onChange={d => this.onClosesDateChange(d?.toDate())} />
                 </div>
                 <h4 className='formSectionTitle'>Sessions</h4>
                 <div className="sessionSection">
@@ -186,7 +221,11 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                     {this.state.currentSessions.map((session) => {
                         return (
                             <div key={session.sessionId} className="eachSessionContainer">
-                                <Input className='sessionTitleInput' placeholder="Session Title (e.g. Thursday 6:30 Beginners)" onChange={e => this.onSessionTitleChange(e.target.value, session.sessionId)}/>
+                                <Input
+                                    value={session.title}
+                                    className='sessionTitleInput'
+                                    placeholder="Session Title (e.g. Thursday 6:30 Beginners)"
+                                    onChange={e => this.onSessionTitleChange(e.target.value, session.sessionId)}/>
                                 Limit:<InputNumber defaultValue={DEFAULT_TRAINING_LIMIT} onChange={e=>this.onSessionLimitChange(e, session.sessionId)}/>
                                 <MinusCircleOutlined onClick={e=>this.onRemoveSessionClick(session.sessionId)} className='minusIcon' />
                             </div>
@@ -195,10 +234,16 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                 </div>
                 <h4 className='formSectionTitle'>Notes</h4>
                 <div className="notesContainer">
-                    <Input.TextArea onChange={e => this.onNotesChange(e.target.value)} placeholder='Any notes you want displayed on the form (optional)'/>
+                    <Input.TextArea
+                        autoSize={{ minRows: 2, maxRows: 6 }}
+                        onChange={e => this.onNotesChange(e.target.value)}
+                        placeholder='Any notes you want displayed on the form (optional)'/>
                 </div>
                 <div className='submitTrainingContainer'>
-                    <Button type='primary' loading={this.state.isSubmitting} onClick={this.onSubmitForm}>{this.state.submitButtonText}</Button>
+                    <Button
+                        type='primary'
+                        loading={this.state.isSubmitting}
+                        onClick={this.onSubmitForm}>{this.state.submitButtonText}</Button>
                 </div>
             </div>
         )

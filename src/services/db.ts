@@ -1,5 +1,5 @@
 import * as firebase from 'firebase'
-import { AumtMember, AumtWeeklyTraining } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession } from '../types';
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
 
@@ -47,8 +47,13 @@ class DB {
 
     public submitNewForm = (formData: AumtWeeklyTraining): Promise<void> => {
         return new Promise((resolve, reject) => {
-            console.log(formData)
-            setTimeout(resolve, 2000)
+            if (this.db) {
+                this.db.collection('weekly_trainings')
+                    .doc(formData.trainingId)
+                    .set(formData)
+                    .then(resolve)
+                    .catch(reject)
+            }
         })
     }
 }

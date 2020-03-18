@@ -8,9 +8,7 @@ export interface SignupFormProps {
     title: string
     id: string
     closes: Date
-    sessions: {
-        [sessionId: string]: AumtTrainingSession
-    }
+    sessions: AumtTrainingSession[]
     authedUser: AumtMember
 }
 
@@ -56,8 +54,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 <h2 className="formTitle">{this.props.title}</h2>
                 <div className="optionsContainer">
                     <Radio.Group className="Group" onChange={this.onOptionChange} value={this.state.currentOption}>
-                        {Object.keys(this.props.sessions).map((key: string) => {
-                            const session = this.props.sessions[key]
+                        {this.props.sessions.map((session) => {
                             return (
                                 <div key={session.title} className="optionLine">
                                     {/* <Tooltip title={isFull ? 'Class full' : ''} placement='left'> */}

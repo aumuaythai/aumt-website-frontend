@@ -4,23 +4,13 @@ export interface AumtTrainingSession {
     limit: number
     title: string
     sessionId: string
-    trainers: {
-        [uid: string]: true
-    }
-    members: {
-        [uid: string]: AumtMember
-    }
-    waitlist: {
-        [uid: string]: AumtMember
-    }
-    feedback: {
-        [randomId: string]: string
-    }
+    trainers: string[]
+    members: AumtMember[]
+    waitlist: AumtMember[]
+    feedback: string[]
 }
 export interface AumtWeeklyTraining {
-    sessions: {
-        [sessionId: string]: AumtTrainingSession
-    }
+    sessions: AumtTrainingSession[]
     trainingId: string
     title: string
     opens: Date

@@ -22,7 +22,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     render() {
         return (
             <div className='adminContainer'>
-                <h3>Weekly Trainings</h3>
+                <h3>Signup Forms</h3>
                 <CreateTraining></CreateTraining>
                 
                 <h3>Events</h3>

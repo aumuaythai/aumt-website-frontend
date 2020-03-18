@@ -9,7 +9,7 @@ interface SignupProps {
 }
 
 interface SignupState {
-    form: AumtWeeklyTraining & {id: string} | null
+    form: AumtWeeklyTraining | null
     messageText: string
 }
 
@@ -36,7 +36,7 @@ export default class Signups extends Component<SignupProps, SignupState> {
                 <div className="formContainer">
                     <SignupForm 
                         title={form.title} 
-                        id={form.id} 
+                        id={form.trainingId} 
                         closes={form.closes} 
                         sessions={form.sessions} 
                         authedUser={this.props.authedUser

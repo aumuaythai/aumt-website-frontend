@@ -9,6 +9,9 @@
     height: 0;
     overflow: hidden;
 }
+.populateInput {
+    max-width:60px;
+}
 .sessionSection {
     padding: 10px 0
 }
