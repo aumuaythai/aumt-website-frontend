@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {Radio, Button, Tooltip, Alert} from 'antd'
-import CheckCircleOutlined from '@ant-design/icons/CheckCircleOutlined'
+import {Radio, Button, Alert} from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
 import { AumtTrainingSession, AumtMember } from '../../types'
@@ -8,7 +7,7 @@ import { AumtTrainingSession, AumtMember } from '../../types'
 export interface SignupFormProps {
     title: string
     id: string
-    closes: number // UTC time
+    closes: Date
     sessions: {
         [sessionId: string]: AumtTrainingSession
     }
@@ -43,7 +42,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         });
     }
     onSubmitClick = () => {
-        const optionSelected = this.state.currentOption
+        // const optionSelected = this.state.currentOption
         this.setState({
             ...this.state,
             errorMessage: '',

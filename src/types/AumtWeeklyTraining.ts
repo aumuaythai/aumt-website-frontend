@@ -2,25 +2,28 @@ import { AumtMember } from "./AumtMember";
 
 export interface AumtTrainingSession {
     limit: number
-    title: number
+    title: string
+    sessionId: string
     trainers: {
-        uid: true
+        [uid: string]: true
     }
     members: {
-        uid: AumtMember
+        [uid: string]: AumtMember
     }
     waitlist: {
-        uid: AumtMember
+        [uid: string]: AumtMember
     }
     feedback: {
-        randomId: string
+        [randomId: string]: string
     }
 }
 export interface AumtWeeklyTraining {
     sessions: {
         [sessionId: string]: AumtTrainingSession
     }
+    trainingId: string
     title: string
-    opens: number
-    closes: number
+    opens: Date
+    closes: Date
+    notes?: string
 }

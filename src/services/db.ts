@@ -1,5 +1,5 @@
 import * as firebase from 'firebase'
-import { AumtMember } from '../types';
+import { AumtMember, AumtWeeklyTraining } from '../types';
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
 
@@ -42,6 +42,13 @@ class DB {
                         console.log('error getting isadmin', err)
                     })
             }
+        })
+    }
+
+    public submitNewForm = (formData: AumtWeeklyTraining): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            console.log(formData)
+            setTimeout(resolve, 2000)
         })
     }
 }

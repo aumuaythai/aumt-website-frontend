@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import { Button, Input, DatePicker } from 'antd'
 import { CreateTraining } from './CreateTraining'
 import './MainAdmin.css'
 
