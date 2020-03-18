@@ -40,7 +40,6 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
         }
     }
     populateWeeklyDefaults = () => {
-        console.log(this.state.currentPopulateWeekValue)
         const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * this.state.currentPopulateWeekValue))
         const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * this.state.currentPopulateWeekValue))
         const dateThursday = new Date(newOpens.getTime() + (1000 * 60 * 60 * 24 * 4))
@@ -110,6 +109,10 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                     s.title = title
                 }
             })
+            this.setState({
+                ...this.state,
+                currentSessions: this.state.currentSessions
+            })
         }
     }
     onSessionLimitChange=  (limit: number | undefined, sessionId: string) => {
@@ -175,7 +178,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             notes: this.state.currentNotes,
-            trainingId: this.generateSessionId(20)
+            trainingId: this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7)
         })
             .then(() => {
                 this.setState({
