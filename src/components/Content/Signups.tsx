@@ -8,6 +8,7 @@ import { notification } from 'antd'
 
 interface SignupProps {
     authedUser: AumtMember
+    authedUserId: string
 }
 
 interface SignupState {
@@ -56,6 +57,7 @@ export default class Signups extends Component<SignupProps, SignupState> {
                                 closes={form.closes} 
                                 sessions={form.sessions} 
                                 authedUser={this.props.authedUser}
+                                authedUserId={this.props.authedUserId}
                                 notes={form.notes}
                                 ></SignupForm>
                             </div>

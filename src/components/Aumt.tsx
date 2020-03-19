@@ -23,6 +23,7 @@ export interface AumtProps {
 export interface AumtState {
     authedUser: AumtMember | null
     userIsAdmin: boolean
+    authedUserId: string
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {
@@ -39,7 +40,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
             messagingSenderId: process.env.REACT_APP_FB_MESSAGING_SENDER_ID,
             appId: process.env.REACT_APP_FB_APP_ID
         }
-        this.state = { authedUser, userIsAdmin: false }
+        this.state = { authedUser, userIsAdmin: false, authedUserId: '' }
         if (!firebase.apps.length) {
           firebase.initializeApp(firebaseConfig);
           DB.initialize()
@@ -48,7 +49,8 @@ export class Aumt extends Component<AumtProps, AumtState> {
               DB.getUserInfo(fbUser).then((userInfo: AumtMember) => {
                 this.setState({
                   ...this.state,
-                  authedUser: userInfo
+                  authedUser: userInfo,
+                  authedUserId: fbUser.uid
                 })
                 DB.getIsAdmin(fbUser.uid).then((isAdmin: boolean) => {
                   console.log('setting isadmin', isAdmin)
@@ -66,12 +68,13 @@ export class Aumt extends Component<AumtProps, AumtState> {
                   })
                 } else {
                   notification.error({
-                    message: 'Error logging in - Please contact AUMT team on facebook'
+                    message: `Error logging in: ${err}`
                   })
                 }
                 this.setState({
                   ...this.state,
                   authedUser: null,
+                  authedUserId: '',
                   userIsAdmin: false
                 })
               })
@@ -79,6 +82,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
               this.setState({
                 ...this.state,
                 authedUser: null,
+                authedUserId: '',
                 userIsAdmin: false
               })
             }
@@ -104,7 +108,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         <Team></Team>
                       </Route>
                       <Route path="/signups">
-                        {this.state.authedUser ? <Signups authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>}
+                        {this.state.authedUser ? <Signups authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>}
                       </Route>
                       <Route path="/events">
                         <p>Events page coming soon! </p>

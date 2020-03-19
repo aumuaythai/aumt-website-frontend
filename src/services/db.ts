@@ -85,7 +85,80 @@ class DB {
                 }).catch(reject)
             }
         })
-    } 
+    }
+
+    public isMemberSignedUpToForm = (userId: string, formId: string, removeSignup?: boolean): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                this.db.collection('weekly_trainings')
+                    .doc(formId)
+                    .get()
+                    .then((doc) => {
+                        const docData = doc.data()
+                        if (doc.exists && docData) {
+                            console.log('doc exists', docData)
+                            const trainingForm = docData
+                            trainingForm.sessions.forEach((session: any) => {
+                                // remove current signup first
+                                if (session.members.find((m: string) => m === userId)) {
+                                    if (removeSignup) {
+                                        session.members = session.members.filter((m: string) => m !== userId)
+                                        console.log('new members', session.members)
+                                        this.db?.collection('weekly_trainings')
+                                            .doc(formId)
+                                            .set(trainingForm)
+                                            .then(() => {
+                                                return resolve(session.sessionId)
+                                            })
+                                            .catch(reject)
+                                            
+                                    } else {
+                                        return resolve(session.sessionId)
+                                    }
+                                }
+                            })
+                            return resolve('')
+                        }
+                        return reject('Form does not exist')
+                    })
+                    .catch(reject)
+            }
+        })
+    }
+    public signUserUp = (userId: string, formId: string, sessionId: string): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                this.isMemberSignedUpToForm(userId, formId, true)
+                    .then(() => {
+                        if (this.db) {
+                            this.db.collection('weekly_trainings')
+                                .doc(formId)
+                                .get()
+                                .then((doc) => {
+                                    const docData = doc.data()
+                                    if (doc.exists && docData) {
+                                        const trainingForm = docData
+                                        const session = trainingForm.sessions.find((s: AumtTrainingSession) => s.sessionId === sessionId)
+                                        if (session) {
+                                            session.members.push(userId)
+                                            this.db?.collection('weekly_trainings')
+                                                .doc(formId)
+                                                .set(trainingForm)
+                                                .then(resolve)
+                                        } else {
+                                            return reject('No session found for session id')
+                                        }
+                                    } else {
+                                        return reject('No form for specified form id')
+                                    }
+                                })
+                                .catch(reject)
+                        }
+                    })
+                    .catch(reject)
+            }
+        })
+    }
 }
 
 export default new DB()

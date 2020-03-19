@@ -7,6 +7,9 @@
 .sessionOption {
     font-weight: bold;
 }
+.signedUpOptionText {
+    color: #4bdd42;
+}
 .messageContainer {
     max-width: 300px;
     margin: 5px auto;

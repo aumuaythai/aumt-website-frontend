@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
-import {Radio, Button, Alert, Tooltip } from 'antd'
+import {Radio, Button, Alert, Tooltip, notification } from 'antd'
+import { CheckCircleOutlined } from '@ant-design/icons'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
 import { AumtTrainingSession, AumtMember } from '../../types'
+import db from '../../services/db';
 
 export interface SignupFormProps {
     title: string
@@ -10,11 +12,12 @@ export interface SignupFormProps {
     closes: Date
     sessions: AumtTrainingSession[]
     authedUser: AumtMember
+    authedUserId: string
     notes: string
 }
 
 interface SignupFormState {
-    currentOption: string
+    currentSessionId: string
     signedUpOption: string
     submittingState: boolean
     errorMessage: string
@@ -24,30 +27,54 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     constructor(props: SignupFormProps) {
         super(props)
         this.state = {
-            currentOption: '',
+            currentSessionId: '',
             errorMessage: '',
             signedUpOption: '',
             submittingState: false
         }
     }
     componentDidMount() {
-        // TODO
-        // check if has signed up
-        // sign up
+        this.checkSignedUp()
+    }
+    checkSignedUp = () => {
+        db.isMemberSignedUpToForm(this.props.authedUserId, this.props.id)
+            .then((sessionId: string) => {
+                if (sessionId) {
+                    this.setState({
+                        ...this.state,
+                        signedUpOption: sessionId
+                    })
+                }
+            })
     }
     onOptionChange = (e: RadioChangeEvent) => {
         this.setState({
-            currentOption: e.target.value,
+            currentSessionId: e.target.value,
         });
     }
     onSubmitClick = () => {
-        // const optionSelected = this.state.currentOption
+        const optionSelected = this.state.currentSessionId
         this.setState({
             ...this.state,
             errorMessage: '',
-            // submittingState: true
+            submittingState: true
         })
-        // submit form
+        db.signUserUp(this.props.authedUserId, this.props.id, optionSelected)
+            .then((res) => {
+                console.log(res)
+                this.setState({
+                    ...this.state,
+                    signedUpOption: optionSelected,
+                    submittingState: false,
+                })
+            })
+            .catch((err) => {
+                this.setState({
+                    ...this.state,
+                    submittingState: false,
+                    errorMessage: err.toString()
+                })
+            })
     }
     render() {
         return (
@@ -60,14 +87,19 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     ''
                 }
                 <div className="optionsContainer">
-                    <Radio.Group className="Group" onChange={this.onOptionChange} value={this.state.currentOption}>
+                    <Radio.Group className="Group" onChange={this.onOptionChange} value={this.state.currentSessionId}>
                         {this.props.sessions.map((session) => {
                             const isFull = session.limit <= session.members.length
                             const spotsLeft = session.limit - session.members.length
                             return (
                                 <div key={session.title} className="optionLine">
                                     <Tooltip title={isFull ? 'Class full' : ''} placement='left'>
-                                        <Radio className='sessionOption' disabled={isFull} value={session.title}>{session.title}</Radio> {spotsLeft < 10 ? (<span className='spotsLeftText'>({spotsLeft} spots left)</span>) : ''}
+                                        <Radio
+                                            className='sessionOption'
+                                            disabled={isFull}
+                                            value={session.sessionId}>{session.title}
+                                        </Radio> {spotsLeft < 10 ? (<span className='spotsLeftText'>({spotsLeft} spots left)</span>) : ''}
+                                        {this.state.signedUpOption === session.sessionId ? <span className='signedUpOptionText'>Signed up <CheckCircleOutlined /></span> : ''}
                                     </Tooltip>
                                 </div>
                             )
