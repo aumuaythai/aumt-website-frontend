@@ -46,6 +46,11 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     })
                 }
             })
+            .catch((err) => {
+                notification.error({
+                    message: 'Error retrieving if already signed up: ' + err
+                })
+            })
     }
     onOptionChange = (e: RadioChangeEvent) => {
         this.setState({
@@ -72,7 +77,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 this.setState({
                     ...this.state,
                     submittingState: false,
-                    errorMessage: err.toString()
+                    errorMessage: 'Error signing up: ' + err.toString()
                 })
             })
     }

@@ -40,6 +40,7 @@ class DB {
                     })
                     .catch((err) => {
                         console.log('error getting isadmin', err)
+                        reject(err)
                     })
             }
         })
@@ -96,14 +97,17 @@ class DB {
                     .then((doc) => {
                         const docData = doc.data()
                         if (doc.exists && docData) {
-                            console.log('doc exists', docData)
-                            const trainingForm = docData
+                            return docData
+                        }
+                        throw new Error('Form does not exist')
+                    })
+                    .then((trainingForm) => {
+                        if (trainingForm) {
                             trainingForm.sessions.forEach((session: any) => {
                                 // remove current signup first
                                 if (session.members.find((m: string) => m === userId)) {
                                     if (removeSignup) {
                                         session.members = session.members.filter((m: string) => m !== userId)
-                                        console.log('new members', session.members)
                                         this.db?.collection('weekly_trainings')
                                             .doc(formId)
                                             .set(trainingForm)
@@ -119,9 +123,10 @@ class DB {
                             })
                             return resolve('')
                         }
-                        return reject('Form does not exist')
                     })
-                    .catch(reject)
+                    .catch((err) => {
+                        return reject(err)
+                    })
             }
         })
     }
