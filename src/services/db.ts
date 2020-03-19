@@ -63,6 +63,7 @@ class DB {
                             if (data.closes.seconds * 1000 >= currentDate.getTime()) {
                                 const weeklyTraining: AumtWeeklyTraining = {
                                     title: data.title,
+                                    feedback: data.feedback,
                                     trainingId: data.trainingId,
                                     sessions: data.sessions,
                                     opens: new Date(data.opens.seconds * 1000),
@@ -121,7 +122,7 @@ class DB {
                 return Promise.reject('No db object')
             }
     }
-    public signUserUp = (userId: string, userData: AumtMember, formId: string, sessionId: string): Promise<void> => {
+    public signUserUp = (userId: string, userData: AumtMember, formId: string, sessionId: string, feedback: string): Promise<void> => {
         if (this.db) {
             return this.isMemberSignedUpToForm(userId, formId, true)
                 .then(() => {
@@ -144,12 +145,21 @@ class DB {
                 .then((trainingForm: AumtWeeklyTraining) => {
                     const session = trainingForm.sessions.find((s: AumtTrainingSession) => s.sessionId === sessionId)
                     if (session) {
-                        session.members[userId] = userData
+                        session.members[userId] = userData.displayName.split(' ').join(userData.preferredName ? ` "${userData.preferredName}" ` : ' ')
                         return this.db?.collection('weekly_trainings')
                             .doc(formId)
                             .set(trainingForm)
                     } else {
                         throw new Error('No session found for session id')
+                    }
+                })
+                .then(() => {
+                    if (feedback) {
+                        return this.db?.collection('weekly_trainings')
+                            .doc(formId)
+                            .update({
+                                feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
+                            })
                     }
                 })
         } else {

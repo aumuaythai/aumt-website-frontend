@@ -23,7 +23,7 @@ interface CreateTrainingState {
 
 const DEFAULT_TRAINING_LIMIT = 30
 const TRAINING_0_OPENS_DATE = new Date(2020, 1, 23, 0, 0, 0)
-const TRAINING_0_CLOSES_DATE = new Date(2020, 1, 28, 23, 59, 59)
+const TRAINING_0_CLOSES_DATE = new Date(2020, 1, 28, 19, 30, 0)
 
 export class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {
@@ -138,8 +138,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             title: sessionTitle,
             trainers: [],
             members: {},
-            waitlist: [],
-            feedback: []
+            waitlist: {}
         }
         return newSession
     }
@@ -179,7 +178,8 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
-            trainingId: this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7)
+            trainingId: this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
+            feedback: []
         })
             .then(() => {
                 this.setState({

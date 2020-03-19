@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Radio, Button, Alert, Tooltip, notification } from 'antd'
+import {Radio, Button, Alert, Tooltip, notification, Input } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
@@ -18,6 +18,7 @@ export interface SignupFormProps {
 
 interface SignupFormState {
     currentSessionId: string
+    currentFeedback: string
     signedUpOption: string
     submittingState: boolean
     errorMessage: string
@@ -28,6 +29,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         super(props)
         this.state = {
             currentSessionId: '',
+            currentFeedback: '',
             errorMessage: '',
             signedUpOption: '',
             submittingState: false
@@ -54,8 +56,15 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     }
     onOptionChange = (e: RadioChangeEvent) => {
         this.setState({
+            ...this.state,
             currentSessionId: e.target.value,
         });
+    }
+    onFeedbackChange = (feedback: string) => {
+        this.setState({
+            ...this.state,
+            currentFeedback: feedback
+        })
     }
     onSubmitClick = () => {
         const optionSelected = this.state.currentSessionId
@@ -64,7 +73,12 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             errorMessage: '',
             submittingState: true
         })
-        db.signUserUp(this.props.authedUserId, this.props.authedUser, this.props.id, optionSelected)
+        db.signUserUp(
+                this.props.authedUserId,
+                this.props.authedUser,
+                this.props.id,
+                optionSelected,
+                this.state.currentFeedback)
             .then((res) => {
                 this.setState({
                     ...this.state,
@@ -109,6 +123,10 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                             )
                         })}
                     </Radio.Group>
+                </div>
+                <div className="feedbackInputContainer">
+                    <p>Thoughts on last training/feedback?</p>
+                    <Input onChange={e => this.onFeedbackChange(e.target.value)}/>
                 </div>
                 <div className="messageContainer">
                     {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
