@@ -5,7 +5,9 @@ export interface AumtTrainingSession {
     title: string
     sessionId: string
     trainers: string[]
-    members: AumtMember[]
+    members: {
+        [uid: string]: AumtMember
+    }
     waitlist: AumtMember[]
     feedback: string[]
 }

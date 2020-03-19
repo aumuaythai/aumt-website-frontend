@@ -64,7 +64,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             errorMessage: '',
             submittingState: true
         })
-        db.signUserUp(this.props.authedUserId, this.props.id, optionSelected)
+        db.signUserUp(this.props.authedUserId, this.props.authedUser, this.props.id, optionSelected)
             .then((res) => {
                 console.log(res)
                 this.setState({
@@ -94,8 +94,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 <div className="optionsContainer">
                     <Radio.Group className="Group" onChange={this.onOptionChange} value={this.state.currentSessionId}>
                         {this.props.sessions.map((session) => {
-                            const isFull = session.limit <= session.members.length
-                            const spotsLeft = session.limit - session.members.length
+                            const isFull = session.limit <= Object.keys(session.members).length
+                            const spotsLeft = session.limit - Object.keys(session.members).length
                             return (
                                 <div key={session.title} className="optionLine">
                                     <Tooltip title={isFull ? 'Class full' : ''} placement='left'>

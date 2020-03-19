@@ -137,7 +137,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             sessionId: this.generateSessionId(10),
             title: sessionTitle,
             trainers: [],
-            members: [],
+            members: {},
             waitlist: [],
             feedback: []
         }
@@ -175,7 +175,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
         })
         db.submitNewForm({
             title: this.state.currentTitle,
-            sessions: this.state.currentSessions as any,
+            sessions: this.state.currentSessions,
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),

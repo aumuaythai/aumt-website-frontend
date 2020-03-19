@@ -103,11 +103,10 @@ class DB {
                     })
                     .then((trainingForm) => {
                         if (trainingForm) {
-                            trainingForm.sessions.forEach((session: any) => {
-                                // remove current signup first
-                                if (session.members.find((m: string) => m === userId)) {
+                            trainingForm.sessions.forEach((session: AumtTrainingSession) => {
+                                if (userId in session.members) {
                                     if (removeSignup) {
-                                        session.members = session.members.filter((m: string) => m !== userId)
+                                        delete session.members[userId]
                                         this.db?.collection('weekly_trainings')
                                             .doc(formId)
                                             .set(trainingForm)
@@ -124,42 +123,43 @@ class DB {
                             return resolve('')
                         }
                     })
-                    .catch((err) => {
-                        return reject(err)
-                    })
+                    .catch(reject)
             }
         })
     }
-    public signUserUp = (userId: string, formId: string, sessionId: string): Promise<void> => {
+    public signUserUp = (userId: string, userData: AumtMember, formId: string, sessionId: string): Promise<void> => {
         return new Promise((resolve, reject) => {
             if (this.db) {
                 this.isMemberSignedUpToForm(userId, formId, true)
                     .then(() => {
                         if (this.db) {
-                            this.db.collection('weekly_trainings')
+                            return this.db.collection('weekly_trainings')
                                 .doc(formId)
                                 .get()
-                                .then((doc) => {
-                                    const docData = doc.data()
-                                    if (doc.exists && docData) {
-                                        const trainingForm = docData
-                                        const session = trainingForm.sessions.find((s: AumtTrainingSession) => s.sessionId === sessionId)
-                                        if (session) {
-                                            session.members.push(userId)
-                                            this.db?.collection('weekly_trainings')
-                                                .doc(formId)
-                                                .set(trainingForm)
-                                                .then(resolve)
-                                        } else {
-                                            return reject('No session found for session id')
-                                        }
-                                    } else {
-                                        return reject('No form for specified form id')
-                                    }
-                                })
-                                .catch(reject)
+                        } else {
+                            throw new Error('no db object to make request to')
                         }
                     })
+                    .then((doc) => {
+                        const docData = doc.data()
+                        if (doc.exists && docData) {
+                            return docData as AumtWeeklyTraining
+                        } else {
+                            throw new Error('No form for specified form id')
+                        }
+                    })
+                    .then((trainingForm: AumtWeeklyTraining) => {
+                        const session = trainingForm.sessions.find((s: AumtTrainingSession) => s.sessionId === sessionId)
+                        if (session) {
+                            session.members[userId] = userData
+                            return this.db?.collection('weekly_trainings')
+                                .doc(formId)
+                                .set(trainingForm)
+                        } else {
+                            throw new Error('No session found for session id')
+                        }
+                    })
+                    .then(resolve)
                     .catch(reject)
             }
         })
