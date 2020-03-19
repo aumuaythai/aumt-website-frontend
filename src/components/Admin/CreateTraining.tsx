@@ -200,7 +200,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                     isSubmitting: false,
                     submitButtonText: 'Submit Form'
                 })
-                notification.error({message: 'Error submitting form to database' + err})
+                notification.error({message: 'Error submitting form to database: ' + err})
             })
     }
     render() {
