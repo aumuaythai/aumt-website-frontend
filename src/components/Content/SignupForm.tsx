@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Radio, Button, Alert} from 'antd'
+import {Radio, Button, Alert, Tooltip } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
 import { AumtTrainingSession, AumtMember } from '../../types'
@@ -10,6 +10,7 @@ export interface SignupFormProps {
     closes: Date
     sessions: AumtTrainingSession[]
     authedUser: AumtMember
+    notes: string
 }
 
 interface SignupFormState {
@@ -44,7 +45,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         this.setState({
             ...this.state,
             errorMessage: '',
-            submittingState: true
+            // submittingState: true
         })
         // submit form
     }
@@ -52,14 +53,22 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         return (
             <div>
                 <h2 className="formTitle">{this.props.title}</h2>
+                {this.props.notes ?
+                    (<div className="trainingNotesContainer">
+                        {this.props.notes}
+                    </div>) :
+                    ''
+                }
                 <div className="optionsContainer">
                     <Radio.Group className="Group" onChange={this.onOptionChange} value={this.state.currentOption}>
                         {this.props.sessions.map((session) => {
+                            const isFull = session.limit <= session.members.length
+                            const spotsLeft = session.limit - session.members.length
                             return (
                                 <div key={session.title} className="optionLine">
-                                    {/* <Tooltip title={isFull ? 'Class full' : ''} placement='left'> */}
-                                        <Radio value={session.title}></Radio>
-                                    {/* </Tooltip> */}
+                                    <Tooltip title={isFull ? 'Class full' : ''} placement='left'>
+                                        <Radio className='sessionOption' disabled={isFull} value={session.title}>{session.title}</Radio> {spotsLeft < 10 ? (<span className='spotsLeftText'>({spotsLeft} spots left)</span>) : ''}
+                                    </Tooltip>
                                 </div>
                             )
                         })}
@@ -68,7 +77,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 <div className="messageContainer">
                     {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
                 </div>
-                <Button loading={this.state.submittingState} onClick={this.onSubmitClick}>Submit</Button>
+                <Button type='primary' loading={this.state.submittingState} onClick={this.onSubmitClick}>Submit</Button>
             </div>
         )
     }

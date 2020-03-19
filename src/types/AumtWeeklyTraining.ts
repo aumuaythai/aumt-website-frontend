@@ -15,5 +15,5 @@ export interface AumtWeeklyTraining {
     title: string
     opens: Date
     closes: Date
-    notes?: string
+    notes: string
 }

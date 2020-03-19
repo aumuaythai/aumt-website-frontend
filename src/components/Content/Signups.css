@@ -7,6 +7,16 @@
     max-width: 689px;
     margin: 0 auto 30px auto;
 }
+.trainingNotesContainer {
+    white-space: pre-line;
+    margin: 20px auto;
+    max-width: 500px;
+    text-align: left;
+    padding: 0 20px;
+}
 .optionLine {
     margin: 10px;
+}
+.spotsLeftText {
+    color: rgba(255, 0, 0, 0.7);
 }

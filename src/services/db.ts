@@ -56,6 +56,36 @@ class DB {
             }
         })
     }
+
+    public getOpenForms = (): Promise<AumtWeeklyTraining[]> => {
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                const currentDate = new Date()
+                this.db.collection('weekly_trainings')
+                    .where('opens', '<=', currentDate)
+                    .get()
+                    .then((querySnapshot) => {
+                        const trainings: AumtWeeklyTraining[] = []
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data()
+                            // can't do where('closes', '>', currentDate) in firestore db so have to here
+                            if (data.closes.seconds * 1000 >= currentDate.getTime()) {
+                                const weeklyTraining: AumtWeeklyTraining = {
+                                    title: data.title,
+                                    trainingId: data.trainingId,
+                                    sessions: data.sessions,
+                                    opens: new Date(data.opens.seconds * 1000),
+                                    closes: new Date(data.closes.seconds * 1000),
+                                    notes: data.notes.split('%%NEWLINE%%').join('\n')
+                                }
+                                trainings.push(weeklyTraining)
+                            }
+                        });
+                        resolve(trainings)
+                }).catch(reject)
+            }
+        })
+    } 
 }
 
 export default new DB()

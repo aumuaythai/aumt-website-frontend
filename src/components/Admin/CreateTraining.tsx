@@ -46,18 +46,19 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
         const dateFriday = new Date(newOpens.getTime() + (1000 * 60 * 60 * 24 * 5))
         const dateStrThu = `${dateThursday.getDate()}/${dateThursday.getMonth() + 1}`
         const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
+        const currentSessions = [
+            this.createSession(`Thursday 6:30 (Beginners)`),
+            this.createSession(`Thursday 7:30 (Beginners)`),
+            this.createSession(`Friday 6:30 (Beginners)`),
+            this.createSession(`Friday 6:30 (Advanced)`),
+
+        ]
         this.setState({
             ...this.state,
             currentOpens: newOpens,
             currentCloses: newCloses,
             currentTitle: `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrThu}-${dateStrFri}`,
-            currentSessions: [
-                this.createSession(`Thursday 6:30 (Beginners)`),
-                this.createSession(`Thursday 7:30 (Beginners)`),
-                this.createSession(`Friday 6:30 (Beginners)`),
-                this.createSession(`Friday 6:30 (Advanced)`),
-
-            ]
+            currentSessions
         })
     }
     componentDidMount = () => {
@@ -177,7 +178,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             sessions: this.state.currentSessions as any,
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
-            notes: this.state.currentNotes,
+            notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
             trainingId: this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7)
         })
             .then(() => {
@@ -191,7 +192,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                         ...this.state,
                         submitButtonText: 'Submit Form'
                     })
-                }, 5000)
+                }, 2500)
             })
             .catch((err) => {
                 this.setState({
@@ -205,7 +206,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
     render() {
         return (
             <div className='createTrainingContainer'>
-                <span>Populate weekly training defaults for week: </span><InputNumber onChange={this.onPopulateWeekChange} className='populateInput' defaultValue={1} min={1}/><Button onClick={this.populateWeeklyDefaults}>Populate</Button>
+                <span>Use weekly training template for week: </span><InputNumber onChange={this.onPopulateWeekChange} className='populateInput' defaultValue={1} min={1}/><Button onClick={this.populateWeeklyDefaults}>Populate</Button>
                 <h4 className='formSectionTitle'>Form Options</h4>
                 <Input placeholder="Form Title" value={this.state.currentTitle} onChange={e => this.onTrainingTitleChange(e.target.value)}></Input>
                 <div>

@@ -1,6 +1,12 @@
 .spotsLeft {
     color: rgba(255, 0, 0, 0.7);
 }
+.signupFormNotes {
+    white-space: pre-line;
+}
+.sessionOption {
+    font-weight: bold;
+}
 .messageContainer {
     max-width: 300px;
     margin: 5px auto;
