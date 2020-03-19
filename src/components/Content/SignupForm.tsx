@@ -66,7 +66,6 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         })
         db.signUserUp(this.props.authedUserId, this.props.authedUser, this.props.id, optionSelected)
             .then((res) => {
-                console.log(res)
                 this.setState({
                     ...this.state,
                     signedUpOption: optionSelected,
