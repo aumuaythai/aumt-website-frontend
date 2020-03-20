@@ -117,7 +117,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                                             disabled={isFull}
                                             value={session.sessionId}>{session.title}
                                         </Radio> {spotsLeft < 10 ? (<span className='spotsLeftText'>({spotsLeft} spots left)</span>) : ''}
-                                        {this.state.signedUpOption === session.sessionId ? <span className='signedUpOptionText'>Signed up <CheckCircleOutlined /></span> : ''}
+                                        {this.state.signedUpOption === session.sessionId ? <span className='signedUpOptionText'> Signed up <CheckCircleOutlined /></span> : ''}
                                     </Tooltip>
                                 </div>
                             )

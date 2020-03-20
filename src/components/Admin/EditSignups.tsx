@@ -44,7 +44,10 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
             })
             db.removeMemberFromForm(uidToRemove, this.props.form.trainingId, sessionId)
                 .then(() => {
-                    delete this.props.form.sessions.find(s => s.sessionId === sessionId)?.members[uidToRemove]
+                    const session = this.props.form.sessions.find(s => s.sessionId === sessionId)
+                    if (session) {
+                        session.members[uidToRemove] = '<Removed>'
+                    } 
                 })
                 .catch((err) => {
                     notification.error({
