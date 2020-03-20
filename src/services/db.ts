@@ -80,6 +80,45 @@ class DB {
         }
     }
 
+    public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<string> => {
+        if (this.db) {
+            return this.db.collection('weekly_trainings')
+                .doc(formId)
+                .get()
+                .then((doc) => {
+                    const docData = doc.data()
+                    if (doc.exists && docData) {
+                        return docData as AumtWeeklyTraining
+                    }
+                    throw new Error('Form does not exist')
+                })
+                .then((trainingForm: AumtWeeklyTraining) => {
+                    if (trainingForm) {
+                        const session = trainingForm.sessions.find(s => s.sessionId === sessionId)
+                        if (session) {
+                            delete session.members[userId]
+                            if (this.db) {
+                            return this.db.collection('weekly_trainings')
+                                .doc(formId)
+                                .set(trainingForm)
+                                .then(() => {
+                                    return session.sessionId
+                                })
+                            } else {
+                                throw new Error('No db object')
+                            }
+                        } else {
+                            throw new Error('No session id on form, aborting')
+                        }
+                    } else {
+                        throw new Error('No training form for formid found, aborting')
+                    }
+                })
+        } else {
+            return Promise.reject('No db object')
+        }
+    }
+
     public isMemberSignedUpToForm = (userId: string, formId: string, removeSignup?: boolean): Promise<string> => {
             if (this.db) {
                 return this.db.collection('weekly_trainings')
@@ -96,20 +135,10 @@ class DB {
                         if (trainingForm) {
                             for (const session of trainingForm.sessions) {
                                 if (userId in session.members) {
-                                    if (removeSignup) {
-                                        delete session.members[userId]
-                                        if (this.db) {
-                                            return this.db.collection('weekly_trainings')
-                                                .doc(formId)
-                                                .set(trainingForm)
-                                                .then(() => {
-                                                    return session.sessionId
-                                                })
-                                        } else {
-                                            return Promise.reject('No db object')
-                                        }
-                                    } else {
+                                    if (!removeSignup) {
                                         return session.sessionId
+                                    } else {
+                                        return this.removeMemberFromForm(userId, formId, session.sessionId)
                                     }
                                 }
                             }

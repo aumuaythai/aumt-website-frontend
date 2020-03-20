@@ -77,6 +77,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                   authedUserId: '',
                   userIsAdmin: false
                 })
+                return firebase.auth().signOut()
               })
             } else {
               this.setState({
