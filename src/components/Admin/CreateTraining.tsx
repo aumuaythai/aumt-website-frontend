@@ -50,7 +50,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             this.createSession(`Thursday 6:30 (Beginners)`),
             this.createSession(`Thursday 7:30 (Beginners)`),
             this.createSession(`Friday 6:30 (Beginners)`),
-            this.createSession(`Friday 6:30 (Advanced)`),
+            this.createSession(`Friday 7:30 (Advanced)`),
 
         ]
         this.setState({
