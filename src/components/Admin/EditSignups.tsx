@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
-import {Select, Button, notification} from 'antd'
+import {Select, Button, notification, Dropdown, Menu} from 'antd'
 import './EditSignups.css'
 import db from '../../services/db'
-import { AumtWeeklyTraining } from '../../types'
+import { AumtWeeklyTraining, AumtTrainingSession } from '../../types'
+import { ClickParam } from 'antd/lib/menu'
 
 
 interface EditSignupsProps {
@@ -15,7 +16,10 @@ interface EditSignupsState {
     }
     removingInProcess: {
         [sessionId:string]: boolean
-    };
+    }
+    movingInProcess: {
+        [sessionId: string]: boolean
+    }
 }
 
 export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
@@ -23,7 +27,8 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         super(props)
         this.state = {
             selectedMembers: {},
-            removingInProcess: {}
+            removingInProcess: {},
+            movingInProcess: {}
         }
     }
     onSelectChange = (member: any, sessionId: string) => {
@@ -62,6 +67,47 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                 })
         }
     }
+    onMoveClick = (clickParam: ClickParam, fromSession: string) => {
+        const {key} = clickParam
+        const currentSelection = this.state.selectedMembers[fromSession]
+        console.log('selected', currentSelection)
+        this.setState({
+            ...this.state,
+            movingInProcess: Object.assign(this.state.movingInProcess, {
+                [fromSession]: true
+            })
+        })
+        db.moveMember(currentSelection, this.props.form.trainingId, fromSession, key)
+            .then(() => {
+                this.setState({
+                    ...this.state,
+                    movingInProcess: Object.assign(this.state.movingInProcess, {[fromSession]: false})
+                })
+            })
+    }
+    getMoveDropdown = (sessionId: string) => {
+        console.log('move dropdown running for sid', sessionId)
+        const availableMove = this.props.form.sessions.map((session: AumtTrainingSession) => {
+            return {
+                isSpaceLeft: session.limit >= 0 && Object.keys(session.members).length < session.limit,
+                sessionId: session.sessionId,
+                title: session.title,
+                isCurrentDropdown: session.sessionId === sessionId
+            }
+        })
+        return (
+            <Menu onClick={e => this.onMoveClick(e, sessionId)}>
+                {availableMove.map((moveObj) => {
+                    return (
+                        <Menu.Item disabled={moveObj.isCurrentDropdown || !moveObj.isSpaceLeft} key={moveObj.sessionId}>
+                            {moveObj.title}{!moveObj.isSpaceLeft ? '(full)' : ''}
+                        </Menu.Item>
+                        )
+                    })
+                }
+            </Menu>
+        )
+    }
     render() {
         return (
             <div className='editSignedUpMembersContainer'>
@@ -75,10 +121,6 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                 placeholder="Select a person"
                                 optionFilterProp="children"
                                 onChange={e => this.onSelectChange(e, session.sessionId)}
-                                // onSearch={onSearch} */}
-                                // {/* filterOption={(input: string, option: any) =>
-                                //     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                // } */}
                                 >
                                     {Object.keys(session.members).map((member) => {
                                             return (
@@ -92,7 +134,15 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                 type='danger'
                                 onClick={e => this.onRemoveClick(session.sessionId)}
                                 >Remove</Button>
-                            {/* <Button disabled={!this.state.selectedMembers[session.sessionId]}>Move...</Button> */}
+                            {/* <Button
+                                loading={this.state.movingInProcess[session.sessionId]}
+                                disabled={!this.state.selectedMembers[session.sessionId]}
+                                onClick={e => this.onMoveClick(session.sessionId)}
+                                >Move...</Button> */}
+                              <Dropdown overlay={this.getMoveDropdown(session.sessionId)} trigger={['click']}>
+                                <Button loading={this.state.movingInProcess[session.sessionId]}
+                                    >Move...</Button>
+                            </Dropdown>
                         </div>
                     )
                 })}

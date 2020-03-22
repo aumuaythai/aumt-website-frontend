@@ -119,6 +119,19 @@ class DB {
         }
     }
 
+    public moveMember = (userId: string, formId: string, fromSessionId: string, toSessionId: string): Promise<string> => {
+        if (this.db) {
+            return this.db.collection('weekly_trainings')
+                .doc(formId)
+                .get()
+                .then((doc) => {
+                    return 'finished'
+                })
+        } else {
+            return Promise.reject('No db object')
+        }
+    }
+
     public isMemberSignedUpToForm = (userId: string, formId: string, removeSignup?: boolean): Promise<string> => {
             if (this.db) {
                 return this.db.collection('weekly_trainings')
