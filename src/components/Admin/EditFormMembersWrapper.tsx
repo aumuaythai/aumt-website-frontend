@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Select} from 'antd'
+import {SyncOutlined} from '@ant-design/icons'
 import { EditSignups } from './EditSignups'
 import './EditSignups.css'
 import db from '../../services/db'
@@ -35,6 +36,9 @@ export class EditFormMembersWrapper extends Component<EditFormMembersWrapperProp
     render() {
         if (this.state.message) {
             return <p>{this.state.message}</p>
+        }
+        if (!this.state.trainingForms.length) {
+            return <p>Loading current forms <SyncOutlined spin /></p>
         }
         return (
             <div>

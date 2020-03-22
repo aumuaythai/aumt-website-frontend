@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
+import { SyncOutlined } from '@ant-design/icons'
 import { CreateTraining } from './CreateTraining'
 import './MainAdmin.css'
 import { EditFormMembersWrapper } from './EditFormMembersWrapper'
@@ -18,7 +19,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         super(props)
         this.state = {
             creatingTraining: false,
-            editingMembers: false
+            editingMembers: true
         }
     }
     toggleCreatingTraining = () => {
@@ -33,6 +34,12 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             editingMembers: !this.state.editingMembers
         })
     }
+    onRefreshSignedUpMembers = () => {
+        if (this.state.editingMembers) {
+            this.toggleEditingMembers()
+            setTimeout(this.toggleEditingMembers,0)
+        }
+    }
 
     render() {
         return (
@@ -44,8 +51,8 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                     </Button>
                 </div>
                 {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
-                <Button>Edit Signed Up Members</Button>
-                <EditFormMembersWrapper></EditFormMembersWrapper>
+                <Button>Edit Signed Up Members</Button><Button onClick={this.onRefreshSignedUpMembers}>Refresh</Button>
+                {this.state.editingMembers ? <EditFormMembersWrapper></EditFormMembersWrapper> : ''}
                 <h3>Events</h3>
             </div>
         )

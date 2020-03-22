@@ -139,7 +139,9 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                 disabled={!this.state.selectedMembers[session.sessionId]}
                                 onClick={e => this.onMoveClick(session.sessionId)}
                                 >Move...</Button> */}
-                              <Dropdown overlay={this.getMoveDropdown(session.sessionId)} trigger={['click']}>
+                              <Dropdown
+                                disabled={!this.state.selectedMembers[session.sessionId]}
+                                overlay={this.getMoveDropdown(session.sessionId)} trigger={['click']}>
                                 <Button loading={this.state.movingInProcess[session.sessionId]}
                                     >Move...</Button>
                             </Dropdown>
