@@ -9,8 +9,9 @@ interface MainAdminProps {
 }
 
 interface MainAdminState {
-    creatingTraining: boolean;
-    editingMembers: boolean;
+    creatingTraining: boolean
+    editingMembers: boolean
+    creatingEvent: boolean
 }
 
 export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
@@ -18,7 +19,8 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         super(props)
         this.state = {
             creatingTraining: false,
-            editingMembers: true
+            editingMembers: true,
+            creatingEvent: true,
         }
     }
     toggleCreatingTraining = () => {
@@ -31,6 +33,12 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         this.setState({
             ...this.state,
             editingMembers: !this.state.editingMembers
+        })
+    }
+    toggleCreatingEvent = () => {
+        this.setState({
+            ...this.state,
+            creatingEvent: !this.state.creatingEvent
         })
     }
     onRefreshSignedUpMembers = () => {
@@ -53,6 +61,11 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                 <Button>Edit Signed Up Members</Button><Button onClick={this.onRefreshSignedUpMembers}>Refresh</Button>
                 {this.state.editingMembers ? <EditFormMembersWrapper requestRefresh={this.onRefreshSignedUpMembers}></EditFormMembersWrapper> : ''}
                 <h3>Events</h3>
+                <div className="createEventAdminContainer">
+                    <Button onClick={this.toggleCreatingEvent}>
+                        {this.state.creatingEvent ? 'Hide Event Creation' : 'Create Event'}
+                    </Button>
+                </div>
             </div>
         )
     }
