@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Select, Button, notification, Dropdown, Menu} from 'antd'
+import {Select, Button, notification, Dropdown, Menu, Tooltip} from 'antd'
 import './EditSignups.css'
 import db from '../../services/db'
 import { AumtWeeklyTraining, AumtTrainingSession } from '../../types'
@@ -124,10 +124,12 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
     render() {
         return (
             <div className='editSignedUpMembersContainer'>
-                {this.props.form.sessions.map((session, i) => {
+                {this.props.form.sessions.map((session) => {
                     return (
                         <div key={session.sessionId} className="sessionSelectContainer">
-                            <span>{session.title}: </span>
+                            <Tooltip title={`${Object.keys(session.members).length} signed up (limit ${session.limit})`}>
+                            <span>{session.title} </span>
+                            </Tooltip>
                             <Select
                                 showSearch
                                 className='memberSelect'
