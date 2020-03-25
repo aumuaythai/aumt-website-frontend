@@ -1,0 +1,35 @@
+.eventsListContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+.eventPreviewDateContainer {
+    max-width: 200px;
+    float: left;
+    margin-top: 3px;
+    text-overflow: clip;
+}
+.eventPreviewTitle {
+    min-width: calc(100% - 200px);
+    float: left;
+    text-align: left;
+}
+.eventPreviewBody {
+    max-height: 100px;
+    overflow-y: auto;
+    white-space: pre-line;
+    text-align: left;
+}
+.eventPreviewContainer {
+    border: 1px solid #ddd;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.1s linear;
+    margin-bottom: 20px;
+}
+.eventPreviewContainer:hover {
+    -webkit-box-shadow: 0px 0px 8px 0px #999;
+    -moz-box-shadow: 0px 0px 8px 0px #999;
+    box-shadow: 0px 0px 8px 0px #999;
+    transition: all 0.1s linear;
+}

@@ -2,8 +2,8 @@ import React, {Component} from 'react'
 import './Signups.css'
 import {SyncOutlined} from '@ant-design/icons'
 import { SignupForm } from './SignupForm'
-import { AumtWeeklyTraining, AumtMember } from '../../types'
-import db from '../../services/db'
+import { AumtWeeklyTraining, AumtMember } from '../../../types'
+import db from '../../../services/db'
 import { notification } from 'antd'
 
 
@@ -18,7 +18,7 @@ interface SignupState {
     loadingForms: boolean
 }
 
-export default class Signups extends Component<SignupProps, SignupState> {
+export class Signups extends Component<SignupProps, SignupState> {
     constructor(props: SignupProps) {
         super(props)
         this.state = {

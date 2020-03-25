@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Divider} from 'antd'
 import './Team.css'
 
-export default class Team extends Component {
+export class Team extends Component {
     render() {
         return (
             <div className='teamContainer'>

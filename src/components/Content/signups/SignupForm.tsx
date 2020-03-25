@@ -3,8 +3,8 @@ import {Radio, Button, Alert, Tooltip, notification, Input } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
-import { AumtTrainingSession, AumtMember } from '../../types'
-import db from '../../services/db';
+import { AumtTrainingSession, AumtMember } from '../../../types'
+import db from '../../../services/db';
 
 export interface SignupFormProps {
     title: string

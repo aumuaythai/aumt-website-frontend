@@ -1,14 +1,18 @@
 import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import {Menu} from 'antd';
+
+export interface TopMenuProps extends RouteComponentProps {
+  isAdmin: boolean
+}
 
 export interface TopMenuState {
     current: string
 }
 
-class TopMenuWithoutRouter extends Component<any, TopMenuState> {
+class TopMenu extends Component<TopMenuProps, TopMenuState> {
     private unlisten: null | Function = null;
-    constructor(props: any) {
+    constructor(props: TopMenuProps) {
         super(props)
         this.state = {
             current: 'About'
@@ -27,7 +31,7 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
       }
     }
 
-    onRouteChange = (location: typeof window.location & { state: string}, action: string) => {
+    onRouteChange = (location: any, action: string) => {
         this.setStateFromPathChange(location.pathname)
     }
 
@@ -82,6 +86,4 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
   }
 }
 
-const TopMenu = withRouter(TopMenuWithoutRouter)
-
-export default TopMenu
+export default withRouter(TopMenu)

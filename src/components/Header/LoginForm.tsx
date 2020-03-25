@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import * as firebase from 'firebase/app'
 import {Button, Input} from 'antd'
 import UserOutlined from '@ant-design/icons/UserOutlined'
-import ResetPasswordLink from './ResetLink'
+import {ResetPasswordLink} from './ResetLink'
 import './LoginForm.css'
 import { Redirect, Link } from 'react-router-dom'
 import { LoginErrorMessage } from './LoginErrorMessage'
@@ -20,7 +20,7 @@ export interface LoginState {
 
 const logoUrl = './logorectangle.png'
 
-export default class LoginFormNoRouter extends Component<LoginProps, LoginState> {
+export class LoginForm extends Component<LoginProps, LoginState> {
     private emailInput: Input | null = null;
     constructor(props: LoginProps) {
         super(props)
