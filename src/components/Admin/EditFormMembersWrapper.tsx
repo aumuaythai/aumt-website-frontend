@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {Select} from 'antd'
 import {SyncOutlined} from '@ant-design/icons'
 import { EditSignups } from './EditSignups'
 import './EditSignups.css'

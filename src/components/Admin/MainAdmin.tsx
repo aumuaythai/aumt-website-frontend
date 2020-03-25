@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import { Button, Tooltip } from 'antd'
-import { SyncOutlined } from '@ant-design/icons'
+import { Button } from 'antd'
 import { CreateTraining } from './CreateTraining'
 import './MainAdmin.css'
 import { EditFormMembersWrapper } from './EditFormMembersWrapper'
