@@ -18,7 +18,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         super(props)
         this.state = {
             creatingTraining: false,
-            editingMembers: true
+            editingMembers: false
         }
     }
     toggleCreatingTraining = () => {
@@ -50,7 +50,8 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                     </Button>
                 </div>
                 {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
-                <Button>Edit Signed Up Members</Button><Button onClick={this.onRefreshSignedUpMembers}>Refresh</Button>
+                <Button onClick={this.toggleEditingMembers}>Edit Signed Up Members</Button>
+                {/* <Button onClick={this.onRefreshSignedUpMembers}>Refresh</Button> */}
                 {this.state.editingMembers ? <EditFormMembersWrapper requestRefresh={this.onRefreshSignedUpMembers}></EditFormMembersWrapper> : ''}
                 <h3>Events</h3>
             </div>
