@@ -73,9 +73,10 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             errorMessage: '',
             submittingState: true
         })
+        const displayName = this.props.authedUser.displayName.split(' ').join(this.props.authedUser.preferredName ? ` "${this.props.authedUser.preferredName}" ` : ' ')
         db.signUserUp(
                 this.props.authedUserId,
-                this.props.authedUser,
+                displayName,
                 this.props.id,
                 optionSelected,
                 this.state.currentFeedback)

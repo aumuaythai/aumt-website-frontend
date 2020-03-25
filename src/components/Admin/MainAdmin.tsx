@@ -52,7 +52,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                 </div>
                 {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
                 <Button>Edit Signed Up Members</Button><Button onClick={this.onRefreshSignedUpMembers}>Refresh</Button>
-                {this.state.editingMembers ? <EditFormMembersWrapper></EditFormMembersWrapper> : ''}
+                {this.state.editingMembers ? <EditFormMembersWrapper requestRefresh={this.onRefreshSignedUpMembers}></EditFormMembersWrapper> : ''}
                 <h3>Events</h3>
             </div>
         )

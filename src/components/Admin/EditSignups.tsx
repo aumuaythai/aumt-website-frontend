@@ -8,6 +8,7 @@ import { ClickParam } from 'antd/lib/menu'
 
 interface EditSignupsProps {
     form: AumtWeeklyTraining
+    requestRefresh: () => void
 }
 
 interface EditSignupsState {
@@ -49,10 +50,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
             })
             db.removeMemberFromForm(uidToRemove, this.props.form.trainingId, sessionId)
                 .then(() => {
-                    const session = this.props.form.sessions.find(s => s.sessionId === sessionId)
-                    if (session) {
-                        session.members[uidToRemove] = '<Removed>'
-                    } 
+                    this.props.requestRefresh()
                 })
                 .catch((err) => {
                     notification.error({
@@ -69,24 +67,39 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
     }
     onMoveClick = (clickParam: ClickParam, fromSession: string) => {
         const {key} = clickParam
-        const currentSelection = this.state.selectedMembers[fromSession]
-        console.log('selected', currentSelection)
+        const currentUserIdSelected = this.state.selectedMembers[fromSession]
+        const session = this.props.form.sessions.find(s => s.sessionId === fromSession)
+        const displayName = session && session.members[currentUserIdSelected]
+        if (!displayName) {
+            return notification.error({
+                message: 'No user found for user id ' + currentUserIdSelected + ' in session'
+            })
+        }
         this.setState({
             ...this.state,
             movingInProcess: Object.assign(this.state.movingInProcess, {
                 [fromSession]: true
             })
         })
-        db.moveMember(currentSelection, this.props.form.trainingId, fromSession, key)
+        db.moveMember(currentUserIdSelected, displayName, this.props.form.trainingId, fromSession, key)
             .then(() => {
                 this.setState({
                     ...this.state,
                     movingInProcess: Object.assign(this.state.movingInProcess, {[fromSession]: false})
                 })
+                this.props.requestRefresh()
+            })
+            .catch((err) => {
+                this.setState({
+                    ...this.state,
+                    movingInProcess: Object.assign(this.state.movingInProcess, {[fromSession]: false})
+                })
+                notification.error({
+                    message: err
+                })
             })
     }
     getMoveDropdown = (sessionId: string) => {
-        console.log('move dropdown running for sid', sessionId)
         const availableMove = this.props.form.sessions.map((session: AumtTrainingSession) => {
             return {
                 isSpaceLeft: session.limit >= 0 && Object.keys(session.members).length < session.limit,
@@ -134,14 +147,10 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                 type='danger'
                                 onClick={e => this.onRemoveClick(session.sessionId)}
                                 >Remove</Button>
-                            {/* <Button
-                                loading={this.state.movingInProcess[session.sessionId]}
-                                disabled={!this.state.selectedMembers[session.sessionId]}
-                                onClick={e => this.onMoveClick(session.sessionId)}
-                                >Move...</Button> */}
                               <Dropdown
                                 disabled={!this.state.selectedMembers[session.sessionId]}
-                                overlay={this.getMoveDropdown(session.sessionId)} trigger={['click']}>
+                                overlay={this.getMoveDropdown(session.sessionId)}
+                                trigger={['click']}>
                                 <Button loading={this.state.movingInProcess[session.sessionId]}
                                     >Move...</Button>
                             </Dropdown>

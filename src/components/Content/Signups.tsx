@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import './Signups.css'
+import {SyncOutlined} from '@ant-design/icons'
 import { SignupForm } from './SignupForm'
 import { AumtWeeklyTraining, AumtMember } from '../../types'
 import db from '../../services/db'
@@ -13,7 +14,8 @@ interface SignupProps {
 
 interface SignupState {
     forms: AumtWeeklyTraining[]
-    messageText: string
+    noFormText: string,
+    loadingForms: boolean
 }
 
 export default class Signups extends Component<SignupProps, SignupState> {
@@ -21,30 +23,39 @@ export default class Signups extends Component<SignupProps, SignupState> {
         super(props)
         this.state = {
             forms: [],
-            messageText: ''
+            noFormText: '',
+            loadingForms: false
         }
     }
     componentDidMount() {
         this.setState({
             ...this.state,
-            messageText: 'Retrieving sessions...'
+            loadingForms: true
         })
         db.getOpenForms()
             .then((forms) => {
                 this.setState({
                     forms: forms,
-                    messageText: forms.length ? '' : 'There are no active signup forms at this time. If there is a training next week, signups open Sunday.'
+                    loadingForms: false,
+                    noFormText: forms.length ? '' : 'There are no active signup forms at this time. If there is a training next week, signups open Sunday.'
                 })
             })
             .catch((err) => {
                 notification.error({
                     message: 'Error getting weekly trainings from db: ' + JSON.stringify(err)
                 })
+                this.setState({
+                    ...this.state,
+                    loadingForms: false
+                })
             })
     }
     render() {
+        if (this.state.loadingForms) {
+            return (<p>Retrieving Sessions <SyncOutlined spin/></p>)
+        }
         if (!this.state.forms.length) {
-            return (<p>{this.state.messageText}</p>)
+            return (<p>{this.state.noFormText}</p>)
         }
         return (
             <div className='signupsContainer'>

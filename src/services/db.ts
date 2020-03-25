@@ -119,13 +119,11 @@ class DB {
         }
     }
 
-    public moveMember = (userId: string, formId: string, fromSessionId: string, toSessionId: string): Promise<string> => {
+    public moveMember = (userId: string, displayName: string, formId: string, fromSessionId: string, toSessionId: string): Promise<string> => {
         if (this.db) {
-            return this.db.collection('weekly_trainings')
-                .doc(formId)
-                .get()
-                .then((doc) => {
-                    return 'finished'
+            return this.signUserUp(userId, displayName, formId, toSessionId, '')
+                .then(() => {
+                    return this.removeMemberFromForm(userId,formId,fromSessionId)
                 })
         } else {
             return Promise.reject('No db object')
@@ -164,7 +162,7 @@ class DB {
                 return Promise.reject('No db object')
             }
     }
-    public signUserUp = (userId: string, userData: AumtMember, formId: string, sessionId: string, feedback: string): Promise<void> => {
+    public signUserUp = (userId: string, displayName: string, formId: string, sessionId: string, feedback: string): Promise<void> => {
         if (this.db) {
             return this.isMemberSignedUpToForm(userId, formId, true)
                 .then(() => {
@@ -187,7 +185,7 @@ class DB {
                 .then((trainingForm: AumtWeeklyTraining) => {
                     const session = trainingForm.sessions.find((s: AumtTrainingSession) => s.sessionId === sessionId)
                     if (session) {
-                        session.members[userId] = userData.displayName.split(' ').join(userData.preferredName ? ` "${userData.preferredName}" ` : ' ')
+                        session.members[userId] = displayName
                         return this.db?.collection('weekly_trainings')
                             .doc(formId)
                             .set(trainingForm)

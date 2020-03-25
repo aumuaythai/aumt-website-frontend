@@ -8,6 +8,7 @@ import { AumtWeeklyTraining } from '../../types'
 
 
 interface EditFormMembersWrapperProps {
+    requestRefresh: () => void
 }
 
 interface EditFormMembersWrapperState {
@@ -44,7 +45,7 @@ export class EditFormMembersWrapper extends Component<EditFormMembersWrapperProp
             <div>
                 {this.state.trainingForms.map((form) => {
                     return (
-                        <EditSignups key={form.trainingId} form={form}></EditSignups>
+                        <EditSignups requestRefresh={this.props.requestRefresh} key={form.trainingId} form={form}></EditSignups>
                     )
                 })}
             </div>
