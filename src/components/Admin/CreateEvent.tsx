@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
-import { Button, Input, InputNumber, DatePicker, notification } from 'antd'
+import { Button, Input, DatePicker, notification } from 'antd'
 import './CreateEvent.css'
-import { AumtEvent } from '../../types'
 import db from '../../services/db'
 
 
