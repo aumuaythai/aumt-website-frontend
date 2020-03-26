@@ -1,5 +1,5 @@
 import * as firebase from 'firebase'
-import { AumtMember, AumtWeeklyTraining, AumtTrainingSession } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent } from '../types';
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
 
@@ -44,6 +44,36 @@ class DB {
             return this.db.collection('weekly_trainings')
                 .doc(formData.trainingId)
                 .set(formData)
+        } else {
+            return Promise.reject('No db object')
+        }
+    }
+
+    public submitNewEvent = (eventData: AumtEvent): Promise<void> => {
+        if (this.db) {
+            return this.db.collection('events')
+                .doc(eventData.id)
+                .set(eventData)
+        } else {
+            return Promise.reject('No db object')
+        }
+    }
+
+    public getAllEvents = (): Promise<AumtEvent[]> => {
+        if (this.db) {
+            return this.db.collection('events')
+                .get()
+                .then((querySnapshot) => {
+                    const events: AumtEvent[] = []
+                    querySnapshot.forEach((doc) => {
+                        const docData = doc.data()
+                        events.push({
+                            ...docData,
+                            date: new Date(docData.date.seconds * 1000)
+                        } as AumtEvent)
+                    })
+                    return events
+                })
         } else {
             return Promise.reject('No db object')
         }

@@ -57,10 +57,10 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
     }
     onDateChange = (d: Date | undefined) => {
         if (d) {
-            // this.setState({
-            //     ...this.state,
-            //     currentOpens: d
-            // })
+            this.setState({
+                ...this.state,
+                currentDate: d
+            })
         }
     }
     onTrainingTitleChange = (title: string) => {
@@ -75,64 +75,81 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             currentDescription: description
         })
     }
+    onLocationChange = (location: string) => {
+        this.setState({
+            ...this.state,
+            currentLocation: location,
+        })
+    }
 
-    onSubmitForm = () => {
-        // if (!this.state.currentTitle) {
-        //     notification.error({
-        //         message: 'Form title required'
-        //     })
-        //     return
-        // } else if (!this.state.currentSessions.length) {
-        //     notification.error({message: 'There must be at least one session option'})
-        //     return
-        // } else if (this.state.currentSessions.find(s => !s.title)) {
-        //     notification.error({message: 'All session options must have a title'})
-        //     return
-        // }
-        // const sessionsObject: {[sessionId: string]: AumtTrainingSession} = {}
-        // for (const i of this.state.currentSessions) {
-        //     sessionsObject[i.sessionId] = i
-        // }
-        // this.setState({
-        //     ...this.state,
-        //     isSubmitting: true,
-        //     submitButtonText: 'Submitting'
-        // })
-        // db.submitNewForm({
-        //     title: this.state.currentTitle,
-        //     sessions: this.state.currentSessions,
-        //     opens: this.state.currentOpens,
-        //     closes: this.state.currentCloses,
-        //     notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
-        //     trainingId: this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
-        //     feedback: []
-        // })
-        //     .then(() => {
-        //         this.setState({
-        //             ...this.state,
-        //             isSubmitting: false,
-        //             submitButtonText: 'Submitted!'
-        //         })
-        //         setTimeout(() => {
-        //             this.setState({
-        //                 ...this.state,
-        //                 submitButtonText: 'Submit Form'
-        //             })
-        //         }, 2500)
-        //     })
-        //     .catch((err) => {
-        //         this.setState({
-        //             ...this.state,
-        //             isSubmitting: false,
-        //             submitButtonText: 'Submit Form'
-        //         })
-        //         notification.error({message: 'Error submitting form to database: ' + err})
-        //     })
+    onFbLinkChange = (link: string) => {
+        this.setState({
+            ...this.state,
+            currentFbLink: link
+        })
+    }
+
+    onPhotoUrlChange = (url: string) => {
+        this.setState({
+            ...this.state,
+            currentPhotoPath: url
+        })
+    }
+
+    onSubmitEvent = () => {
+        if (!this.state.currentTitle) {
+            notification.error({
+                message: 'Event title required'
+            })
+            return
+        } else if (!this.state.currentUrlPath) {
+            notification.error({message: 'Url Path required'})
+            return
+        } else if (!this.state.currentLocation) {
+            notification.error({message: 'Location required'})
+            return
+        }
+        this.setState({
+            ...this.state,
+            isSubmitting: true,
+            submitButtonText: 'Submitting'
+        })
+        db.submitNewEvent({
+            id: this.generateEventId(10),
+            urlPath: this.state.currentUrlPath,
+            title: this.state.currentTitle,
+            date: this.state.currentDate,
+            description: this.state.currentDescription,
+            fbLink: this.state.currentFbLink,
+            photoPath: this.state.currentPhotoPath,
+            location: this.state.currentLocation
+        })
+            .then(() => {
+                this.setState({
+                    ...this.state,
+                    isSubmitting: false,
+                    submitButtonText: 'Submitted!'
+                })
+                setTimeout(() => {
+                    this.setState({
+                        ...this.state,
+                        submitButtonText: 'Submit Event'
+                    })
+                }, 2500)
+            })
+            .catch((err) => {
+                this.setState({
+                    ...this.state,
+                    isSubmitting: false,
+                    submitButtonText: 'Submit Event'
+                })
+                notification.error({message: 'Error submitting event to database: ' + err})
+            })
     }
     render() {
         return (
             <div className='createTrainingContainer'>
-                <h4>Event Basics</h4>
+                <h4 className='formSectionTitle'>Event Basics</h4>
                 <p>
                     Title: <Input className='shortInput' onChange={e => this.onTitleChange(e.target.value)}/>
                 </p>
@@ -142,9 +159,25 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 </p>
                 <p>Description</p>
                 <Input.TextArea onChange={e => this.onDescriptionChange(e.target.value)}/>
-                <h4>Details</h4>
-                <p>Time</p>
-
+                <h4 className='formSectionTitle'>Details</h4>
+                <div>
+                    Date: <DatePicker showTime onChange={e => this.onDateChange(e?.toDate())}/>
+                </div>
+                <p>
+                    Location: <Input className='shortInput' onChange={e => this.onLocationChange(e.target.value)}/>
+                </p>
+                <p>
+                    FB Link: <Input placeholder='optional' className='shortInput' onChange={e=>this.onFbLinkChange(e.target.value)}/>
+                </p>
+                <p>
+                    Photo URL: <Input placeholder='optional' className='shortInput' onChange={e=>this.onPhotoUrlChange(e.target.value)}/>
+                </p>
+                <div className='submitEventContainer'>
+                    <Button
+                        type='primary'
+                        loading={this.state.isSubmitting}
+                        onClick={this.onSubmitEvent}>{this.state.submitButtonText}</Button>
+                </div>
             </div>
         )
     }

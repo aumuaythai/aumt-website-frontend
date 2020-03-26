@@ -7,4 +7,12 @@ export interface AumtEvent {
     date: Date
     location: string
     fbLink: string
+    // signups?: {
+    //     members: {
+    //         [uid: string]: string
+    //     },
+    //     waitlist: {
+    //         [uid: string]: string
+    //     }
+    // }
 }

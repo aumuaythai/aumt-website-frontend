@@ -21,7 +21,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         this.state = {
             creatingTraining: false,
             editingMembers: false,
-            creatingEvent: true,
+            creatingEvent: false,
         }
     }
     toggleCreatingTraining = () => {
@@ -60,7 +60,6 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                 </div>
                 {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
                 <Button onClick={this.toggleEditingMembers}>Edit Signed Up Members</Button>
-                {/* <Button onClick={this.onRefreshSignedUpMembers}>Refresh</Button> */}
                 {this.state.editingMembers ? <EditFormMembersWrapper requestRefresh={this.onRefreshSignedUpMembers}></EditFormMembersWrapper> : ''}
                 <h3>Events</h3>
                 <div className="createEventAdminContainer">

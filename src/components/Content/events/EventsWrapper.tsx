@@ -1,9 +1,12 @@
 import React, {Component} from 'react'
 import { RouteComponentProps, Switch, Route, withRouter, Link } from 'react-router-dom';
+import { Alert } from 'antd';
+import { SyncOutlined } from '@ant-design/icons'
 import EventsList from './EventsList'
 import { Event } from './Event'
 import './EventsWrapper.css'
 import { AumtEvent } from '../../../types'
+import db from '../../../services/db';
 
 interface EventWrapperProps extends RouteComponentProps {
     
@@ -12,6 +15,8 @@ interface EventWrapperProps extends RouteComponentProps {
 interface EventWrapperState {
     upcomingEvents: AumtEvent[]
     pastEvents: AumtEvent[]
+    errorMessage: string
+    loadingEvents: boolean
 }
 
 export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapperState> {
@@ -19,36 +24,36 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
         super(props)
         this.state = {
             upcomingEvents: [],
-            pastEvents: []
+            pastEvents: [],
+            errorMessage: '',
+            loadingEvents: false
         }
     }
     componentDidMount() {
-        // TODO: get events from database
         this.setState({
             ...this.state,
-            upcomingEvents: [{
-                title: 'First AUMT Dinner',
-                id: '203490f9wnf',
-                description: `Come join us next Wednesday for dinner at the food court by Aotea Sqaure for some tasty grub. We will continue on to either shadows or the arcade depending on what people are feeling and there are rumours of a tab provided by the club...
-
-                Busy? Meet up with us later at the arcade or shadows anyways`,
-                fbLink: 'https://www.facebook.com/events/209300303470732/',
-                photoPath: '',
-                date: new Date(2020, 1, 25, 19),
-                urlPath: 'first-dinner',
-                location: 'Sky World Entertainment Centre'
-            }, {
-                title: '2020 Omori Retreat',
-                id: 's0df80e9f',
-                description: `
-                Camp is back and we're so excited to for you to come with us! We promise a week of high-quality training to help you achieve peak form, Huka Prawn Park, and a cute pupper for you to swoon over.`,
-                date: new Date(2020, 5, 17),
-                photoPath: '',
-                fbLink: '',
-                urlPath: 'camp2020',
-                location: 'Taupo, NZ'
-            }]
+            errorMessage: '',
+            loadingEvents: true
         })
+        db.getAllEvents()
+            .then((events: AumtEvent[]) => {
+                const currentDate = new Date()
+                this.setState({
+                    ...this.state,
+                    errorMessage: '',
+                    pastEvents: events.filter(e => e.date < currentDate),
+                    upcomingEvents: events.filter(e => e.date >= currentDate),
+                    loadingEvents: false
+                })
+            })
+            .catch((err) => {
+                this.setState({
+                    pastEvents: [],
+                    upcomingEvents: [],
+                    errorMessage: err.toString(),
+                    loadingEvents: false
+                })
+            })
     }
     renderEvent = (routerProps: RouteComponentProps) => {
         const {eventId}: any = routerProps.match.params
@@ -72,6 +77,11 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
     }
     render() {
         const { path } = this.props.match;
+        if (this.state.errorMessage) {
+            return (<Alert message={this.state.errorMessage} type='error'></Alert>)
+        } else if (this.state.loadingEvents) {
+            return (<p>Retrieving Events <SyncOutlined spin/></p>)
+        }
 
         return (
         <div>
