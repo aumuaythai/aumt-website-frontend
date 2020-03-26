@@ -1,13 +1,17 @@
 import React, {Component} from 'react'
 import { Button, Input, DatePicker, notification } from 'antd'
+import moment from 'moment'
 import './CreateEvent.css'
-import db from '../../services/db'
+import { AumtEvent } from '../../types'
 
 
 interface CreateEventProps {
+    onCreateEventSubmit: (eventData: AumtEvent) => Promise<void>
+    defaultValues?: AumtEvent
 }
 
 interface CreateEventState {
+    currentId: string
     currentUrlPath: string
     currentTitle: string
     currentDescription: string
@@ -23,6 +27,7 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
     constructor(props: CreateEventProps) {
         super(props)
         this.state = {
+            currentId: this.generateEventId(10),
             currentUrlPath: '',
             currentTitle: '',
             currentDescription: '',
@@ -32,6 +37,19 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             currentFbLink: '',
             isSubmitting: false,
             submitButtonText: 'Submit Event'
+        }
+        if (this.props.defaultValues) {
+            this.state = {
+                ...this.state,
+                currentId: this.props.defaultValues.id,
+                currentTitle: this.props.defaultValues.title,
+                currentDescription: this.props.defaultValues.description,
+                currentPhotoPath: this.props.defaultValues.photoPath,
+                currentDate: this.props.defaultValues.date,
+                currentFbLink: this.props.defaultValues.fbLink,
+                currentLocation: this.props.defaultValues.location,
+                currentUrlPath: this.props.defaultValues.urlPath
+            }
         }
     }
     generateEventId = (length: number) => {
@@ -102,6 +120,7 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             })
             return
         } else if (!this.state.currentUrlPath) {
+            // TODO: validate url path
             notification.error({message: 'Url Path required'})
             return
         } else if (!this.state.currentLocation) {
@@ -113,8 +132,8 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             isSubmitting: true,
             submitButtonText: 'Submitting'
         })
-        db.submitNewEvent({
-            id: this.generateEventId(10),
+        this.props.onCreateEventSubmit({
+            id: this.state.currentId,
             urlPath: this.state.currentUrlPath,
             title: this.state.currentTitle,
             date: this.state.currentDate,
@@ -148,28 +167,31 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
     render() {
         return (
             <div className='createTrainingContainer'>
-                <h4 className='formSectionTitle'>Event Basics</h4>
+                <h4 className='formSectionTitle'>Event</h4>
                 <p>
-                    Title: <Input className='shortInput' onChange={e => this.onTitleChange(e.target.value)}/>
+                    Title: <Input value={this.state.currentTitle} className='shortInput' onChange={e => this.onTitleChange(e.target.value)}/>
                 </p>
                 <p>
                     Url Path: 
-                    <Input className='shortInput' placeholder='aumt.co.nz/events/???' onChange={e => this.onUrlPathChange(e.target.value)}/>
+                    <Input className='shortInput' value={this.state.currentUrlPath} placeholder='aumt.co.nz/events/<url-path>' onChange={e => this.onUrlPathChange(e.target.value)}/>
                 </p>
                 <p>Description</p>
-                <Input.TextArea onChange={e => this.onDescriptionChange(e.target.value)}/>
+                <Input.TextArea
+                    autoSize={{ minRows: 2, maxRows: 6 }}
+                    value={this.state.currentDescription}
+                    onChange={e => this.onDescriptionChange(e.target.value)}/>
                 <h4 className='formSectionTitle'>Details</h4>
                 <div>
-                    Date: <DatePicker showTime onChange={e => this.onDateChange(e?.toDate())}/>
+                    Date: <DatePicker value={moment(this.state.currentDate)} showTime onChange={e => this.onDateChange(e?.toDate())}/>
                 </div>
                 <p>
-                    Location: <Input className='shortInput' onChange={e => this.onLocationChange(e.target.value)}/>
+                    Location: <Input value={this.state.currentLocation} className='shortInput' onChange={e => this.onLocationChange(e.target.value)}/>
                 </p>
                 <p>
-                    FB Link: <Input placeholder='optional' className='shortInput' onChange={e=>this.onFbLinkChange(e.target.value)}/>
+                    FB Link: <Input value={this.state.currentFbLink} placeholder='optional' className='shortInput' onChange={e=>this.onFbLinkChange(e.target.value)}/>
                 </p>
                 <p>
-                    Photo URL: <Input placeholder='optional' className='shortInput' onChange={e=>this.onPhotoUrlChange(e.target.value)}/>
+                    Photo URL: <Input value={this.state.currentPhotoPath} placeholder='optional' className='shortInput' onChange={e=>this.onPhotoUrlChange(e.target.value)}/>
                 </p>
                 <div className='submitEventContainer'>
                     <Button
