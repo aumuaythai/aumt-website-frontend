@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import { Button } from 'antd'
 import { CreateTraining } from './CreateTraining'
+import { CreateEvent } from './CreateEvent'
 import './MainAdmin.css'
 import { EditFormMembersWrapper } from './EditFormMembersWrapper'
 
@@ -19,7 +20,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         super(props)
         this.state = {
             creatingTraining: false,
-            editingMembers: true,
+            editingMembers: false,
             creatingEvent: true,
         }
     }
@@ -58,7 +59,8 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                     </Button>
                 </div>
                 {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
-                <Button>Edit Signed Up Members</Button><Button onClick={this.onRefreshSignedUpMembers}>Refresh</Button>
+                <Button onClick={this.toggleEditingMembers}>Edit Signed Up Members</Button>
+                {/* <Button onClick={this.onRefreshSignedUpMembers}>Refresh</Button> */}
                 {this.state.editingMembers ? <EditFormMembersWrapper requestRefresh={this.onRefreshSignedUpMembers}></EditFormMembersWrapper> : ''}
                 <h3>Events</h3>
                 <div className="createEventAdminContainer">
@@ -66,6 +68,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                         {this.state.creatingEvent ? 'Hide Event Creation' : 'Create Event'}
                     </Button>
                 </div>
+                {this.state.creatingEvent ? <CreateEvent></CreateEvent> : ''}
             </div>
         )
     }

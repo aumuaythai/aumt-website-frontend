@@ -33,6 +33,7 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
 
                 Busy? Meet up with us later at the arcade or shadows anyways`,
                 fbLink: 'https://www.facebook.com/events/209300303470732/',
+                photoPath: '',
                 date: new Date(2020, 1, 25, 19),
                 urlPath: 'first-dinner',
                 location: 'Sky World Entertainment Centre'
@@ -42,6 +43,8 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
                 description: `
                 Camp is back and we're so excited to for you to come with us! We promise a week of high-quality training to help you achieve peak form, Huka Prawn Park, and a cute pupper for you to swoon over.`,
                 date: new Date(2020, 5, 17),
+                photoPath: '',
+                fbLink: '',
                 urlPath: 'camp2020',
                 location: 'Taupo, NZ'
             }]
@@ -55,6 +58,7 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
         const foundEvent = this.state.upcomingEvents.concat(this.state.pastEvents).find((a) => a.urlPath === eventId)
         if (foundEvent) {
             return <Event
+                    photoPath={foundEvent.photoPath}
                     urlPath={foundEvent.urlPath}
                     description={foundEvent.description}
                     date={foundEvent.date}

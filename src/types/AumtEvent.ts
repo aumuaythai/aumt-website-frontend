@@ -3,8 +3,8 @@ export interface AumtEvent {
     title: string
     id: string
     description: string
-    photoPath?: string
+    photoPath: string
     date: Date
     location: string
-    fbLink?: string
+    fbLink: string
 }
