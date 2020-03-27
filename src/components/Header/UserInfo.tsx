@@ -32,9 +32,9 @@ export class UserInfo extends Component<UserInfoProps, object> {
     render() {
         return (
             <Dropdown overlay={this.menu} placement="bottomRight">
-                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                <span className="ant-dropdown-link userInfoLink" onClick={e => e.preventDefault()}>
                     {this.props.authedUser.preferredName || this.props.authedUser.firstName || this.props.authedUser.displayName} <DownOutlined />
-                </a>
+                </span>
             </Dropdown>
         )
     }
