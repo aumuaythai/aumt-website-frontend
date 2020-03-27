@@ -1,16 +1,27 @@
 import React, {Component} from 'react'
-import { CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
+import { Link } from 'react-router-dom'
+import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
 import {Divider} from 'antd'
-import { AumtEvent } from '../../../types'
 import './Event.css'
+
+interface EventProps {
+    date: Date
+    fbLink: string
+    urlPath: string
+    photoPath: string
+    eventLocation: string
+    title: string
+    id: string
+    description: string
+}
 
 interface EventState {
     displayDate: string
     displayTime: string
 }
 
-export class Event extends Component<AumtEvent, EventState> {
-    constructor(props: AumtEvent) {
+export class Event extends Component<EventProps, EventState> {
+    constructor(props: EventProps) {
         super(props)
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const dateString = this.props.date.toLocaleDateString(undefined, options)
@@ -24,7 +35,13 @@ export class Event extends Component<AumtEvent, EventState> {
     render() {
         return (
             <div className='eventContainer'>
-                <h2 className="eventTitle">{this.props.title}</h2>
+                <div className="eventHeader">
+                    <p className='backToEventsLink'><Link title='Back to Events' to='/events'><ArrowLeftOutlined /></Link></p>
+                    <h2>
+                        {this.props.title}
+                    </h2>
+                    <div className='eventHeaderSpacer'></div>
+                </div>
                 <div className="eventDetailsContainer">
                     <div className="detail dayDetail">
                         <CalendarOutlined /> {this.state.displayDate}
@@ -33,7 +50,7 @@ export class Event extends Component<AumtEvent, EventState> {
                         <ClockCircleOutlined /> {this.state.displayTime}
                     </div>
                     <div className="detail locationDetail">
-                        <HomeOutlined/> {this.props.location}
+                        <HomeOutlined/> {this.props.eventLocation}
                     </div>
                     {this.props.fbLink ? 
                         <div className="detail fbLinkDetail">

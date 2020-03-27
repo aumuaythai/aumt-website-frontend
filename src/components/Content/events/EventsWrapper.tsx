@@ -3,7 +3,7 @@ import { RouteComponentProps, Switch, Route, withRouter, Link } from 'react-rout
 import { Alert } from 'antd';
 import { SyncOutlined } from '@ant-design/icons'
 import EventsList from './EventsList'
-import { Event } from './Event'
+import {Event} from './Event'
 import './EventsWrapper.css'
 import { AumtEvent } from '../../../types'
 import db from '../../../services/db';
@@ -19,7 +19,7 @@ interface EventWrapperState {
     loadingEvents: boolean
 }
 
-export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapperState> {
+class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapperState> {
     constructor(props: EventWrapperProps) {
         super(props)
         this.state = {
@@ -62,16 +62,16 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
         }
         const foundEvent = this.state.upcomingEvents.concat(this.state.pastEvents).find((a) => a.urlPath === eventId)
         if (foundEvent) {
-            return <Event
+            return (<Event
                     photoPath={foundEvent.photoPath}
                     urlPath={foundEvent.urlPath}
                     description={foundEvent.description}
                     date={foundEvent.date}
                     fbLink={foundEvent.fbLink}
-                    location={foundEvent.location}
+                    eventLocation={foundEvent.location}
                     title={foundEvent.title}
                     id={foundEvent.id}
-                ></Event>
+                ></Event>)
         }
         return (<p>Error displaying event - <Link to='/events'>Go Back to events page</Link></p>)        
     }
@@ -80,7 +80,7 @@ export class EventsWrapperWithoutRouter extends Component<EventWrapperProps, Eve
         if (this.state.errorMessage) {
             return (<Alert message={this.state.errorMessage} type='error'></Alert>)
         } else if (this.state.loadingEvents) {
-            return (<p>Retrieving Events <SyncOutlined spin/></p>)
+            return (<p className='retrievingEventsText'>Retrieving Events <SyncOutlined spin/></p>)
         }
 
         return (
