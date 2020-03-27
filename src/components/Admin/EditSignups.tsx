@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Select, Button, notification, Dropdown, Menu, Tooltip} from 'antd'
+import {Select, Button, notification, Dropdown, Menu, Tooltip, Row, Col} from 'antd'
 import './EditSignups.css'
 import db from '../../services/db'
 import { AumtWeeklyTraining, AumtTrainingSession } from '../../types'
@@ -127,35 +127,43 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                 {this.props.form.sessions.map((session) => {
                     return (
                         <div key={session.sessionId} className="sessionSelectContainer">
-                            <Tooltip title={`${Object.keys(session.members).length} signed up (limit ${session.limit})`}>
-                            <span>{session.title} </span>
-                            </Tooltip>
-                            <Select
-                                showSearch
-                                className='memberSelect'
-                                placeholder="Select a person"
-                                optionFilterProp="children"
-                                onChange={e => this.onSelectChange(e, session.sessionId)}
-                                >
-                                    {Object.keys(session.members).map((member) => {
-                                            return (
-                                                <Select.Option key={member} value={member}>{session.members[member]}</Select.Option>
-                                            )
-                                    })}
-                            </Select>
-                            <Button
-                                loading={this.state.removingInProcess[session.sessionId]}
-                                disabled={!this.state.selectedMembers[session.sessionId]}
-                                type='danger'
-                                onClick={e => this.onRemoveClick(session.sessionId)}
-                                >Remove</Button>
-                              <Dropdown
-                                disabled={!this.state.selectedMembers[session.sessionId]}
-                                overlay={this.getMoveDropdown(session.sessionId)}
-                                trigger={['click']}>
-                                <Button loading={this.state.movingInProcess[session.sessionId]}
-                                    >Move...</Button>
-                            </Dropdown>
+                            <Row>
+                            <Col span={8} className="editSignupsTitleAndSelect">
+                                <Tooltip title={`${Object.keys(session.members).length} signed up (limit ${session.limit})`}>
+                                <span>{session.title} </span>
+                                </Tooltip>
+                            </Col>
+                            <Col span={8}>
+                                <Select
+                                    showSearch
+                                    className='memberSelect'
+                                    placeholder="Select a person"
+                                    optionFilterProp="children"
+                                    onChange={e => this.onSelectChange(e, session.sessionId)}
+                                    >
+                                        {Object.keys(session.members).map((member) => {
+                                                return (
+                                                    <Select.Option key={member} value={member}>{session.members[member]}</Select.Option>
+                                                )
+                                        })}
+                                </Select>
+                            </Col>
+                            <Col span={8} className="editSignupsOptionButtons">
+                                <Dropdown
+                                    disabled={!this.state.selectedMembers[session.sessionId]}
+                                    overlay={this.getMoveDropdown(session.sessionId)}
+                                    trigger={['click']}>
+                                    <Button loading={this.state.movingInProcess[session.sessionId]}
+                                        >Move...</Button>
+                                </Dropdown>
+                                <Button
+                                    loading={this.state.removingInProcess[session.sessionId]}
+                                    disabled={!this.state.selectedMembers[session.sessionId]}
+                                    type='danger'
+                                    onClick={e => this.onRemoveClick(session.sessionId)}
+                                    >Remove</Button>
+                            </Col>
+                            </Row>
                         </div>
                     )
                 })}

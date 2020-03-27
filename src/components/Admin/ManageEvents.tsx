@@ -72,7 +72,6 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
 
     onEventEditSubmit = (eventData: AumtEvent): Promise<void> => {
         return db.submitEvent(eventData)
-            .then(this.getAllEvents)
     }
 
     removeEvent = (eventId: string) => {
@@ -125,12 +124,12 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
                                     {event.title}
                                 </h4>
                                 <div className='manageEventOptions'>
-                                    <Popconfirm title='Confirm Delete Event?' onConfirm={e => this.removeEvent(event.id)}>
-                                        <Button loading={this.state.removingEvent[event.id]} type='danger'>Remove</Button>
-                                    </Popconfirm>
                                     <Button onClick={e => this.onEventEditClick(event.id)}>
                                         {this.state.editingEvent[event.id] ? 'Cancel Edit' : 'Edit'}
                                     </Button>
+                                    <Popconfirm title='Confirm Delete Event?' onConfirm={e => this.removeEvent(event.id)}>
+                                        <Button loading={this.state.removingEvent[event.id]} type='danger'>Remove</Button>
+                                    </Popconfirm>
                                 </div>
                                 <div className="clearBoth"></div>
                             </div>

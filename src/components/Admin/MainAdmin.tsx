@@ -26,7 +26,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             creatingTraining: false,
             editingMembers: false,
             creatingEvent: false,
-            managingEvents: true
+            managingEvents: false
         }
     }
     toggleCreatingTraining = () => {
@@ -68,27 +68,31 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         return (
             <div className='adminContainer'>
                 <h3>Signup Forms</h3>
-                <div className="createSignupAdminContainer">
+                <div className='adminSection'>
                     <Button onClick={this.toggleCreatingTraining}>
                         {this.state.creatingTraining ? 'Hide Signup Creation' : 'Create Signup Form'}
                     </Button>
+                    {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
                 </div>
-                {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
-                <Button onClick={this.toggleEditingMembers}>Edit Signed Up Members</Button>
-                {this.state.editingMembers ? <EditFormMembersWrapper requestRefresh={this.onRefreshSignedUpMembers}></EditFormMembersWrapper> : ''}
+                <div className='adminSection'>
+                    <Button onClick={this.toggleEditingMembers}>
+                        Edit Signed Up Members
+                    </Button>
+                    {this.state.editingMembers ? <EditFormMembersWrapper requestRefresh={this.onRefreshSignedUpMembers}></EditFormMembersWrapper> : ''}
+                </div>
                 <h3>Events</h3>
-                <div className="createEventAdminContainer">
+                <div className='adminSection'>
                     <Button onClick={this.toggleCreatingEvent}>
                         {this.state.creatingEvent ? 'Hide Event Creation' : 'Create Event'}
                     </Button>
+                    {this.state.creatingEvent ? <CreateEvent onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent> : ''}
                 </div>
-                {this.state.creatingEvent ? <CreateEvent onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent> : ''}
-                <div className="manageEventAdminContainer">
+                <div className='adminSection'>
                     <Button onClick={this.toggleManageEvents}>
                         {this.state.managingEvents ? 'Hide Event Manage' : 'Manage Events'}
                     </Button>
-                </div>
                 {this.state.managingEvents ? <ManageEvents></ManageEvents> : ''}
+                </div>
             </div>
         )
     }

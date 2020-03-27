@@ -16,10 +16,8 @@ interface CreateTrainingState {
     currentCloses: Date
     currentSessions: AumtTrainingSession[]
     isSubmitting: boolean
-    submitButtonText: string
     currentNotes: string
     currentPopulateWeekValue: number
-    submitButtonTimer: NodeJS.Timer | null
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
@@ -35,15 +33,8 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             currentCloses: new Date(),
             currentSessions: [],
             isSubmitting: false,
-            submitButtonText: 'Submit Form',
             currentNotes: '',
-            currentPopulateWeekValue: 1,
-            submitButtonTimer: null
-        }
-    }
-    componentWillUnmount() { 
-        if (this.state.submitButtonTimer) {
-            clearTimeout(this.state.submitButtonTimer)
+            currentPopulateWeekValue: 1
         }
     }
     populateWeeklyDefaults = () => {
@@ -177,7 +168,6 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
         this.setState({
             ...this.state,
             isSubmitting: true,
-            submitButtonText: 'Submitting'
         })
         db.submitNewForm({
             title: this.state.currentTitle,
@@ -192,20 +182,15 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                 this.setState({
                     ...this.state,
                     isSubmitting: false,
-                    submitButtonText: 'Submitted!',
-                    submitButtonTimer: setTimeout(() => {
-                        this.setState({
-                            ...this.state,
-                            submitButtonText: 'Submit Form'
-                        })
-                    }, 2500)
+                })
+                notification.success({
+                    message: 'Form submitted'
                 })
             })
             .catch((err) => {
                 this.setState({
                     ...this.state,
-                    isSubmitting: false,
-                    submitButtonText: 'Submit Form'
+                    isSubmitting: false
                 })
                 notification.error({message: 'Error submitting form to database: ' + err})
             })
@@ -254,7 +239,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                     <Button
                         type='primary'
                         loading={this.state.isSubmitting}
-                        onClick={this.onSubmitForm}>{this.state.submitButtonText}</Button>
+                        onClick={this.onSubmitForm}>Submit Form</Button>
                 </div>
             </div>
         )

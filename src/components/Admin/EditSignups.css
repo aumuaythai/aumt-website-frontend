@@ -1,3 +1,12 @@
 .memberSelect {
-    width: 220px;
+    width: 100%;
+}
+.editSignupsOptionButtons {
+    text-align: right;
+}
+.editSignedUpMembersContainer {
+    padding: 20px 10px;
+}
+.sessionSelectContainer {
+    padding: 10px 0
 }

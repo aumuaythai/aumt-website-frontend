@@ -20,8 +20,6 @@ interface CreateEventState {
     currentLocation: string
     currentFbLink: string
     isSubmitting: boolean
-    submitButtonText: string
-    submitButtonTimer: NodeJS.Timer | null
 }
 
 export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
@@ -36,9 +34,7 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             currentDate: new Date(),
             currentLocation: '',
             currentFbLink: '',
-            isSubmitting: false,
-            submitButtonText: 'Submit Event',
-            submitButtonTimer: null
+            isSubmitting: false
         }
         if (this.props.defaultValues) {
             this.state = {
@@ -52,11 +48,6 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 currentLocation: this.props.defaultValues.location,
                 currentUrlPath: this.props.defaultValues.urlPath
             }
-        }
-    }
-    componentWillUnmount() {
-        if (this.state.submitButtonTimer) {
-            clearTimeout(this.state.submitButtonTimer)
         }
     }
     generateEventId = (length: number) => {
@@ -136,8 +127,7 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
         }
         this.setState({
             ...this.state,
-            isSubmitting: true,
-            submitButtonText: 'Submitting'
+            isSubmitting: true
         })
         this.props.onCreateEventSubmit({
             id: this.state.currentId,
@@ -152,21 +142,16 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             .then(() => {
                 this.setState({
                     ...this.state,
-                    isSubmitting: false,
-                    submitButtonText: 'Submitted!',
-                    submitButtonTimer: setTimeout(() => {
-                    this.setState({
-                            ...this.state,
-                            submitButtonText: 'Submit Event'
-                        })
-                    }, 2500)
+                    isSubmitting: false
+                })
+                notification.success({
+                    message: 'Event Submitted'
                 })
             })
             .catch((err) => {
                 this.setState({
                     ...this.state,
-                    isSubmitting: false,
-                    submitButtonText: 'Submit Event'
+                    isSubmitting: false
                 })
                 notification.error({message: 'Error submitting event to database: ' + err})
             })
@@ -204,7 +189,7 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                     <Button
                         type='primary'
                         loading={this.state.isSubmitting}
-                        onClick={this.onSubmitEvent}>{this.state.submitButtonText}</Button>
+                        onClick={this.onSubmitEvent}>Submit Event</Button>
                 </div>
             </div>
         )
