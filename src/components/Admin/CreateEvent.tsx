@@ -21,6 +21,7 @@ interface CreateEventState {
     currentFbLink: string
     isSubmitting: boolean
     submitButtonText: string
+    submitButtonTimer: NodeJS.Timer | null
 }
 
 export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
@@ -36,7 +37,8 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             currentLocation: '',
             currentFbLink: '',
             isSubmitting: false,
-            submitButtonText: 'Submit Event'
+            submitButtonText: 'Submit Event',
+            submitButtonTimer: null
         }
         if (this.props.defaultValues) {
             this.state = {
@@ -50,6 +52,11 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 currentLocation: this.props.defaultValues.location,
                 currentUrlPath: this.props.defaultValues.urlPath
             }
+        }
+    }
+    componentWillUnmount() {
+        if (this.state.submitButtonTimer) {
+            clearTimeout(this.state.submitButtonTimer)
         }
     }
     generateEventId = (length: number) => {
@@ -146,14 +153,14 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 this.setState({
                     ...this.state,
                     isSubmitting: false,
-                    submitButtonText: 'Submitted!'
-                })
-                setTimeout(() => {
+                    submitButtonText: 'Submitted!',
+                    submitButtonTimer: setTimeout(() => {
                     this.setState({
-                        ...this.state,
-                        submitButtonText: 'Submit Event'
-                    })
-                }, 2500)
+                            ...this.state,
+                            submitButtonText: 'Submit Event'
+                        })
+                    }, 2500)
+                })
             })
             .catch((err) => {
                 this.setState({

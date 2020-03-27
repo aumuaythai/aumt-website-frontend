@@ -19,6 +19,7 @@ interface CreateTrainingState {
     submitButtonText: string
     currentNotes: string
     currentPopulateWeekValue: number
+    submitButtonTimer: NodeJS.Timer | null
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
@@ -36,7 +37,13 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             isSubmitting: false,
             submitButtonText: 'Submit Form',
             currentNotes: '',
-            currentPopulateWeekValue: 1
+            currentPopulateWeekValue: 1,
+            submitButtonTimer: null
+        }
+    }
+    componentWillUnmount() { 
+        if (this.state.submitButtonTimer) {
+            clearTimeout(this.state.submitButtonTimer)
         }
     }
     populateWeeklyDefaults = () => {
@@ -185,14 +192,14 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                 this.setState({
                     ...this.state,
                     isSubmitting: false,
-                    submitButtonText: 'Submitted!'
+                    submitButtonText: 'Submitted!',
+                    submitButtonTimer: setTimeout(() => {
+                        this.setState({
+                            ...this.state,
+                            submitButtonText: 'Submit Form'
+                        })
+                    }, 2500)
                 })
-                setTimeout(() => {
-                    this.setState({
-                        ...this.state,
-                        submitButtonText: 'Submit Form'
-                    })
-                }, 2500)
             })
             .catch((err) => {
                 this.setState({

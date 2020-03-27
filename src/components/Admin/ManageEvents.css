@@ -1,0 +1,9 @@
+.manageEventTitle {
+    float: left;
+}
+.manageEventOptions {
+    float: right;
+}
+.clearBoth {
+    clear: both;
+}

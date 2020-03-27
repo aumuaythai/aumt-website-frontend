@@ -56,12 +56,12 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     onRefreshSignedUpMembers = () => {
         if (this.state.editingMembers) {
             this.toggleEditingMembers()
-            setTimeout(this.toggleEditingMembers,0)
+            setTimeout(this.toggleEditingMembers)
         }
     }
 
     onCreateEventSubmit = (eventData: AumtEvent): Promise<void> => {
-        return db.submitNewEvent(eventData)
+        return db.submitEvent(eventData)
     }
 
     render() {

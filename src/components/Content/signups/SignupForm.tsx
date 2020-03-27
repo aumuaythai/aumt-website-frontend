@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {Radio, Button, Alert, Tooltip, notification, Input } from 'antd'
-import { CheckCircleOutlined } from '@ant-design/icons'
+import {Radio, Button, Alert, Tooltip, notification, Input, Tag } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import './SignupForm.css'
 import { AumtTrainingSession, AumtMember } from '../../../types'
@@ -117,8 +116,10 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                                             className='sessionOption'
                                             disabled={isFull}
                                             value={session.sessionId}>{session.title}
-                                        </Radio> {spotsLeft < 10 ? (<span className='spotsLeftText'>({spotsLeft} spots left)</span>) : ''}
-                                        {this.state.signedUpOption === session.sessionId ? <span className='signedUpOptionText'> Signed up <CheckCircleOutlined /></span> : ''}
+                                        </Radio> 
+                                        {/* spotsLeft < 10 ? (<span className='spotsLeftText'>({spotsLeft} spots left)</span>) : ''} */}
+                                        {spotsLeft < 10 ? <Tag color={spotsLeft === 0 ? 'error' : 'warning'}>{spotsLeft} spots left</Tag> : ''}
+                                        {this.state.signedUpOption === session.sessionId ? <Tag color='success'> Signed up</Tag> : ''}
                                     </Tooltip>
                                 </div>
                             )

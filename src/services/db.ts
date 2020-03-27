@@ -49,7 +49,7 @@ class DB {
         }
     }
 
-    public submitNewEvent = (eventData: AumtEvent): Promise<void> => {
+    public submitEvent = (eventData: AumtEvent): Promise<void> => {
         if (this.db) {
             return this.db.collection('events')
                 .doc(eventData.id)
@@ -74,6 +74,16 @@ class DB {
                     })
                     return events
                 })
+        } else {
+            return Promise.reject('No db object')
+        }
+    }
+
+    public removeEvent = (eventId: string): Promise<void> => {
+        if (this.db) {
+            return this.db.collection('events')
+                .doc(eventId)
+                .delete()
         } else {
             return Promise.reject('No db object')
         }
