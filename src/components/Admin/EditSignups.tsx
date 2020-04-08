@@ -69,7 +69,9 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         const {key} = clickParam
         const currentUserIdSelected = this.state.selectedMembers[fromSession]
         const session = this.props.form.sessions.find(s => s.sessionId === fromSession)
-        const displayName = session && session.members[currentUserIdSelected]
+        const displayName = session &&
+            session.members[currentUserIdSelected] &&
+            session.members[currentUserIdSelected].name
         if (!displayName) {
             return notification.error({
                 message: 'No user found for user id ' + currentUserIdSelected + ' in session'
@@ -143,7 +145,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                     >
                                         {Object.keys(session.members).map((member) => {
                                                 return (
-                                                    <Select.Option key={member} value={member}>{session.members[member]}</Select.Option>
+                                                    <Select.Option key={member} value={member}>{session.members[member].name}</Select.Option>
                                                 )
                                         })}
                                 </Select>

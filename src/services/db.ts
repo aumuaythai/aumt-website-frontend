@@ -1,5 +1,12 @@
 import * as firebase from 'firebase'
 import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent } from '../types';
+
+type MockMember = {
+    [uid: string]: {
+        name: string,
+        timeAdded: Date
+    }
+}
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
 
@@ -225,7 +232,10 @@ class DB {
                 .then((trainingForm: AumtWeeklyTraining) => {
                     const session = trainingForm.sessions.find((s: AumtTrainingSession) => s.sessionId === sessionId)
                     if (session) {
-                        session.members[userId] = displayName
+                        session.members[userId] = {
+                            name: displayName,
+                            timeAdded: new Date()
+                        }
                         return this.db?.collection('weekly_trainings')
                             .doc(formId)
                             .set(trainingForm)
@@ -245,6 +255,53 @@ class DB {
         } else {
             return Promise.reject('No db object')
         }
+    }
+
+    signMockData = () => {
+        if (this.db) {
+            return this.db.collection('members')
+                .get()
+                .then((querySnapshot) => {
+                    const uids: MockMember[] = []
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data()
+                        uids.push({
+                            [doc.id]: {
+                                name: (data as AumtMember).firstName,
+                                timeAdded: this.randomDate(new Date(2020, 3, 5), new Date())
+                            }
+                        })
+                    })
+                    return uids
+                })
+                .then((uids: MockMember[]) => {
+                    return this.getOpenForms()
+                        .then((forms: AumtWeeklyTraining[]) => {
+                            const form = forms[0]
+                            form.sessions.forEach((session) => {
+                                for (let i = 0; i < session.limit; i ++) {
+                                    if (!uids.length || Object.keys(session.members).length > session.limit) {
+                                        return
+                                    }
+                                    const randIndex = Math.floor(Math.random() * uids.length)
+                                    const memberI = uids[randIndex]
+                                    uids.splice(randIndex, 1)
+                                    const uid = Object.keys(memberI)[0]
+                                    session.members[uid] = memberI[uid]
+                                }
+                            })
+                            return form
+                        })
+                        .then((form: AumtWeeklyTraining) => {
+                            this.submitNewForm(form)
+                        })
+                })
+        } else {
+            return Promise.reject('No db object')
+        }
+    }
+    randomDate = (start: Date, end: Date) => {
+        return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
     }
 }
 

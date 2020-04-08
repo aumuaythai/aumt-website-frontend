@@ -6,10 +6,16 @@ export interface AumtTrainingSession {
     sessionId: string
     trainers: string[]
     members: {
-        [uid: string]: string
+        [uid: string]: {
+            name: string,
+            timeAdded: Date
+        }
     }
     waitlist: {
-        [uid: string]: string
+        [uid: string]: {
+            name: string,
+            timeAdded: Date
+        }
     }
 }
 export interface AumtWeeklyTraining {

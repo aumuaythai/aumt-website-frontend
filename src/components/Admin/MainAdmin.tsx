@@ -5,6 +5,7 @@ import { CreateEvent } from './CreateEvent'
 import {ManageEvents} from './ManageEvents'
 import './MainAdmin.css'
 import { EditFormMembersWrapper } from './EditFormMembersWrapper'
+import { AttendanceGraphs } from './AttendanceGraphs'
 import { AumtEvent } from '../../types'
 import db from '../../services/db'
 
@@ -28,6 +29,12 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             creatingEvent: false,
             managingEvents: false
         }
+    }
+    signMockData = () => {
+        db.signMockData()
+            .then(() => {
+                console.log('DONE')
+            })
     }
     toggleCreatingTraining = () => {
         this.setState({
@@ -67,6 +74,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     render() {
         return (
             <div className='adminContainer'>
+                <Button onClick={this.signMockData}>Mock Signups</Button>
                 <h3>Signup Forms</h3>
                 <div className='adminSection'>
                     <Button onClick={this.toggleCreatingTraining}>
@@ -92,6 +100,10 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                         {this.state.managingEvents ? 'Hide Event Manage' : 'Manage Events'}
                     </Button>
                 {this.state.managingEvents ? <ManageEvents></ManageEvents> : ''}
+                </div>
+                <h3>Stats</h3>
+                <div className="adminSection">
+                    <AttendanceGraphs></AttendanceGraphs>
                 </div>
             </div>
         )
