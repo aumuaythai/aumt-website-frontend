@@ -96,6 +96,26 @@ class DB {
         }
     }
 
+    public getAllForms = (): Promise<AumtWeeklyTraining[]> => {
+        if (this.db) {
+            return this.db.collection('weekly_trainings')
+                .get()
+                .then((querySnapshot) => {
+                    const allForms: AumtWeeklyTraining[] = []
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data()
+                        const form = this.docToForm(data)
+                        allForms.push(form)
+                    });
+                    return allForms
+                })
+        } else {    
+            return Promise.reject('No db object')
+        }
+    }
+
+
+
     public getOpenForms = (): Promise<AumtWeeklyTraining[]> => {
             if (this.db) {
                 const currentDate = new Date()
@@ -108,15 +128,7 @@ class DB {
                             const data = doc.data()
                             // can't do where('closes', '>', currentDate) in firestore db so have to here
                             if (data.closes.seconds * 1000 >= currentDate.getTime()) {
-                                const weeklyTraining: AumtWeeklyTraining = {
-                                    title: data.title,
-                                    feedback: data.feedback,
-                                    trainingId: data.trainingId,
-                                    sessions: data.sessions,
-                                    opens: new Date(data.opens.seconds * 1000),
-                                    closes: new Date(data.closes.seconds * 1000),
-                                    notes: data.notes.split('%%NEWLINE%%').join('\n')
-                                }
+                                const weeklyTraining = this.docToForm(data)
                                 trainings.push(weeklyTraining)
                             }
                         });
@@ -268,7 +280,7 @@ class DB {
                         uids.push({
                             [doc.id]: {
                                 name: (data as AumtMember).firstName,
-                                timeAdded: this.randomDate(new Date(2020, 3, 5), new Date())
+                                timeAdded: this.getRandomDate(new Date(2020, 3, 5), new Date())
                             }
                         })
                     })
@@ -300,8 +312,28 @@ class DB {
             return Promise.reject('No db object')
         }
     }
-    randomDate = (start: Date, end: Date) => {
+    
+    private getRandomDate = (start: Date, end: Date) => {
         return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    }
+
+    private docToForm = (docData: any): AumtWeeklyTraining => {
+        const docSessions = docData.sessions.map((session: any) => {
+            Object.keys(session.members).forEach((i) => {
+                session.members[i].timeAdded = new Date(session.members[i].timeAdded.seconds)
+            })
+            return session
+        })
+        const weeklyTraining: AumtWeeklyTraining = {
+            title: docData.title,
+            feedback: docData.feedback,
+            trainingId: docData.trainingId,
+            sessions: docSessions,
+            opens: new Date(docData.opens.seconds * 1000),
+            closes: new Date(docData.closes.seconds * 1000),
+            notes: docData.notes.split('%%NEWLINE%%').join('\n')
+        }
+        return weeklyTraining
     }
 }
 
