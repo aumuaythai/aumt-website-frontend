@@ -134,7 +134,7 @@ export class AttendanceGraphs extends Component<AttendanceGraphsProps, Attendanc
                         {
                             this.state.currentForm && this.state.currentForm.sessions.map((session) => {
 
-                                return (<Area key={session.sessionId} stackId='1' dataKey={session.sessionId}/>)
+                                return (<Area key={session.sessionId} stackId='1' dataKey={session.title}/>)
                             })
                         }
 

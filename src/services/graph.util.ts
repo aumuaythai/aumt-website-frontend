@@ -6,7 +6,7 @@ type MemberSums = Record<string, number>
 class GraphUtil {
     getDataFromForm = (form: AumtWeeklyTraining): MemberPoint[] => {
         let sessionNames = form.sessions.reduce((sessionObj, session) => {
-            sessionObj[session.sessionId] = 0
+            sessionObj[session.title] = 0
             return sessionObj
         }, {} as Record<string, number>)
 
@@ -16,12 +16,12 @@ class GraphUtil {
                 let inserted = false
                 const uidTime = session.members[uid].timeAdded
                 const sessionNameCopy = Object.assign({}, sessionNames)
-                sessionNameCopy[session.sessionId] += 1
+                sessionNameCopy[session.title] += 1
                 const memberPoint = Object.assign({
                     time: uidTime.getTime() * 1000,
                 }, sessionNameCopy)
                 for (let i = 0; i < arr.length; i ++) {
-                    if (arr[i].time < uidTime.getTime() * 1000) {
+                    if (arr[i].time > uidTime.getTime() * 1000) {
                         arr.splice(i, 0, memberPoint)
                         inserted = true
                         break
