@@ -2,8 +2,8 @@ import React, {Component} from 'react'
 import {SyncOutlined} from '@ant-design/icons'
 import { EditSignups } from './EditSignups'
 import './EditSignups.css'
-import db from '../../services/db'
-import { AumtWeeklyTraining } from '../../types'
+import db from '../../../services/db'
+import { AumtWeeklyTraining } from '../../../types'
 
 
 interface EditFormMembersWrapperProps {

@@ -12,11 +12,11 @@ import {
   } from 'recharts'
 
 import './WeekStats.css'
-import db from '../../services/db'
-import { AumtWeeklyTraining } from '../../types'
+import db from '../../../../services/db'
+import { AumtWeeklyTraining } from '../../../../types'
 import { notification } from 'antd'
 import moment from 'moment'
-import GraphUtil, {MemberPoint} from '../../services/graph.util'
+import GraphUtil, {MemberPoint} from '../../../../services/graph.util'
 import { TrainingGraphTooltip, GraphSessionMap } from './TrainingGraphTooltip'
 
 

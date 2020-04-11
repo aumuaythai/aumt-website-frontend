@@ -3,8 +3,8 @@ import { Button, Input, InputNumber, DatePicker, notification } from 'antd'
 import moment from 'moment'
 import { MinusCircleOutlined} from '@ant-design/icons'
 import './CreateTraining.css'
-import { AumtTrainingSession } from '../../types'
-import db from '../../services/db'
+import { AumtTrainingSession } from '../../../types'
+import db from '../../../services/db'
 
 
 interface CreateTrainingProps {

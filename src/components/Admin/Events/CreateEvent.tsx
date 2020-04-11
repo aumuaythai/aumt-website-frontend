@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { Button, Input, DatePicker, notification } from 'antd'
 import moment from 'moment'
 import './CreateEvent.css'
-import { AumtEvent } from '../../types'
+import { AumtEvent } from '../../../types'
 
 
 interface CreateEventProps {

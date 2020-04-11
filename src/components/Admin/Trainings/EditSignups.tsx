@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {Select, Button, notification, Dropdown, Menu, Tooltip, Row, Col} from 'antd'
 import './EditSignups.css'
-import db from '../../services/db'
-import { AumtWeeklyTraining, AumtTrainingSession } from '../../types'
+import db from '../../../services/db'
+import { AumtWeeklyTraining, AumtTrainingSession } from '../../../types'
 import { ClickParam } from 'antd/lib/menu'
 
 

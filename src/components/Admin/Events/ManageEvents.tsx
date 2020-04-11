@@ -3,8 +3,8 @@ import { Popconfirm, Alert, Button, notification, Divider } from 'antd'
 import { SyncOutlined } from '@ant-design/icons'
 import './ManageEvents.css'
 import {CreateEvent} from './CreateEvent'
-import { AumtEvent } from '../../types'
-import db from '../../services/db'
+import { AumtEvent } from '../../../types'
+import db from '../../../services/db'
 
 
 interface ManageEventsProps {

@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import moment from 'moment'
 import './TrainingGraphTooltip.css'
-import db from '../../services/db'
-import { AumtWeeklyTraining } from '../../types'
+import db from '../../../../services/db'
+import { AumtWeeklyTraining } from '../../../../types'
 import { notification } from 'antd'
 
 export type GraphSessionMap = Record<string, {title: string, color: string}>
