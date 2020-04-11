@@ -9,6 +9,7 @@ import { WeekStats } from './Trainings/Stats/WeekStats'
 import { YearStats } from './Trainings/Stats/YearStats'
 import { AumtEvent } from '../../types'
 import db from '../../services/db'
+import { ManageTrainings } from './Trainings/ManageTrainings'
 
 
 interface MainAdminProps {
@@ -16,6 +17,7 @@ interface MainAdminProps {
 
 interface MainAdminState {
     creatingTraining: boolean
+    managingTrainings: boolean
     editingMembers: boolean
     creatingEvent: boolean
     managingEvents: boolean
@@ -28,6 +30,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         super(props)
         this.state = {
             creatingTraining: false,
+            managingTrainings: false,
             editingMembers: false,
             creatingEvent: false,
             managingEvents: false,
@@ -45,6 +48,12 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         this.setState({
             ...this.state,
             creatingTraining: !this.state.creatingTraining
+        })
+    }
+    toggleManageTrainings = () => {
+        this.setState({
+            ...this.state,
+            managingTrainings: !this.state.managingTrainings
         })
     }
     toggleEditingMembers = () => {
@@ -98,6 +107,12 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                         {this.state.creatingTraining ? 'Hide Signup Creation' : 'Create Signup Form'}
                     </Button>
                     {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
+                </div>
+                <div className='adminSection'>
+                    <Button onClick={this.toggleManageTrainings}>
+                        {this.state.managingTrainings ? 'Hide Manage Trainings' : 'Manage Trainings'}
+                    </Button>
+                    {this.state.managingTrainings ? <ManageTrainings></ManageTrainings> : ''}
                 </div>
                 <div className='adminSection'>
                     <Button onClick={this.toggleEditingMembers}>

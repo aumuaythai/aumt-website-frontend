@@ -96,6 +96,16 @@ class DB {
         }
     }
 
+    public removeTraining = (trainingId: string): Promise<void> => {
+        if (this.db) {
+            return this.db.collection('weekly_trainings')
+                .doc(trainingId)
+                .delete()
+        } else {
+            return Promise.reject('No db object')
+        }
+    }
+
     public getAllForms = (): Promise<AumtWeeklyTraining[]> => {
         if (this.db) {
             return this.db.collection('weekly_trainings')

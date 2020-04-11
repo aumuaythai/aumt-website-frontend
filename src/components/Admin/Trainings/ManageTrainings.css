@@ -1,0 +1,12 @@
+.manageTrainingTitle {
+    float: left;
+}
+.manageTrainingOptions {
+    float: right;
+}
+.clearBoth {
+    clear: both;
+}
+.manageTrainingsContainer {
+    margin-top: 30px;
+}
