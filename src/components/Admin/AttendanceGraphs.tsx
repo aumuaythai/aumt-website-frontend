@@ -156,6 +156,7 @@ export class AttendanceGraphs extends Component<AttendanceGraphsProps, Attendanc
                             tickFormatter = {(unixTime: number) => moment(unixTime).format('DD/MM')}
                             type = 'number'
                         />
+                        <CartesianGrid horizontal={true} vertical={false}/>
                         <Tooltip content={this.CustomTooltip}/>
                         <YAxis/>
                         {
