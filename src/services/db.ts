@@ -287,11 +287,13 @@ class DB {
                     return uids
                 })
                 .then((uids: MockMember[]) => {
-                    return this.getOpenForms()
+                    return this.getAllForms()
                         .then((forms: AumtWeeklyTraining[]) => {
                             const form = forms[0]
+                            if (!form) throw new Error('NO FORM')
                             form.sessions.forEach((session) => {
-                                for (let i = 0; i < session.limit; i ++) {
+                                const randLimit = Math.floor(Math.random() * 15 + 16)
+                                for (let i = 0; i < randLimit; i ++) {
                                     if (!uids.length || Object.keys(session.members).length > session.limit) {
                                         return
                                     }

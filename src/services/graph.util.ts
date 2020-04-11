@@ -27,7 +27,6 @@ class GraphUtil {
                     }
                 }
                 if (!inserted) {
-                    console.log('pushing')
                     arr.push(memberPoint)
                 }
             }

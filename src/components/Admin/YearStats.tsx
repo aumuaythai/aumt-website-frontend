@@ -47,7 +47,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
             .then((forms: AumtWeeklyTraining[]) => {
                 const graphData = forms.map((form) => {
                     return {
-                        week: form.title,
+                        week: form.trainingId,
                         total: form.sessions.reduce((sum, cur) => {
                             return sum + Object.keys(cur.members).length
                         }, 0)
@@ -71,8 +71,44 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
             })
     }
     customTooltip = (props: any) => {
+        const currentForm = this.state.allForms.find(f => f.trainingId === props.label)
+        if (!currentForm) {
+            return (<div></div>)
+        }
+        const tooltipValues = currentForm.sessions.reduce((vals, session) => {
+            const members = Object.keys(session.members).length
+            vals[session.sessionId] = members
+            vals['total'] += members
+            return vals
+        }, {total: 0} as Record<string, number>)
         return (
-            <div className='yearStatsTooltip'>{props.label}</div>
+            <div className='yearStatsTooltip'>
+                <div className="yearStatsTooltipTitle">
+                    {currentForm.title}
+                </div>
+                <div className="yearStatsTooltipRow">
+                    <div className="yearStatsTooltipName">
+                            TOTAL
+                    </div>
+                    <div className="yearStatsTooltipVal">
+                        {tooltipValues['total']}
+                    </div>
+                    <div className="clearBoth"></div>
+                </div>
+                {currentForm.sessions.map((session) => {
+                    return (
+                        <div key={session.sessionId} className="yearStatsTooltipRow">
+                            <div className="yearStatsTooltipName">
+                                {session.title}
+                            </div>
+                            <div className="yearStatsTooltipVal">
+                                {tooltipValues[session.sessionId]}
+                            </div>
+                            <div className="clearBoth"></div>
+                        </div>
+                    )
+                })}
+            </div>
         )
     }
     render() {
