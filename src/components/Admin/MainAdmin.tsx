@@ -18,6 +18,7 @@ interface MainAdminState {
     editingMembers: boolean
     creatingEvent: boolean
     managingEvents: boolean
+    viewingWeekStats: boolean
 }
 
 export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
@@ -27,7 +28,8 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             creatingTraining: false,
             editingMembers: false,
             creatingEvent: false,
-            managingEvents: false
+            managingEvents: false,
+            viewingWeekStats: false
         }
     }
     signMockData = () => {
@@ -58,6 +60,12 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         this.setState({
             ...this.state,
             managingEvents: !this.state.managingEvents
+        })
+    }
+    toggleWeekStats = () => {
+        this.setState({
+            ...this.state,
+            viewingWeekStats: !this.state.viewingWeekStats
         })
     }
     onRefreshSignedUpMembers = () => {
@@ -103,7 +111,10 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                 </div>
                 <h3>Stats</h3>
                 <div className="adminSection">
-                    <WeekStats></WeekStats>
+                    <Button onClick={this.toggleWeekStats}>
+                        {this.state.viewingWeekStats ? 'Hide Week Stats' : 'Week Stats'}
+                    </Button>
+                    {this.state.viewingWeekStats ? <WeekStats></WeekStats> : ''}
                 </div>
             </div>
         )

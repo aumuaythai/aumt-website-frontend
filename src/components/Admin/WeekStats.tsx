@@ -177,7 +177,7 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
                     </ResponsiveContainer>
                 </div>
                 <div className="weekStatsDisplayWrapper">
-                    {this.state.currentForm && this.state.currentForm.sessions.map((session) => {
+                    {this.state.currentForm && this.state.currentForm.sessions.reverse().map((session) => {
                         return (
                             <div key={session.sessionId} className="weekStatEachContainer">
                                 <Statistic title={session.title} value={Object.keys(session.members).length} suffix={`/ ${session.limit}`} />
