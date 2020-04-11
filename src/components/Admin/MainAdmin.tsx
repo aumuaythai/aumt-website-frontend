@@ -5,7 +5,7 @@ import { CreateEvent } from './CreateEvent'
 import {ManageEvents} from './ManageEvents'
 import './MainAdmin.css'
 import { EditFormMembersWrapper } from './EditFormMembersWrapper'
-import { AttendanceGraphs } from './AttendanceGraphs'
+import { WeekStats } from './WeekStats'
 import { AumtEvent } from '../../types'
 import db from '../../services/db'
 
@@ -103,7 +103,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                 </div>
                 <h3>Stats</h3>
                 <div className="adminSection">
-                    <AttendanceGraphs></AttendanceGraphs>
+                    <WeekStats></WeekStats>
                 </div>
             </div>
         )

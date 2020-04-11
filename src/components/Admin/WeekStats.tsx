@@ -1,11 +1,9 @@
 import React, {Component} from 'react'
-import { Dropdown, Button, Menu } from 'antd'
+import { Dropdown, Button, Menu, Statistic } from 'antd'
 import { SyncOutlined, DownOutlined } from '@ant-design/icons'
 import {
     CartesianGrid,
-    Legend,
     ResponsiveContainer,
-    Scatter,
     Tooltip,
     XAxis,
     YAxis,
@@ -13,7 +11,7 @@ import {
     AreaChart,
   } from 'recharts'
 
-import './AttendanceGraphs.css'
+import './WeekStats.css'
 import db from '../../services/db'
 import { AumtWeeklyTraining } from '../../types'
 import { notification } from 'antd'
@@ -22,10 +20,10 @@ import GraphUtil from '../../services/graph.util'
 import { TrainingGraphTooltip, GraphSessionMap } from './TrainingGraphTooltip'
 
 
-interface AttendanceGraphsProps {
+interface WeekStatsProps {
 }
 
-interface AttendanceGraphsState {
+interface WeekStatsState {
     currentForm: AumtWeeklyTraining | null
     allForms: AumtWeeklyTraining[]
     currentSessionMap: GraphSessionMap
@@ -33,8 +31,8 @@ interface AttendanceGraphsState {
     currentGraphData: any
 }
 
-export class AttendanceGraphs extends Component<AttendanceGraphsProps, AttendanceGraphsState> {
-    constructor(props: AttendanceGraphsProps) {
+export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
+    constructor(props: WeekStatsProps) {
         super(props)
         this.state = {
             currentForm: null,
@@ -139,15 +137,19 @@ export class AttendanceGraphs extends Component<AttendanceGraphsProps, Attendanc
             )
         }
         return (
-            <div className='attendanceGraphsContainer'>
-                <div className="attendanceGraphHeader">
-                    <Dropdown
-                        overlay={this.getFormsDropdown}>
-                        <Button>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
-                    </Dropdown>
+            <div className='WeekStatsContainer'>
+                <div className="WeekStatHeader">
+                    <h2 className="weeklyStatTitle">Week Stats</h2>
+                    <div className="weeklyStatSelectorContainer">
+                        <Dropdown
+                            overlay={this.getFormsDropdown}>
+                            <Button>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
+                        </Dropdown>
+                    </div>
                 </div>
-                <div className="attendanceGraphWrapper">
-                    <ResponsiveContainer width = '95%' height = {300} >
+                <div className="clearBoth"></div>
+                <div className="WeekStatGraphWrapper">
+                    <ResponsiveContainer width = '100%' height = {300} >
                         <AreaChart data={this.state.currentGraphData}>
                         <XAxis
                             dataKey = 'time'
@@ -174,6 +176,16 @@ export class AttendanceGraphs extends Component<AttendanceGraphsProps, Attendanc
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
+                <div className="weekStatsDisplayWrapper">
+                    {this.state.currentForm && this.state.currentForm.sessions.map((session) => {
+                        return (
+                            <div key={session.sessionId} className="weekStatEachContainer">
+                                <Statistic title={session.title} value={Object.keys(session.members).length} suffix={`/ ${session.limit}`} />
+                            </div>
+                        )
+                    })}
+                </div>
+                <div className="clearBoth"></div>
             </div>
         )
     }
