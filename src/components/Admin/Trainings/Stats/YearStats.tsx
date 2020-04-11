@@ -1,6 +1,4 @@
 import React, {Component} from 'react'
-import { Dropdown, Button, Menu, Statistic } from 'antd'
-import { SyncOutlined, DownOutlined } from '@ant-design/icons'
 import {
     CartesianGrid,
     ResponsiveContainer,
@@ -15,9 +13,6 @@ import './YearStats.css'
 import db from '../../../../services/db'
 import { AumtWeeklyTraining } from '../../../../types'
 import { notification } from 'antd'
-import moment from 'moment'
-import GraphUtil from '../../../../services/graph.util'
-import { TrainingGraphTooltip, GraphSessionMap } from './TrainingGraphTooltip'
 
 
 interface YearStatsProps {

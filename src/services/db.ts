@@ -299,7 +299,7 @@ class DB {
                 .then((uids: MockMember[]) => {
                     return this.getAllForms()
                         .then((forms: AumtWeeklyTraining[]) => {
-                            const form = forms[0]
+                            const form = forms.find(f => f.title.indexOf('Week 3') > -1)
                             if (!form) throw new Error('NO FORM')
                             form.sessions.forEach((session) => {
                                 const randLimit = Math.floor(Math.random() * 15 + 16)

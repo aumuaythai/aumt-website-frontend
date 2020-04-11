@@ -49,4 +49,4 @@ class GraphUtil {
     }
 }
 
-export default new GraphUtil
+export default new GraphUtil()

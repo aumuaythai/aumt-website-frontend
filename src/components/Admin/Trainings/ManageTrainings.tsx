@@ -65,7 +65,7 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
         })
     }
 
-    onEventEditSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {
+    onCreateTrainingSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {
         return db.submitNewForm(trainingData)
     }
     confirmDeleteTraiing = (title: string, trainingId: string) => {
@@ -143,11 +143,10 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
                             {this.state.editingTraining[training.trainingId] ?
                                 (
                                     <div className="trainingEditManage">
-                                        edit edit
-                                        {/* <CreateTraining
-                                            onCreateSubmit={this.onEventEditSubmit}
-                                            defaultValues={event}
-                                            ></CreateTraining> */}
+                                        <CreateTraining
+                                            onCreateSubmit={this.onCreateTrainingSubmit}
+                                            defaultValues={training}
+                                            ></CreateTraining>
                                     </div>
                                 ) :
                                 ''}

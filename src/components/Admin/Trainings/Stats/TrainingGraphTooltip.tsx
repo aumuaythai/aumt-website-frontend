@@ -1,9 +1,6 @@
 import React, {Component} from 'react'
 import moment from 'moment'
 import './TrainingGraphTooltip.css'
-import db from '../../../../services/db'
-import { AumtWeeklyTraining } from '../../../../types'
-import { notification } from 'antd'
 
 export type GraphSessionMap = Record<string, {title: string, color: string}>
 
@@ -28,9 +25,6 @@ interface TrainingGraphTooltipState {
 }
 
 export class TrainingGraphTooltip extends Component<TrainingGraphTooltipProps, TrainingGraphTooltipState> {
-    constructor(props: TrainingGraphTooltipProps) {
-        super(props)
-    }
     render() {
         if (!this.props.data || !this.props.data.payload) {
             return <div></div>

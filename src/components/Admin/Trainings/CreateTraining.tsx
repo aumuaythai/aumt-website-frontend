@@ -3,11 +3,12 @@ import { Button, Input, InputNumber, DatePicker, notification } from 'antd'
 import moment from 'moment'
 import { MinusCircleOutlined} from '@ant-design/icons'
 import './CreateTraining.css'
-import { AumtTrainingSession } from '../../../types'
-import db from '../../../services/db'
+import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 
 
 interface CreateTrainingProps {
+    onCreateSubmit: (trainingData: AumtWeeklyTraining) => Promise<void>
+    defaultValues?: AumtWeeklyTraining
 }
 
 interface CreateTrainingState {
@@ -36,6 +37,16 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             currentNotes: '',
             currentPopulateWeekValue: 1
         }
+        if (this.props.defaultValues) {
+            this.state = {
+                ...this.state,
+                currentTitle: this.props.defaultValues.title,
+                currentOpens: this.props.defaultValues.opens,
+                currentCloses: this.props.defaultValues.closes,
+                currentSessions: this.props.defaultValues.sessions,
+                currentNotes: this.props.defaultValues.notes,
+            }
+        }
     }
     populateWeeklyDefaults = () => {
         const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * this.state.currentPopulateWeekValue))
@@ -60,7 +71,9 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
         })
     }
     componentDidMount = () => {
-        this.onAddSessionClick()
+        if (!this.props.defaultValues) {
+            this.onAddSessionClick()
+        }
     }
     generateSessionId = (length: number) => {
         const digits = '1234567890qwertyuiopasdfghjklzxcvbnm'
@@ -161,39 +174,37 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             notification.error({message: 'All session options must have a title'})
             return
         }
-        const sessionsObject: {[sessionId: string]: AumtTrainingSession} = {}
-        for (const i of this.state.currentSessions) {
-            sessionsObject[i.sessionId] = i
-        }
         this.setState({
             ...this.state,
             isSubmitting: true,
         })
-        db.submitNewForm({
+        this.props.onCreateSubmit({
             title: this.state.currentTitle,
             sessions: this.state.currentSessions,
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
-            trainingId: this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
+            trainingId: this.props.defaultValues ?
+                this.props.defaultValues.trainingId :
+                this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
             feedback: []
         })
-            .then(() => {
-                this.setState({
-                    ...this.state,
-                    isSubmitting: false,
-                })
-                notification.success({
-                    message: 'Form submitted'
-                })
+        .then(() => {
+            this.setState({
+                ...this.state,
+                isSubmitting: false,
             })
-            .catch((err) => {
-                this.setState({
-                    ...this.state,
-                    isSubmitting: false
-                })
-                notification.error({message: 'Error submitting form to database: ' + err})
+            notification.success({
+                message: 'Form submitted'
             })
+        })
+        .catch((err) => {
+            this.setState({
+                ...this.state,
+                isSubmitting: false
+            })
+            notification.error({message: 'Error submitting form to database: ' + err})
+        })
     }
     render() {
         return (
@@ -222,7 +233,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                                     className='sessionTitleInput'
                                     placeholder="Session Title (e.g. Thursday 6:30 Beginners)"
                                     onChange={e => this.onSessionTitleChange(e.target.value, session.sessionId)}/>
-                                Limit:<InputNumber defaultValue={DEFAULT_TRAINING_LIMIT} onChange={e=>this.onSessionLimitChange(e, session.sessionId)}/>
+                                Limit:<InputNumber defaultValue={session.limit} onChange={e=>this.onSessionLimitChange(e, session.sessionId)}/>
                                 <MinusCircleOutlined onClick={e=>this.onRemoveSessionClick(session.sessionId)} className='minusIcon' />
                             </div>
                         )
@@ -233,7 +244,8 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                     <Input.TextArea
                         autoSize={{ minRows: 2, maxRows: 6 }}
                         onChange={e => this.onNotesChange(e.target.value)}
-                        placeholder='Any notes you want displayed on the form (optional)'/>
+                        placeholder='Any notes you want displayed on the form (optional)'
+                        value={this.state.currentNotes}/>
                 </div>
                 <div className='submitTrainingContainer'>
                     <Button

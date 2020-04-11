@@ -7,7 +7,7 @@ import './MainAdmin.css'
 import { EditFormMembersWrapper } from './Trainings/EditFormMembersWrapper'
 import { WeekStats } from './Trainings/Stats/WeekStats'
 import { YearStats } from './Trainings/Stats/YearStats'
-import { AumtEvent } from '../../types'
+import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import db from '../../services/db'
 import { ManageTrainings } from './Trainings/ManageTrainings'
 
@@ -93,6 +93,10 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         }
     }
 
+    onCreateTrainingSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {
+        return db.submitNewForm(trainingData)
+    }
+
     onCreateEventSubmit = (eventData: AumtEvent): Promise<void> => {
         return db.submitEvent(eventData)
     }
@@ -106,7 +110,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                     <Button onClick={this.toggleCreatingTraining}>
                         {this.state.creatingTraining ? 'Hide Signup Creation' : 'Create Signup Form'}
                     </Button>
-                    {this.state.creatingTraining ? <CreateTraining></CreateTraining> : ''}
+                    {this.state.creatingTraining ? <CreateTraining onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining> : ''}
                 </div>
                 <div className='adminSection'>
                     <Button onClick={this.toggleManageTrainings}>
