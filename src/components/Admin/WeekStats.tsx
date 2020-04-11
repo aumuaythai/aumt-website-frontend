@@ -16,7 +16,7 @@ import db from '../../services/db'
 import { AumtWeeklyTraining } from '../../types'
 import { notification } from 'antd'
 import moment from 'moment'
-import GraphUtil from '../../services/graph.util'
+import GraphUtil, {MemberPoint} from '../../services/graph.util'
 import { TrainingGraphTooltip, GraphSessionMap } from './TrainingGraphTooltip'
 
 
@@ -28,7 +28,7 @@ interface WeekStatsState {
     allForms: AumtWeeklyTraining[]
     currentSessionMap: GraphSessionMap
     loadingForms: boolean
-    currentGraphData: any
+    currentGraphData: MemberPoint[]
 }
 
 export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
@@ -38,7 +38,7 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
             currentForm: null,
             allForms: [],
             loadingForms: false,
-            currentGraphData: {},
+            currentGraphData: [],
             currentSessionMap: {}
         }
     }
@@ -151,16 +151,16 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
                 <div className="WeekStatGraphWrapper">
                     <ResponsiveContainer width = '100%' height = {300} >
                         <AreaChart data={this.state.currentGraphData}>
-                        <XAxis
-                            dataKey = 'time'
-                            domain = {['auto', 'auto']}
-                            name = 'Time'
-                            tickFormatter = {(unixTime: number) => moment(unixTime).format('DD/MM')}
-                            type = 'number'
-                        />
-                        <CartesianGrid horizontal={true} vertical={false}/>
-                        <Tooltip content={this.CustomTooltip}/>
-                        <YAxis/>
+                            <XAxis
+                                dataKey = 'time'
+                                domain = {['auto', 'auto']}
+                                name = 'Time'
+                                tickFormatter = {(unixTime: number) => moment(unixTime).format('DD/MM')}
+                                type = 'number'
+                            />
+                            <CartesianGrid horizontal={true} vertical={false}/>
+                            <Tooltip content={this.CustomTooltip}/>
+                            <YAxis/>
                         {
                             this.state.currentForm && this.state.currentForm.sessions.reverse().map((session) => {
                                 return (

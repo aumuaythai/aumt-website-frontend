@@ -1,7 +1,6 @@
 import { AumtWeeklyTraining } from "../types"
 
-type MemberPoint = Record<string, number>
-type MemberSums = Record<string, number>
+export type MemberPoint = Record<string, number>
 
 class GraphUtil {
     getDataFromForm = (form: AumtWeeklyTraining): MemberPoint[] => {

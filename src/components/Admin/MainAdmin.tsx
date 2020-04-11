@@ -6,6 +6,7 @@ import {ManageEvents} from './ManageEvents'
 import './MainAdmin.css'
 import { EditFormMembersWrapper } from './EditFormMembersWrapper'
 import { WeekStats } from './WeekStats'
+import { YearStats } from './YearStats'
 import { AumtEvent } from '../../types'
 import db from '../../services/db'
 
@@ -115,6 +116,9 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                         {this.state.viewingWeekStats ? 'Hide Week Stats' : 'Week Stats'}
                     </Button>
                     {this.state.viewingWeekStats ? <WeekStats></WeekStats> : ''}
+                </div>
+                <div className="adminSection">
+                    <YearStats></YearStats>
                 </div>
             </div>
         )
