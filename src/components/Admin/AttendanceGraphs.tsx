@@ -19,6 +19,7 @@ import { AumtWeeklyTraining } from '../../types'
 import { notification } from 'antd'
 import moment from 'moment'
 import GraphUtil from '../../services/graph.util'
+import { TrainingGraphTooltip, GraphSessionMap } from './TrainingGraphTooltip'
 
 
 interface AttendanceGraphsProps {
@@ -27,6 +28,7 @@ interface AttendanceGraphsProps {
 interface AttendanceGraphsState {
     currentForm: AumtWeeklyTraining | null
     allForms: AumtWeeklyTraining[]
+    currentSessionMap: GraphSessionMap
     loadingForms: boolean
     currentGraphData: any
 }
@@ -38,7 +40,8 @@ export class AttendanceGraphs extends Component<AttendanceGraphsProps, Attendanc
             currentForm: null,
             allForms: [],
             loadingForms: false,
-            currentGraphData: {}
+            currentGraphData: {},
+            currentSessionMap: {}
         }
     }
     componentDidMount() {
@@ -80,9 +83,20 @@ export class AttendanceGraphs extends Component<AttendanceGraphsProps, Attendanc
     onFormSelect = (event: {key: string}) => {
         const selectedForm = this.state.allForms.find(f => f.trainingId === event.key)
         if (selectedForm) {
-            this.setState({...this.state, currentForm: selectedForm})
             const data = GraphUtil.getDataFromForm(selectedForm)
-            this.setState({...this.state, currentGraphData: data})
+            const currentSessionMap: GraphSessionMap  = {}
+            selectedForm.sessions.forEach((session) => {
+                currentSessionMap[session.sessionId] = {
+                    title: session.title,
+                    color: this.getRandomHex()
+                }
+            })
+            this.setState({
+                ...this.state,
+                currentForm: selectedForm,
+                currentGraphData: data,
+                currentSessionMap: currentSessionMap
+            })
         }
     }
 
@@ -100,6 +114,19 @@ export class AttendanceGraphs extends Component<AttendanceGraphsProps, Attendanc
             </Menu>
         )
 
+    }
+
+    CustomTooltip = (props: any) => {
+        return <TrainingGraphTooltip sessionMap={this.state.currentSessionMap} data={props}></TrainingGraphTooltip>
+      };
+
+    getRandomHex = () => {
+        const vals = '0123456789ABCD'
+        let hex = '#'
+        for (let i = 0; i < 6; i ++) {
+            hex += vals[Math.floor(Math.random() * vals.length)]
+        }
+        return hex
     }
 
     render() {
@@ -129,15 +156,20 @@ export class AttendanceGraphs extends Component<AttendanceGraphsProps, Attendanc
                             tickFormatter = {(unixTime: number) => moment(unixTime).format('DD/MM')}
                             type = 'number'
                         />
-                        <Tooltip/>
+                        <Tooltip content={this.CustomTooltip}/>
                         <YAxis/>
                         {
-                            this.state.currentForm && this.state.currentForm.sessions.map((session) => {
-
-                                return (<Area key={session.sessionId} stackId='1' dataKey={session.title}/>)
+                            this.state.currentForm && this.state.currentForm.sessions.reverse().map((session) => {
+                                return (
+                                    <Area
+                                        key={session.sessionId}
+                                        stackId='1'
+                                        dataKey={session.sessionId}
+                                        fill={this.state.currentSessionMap[session.sessionId].color}
+                                        stroke={this.state.currentSessionMap[session.sessionId].color}/>
+                                    )
                             })
                         }
-
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
