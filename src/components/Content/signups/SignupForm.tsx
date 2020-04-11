@@ -108,7 +108,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     <Radio.Group className="Group" onChange={this.onOptionChange} value={this.state.currentSessionId}>
                         {this.props.sessions.map((session) => {
                             const isFull = session.limit <= Object.keys(session.members).length
-                            const spotsLeft = session.limit - Object.keys(session.members).length
+                            const spotsLeft = Math.max(0, session.limit - Object.keys(session.members).length)
                             return (
                                 <div key={session.title} className="optionLine">
                                     <Tooltip title={isFull ? 'Class full' : ''} placement='left'>

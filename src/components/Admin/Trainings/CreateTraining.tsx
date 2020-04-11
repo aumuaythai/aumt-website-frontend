@@ -128,7 +128,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
         }
     }
     onSessionLimitChange=  (limit: number | undefined, sessionId: string) => {
-        if (limit) {
+        if (typeof limit === 'number') {
             this.state.currentSessions.forEach((s) => {
                 if (s.sessionId === sessionId) {
                     s.limit = limit
@@ -174,6 +174,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             notification.error({message: 'All session options must have a title'})
             return
         }
+        console.log(this.state.currentSessions)
         this.setState({
             ...this.state,
             isSubmitting: true,
@@ -233,7 +234,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                                     className='sessionTitleInput'
                                     placeholder="Session Title (e.g. Thursday 6:30 Beginners)"
                                     onChange={e => this.onSessionTitleChange(e.target.value, session.sessionId)}/>
-                                Limit:<InputNumber defaultValue={session.limit} onChange={e=>this.onSessionLimitChange(e, session.sessionId)}/>
+                                Limit:<InputNumber min={0} defaultValue={session.limit} onChange={e=>this.onSessionLimitChange(e, session.sessionId)}/>
                                 <MinusCircleOutlined onClick={e=>this.onRemoveSessionClick(session.sessionId)} className='minusIcon' />
                             </div>
                         )
