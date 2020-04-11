@@ -118,7 +118,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                         <LineChart data={this.state.currentGraphData}>
                             <XAxis
                                 dataKey = 'week'
-                                tick={false}
+                                tickFormatter={(tick) => tick.substring(0, 5)}
                                 domain = {['auto', 'auto']}
                                 name = 'Week'
                             />
