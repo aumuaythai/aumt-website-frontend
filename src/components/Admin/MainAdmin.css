@@ -1,8 +1,19 @@
 .adminContainer {
-    max-width: 900px;
-    margin: 0 auto;
     text-align: left;
 }
-.adminSection {
-    margin-bottom: 10px;
+.menuContainer {
+    border-top: 0.5px solid #999
+}
+.adminContent {
+    width: calc(100% - 150px);
+    float: right;
+    padding: 15px;
+}
+.createTrainingTitle {
+    text-align: center;
+}
+.manageEventsContainer {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
 }
