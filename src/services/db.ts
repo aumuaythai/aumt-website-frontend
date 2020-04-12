@@ -9,6 +9,7 @@ type MockMember = {
 }
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
+    private listeners: Record<string, Function> = {}
 
     public initialize = () => {
         if (!this.db) {
@@ -286,9 +287,39 @@ class DB {
                     })
             })
     }
+
+    listen = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
+        if (!this.db) throw new Error('no db')
+        const listenerId = this.getListenerId()
+        this.listeners[listenerId] = this.db.collection('weekly_trainings')
+            .onSnapshot((querySnapshot) => {
+                const newForms: AumtWeeklyTraining[] = []
+                querySnapshot.docs.forEach((doc) => {
+                    newForms.push(this.docToForm(doc.data()))
+                })
+                callback(newForms)
+            })
+        return listenerId
+    }
+
+    unlisten = (listenerId: string) => {
+        if (this.listeners[listenerId]) {
+            this.listeners[listenerId]()
+            delete this.listeners[listenerId]
+        }
+    }
     
     private getRandomDate = (start: Date, end: Date) => {
         return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    }
+
+    private getListenerId = () => {
+        const chars = 'weyuiopasdhjklzxcvbnm1234567890'
+        let id = ''
+        for (let i = 0; i < 10; i ++) {
+            id += chars[Math.floor(Math.random() * chars.length)]
+        }
+        return id
     }
 
     private docToForm = (docData: any): AumtWeeklyTraining => {
