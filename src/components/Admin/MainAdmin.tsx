@@ -56,6 +56,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                     <Switch>
                         <Route path='/admin/events'>
                             <div className="manageEventsContainer">
+                                <h2 className="createTrainingTitle">Manage Events </h2>
                                 <ManageEvents></ManageEvents>
                             </div>
                         </Route>

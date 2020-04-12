@@ -7,7 +7,7 @@
 .editMembersContainer {
     padding: 20px;
     width: 50%;
-    min-width: 500px;
+    min-width: 536px;
     float: left;
 }
 .manageTrainingsWrapper {
@@ -28,4 +28,9 @@
 }
 .clearBoth {
     clear: both;
+}
+.weeklyStatSelectorContainer {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 30px;
 }

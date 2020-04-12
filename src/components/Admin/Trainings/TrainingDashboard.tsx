@@ -1,40 +1,118 @@
 import React, {Component} from 'react'
-import { Button, Menu } from 'antd'
+import { Button, Menu, Dropdown, notification } from 'antd'
+import { SyncOutlined, DownOutlined } from '@ant-design/icons'
 import { CreateTraining } from './CreateTraining'
 import './TrainingDashboard.css'
-import { EditFormMembersWrapper } from './EditFormMembersWrapper'
 import { WeekStats } from './Stats/WeekStats'
 import { YearStats } from './Stats/YearStats'
 import { ManageTrainings } from './ManageTrainings'
+import { AumtWeeklyTraining } from '../../../types'
+import { EditSignups } from './EditSignups'
+import db from '../../../services/db'
 
 
 interface TrainingDashboardProps {
 }
 
 interface TrainingDashboardState {
-    refreshingMemberEdit: boolean
+    currentForm: AumtWeeklyTraining | null
+    loadingForms: boolean
+    allForms: AumtWeeklyTraining[]
 }
 
 export class TrainingDashboard extends Component<TrainingDashboardProps, TrainingDashboardState> {
     constructor(props: TrainingDashboardProps) {
         super(props)
         this.state = {
-            refreshingMemberEdit: false
+            currentForm: null,
+            allForms: [],
+            loadingForms: false
         }
     }
-    requestRefresh = () => {
+    componentDidMount = () => {
+        this.setState({...this.state, loadingForms: true})
+        db.getAllForms()
+            .then((forms: AumtWeeklyTraining[]) => {
+                if (forms.length) {
+                    const sortedForms = forms.sort((a, b) => {
+                        return a.closes > b.closes ? 1 : -1
+                    })
+                    this.setState({
+                        ...this.state,
+                        allForms: sortedForms
+                    })
+                    const currentTime = new Date()
+                    let currentForm = sortedForms[sortedForms.length - 1]
+                    for (let i = 0; i < sortedForms.length; i ++) {
+                        if (sortedForms[i].closes > currentTime) {
+                            currentForm = sortedForms[i]
+                            break
+                        }
+                    }
+                    this.onFormSelect({key: currentForm.trainingId})
+                }
+                this.setState({...this.state, loadingForms: false})
+            })
+            .catch((err) => {
+                notification.error({
+                    message: err.toString()
+                })
+                this.setState({
+                    ...this.state,
+                    currentForm: null
+                })
+                this.setState({...this.state, loadingForms: false})
+            })
+    }
+    onFormSelect = (event: {key: string}) => {
+        const selectedForm = this.state.allForms.find(f => f.trainingId === event.key)
+        if (selectedForm) {
+            this.setState({
+                ...this.state,
+                currentForm: selectedForm
+            })
+        } else {
+            notification.error({
+                message: 'No form found for selection...'
+            })
+        }
+    }
+    getFormsDropdown = () => {
+        return (
+            <Menu onClick={this.onFormSelect}>
+                {this.state.allForms.map((form) => {
+                    return (
+                        <Menu.Item key={form.trainingId}>
+                            {form.title}
+                        </Menu.Item>
+                        )
+                    })
+                }
+            </Menu>
+        )
 
     }
     render() {
         return (
             <div className="trainingDashboardContainer">
+                <div className="weeklyStatSelectorContainer">
+                        <Dropdown
+                            overlay={this.getFormsDropdown}>
+                            <Button>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
+                        </Dropdown>
+                    </div>
                 <div className="weekStatsContainer">
                     <h2 className="sectionHeader">Weekly Stats</h2>
-                    <WeekStats></WeekStats>
+                    <WeekStats loadingForms={this.state.loadingForms} form={this.state.currentForm}></WeekStats>
                 </div>
                 <div className="editMembersContainer">
                 <h2 className="sectionHeader">Edit Members</h2>
-                    <EditFormMembersWrapper requestRefresh={this.requestRefresh}></EditFormMembersWrapper>
+                    {this.state.loadingForms ?
+                        <p>Loading current forms <SyncOutlined spin /></p> :
+                        this.state.currentForm ?
+                        <EditSignups form={this.state.currentForm}></EditSignups> :
+                        <p>No Form Selected</p>
+                    }
                 </div>
                 <div className="clearBoth"></div>
                 <div className="manageTrainingsWrapper">
@@ -47,6 +125,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                     <h2 className="sectionHeader">Yearly Stats</h2>
                     <YearStats></YearStats>
                 </div>
+                <div className="clearBoth"></div>
             </div>
         )
     }

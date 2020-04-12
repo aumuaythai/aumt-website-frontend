@@ -21,13 +21,12 @@ import { TrainingGraphTooltip, GraphSessionMap } from './TrainingGraphTooltip'
 
 
 interface WeekStatsProps {
+    loadingForms: boolean,
+    form: AumtWeeklyTraining | null
 }
 
 interface WeekStatsState {
-    currentForm: AumtWeeklyTraining | null
-    allForms: AumtWeeklyTraining[]
     currentSessionMap: GraphSessionMap
-    loadingForms: boolean
     currentGraphData: MemberPoint[]
 }
 
@@ -35,55 +34,18 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
     constructor(props: WeekStatsProps) {
         super(props)
         this.state = {
-            currentForm: null,
-            allForms: [],
-            loadingForms: false,
             currentGraphData: [],
             currentSessionMap: {}
         }
     }
     componentDidMount() {
-        this.setState({...this.state, loadingForms: true})
-        db.getAllForms()
-            .then((forms: AumtWeeklyTraining[]) => {
-                if (forms.length) {
-                    const sortedForms = forms.sort((a, b) => {
-                        return a.closes > b.closes ? 1 : -1
-                    })
-                    this.setState({
-                        ...this.state,
-                        allForms: sortedForms
-                    })
-                    const currentTime = new Date()
-                    let currentForm = sortedForms[sortedForms.length - 1]
-                    for (let i = 0; i < sortedForms.length; i ++) {
-                        if (sortedForms[i].closes > currentTime) {
-                            currentForm = sortedForms[i]
-                            break
-                        }
-                    }
-                    this.onFormSelect({key: currentForm.trainingId})
-                }
-                this.setState({...this.state, loadingForms: false})
-            })
-            .catch((err) => {
-                notification.error({
-                    message: err.toString()
-                })
-                this.setState({
-                    ...this.state,
-                    currentForm: null
-                })
-                this.setState({...this.state, loadingForms: false})
-            })
     }
 
-    onFormSelect = (event: {key: string}) => {
-        const selectedForm = this.state.allForms.find(f => f.trainingId === event.key)
-        if (selectedForm) {
-            const data = GraphUtil.getDataFromForm(selectedForm)
+    componentDidUpdate(prevProps: WeekStatsProps, prevState: WeekStatsState) {
+        if (this.props !== prevProps && this.props.form) {
+            const data = GraphUtil.getDataFromForm(this.props.form)
             const currentSessionMap: GraphSessionMap  = {}
-            selectedForm.sessions.forEach((session) => {
+            this.props.form.sessions.forEach((session) => {
                 currentSessionMap[session.sessionId] = {
                     title: session.title,
                     color: this.getRandomHex()
@@ -91,31 +53,10 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
             })
             this.setState({
                 ...this.state,
-                currentForm: selectedForm,
                 currentGraphData: data,
                 currentSessionMap: currentSessionMap
             })
-        } else {
-            notification.error({
-                message: 'No form found for selection...'
-            })
         }
-    }
-
-    getFormsDropdown = () => {
-        return (
-            <Menu onClick={this.onFormSelect}>
-                {this.state.allForms.map((form) => {
-                    return (
-                        <Menu.Item key={form.trainingId}>
-                            {form.title}
-                        </Menu.Item>
-                        )
-                    })
-                }
-            </Menu>
-        )
-
     }
 
     CustomTooltip = (props: any) => {
@@ -132,24 +73,16 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
     }
 
     render() {
-        if (this.state.loadingForms) {
+        if (this.props.loadingForms) {
             return (<p>Retrieving stats <SyncOutlined spin/></p>)
         }
-        if (this.state.allForms.length === 0) {
+        if (!this.props.form) {
             return (
                 <p>No forms in db</p>
             )
         }
         return (
             <div className='WeekStatsContainer'>
-                {/* <div className="WeekStatHeader">
-                    <div className="weeklyStatSelectorContainer">
-                        <Dropdown
-                            overlay={this.getFormsDropdown}>
-                            <Button>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
-                        </Dropdown>
-                    </div>
-                </div> */}
                 <div className="clearBoth"></div>
                 <div className="WeekStatGraphWrapper">
                     <ResponsiveContainer width = '100%' height = {330} >
@@ -165,14 +98,18 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
                             <Tooltip content={this.CustomTooltip}/>
                             <YAxis/>
                         {
-                            this.state.currentForm && this.state.currentForm.sessions.reverse().map((session) => {
+                            this.props.form.sessions.slice().reverse().map((session) => {
+                                const sessionObj = this.state.currentSessionMap[session.sessionId]
+                                if (!sessionObj) {
+                                    return <div key={session.sessionId}></div>
+                                }
                                 return (
                                     <Area
                                         key={session.sessionId}
                                         stackId='1'
                                         dataKey={session.sessionId}
-                                        fill={this.state.currentSessionMap[session.sessionId].color}
-                                        stroke={this.state.currentSessionMap[session.sessionId].color}/>
+                                        fill={sessionObj.color}
+                                        stroke={sessionObj.color}/>
                                     )
                             })
                         }

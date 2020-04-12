@@ -8,7 +8,6 @@ import { ClickParam } from 'antd/lib/menu'
 
 interface EditSignupsProps {
     form: AumtWeeklyTraining
-    requestRefresh: () => void
 }
 
 interface EditSignupsState {
@@ -53,7 +52,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                         ...this.state,
                         removingInProcess: Object.assign(this.state.removingInProcess, {[sessionId]: false})
                     })
-                    this.props.requestRefresh()
+                    // this.props.requestRefresh()
                 })
                 .catch((err) => {
                     notification.error({
@@ -90,7 +89,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                     ...this.state,
                     movingInProcess: Object.assign(this.state.movingInProcess, {[fromSession]: false})
                 })
-                this.props.requestRefresh()
+                // this.props.requestRefresh()
             })
             .catch((err) => {
                 this.setState({
