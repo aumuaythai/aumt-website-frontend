@@ -18,7 +18,7 @@
 }
 .manageTrainingsComponentWrapper {
     max-height: 300px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .yearStatsWrapper {
     padding: 20px;
@@ -30,7 +30,12 @@
     clear: both;
 }
 .weeklyStatSelectorContainer {
-    text-align: center;
-    font-weight: bold;
     margin-top: 30px;
+}
+.trainingDashboardFormSelector {
+    float: right;
+    margin: 0 20px;
+}
+.trainingDashboardCreateButton {
+    float: right;
 }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import { RouteComponentProps, Switch, Route, withRouter, Link } from 'react-router-dom';
-import { Button, Menu } from 'antd'
+import { Switch, Route, Link } from 'react-router-dom';
+import { Menu } from 'antd'
 import { CreateTraining } from './Trainings/CreateTraining'
 import { CreateEvent } from './Events/CreateEvent'
 import {ManageEvents} from './Events/ManageEvents'
@@ -19,12 +19,6 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     constructor(props: MainAdminProps) {
         super(props)
         this.state = { }
-    }
-    signMockData = () => {
-        db.signMockData()
-            .then(() => {
-                console.log('DONE')
-            })
     }
 
     onCreateTrainingSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {

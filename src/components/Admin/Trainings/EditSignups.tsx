@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Select, Button, Statistic, notification, Dropdown, Menu, Tooltip, Row, Col} from 'antd'
+import {Select, Button, Statistic, notification, Dropdown, Menu, Row, Col} from 'antd'
 import './EditSignups.css'
 import db from '../../../services/db'
 import { AumtWeeklyTraining, AumtTrainingSession } from '../../../types'

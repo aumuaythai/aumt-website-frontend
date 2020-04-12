@@ -8,12 +8,13 @@ import db from '../../../services/db'
 
 
 interface ManageTrainingsProps {
+    onTrainingClick: (trainingId: string) => void;
+    trainings: AumtWeeklyTraining[]
+    loadingTrainings: boolean
 }
 
 interface ManageTrainingsState {
-    loadingTrainings: boolean
     errorText: string
-    trainings: AumtWeeklyTraining[]
     editingTraining: {
         [trainingId: string]: boolean
     },
@@ -26,37 +27,18 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
     constructor(props: ManageTrainingsProps) {
         super(props)
         this.state = {
-            loadingTrainings: false,
             errorText: '',
-            trainings: [],
             editingTraining: {},
             removingTraining: {}
         }
     }
-    componentDidMount() {
-        this.getAllTrainings()
-    }
-    getAllTrainings = () => {
-        this.setState({
-            ...this.state,
-            errorText: '',
-            loadingTrainings: true
-        })
-        db.getAllForms()
-            .then((forms: AumtWeeklyTraining[]) => {
-                this.setState({
-                    ...this.state,
-                    loadingTrainings: false,
-                    trainings: forms
-                })
+    componentDidUpdate(prevProps: ManageTrainingsProps, prevState: ManageTrainingsState) {
+        if (this.props !== prevProps && this.props.trainings) {
+            this.setState({
+                ...this.state,
+                errorText: ''
             })
-            .catch((err) => {
-                this.setState({
-                    ...this.state,
-                    loadingTrainings: false,
-                    errorText: err.toString()
-                })
-            })
+        }
     }
     onTrainingEditClick = (trainingId: string) => {
         this.setState({
@@ -96,8 +78,6 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
                         [trainingId]: false
                     })
                 })
-                this.getAllTrainings()
-
             })
             .catch((err) => {
                 notification.open({
@@ -114,18 +94,18 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
     render() {
         if (this.state.errorText) {
             return (<Alert type='error' message={this.state.errorText}></Alert>)
-        } else if (this.state.loadingTrainings) {
+        } else if (this.props.loadingTrainings) {
             return (<p>Loading Trainings <SyncOutlined spin/></p>)
-        } else if (!this.state.trainings.length) {
+        } else if (!this.props.trainings.length) {
             return (<p>No Training Forms in DB</p>)
         }
         return (
             <div className='manageTrainingsContainer'>
-                {this.state.trainings.map((training) => {
+                {this.props.trainings.map((training) => {
                     return (
                         <div className="eachTrainingManager" key={training.trainingId}>
                             <div className="trainingManageHeader">
-                                <h4 className='manageTrainingTitle'>
+                                <h4 className='manageTrainingTitle' onClick={e => this.props.onTrainingClick(training.trainingId)}>
                                     {training.title}
                                 </h4>
                                 <div className='manageTrainingOptions'>

@@ -10,3 +10,6 @@
 .manageTrainingsContainer {
     margin-top: 30px;
 }
+.manageTrainingTitle {
+    cursor: pointer;
+}

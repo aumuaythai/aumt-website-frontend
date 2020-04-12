@@ -10,17 +10,15 @@ import {
   } from 'recharts'
 
 import './YearStats.css'
-import db from '../../../../services/db'
 import { AumtWeeklyTraining } from '../../../../types'
-import { notification } from 'antd'
 
 
 interface YearStatsProps {
+    onTrainingClick: (trainingId: string) => void;
+    forms: AumtWeeklyTraining[]
 }
 
 interface YearStatsState {
-    allForms: AumtWeeklyTraining[]
-    loadingForms: boolean
     currentGraphData: {week: string, total: number}[]
 }
 
@@ -28,48 +26,30 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
     constructor(props: YearStatsProps) {
         super(props)
         this.state = {
-            loadingForms: false,
-            allForms: [],
             currentGraphData: []
         }
     }
-    componentDidMount() {
-        this.setState({
-            ...this.state,
-            loadingForms: true
-        })
-        db.getAllForms()
-            .then((forms: AumtWeeklyTraining[]) => {
-                const graphData = forms.map((form) => {
-                    return {
-                        week: form.trainingId,
-                        total: form.sessions.reduce((sum, cur) => {
-                            return sum + Object.keys(cur.members).length
-                        }, 0)
-                    }
-                })
-                this.setState({
-                    ...this.state,
-                    allForms: forms,
-                    currentGraphData: graphData,
-                    loadingForms: false
-                })
+    componentDidUpdate(prevProps: YearStatsProps, prevState: YearStatsState) {
+        if (this.props !== prevProps && this.props.forms) {
+            const graphData = this.props.forms.map((form) => {
+                return {
+                    week: form.trainingId,
+                    total: form.sessions.reduce((sum, cur) => {
+                        return sum + Object.keys(cur.members).length
+                    }, 0)
+                }
             })
-            .catch((err) => {
-                notification.error({
-                    message: err.toString()
-                })
-                this.setState({
-                    ...this.state,
-                    loadingForms: false
-                })
+            this.setState({
+                ...this.state,
+                currentGraphData: graphData
             })
+        }
     }
     onFormClick = (data: {payload: {week: string}}) => {
-        console.log(data.payload.week)
+        this.props.onTrainingClick(data.payload.week)
     }
     customTooltip = (props: any) => {
-        const currentForm = this.state.allForms.find(f => f.trainingId === props.label)
+        const currentForm = this.props.forms.find(f => f.trainingId === props.label)
         if (!currentForm) {
             return (<div></div>)
         }

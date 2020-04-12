@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
+import { Link } from 'react-router-dom'
 import { Button, Menu, Dropdown, notification } from 'antd'
-import { SyncOutlined, DownOutlined } from '@ant-design/icons'
-import { CreateTraining } from './CreateTraining'
+import { SyncOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons'
 import './TrainingDashboard.css'
 import { WeekStats } from './Stats/WeekStats'
 import { YearStats } from './Stats/YearStats'
@@ -22,6 +22,8 @@ interface TrainingDashboardState {
 }
 
 export class TrainingDashboard extends Component<TrainingDashboardProps, TrainingDashboardState> {
+    private isFirstListen = true
+
     constructor(props: TrainingDashboardProps) {
         super(props)
         this.state = {
@@ -30,6 +32,12 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
             loadingForms: false,
             dbListenerId: ''
         }
+    }
+    signMockData = () => {
+        db.signMockData()
+            .then(() => {
+                console.log('DONE')
+            })
     }
     componentWillUnmount = () => {
         db.unlisten(this.state.dbListenerId)
@@ -75,12 +83,16 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 break
             }
         }
-        this.onFormSelect({key: currentForm.trainingId})
+        this.onFormSelect({key: this.state.currentForm ? this.state.currentForm.trainingId : currentForm.trainingId})
     }
     onDbChanges = (forms: AumtWeeklyTraining[]) => {
-        if (forms && forms.length) {
+        if (!this.isFirstListen && forms && forms.length) {
             this.handleNewForms(forms)
         }
+        this.isFirstListen = false
+    }
+    onClickTraining = (trainingId: string) => {
+        this.onFormSelect({key: trainingId})
     }
     onFormSelect = (event: {key: string}) => {
         const selectedForm = this.state.allForms.find(f => f.trainingId === event.key)
@@ -114,10 +126,17 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         return (
             <div className="trainingDashboardContainer">
                 <div className="weeklyStatSelectorContainer">
-                        <Dropdown
+                        {/* <Button onClick={this.signMockData}>Mock Data</Button> */}
+                        <Link to='/admin/createtraining' className='trainingDashboardCreateButton'>
+                            <Button type='primary' shape='round' size='large'>
+                                Create Training <PlusOutlined />
+                            </Button>
+                        </Link>
+                        <Dropdown className='trainingDashboardFormSelector'
                             overlay={this.getFormsDropdown}>
-                            <Button>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
+                            <Button size='large'>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
                         </Dropdown>
+                        <div className="clearBoth"></div>
                     </div>
                 <div className="weekStatsContainer">
                     <h2 className="sectionHeader">Weekly Stats</h2>
@@ -136,12 +155,16 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 <div className="manageTrainingsWrapper">
                     <h2 className="sectionHeader">Manage Trainings</h2>
                     <div className="manageTrainingsComponentWrapper">
-                        <ManageTrainings></ManageTrainings>
+                        <ManageTrainings
+                            trainings={this.state.allForms}
+                            loadingTrainings={this.state.loadingForms}
+                            onTrainingClick={this.onClickTraining}
+                            ></ManageTrainings>
                     </div>
                 </div>
                 <div className="yearStatsWrapper">
                     <h2 className="sectionHeader">Yearly Stats</h2>
-                    <YearStats></YearStats>
+                    <YearStats forms={this.state.allForms} onTrainingClick={this.onClickTraining}></YearStats>
                 </div>
                 <div className="clearBoth"></div>
             </div>
