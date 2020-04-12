@@ -8,7 +8,6 @@ class GraphUtil {
             sessionObj[session.sessionId] = 0
             return sessionObj
         }, {} as Record<string, number>)
-
         const points = form.sessions.reduce((arr, session) => {
             const memberUids = Object.keys(session.members)
             for (let uid of memberUids) {

@@ -48,6 +48,9 @@ class DB {
 
     public submitNewForm = (formData: AumtWeeklyTraining): Promise<void> => {
         if (this.db) {
+            if (!formData) {
+                return Promise.reject('No form data submitted')
+            }
             return this.db.collection('weekly_trainings')
                 .doc(formData.trainingId)
                 .set(formData)
@@ -299,20 +302,21 @@ class DB {
                 .then((uids: MockMember[]) => {
                     return this.getAllForms()
                         .then((forms: AumtWeeklyTraining[]) => {
-                            const form = forms.find(f => f.title.indexOf('Week 3') > -1)
+                            const form = forms.find(f => f.title.indexOf('Week 7') > -1)
                             if (!form) throw new Error('NO FORM')
-                            form.sessions.forEach((session) => {
+                            form.sessions = form.sessions.map((session) => {
                                 const randLimit = Math.floor(Math.random() * 15 + 16)
                                 for (let i = 0; i < randLimit; i ++) {
-                                    if (!uids.length || Object.keys(session.members).length > session.limit) {
-                                        return
+                                    if (!uids.length || Object.keys(session.members).length >= session.limit) {
+                                        break
                                     }
                                     const randIndex = Math.floor(Math.random() * uids.length)
                                     const memberI = uids[randIndex]
                                     uids.splice(randIndex, 1)
                                     const uid = Object.keys(memberI)[0]
-                                    session.members[uid] = memberI[uid]
+                                    session.members[uid] = Object.assign({}, memberI[uid])
                                 }
+                                return session
                             })
                             return form
                         })
@@ -332,7 +336,7 @@ class DB {
     private docToForm = (docData: any): AumtWeeklyTraining => {
         const docSessions = docData.sessions.map((session: any) => {
             Object.keys(session.members).forEach((i) => {
-                session.members[i].timeAdded = new Date(session.members[i].timeAdded.seconds)
+                session.members[i].timeAdded = new Date(session.members[i].timeAdded.seconds * 1000)
             })
             return session
         })

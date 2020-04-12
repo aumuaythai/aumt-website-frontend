@@ -95,6 +95,10 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
                 currentGraphData: data,
                 currentSessionMap: currentSessionMap
             })
+        } else {
+            notification.error({
+                message: 'No form found for selection...'
+            })
         }
     }
 
