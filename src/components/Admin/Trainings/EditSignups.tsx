@@ -42,7 +42,6 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
     }
     onRemoveClick = (sessionId: string) => {
         const uidToRemove = this.state.selectedMembers[sessionId]
-        console.log('removing uid', uidToRemove, sessionId)
         if (uidToRemove) {
             this.setState({
                 ...this.state,
@@ -50,14 +49,16 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
             })
             db.removeMemberFromForm(uidToRemove, this.props.form.trainingId, sessionId)
                 .then(() => {
+                    this.setState({
+                        ...this.state,
+                        removingInProcess: Object.assign(this.state.removingInProcess, {[sessionId]: false})
+                    })
                     this.props.requestRefresh()
                 })
                 .catch((err) => {
                     notification.error({
                         message: 'Error removing member: ' + err.toString()
                     })
-                })
-                .finally(() => {
                     this.setState({
                         ...this.state,
                         removingInProcess: Object.assign(this.state.removingInProcess, {[sessionId]: false})

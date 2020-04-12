@@ -174,7 +174,6 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             notification.error({message: 'All session options must have a title'})
             return
         }
-        console.log(this.state.currentSessions)
         this.setState({
             ...this.state,
             isSubmitting: true,

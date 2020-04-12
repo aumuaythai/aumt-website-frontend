@@ -109,29 +109,30 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
     render() {
         return (
             <div className='yearStatsContainer'>
-                    <ResponsiveContainer width = '100%' height = {300} >
-                        <LineChart data={this.state.currentGraphData}>
-                            <XAxis
-                                dataKey = 'week'
-                                tickFormatter={(tick) => tick.substring(0, 5)}
-                                domain = {['auto', 'auto']}
-                                name = 'Week'
-                            />
-                            <CartesianGrid horizontal={true} vertical={false}/>
-                                <Tooltip content={this.customTooltip}/>
-                            <YAxis/>
-                        {
-                            this.state.allForms && this.state.allForms.map((form) => {
-                                return (
-                                    <Line
-                                        key={form.trainingId}
-                                        dataKey='total'
-                                        />
-                                    )
-                            })
-                        }
-                        </LineChart>
-                    </ResponsiveContainer>
+                <h2 className='yearStatTitle'>Year Stats</h2>
+                <ResponsiveContainer width = '100%' height = {300} >
+                    <LineChart data={this.state.currentGraphData}>
+                        <XAxis
+                            dataKey = 'week'
+                            tickFormatter={(tick) => tick.substring(0, 5)}
+                            domain = {['auto', 'auto']}
+                            name = 'Week'
+                        />
+                        <CartesianGrid horizontal={true} vertical={false}/>
+                            <Tooltip content={this.customTooltip}/>
+                        <YAxis/>
+                    {
+                        this.state.allForms && this.state.allForms.map((form) => {
+                            return (
+                                <Line
+                                    key={form.trainingId}
+                                    dataKey='total'
+                                    />
+                                )
+                        })
+                    }
+                    </LineChart>
+                </ResponsiveContainer>
             </div>
         )
     }

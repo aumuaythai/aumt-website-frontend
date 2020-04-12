@@ -16,10 +16,10 @@ class GraphUtil {
                 const sessionNameCopy = Object.assign({}, sessionNames)
                 sessionNameCopy[session.sessionId] += 1
                 const memberPoint = Object.assign({
-                    time: uidTime.getTime() * 1000,
+                    time: uidTime.getTime(),
                 }, sessionNameCopy)
                 for (let i = 0; i < arr.length; i ++) {
-                    if (arr[i].time > uidTime.getTime() * 1000) {
+                    if (arr[i].time > uidTime.getTime()) {
                         arr.splice(i, 0, memberPoint)
                         inserted = true
                         break

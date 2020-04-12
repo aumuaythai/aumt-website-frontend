@@ -75,7 +75,6 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
     }
 
     removeEvent = (eventId: string) => {
-        console.log('removing', eventId)
         this.setState({
             ...this.state,
             removingEvent: Object.assign(this.state.removingEvent, {
