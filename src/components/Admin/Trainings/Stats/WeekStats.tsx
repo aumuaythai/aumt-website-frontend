@@ -142,18 +142,17 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
         }
         return (
             <div className='WeekStatsContainer'>
-                <div className="WeekStatHeader">
-                    <h2 className="weeklyStatTitle">Week Stats</h2>
+                {/* <div className="WeekStatHeader">
                     <div className="weeklyStatSelectorContainer">
                         <Dropdown
                             overlay={this.getFormsDropdown}>
                             <Button>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
                         </Dropdown>
                     </div>
-                </div>
+                </div> */}
                 <div className="clearBoth"></div>
                 <div className="WeekStatGraphWrapper">
-                    <ResponsiveContainer width = '100%' height = {300} >
+                    <ResponsiveContainer width = '100%' height = {330} >
                         <AreaChart data={this.state.currentGraphData}>
                             <XAxis
                                 dataKey = 'time'
@@ -180,16 +179,6 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
-                <div className="weekStatsDisplayWrapper">
-                    {this.state.currentForm && this.state.currentForm.sessions.reverse().map((session) => {
-                        return (
-                            <div key={session.sessionId} className="weekStatEachContainer">
-                                <Statistic title={session.title} value={Object.keys(session.members).length} suffix={`/ ${session.limit}`} />
-                            </div>
-                        )
-                    })}
-                </div>
-                <div className="clearBoth"></div>
             </div>
         )
     }

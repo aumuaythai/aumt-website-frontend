@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Select, Button, notification, Dropdown, Menu, Tooltip, Row, Col} from 'antd'
+import {Select, Button, Statistic, notification, Dropdown, Menu, Tooltip, Row, Col} from 'antd'
 import './EditSignups.css'
 import db from '../../../services/db'
 import { AumtWeeklyTraining, AumtTrainingSession } from '../../../types'
@@ -132,9 +132,14 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                         <div key={session.sessionId} className="sessionSelectContainer">
                             <Row>
                             <Col span={8} className="editSignupsTitleAndSelect">
-                                <Tooltip title={`${Object.keys(session.members).length} signed up (limit ${session.limit})`}>
+                                {/* <Tooltip title={`${Object.keys(session.members).length} signed up (limit ${session.limit})`}>
                                 <span>{session.title} </span>
-                                </Tooltip>
+                                </Tooltip> */}
+                                <div className="weekStatsDisplayWrapper">
+                                    <div key={session.sessionId} className="weekStatEachContainer">
+                                        <Statistic title={session.title} value={Object.keys(session.members).length} suffix={`/ ${session.limit}`} />
+                                    </div>
+                                </div>
                             </Col>
                             <Col span={8}>
                                 <Select

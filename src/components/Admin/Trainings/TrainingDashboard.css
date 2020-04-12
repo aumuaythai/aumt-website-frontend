@@ -1,0 +1,31 @@
+.weekStatsContainer {
+    padding: 20px;
+    width: 50%;
+    min-width:500px;
+    float: left;
+}
+.editMembersContainer {
+    padding: 20px;
+    width: 50%;
+    min-width: 500px;
+    float: left;
+}
+.manageTrainingsWrapper {
+    padding: 20px;
+    width: 50%;
+    float: left;
+    min-width: 500px;
+}
+.manageTrainingsComponentWrapper {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+.yearStatsWrapper {
+    padding: 20px;
+    width: 50%;
+    float: left;
+    min-width: 500px;
+}
+.clearBoth {
+    clear: both;
+}

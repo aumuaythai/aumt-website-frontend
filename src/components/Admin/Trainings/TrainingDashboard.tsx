@@ -12,24 +12,40 @@ interface TrainingDashboardProps {
 }
 
 interface TrainingDashboardState {
+    refreshingMemberEdit: boolean
 }
 
 export class TrainingDashboard extends Component<TrainingDashboardProps, TrainingDashboardState> {
+    constructor(props: TrainingDashboardProps) {
+        super(props)
+        this.state = {
+            refreshingMemberEdit: false
+        }
+    }
     requestRefresh = () => {
 
     }
     render() {
         return (
             <div className="trainingDashboardContainer">
-                <WeekStats></WeekStats>
+                <div className="weekStatsContainer">
+                    <h2 className="sectionHeader">Weekly Stats</h2>
+                    <WeekStats></WeekStats>
+                </div>
                 <div className="editMembersContainer">
+                <h2 className="sectionHeader">Edit Members</h2>
                     <EditFormMembersWrapper requestRefresh={this.requestRefresh}></EditFormMembersWrapper>
                 </div>
-                <div className="manageTrainingsContainer">
-                    <ManageTrainings></ManageTrainings>
+                <div className="clearBoth"></div>
+                <div className="manageTrainingsWrapper">
+                    <h2 className="sectionHeader">Manage Trainings</h2>
+                    <div className="manageTrainingsComponentWrapper">
+                        <ManageTrainings></ManageTrainings>
+                    </div>
                 </div>
-                <div className="yearStatsContainer">
-                <YearStats></YearStats>
+                <div className="yearStatsWrapper">
+                    <h2 className="sectionHeader">Yearly Stats</h2>
+                    <YearStats></YearStats>
                 </div>
             </div>
         )

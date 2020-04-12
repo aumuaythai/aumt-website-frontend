@@ -112,7 +112,6 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
     render() {
         return (
             <div className='yearStatsContainer'>
-                <h2 className='yearStatTitle'>Year Stats</h2>
                 <ResponsiveContainer width = '100%' height = {300} >
                     <LineChart data={this.state.currentGraphData}>
                         <XAxis
