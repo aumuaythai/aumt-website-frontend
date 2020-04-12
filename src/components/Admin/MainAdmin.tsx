@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import { Switch, Route, Link } from 'react-router-dom';
-import { Menu } from 'antd'
+import { Menu, Button } from 'antd'
+import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { CreateTraining } from './Trainings/CreateTraining'
 import { CreateEvent } from './Events/CreateEvent'
 import {ManageEvents} from './Events/ManageEvents'
@@ -50,7 +51,13 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                     <Switch>
                         <Route path='/admin/events'>
                             <div className="manageEventsContainer">
-                                <h2 className="createTrainingTitle">Manage Events </h2>
+                                <div className="mainAdminEventsHeader">
+                                    <h2 className="createEventTitle manageEventTitle">Manage Events</h2>
+                                    <Link to='/admin/createevent' className='mainAdminCreateEventButton'>
+                                        <Button type='primary' size='large' shape='round'>Create Event <PlusOutlined /></Button>
+                                    </Link>
+                                    <div className="clearBoth"></div>
+                                </div>
                                 <ManageEvents></ManageEvents>
                             </div>
                         </Route>
@@ -58,12 +65,24 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                             Members
                         </Route>
                         <Route path='/admin/createtraining'>
-                            <h2 className='createTrainingTitle'>Create Training</h2>
-                            <CreateTraining onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining>
+                            <div className="mainAdminCreateFormContainer">
+                                <h2 className='createTrainingTitle'>
+                                    <Link className='mainAdminCreateBack' to='/admin'>
+                                        <ArrowLeftOutlined />
+                                    </Link>
+                                    Create Training</h2>
+                                <CreateTraining onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining>
+                            </div>
                         </Route>
                         <Route path='/admin/createevent'>
-                            <h2 className="createTrainingTitle">Create Event</h2>
-                            <CreateEvent onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent>
+                            <div className="mainAdminCreateFormContainer">
+                                <h2 className="createTrainingTitle">
+                                    <Link className='mainAdminCreateBack' to='/admin/events'>
+                                        <ArrowLeftOutlined />
+                                    </Link>
+                                    Create Event</h2>
+                                <CreateEvent onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent>
+                            </div>
                         </Route>
                         <Route path='/admin'>
                             <TrainingDashboard></TrainingDashboard>
