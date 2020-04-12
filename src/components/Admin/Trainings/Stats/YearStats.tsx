@@ -65,6 +65,9 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                 })
             })
     }
+    onFormClick = (data: {payload: {week: string}}) => {
+        console.log(data.payload.week)
+    }
     customTooltip = (props: any) => {
         const currentForm = this.state.allForms.find(f => f.trainingId === props.label)
         if (!currentForm) {
@@ -121,16 +124,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                         <CartesianGrid horizontal={true} vertical={false}/>
                             <Tooltip content={this.customTooltip}/>
                         <YAxis/>
-                    {
-                        this.state.allForms && this.state.allForms.map((form) => {
-                            return (
-                                <Line
-                                    key={form.trainingId}
-                                    dataKey='total'
-                                    />
-                                )
-                        })
-                    }
+                    <Line dataKey='total' activeDot={{onClick: (p: {payload: {week: string}})=> this.onFormClick(p) }}/>
                     </LineChart>
                 </ResponsiveContainer>
             </div>
