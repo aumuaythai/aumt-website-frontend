@@ -55,7 +55,6 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                         ...this.state,
                         removingInProcess: Object.assign(this.state.removingInProcess, {[sessionId]: false})
                     })
-                    // this.props.requestRefresh()
                 })
                 .catch((err) => {
                     notification.error({
@@ -75,7 +74,10 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         const displayName = session &&
             session.members[currentUserIdSelected] &&
             session.members[currentUserIdSelected].name
-        if (!displayName) {
+        const timeAdded = session &&
+            session.members[currentUserIdSelected] &&
+            session.members[currentUserIdSelected].timeAdded
+        if (!displayName || !timeAdded) {
             return notification.error({
                 message: 'No user found for user id ' + currentUserIdSelected + ' in session'
             })
@@ -86,15 +88,14 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                 [fromSession]: true
             })
         })
-        db.moveMember(currentUserIdSelected, displayName, this.props.form.trainingId, fromSession, key)
+        db.moveMember(currentUserIdSelected, displayName, timeAdded, this.props.form.trainingId, fromSession, key)
             .then(() => {
                 this.setState({
                     ...this.state,
                     movingInProcess: Object.assign(this.state.movingInProcess, {[fromSession]: false})
                 })
-                // this.props.requestRefresh()
             })
-            .catch((err) => {
+            .catch((err: Error) => {
                 this.setState({
                     ...this.state,
                     movingInProcess: Object.assign(this.state.movingInProcess, {[fromSession]: false})

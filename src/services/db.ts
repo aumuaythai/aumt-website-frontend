@@ -161,9 +161,9 @@ class DB {
             })
     }
 
-    public moveMember = (userId: string, displayName: string, formId: string, fromSessionId: string, toSessionId: string): Promise<string> => {
+    public moveMember = (userId: string, displayName: string, timeAdded: Date,formId: string, fromSessionId: string, toSessionId: string): Promise<string> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.signUserUp(userId, displayName, formId, toSessionId, '')
+        return this.signUserUp(userId, displayName, timeAdded, formId, toSessionId, '')
             .then(() => {
                 return this.removeMemberFromForm(userId,formId,fromSessionId)
             })
@@ -200,7 +200,7 @@ class DB {
                     }
                 })
     }
-    public signUserUp = (userId: string, displayName: string, formId: string, sessionId: string, feedback: string): Promise<void> => {
+    public signUserUp = (userId: string, displayName: string, timeAdded: Date, formId: string, sessionId: string, feedback: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.isMemberSignedUpToForm(userId, formId, true)
             .then(() => {
@@ -224,7 +224,7 @@ class DB {
                 if (session) {
                     session.members[userId] = {
                         name: displayName,
-                        timeAdded: new Date()
+                        timeAdded: timeAdded
                     }
                     return this.db?.collection('weekly_trainings')
                         .doc(formId)

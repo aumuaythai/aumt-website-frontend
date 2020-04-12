@@ -76,6 +76,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         db.signUserUp(
                 this.props.authedUserId,
                 displayName,
+                new Date(),
                 this.props.id,
                 optionSelected,
                 this.state.currentFeedback)
