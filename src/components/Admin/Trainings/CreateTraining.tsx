@@ -251,7 +251,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                     <Button
                         type='primary'
                         loading={this.state.isSubmitting}
-                        onClick={this.onSubmitForm}>Submit Form</Button>
+                        onClick={this.onSubmitForm}>Save Training</Button>
                 </div>
             </div>
         )

@@ -39,6 +39,9 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
             })
         })
     }
+    memberSort = (uidA: string, uidB: string, session: AumtTrainingSession): number => {
+        return session.members[uidA].name > session.members[uidB].name ? 1 : -1
+    }
     onRemoveClick = (sessionId: string) => {
         const uidToRemove = this.state.selectedMembers[sessionId]
         if (uidToRemove) {
@@ -148,7 +151,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                     optionFilterProp="children"
                                     onChange={e => this.onSelectChange(e, session.sessionId)}
                                     >
-                                        {Object.keys(session.members).map((member) => {
+                                        {Object.keys(session.members).sort((a, b) => this.memberSort(a, b, session)).map((member) => {
                                                 return (
                                                     <Select.Option key={member} value={member}>{session.members[member].name}</Select.Option>
                                                 )
