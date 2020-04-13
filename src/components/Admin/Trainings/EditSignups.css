@@ -6,7 +6,9 @@
 }
 .editSignedUpMembersContainer {
     padding: 0 10px;
+    overflow-y: auto;
+    max-height: 320px;
 }
 .sessionSelectContainer {
-    padding: 10px 0
+    padding-bottom: 10px;
 }
