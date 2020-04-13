@@ -51,6 +51,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
             })
             db.removeMemberFromForm(uidToRemove, this.props.form.trainingId, sessionId)
                 .then(() => {
+                    delete this.state.selectedMembers[sessionId]
                     this.setState({
                         ...this.state,
                         removingInProcess: Object.assign(this.state.removingInProcess, {[sessionId]: false})
@@ -90,6 +91,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         })
         db.moveMember(currentUserIdSelected, displayName, timeAdded, this.props.form.trainingId, fromSession, key)
             .then(() => {
+                delete this.state.selectedMembers[fromSession]
                 this.setState({
                     ...this.state,
                     movingInProcess: Object.assign(this.state.movingInProcess, {[fromSession]: false})
@@ -135,9 +137,6 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                         <div key={session.sessionId} className="sessionSelectContainer">
                             <Row>
                             <Col span={8} className="editSignupsTitleAndSelect">
-                                {/* <Tooltip title={`${Object.keys(session.members).length} signed up (limit ${session.limit})`}>
-                                <span>{session.title} </span>
-                                </Tooltip> */}
                                 <div className="weekStatsDisplayWrapper">
                                     <div key={session.sessionId} className="weekStatEachContainer">
                                         <Statistic title={session.title} value={Object.keys(session.members).length} suffix={`/ ${session.limit}`} />
