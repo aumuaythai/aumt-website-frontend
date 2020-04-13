@@ -53,7 +53,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 this.setState({
                     ...this.state,
                     loadingForms: false,
-                    dbListenerId: db.listen(this.onDbChanges)
+                    dbListenerId: db.listenToTrainings(this.onDbChanges)
                 })
 
             })

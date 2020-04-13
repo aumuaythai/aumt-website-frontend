@@ -288,7 +288,7 @@ class DB {
             })
     }
 
-    listen = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
+    listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('weekly_trainings')
