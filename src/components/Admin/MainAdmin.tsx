@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Menu, Button } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
-import { CreateTraining } from './Trainings/CreateTraining'
-import { CreateEvent } from './Events/CreateEvent'
+import CreateTraining from './Trainings/CreateTraining'
+import CreateEvent from './Events/CreateEvent'
 import {ManageEvents} from './Events/ManageEvents'
 import './MainAdmin.css'
 import { TrainingDashboard } from './Trainings/TrainingDashboard'
@@ -11,15 +11,32 @@ import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import db from '../../services/db'
 
 
-interface MainAdminProps {
+interface MainAdminProps extends RouteComponentProps {
 }
 
-interface MainAdminState {}
+interface MainAdminState {
+    editingTrainingData: AumtWeeklyTraining | null
+    editingEventData: AumtEvent | null
+}
 
-export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
+class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     constructor(props: MainAdminProps) {
         super(props)
-        this.state = { }
+        this.state = {
+            editingTrainingData: null,
+            editingEventData: null
+        }
+    }
+
+    onEditTrainingRequest = (data: AumtWeeklyTraining) => {
+        this.setState({...this.state, editingTrainingData: data}, () => {
+            this.props.history.push(`/admin/edittraining/${data.trainingId}`)
+        })
+    }
+    onEditEventRequest = (data: AumtEvent) => {
+        this.setState({...this.state, editingEventData: data}, () => {
+            this.props.history.push(`/admin/editevent/${data.id}`)
+        })
     }
 
     onCreateTrainingSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {
@@ -58,7 +75,7 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                     </Link>
                                     <div className="clearBoth"></div>
                                 </div>
-                                <ManageEvents></ManageEvents>
+                                <ManageEvents onEditEventRequest={this.onEditEventRequest}></ManageEvents>
                             </div>
                         </Route>
                         <Route path='/admin/members'>
@@ -84,8 +101,40 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                 <CreateEvent onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent>
                             </div>
                         </Route>
+                        <Route path='/admin/edittraining/:trainingid'>
+                            <div className="mainAdminCreateFormContainer">
+                                {this.state.editingTrainingData ?
+                                <div>
+                                    <h2 className='createTrainingTitle'>
+                                        <Link className='mainAdminCreateBack' to='/admin'>
+                                            <ArrowLeftOutlined />
+                                        </Link>
+                                        Edit {this.state.editingTrainingData.title} </h2>
+                                    <CreateTraining
+                                        defaultValues={this.state.editingTrainingData}
+                                        onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining>
+                                </div>:
+                                        ''}
+                            </div>
+                        </Route>
+                        <Route path='/admin/editevent/:eventId'>
+                            <div className="mainAdminCreateFormContainer">
+                                {this.state.editingEventData ?
+                                <div>
+                                    <h2 className='createTrainingTitle'>
+                                        <Link className='mainAdminCreateBack' to='/admin/events'>
+                                            <ArrowLeftOutlined />
+                                        </Link>
+                                    Edit {this.state.editingEventData.title} </h2>
+                                    <CreateEvent
+                                        defaultValues={this.state.editingEventData}
+                                        onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent>
+                                </div>:
+                                        ''}
+                            </div>
+                        </Route>
                         <Route path='/admin'>
-                            <TrainingDashboard></TrainingDashboard>
+                            <TrainingDashboard onEditTrainingRequest={this.onEditTrainingRequest}></TrainingDashboard>
                         </Route>
                     </Switch>
                 </div>
@@ -93,3 +142,5 @@ export class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         )
     }
 }
+
+export default withRouter(MainAdmin)

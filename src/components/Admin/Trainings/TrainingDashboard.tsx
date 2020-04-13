@@ -12,6 +12,7 @@ import db from '../../../services/db'
 
 
 interface TrainingDashboardProps {
+    onEditTrainingRequest: (training: AumtWeeklyTraining) => void
 }
 
 interface TrainingDashboardState {
@@ -159,6 +160,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                             trainings={this.state.allForms}
                             loadingTrainings={this.state.loadingForms}
                             onTrainingClick={this.onClickTraining}
+                            onEditTrainingRequest={this.props.onEditTrainingRequest}
                             ></ManageTrainings>
                     </div>
                 </div>

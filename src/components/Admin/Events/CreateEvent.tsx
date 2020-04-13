@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
+import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
 import { Button, Input, DatePicker, notification } from 'antd'
 import moment from 'moment'
 import './CreateEvent.css'
 import { AumtEvent } from '../../../types'
 
 
-interface CreateEventProps {
+interface CreateEventProps extends RouteComponentProps {
     onCreateEventSubmit: (eventData: AumtEvent) => Promise<void>
     defaultValues?: AumtEvent
 }
@@ -22,7 +23,7 @@ interface CreateEventState {
     isSubmitting: boolean
 }
 
-export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
+class CreateEvent extends Component<CreateEventProps, CreateEventState> {
     constructor(props: CreateEventProps) {
         super(props)
         this.state = {
@@ -147,6 +148,7 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 notification.success({
                     message: 'Event Submitted'
                 })
+                this.props.history.push('/admin/events')
             })
             .catch((err) => {
                 this.setState({
@@ -187,11 +189,17 @@ export class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 </p>
                 <div className='submitEventContainer'>
                     <Button
+                        className='createEventSubmitButton'
                         type='primary'
                         loading={this.state.isSubmitting}
                         onClick={this.onSubmitEvent}>Submit Event</Button>
+                    <Link to='/admin/events'>
+                        <Button>Cancel</Button>
+                    </Link>
                 </div>
             </div>
         )
     }
 }
+
+export default withRouter(CreateEvent)

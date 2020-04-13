@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import { Button, Input, InputNumber, DatePicker, notification } from 'antd'
 import moment from 'moment'
 import { MinusCircleOutlined} from '@ant-design/icons'
@@ -6,7 +7,7 @@ import './CreateTraining.css'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 
 
-interface CreateTrainingProps {
+interface CreateTrainingProps extends RouteComponentProps {
     onCreateSubmit: (trainingData: AumtWeeklyTraining) => Promise<void>
     defaultValues?: AumtWeeklyTraining
 }
@@ -25,7 +26,7 @@ const DEFAULT_TRAINING_LIMIT = 30
 const TRAINING_0_OPENS_DATE = new Date(2020, 1, 23, 0, 0, 0)
 const TRAINING_0_CLOSES_DATE = new Date(2020, 1, 28, 19, 30, 0)
 
-export class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
+class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {
         super(props)
         this.state = {
@@ -197,6 +198,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
             notification.success({
                 message: 'Form submitted'
             })
+            this.props.history.push('/admin')
         })
         .catch((err) => {
             this.setState({
@@ -210,7 +212,7 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
         return (
             <div className='createTrainingContainer'>
                 <span>Use weekly training template for week: </span><InputNumber onChange={this.onPopulateWeekChange} className='populateInput' defaultValue={1} min={1}/><Button onClick={this.populateWeeklyDefaults}>Populate</Button>
-                <h4 className='formSectionTitle'>Form Options</h4>
+                <h4 className='formSectionTitle'>Title</h4>
                 <Input placeholder="Form Title" value={this.state.currentTitle} onChange={e => this.onTrainingTitleChange(e.target.value)}></Input>
                 <div>
                     <span className="formItemTitle">Opens: </span>
@@ -249,11 +251,16 @@ export class CreateTraining extends Component<CreateTrainingProps, CreateTrainin
                 </div>
                 <div className='submitTrainingContainer'>
                     <Button
+                        className='createTrainingSubmitButton'
                         type='primary'
                         loading={this.state.isSubmitting}
                         onClick={this.onSubmitForm}>Save Training</Button>
+                    <Link to='/admin'>
+                        <Button>Cancel</Button>
+                    </Link>
                 </div>
             </div>
         )
     }
 }
+export default withRouter(CreateTraining)

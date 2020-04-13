@@ -2,13 +2,14 @@ import React, {Component} from 'react'
 import { Modal, Alert, Button, notification, Divider } from 'antd'
 import { SyncOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import './ManageTrainings.css'
-import { CreateTraining } from './CreateTraining'
+import CreateTraining from './CreateTraining'
 import { AumtWeeklyTraining } from '../../../types'
 import db from '../../../services/db'
 
 
 interface ManageTrainingsProps {
-    onTrainingClick: (trainingId: string) => void;
+    onTrainingClick: (trainingId: string) => void
+    onEditTrainingRequest: (training: AumtWeeklyTraining) => void
     trainings: AumtWeeklyTraining[]
     loadingTrainings: boolean
 }
@@ -41,10 +42,14 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
         }
     }
     onTrainingEditClick = (trainingId: string) => {
-        this.setState({
-            ...this.state,
-            editingTraining: Object.assign(this.state.editingTraining, {[trainingId]: !this.state.editingTraining[trainingId]})
-        })
+        const training = this.props.trainings.find(t => t.trainingId === trainingId)
+        if (training) {
+            this.props.onEditTrainingRequest(training)
+        } else {
+            notification.error({
+                message: 'No training found for id ' + trainingId
+            })
+        }
     }
 
     onCreateTrainingSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {

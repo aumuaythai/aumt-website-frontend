@@ -2,21 +2,18 @@ import React, {Component} from 'react'
 import { Popconfirm, Alert, Button, notification, Divider } from 'antd'
 import { SyncOutlined } from '@ant-design/icons'
 import './ManageEvents.css'
-import {CreateEvent} from './CreateEvent'
 import { AumtEvent } from '../../../types'
 import db from '../../../services/db'
 
 
 interface ManageEventsProps {
+    onEditEventRequest: (data: AumtEvent) => void
 }
 
 interface ManageEventsState {
     loadingEvents: boolean
     errorText: string
     events: AumtEvent[]
-    editingEvent: {
-        [eventId: string]: boolean
-    },
     removingEvent: {
         [eventId: string]: boolean
     }
@@ -29,7 +26,6 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
             loadingEvents: false,
             errorText: '',
             events: [],
-            editingEvent: {},
             removingEvent: {}
         }
     }
@@ -64,14 +60,14 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
     }
 
     onEventEditClick = (eventId: string) => {
-        this.setState({
-            ...this.state,
-            editingEvent: Object.assign(this.state.editingEvent, {[eventId]: !this.state.editingEvent[eventId]})
-        })
-    }
-
-    onEventEditSubmit = (eventData: AumtEvent): Promise<void> => {
-        return db.submitEvent(eventData)
+        const event = this.state.events.find(e => e.id === eventId)
+        if (event) {
+            this.props.onEditEventRequest(event)
+        } else {
+            notification.open({
+                message: 'No event found for id ' + eventId
+            })
+        }
     }
 
     removeEvent = (eventId: string) => {
@@ -124,7 +120,7 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
                                 </h4>
                                 <div className='manageEventOptions'>
                                     <Button onClick={e => this.onEventEditClick(event.id)}>
-                                        {this.state.editingEvent[event.id] ? 'Cancel Edit' : 'Edit'}
+                                        Edit
                                     </Button>
                                     <Popconfirm title='Confirm Delete Event?' onConfirm={e => this.removeEvent(event.id)}>
                                         <Button loading={this.state.removingEvent[event.id]} type='danger'>Remove</Button>
@@ -132,16 +128,6 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
                                 </div>
                                 <div className="clearBoth"></div>
                             </div>
-                            {this.state.editingEvent[event.id] ?
-                                (
-                                    <div className="eventEditManage">
-                                        <CreateEvent
-                                            onCreateEventSubmit={this.onEventEditSubmit}
-                                            defaultValues={event}
-                                            ></CreateEvent>
-                                    </div>
-                                ) :
-                                ''}
                             <Divider/>
                         </div>
                     )

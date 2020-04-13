@@ -15,7 +15,7 @@ import './Aumt.css'
 import {Team} from './Content/info/Team';
 import DB from '../services/db'
 import { AumtMember } from '../types';
-import {MainAdmin} from './Admin/MainAdmin';
+import MainAdmin from './Admin/MainAdmin';
 
 export interface AumtProps {
 

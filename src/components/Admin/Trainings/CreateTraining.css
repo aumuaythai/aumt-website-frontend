@@ -29,3 +29,6 @@
     padding-left: 10px;
     cursor: pointer;
 }
+.createTrainingSubmitButton {
+    margin: 0 10px 0 0;
+}
