@@ -196,7 +196,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 isSubmitting: false,
             })
             notification.success({
-                message: 'Form submitted'
+                message: 'Training Saved'
             })
             this.props.history.push('/admin')
         })

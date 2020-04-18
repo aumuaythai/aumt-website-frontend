@@ -12,8 +12,12 @@ export interface AumtMember {
     isUoAStudent: 'Yes' | 'No'
     lastName: string
     membership: 'S1' | 'S2' | 'FY' | null
-    password: string
+    password: ''
     preferredName: string
+}
+
+export interface AumtMembersObj {
+    [uid: string]: AumtMember
 }
 
 export interface AumtAdmin {

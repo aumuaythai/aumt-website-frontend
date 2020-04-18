@@ -1,5 +1,5 @@
 import * as firebase from 'firebase'
-import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj } from '../types';
 
 type MockMember = {
     [uid: string]: {
@@ -38,6 +38,19 @@ class DB {
         return this.db.collection('admin').doc(userId).get()
             .then((doc) => {
                 return !!doc.exists
+            })
+    }
+
+    public getAllMembers = (): Promise<AumtMembersObj> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('members').get()
+            .then((querySnapshot) => {
+                const members: AumtMembersObj = {}
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data()
+                    members[doc.id] = this.docToMember(data)
+                })
+                return members
             })
     }
 
@@ -339,6 +352,27 @@ class DB {
             notes: docData.notes.split('%%NEWLINE%%').join('\n')
         }
         return weeklyTraining
+    }
+
+    private docToMember = (docData: any): AumtMember => {
+        const member: AumtMember = {
+            EmergencyContactName: docData.EmergencyContactName,
+            EmergencyContactNumber: docData.EmergencyContactNumber,
+            Relationship: docData.Relationship,
+            UPI: docData.UPI,
+            disabled: docData.disabled,
+            displayName: docData.displayName,
+            email: docData.email,
+            emailVerified: docData.emailVerified,
+            firstName: docData.firstName,
+            isReturningMember: docData.isReturningMember,
+            isUoAStudent: docData.isUoAStudent,
+            lastName: docData.lastName,
+            membership: docData.membership,
+            password: docData.password,
+            preferredName: docData.preferredName,
+        }
+        return member
     }
 }
 

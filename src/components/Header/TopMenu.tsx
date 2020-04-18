@@ -78,7 +78,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
         {this.props.isAdmin ?
           (
             <Menu.Item key="Admin">
-              <Link to='/admin'>Admin</Link>
+              <Link to='/admin/members'>Admin</Link>
             </Menu.Item>
           ) : ''}
       </Menu>

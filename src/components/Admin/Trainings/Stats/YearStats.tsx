@@ -31,14 +31,17 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
     }
     componentDidUpdate(prevProps: YearStatsProps, prevState: YearStatsState) {
         if (this.props !== prevProps && this.props.forms) {
-            const graphData = this.props.forms.map((form) => {
-                return {
-                    week: form.trainingId,
-                    total: form.sessions.reduce((sum, cur) => {
-                        return sum + Object.keys(cur.members).length
-                    }, 0)
-                }
-            })
+            const now = new Date()
+            const graphData = this.props.forms
+                .filter(f => f.opens < now)
+                .map((form) => {
+                    return {
+                        week: form.trainingId,
+                        total: form.sessions.reduce((sum, cur) => {
+                            return sum + Object.keys(cur.members).length
+                        }, 0)
+                    }
+                })
             this.setState({
                 ...this.state,
                 currentGraphData: graphData

@@ -1,8 +1,10 @@
-import { AumtWeeklyTraining } from "../types"
+import { AumtWeeklyTraining, AumtMembersObj, AumtMember } from "../types"
 
 export type MemberPoint = Record<string, number>
+export type TableDataLine = AumtMember & {key: string}
+export type TableColumn = any
 
-class GraphUtil {
+class DataFormatUtil {
     getDataFromForm = (form: AumtWeeklyTraining): MemberPoint[] => {
         let sessionNames = form.sessions.reduce((sessionObj, session) => {
             sessionObj[session.sessionId] = 0
@@ -48,4 +50,4 @@ class GraphUtil {
     }
 }
 
-export default new GraphUtil()
+export default new DataFormatUtil()

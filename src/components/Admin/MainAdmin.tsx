@@ -7,6 +7,7 @@ import CreateEvent from './Events/CreateEvent'
 import {ManageEvents} from './Events/ManageEvents'
 import './MainAdmin.css'
 import { TrainingDashboard } from './Trainings/TrainingDashboard'
+import { MemberDashboard } from './Members/MemberDashboard'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import db from '../../services/db'
 
@@ -79,7 +80,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                             </div>
                         </Route>
                         <Route path='/admin/members'>
-                            Members
+                            <MemberDashboard></MemberDashboard>
                         </Route>
                         <Route path='/admin/createtraining'>
                             <div className="mainAdminCreateFormContainer">

@@ -13,7 +13,7 @@ import {
 import './WeekStats.css'
 import { AumtWeeklyTraining } from '../../../../types'
 import moment from 'moment'
-import GraphUtil, {MemberPoint} from '../../../../services/graph.util'
+import DataFormatUtil, {MemberPoint} from '../../../../services/data.formatter'
 import { TrainingGraphTooltip, GraphSessionMap } from './TrainingGraphTooltip'
 
 
@@ -40,7 +40,7 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
 
     componentDidUpdate(prevProps: WeekStatsProps, prevState: WeekStatsState) {
         if (this.props !== prevProps && this.props.form) {
-            const data = GraphUtil.getDataFromForm(this.props.form)
+            const data = DataFormatUtil.getDataFromForm(this.props.form)
             const currentSessionMap: GraphSessionMap  = {}
             this.props.form.sessions.forEach((session) => {
                 currentSessionMap[session.sessionId] = {
