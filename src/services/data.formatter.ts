@@ -1,4 +1,4 @@
-import { AumtWeeklyTraining, AumtMembersObj, AumtMember } from "../types"
+import { AumtWeeklyTraining } from "../types"
 
 export type MemberPoint = Record<string, number>
 

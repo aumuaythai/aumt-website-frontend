@@ -1,3 +1,15 @@
 .retrievingMembersText {
     text-align: center;
 }
+.memberDashboardTitle {
+    float: left;
+}
+.memberDashboardHeaderButtons {
+    float: right;
+}
+.clearBoth {
+    clear: both
+}
+.memberDashboardHeaderButton {
+    margin: 0 5px;
+}

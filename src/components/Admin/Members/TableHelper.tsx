@@ -2,18 +2,22 @@ import React, {Component} from 'react'
 import Highlighter from 'react-highlight-words';
 import { Input, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-import { SyncOutlined } from '@ant-design/icons'
 import './TableHelper.css'
 import { AumtMember, AumtMembersObj } from '../../../types'
+import { TableCurrentDataSource } from 'antd/lib/table/interface';
 
 export type TableDataLine = AumtMember & {key: string, tableName: string}
 export type TableColumn = any
 
-interface TableHelperProps {}
+interface TableHelperProps {
+    onMemberSelect: (member: TableDataLine) => void
+}
 
 interface TableHelperState {
     searchedColumn: string
     searchText: string
+    currentData: TableDataLine[]
+    totalMembers: number
 }
 
 export class TableHelper extends Component<TableHelperProps, TableHelperState> {
@@ -21,7 +25,9 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         super(props)
         this.state = {
             searchText: '',
-            searchedColumn: ''
+            searchedColumn: '',
+            currentData: [],
+            totalMembers: 0
         }
     }
 
@@ -77,7 +83,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
           }
         },
         render: (text: string) => {
-            console.log(this.state.searchedColumn, dataIndex)
             return this.state.searchedColumn === dataIndex ? (
                 <Highlighter
                 highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
@@ -90,6 +95,25 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 )
         }
       });
+
+    public onTableChange = (pagination: any, filter: any, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>) => {
+        this.setState({
+            ...this.state,
+            currentData: dataSource.currentDataSource
+        })
+    }
+    
+    public getFooter = (currentDisplay: TableDataLine[]) => {
+        return `Members: ${this.state.currentData.length}/${this.state.totalMembers}`
+    }
+
+    public onRow = (record: TableDataLine) => {
+        return {
+            onClick: () => {
+                this.props.onMemberSelect(record)
+            }
+        }
+    }
 
     public getTableFromMembers = (memberObj: AumtMembersObj): {lines: TableDataLine[], columns: TableColumn[]} => {
         const lines: TableDataLine[] = []
@@ -129,7 +153,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                             { text: 'Full Year', value: 'FY' },
                             {text: 'None', value: null}],
                 onFilter: (value: string, record: TableDataLine) => {
-                    return !record.membership && value === 'None' || record.membership === value
+                    return (!record.membership && value === 'None') || record.membership === value
                 }
             },
             {
@@ -142,6 +166,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 }
             }
         ]
+        this.setState({...this.state, currentData: lines, totalMembers: lines.length})
         return {lines, columns}
     }
     render(){return null}
