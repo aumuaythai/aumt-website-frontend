@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { Table, notification } from 'antd'
 import { SyncOutlined } from '@ant-design/icons'
 import './MemberDashboard.css'
-import DataFormatterUtil, {TableColumn, TableDataLine} from '../../../services/data.formatter'
+import {TableColumn, TableDataLine} from './TableHelper'
 import { AumtMember, AumtMembersObj } from '../../../types'
 import db from '../../../services/db'
 import { TableHelper } from './TableHelper'
@@ -17,7 +17,8 @@ interface MemberDashboardState {
 }
 
 export class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardState> {
-    private tableHelper: React.Ref<TableHelper>
+    private helper: TableHelper| null = null
+    private emptyHelper: boolean = true
     constructor(props: MemberDashboardProps) {
         super(props)
         this.state = {
@@ -26,20 +27,25 @@ export class MemberDashboard extends Component<MemberDashboardProps, MemberDashb
             tableDataSource: [],
             tableColumns: []
         }
-        this.tableHelper = React.createRef()
     }
-    componentDidMount = () => {
+    tableHelperChange = (helper: TableHelper) => {
+        if (this.emptyHelper && helper) {
+            this.helper = helper
+            this.emptyHelper = false
+            this.getMembers()
+        }
+    }
+    getMembers = () => {
         this.setState({...this.state, loadingMembers: true})
         db.getAllMembers()
             .then((memberObj) => {
-                console.log(this.tableHelper)
-                if (this.tableHelper) {
-                // const {lines, columns} = this.tableHelper.current.getTableFromMembers(memberObj)
-                //     this.setState({
-                //         ...this.state,
-                //         tableDataSource: lines,
-                //         tableColumns: columns
-                //     })
+                if (this.helper) {
+                const {lines, columns} = this.helper.getTableFromMembers(memberObj)
+                    this.setState({
+                        ...this.state,
+                        tableDataSource: lines,
+                        tableColumns: columns
+                    })
                 }
             })
             .catch((err) => {
@@ -52,13 +58,12 @@ export class MemberDashboard extends Component<MemberDashboardProps, MemberDashb
             })
     }
     render() {
-        if (this.state.loadingMembers) {
-            return (<p className='retrievingMembersText'>Retrieving Members <SyncOutlined spin/></p>)
-        }
         return (
             <div className='memberDashboardContainer'>
+                <TableHelper ref={this.tableHelperChange}></TableHelper>
+                {this.state.loadingMembers ? 
+                <p className='retrievingMembersText'>Retrieving Members <SyncOutlined spin/></p> : (
                 <div className="memberTableContainer">
-                    <TableHelper ref={this.tableHelper}></TableHelper>
                     <Table
                         size='small'
                         dataSource={this.state.tableDataSource}
@@ -67,6 +72,7 @@ export class MemberDashboard extends Component<MemberDashboardProps, MemberDashb
                         pagination={{pageSize: 50}}
                         scroll={{ y: 540 }}></Table>
                 </div>
+                )}
             </div>
         )
     }

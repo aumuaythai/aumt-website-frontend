@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
+import Highlighter from 'react-highlight-words';
 import { Input, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { SyncOutlined } from '@ant-design/icons'
 import './TableHelper.css'
-import DataFormatterUtil, {TableColumn, TableDataLine} from '../../../services/data.formatter'
 import { AumtMember, AumtMembersObj } from '../../../types'
-import db from '../../../services/db'
+
+export type TableDataLine = AumtMember & {key: string, tableName: string}
+export type TableColumn = any
 
 interface TableHelperProps {}
 
@@ -26,14 +28,19 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     private searchInput: Input|null = null
 
     private handleSearch = (selectedKeys: string[], confirm: Function, dataIndex: string) => {
-
+        confirm();
+        this.setState({
+            searchText: selectedKeys[0],
+            searchedColumn: dataIndex,
+        });
     }
 
     private handleReset = (clearFilters: Function) => {
-
+        clearFilters();
+        this.setState({ searchText: '' });
     }
 
-    private getColumnSearchProps = (dataIndex: keyof AumtMember) => ({
+    private getColumnSearchProps = (dataIndex: keyof TableDataLine) => ({
         filterDropdown: (fns: { setSelectedKeys: Function, selectedKeys: string[], confirm: Function, clearFilters: Function }) => (
           <div style={{ padding: 8 }}>
             <Input
@@ -68,60 +75,52 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
           if (visible) {
             setTimeout(() => this.searchInput?.select())
           }
+        },
+        render: (text: string) => {
+            console.log(this.state.searchedColumn, dataIndex)
+            return this.state.searchedColumn === dataIndex ? (
+                <Highlighter
+                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                searchWords={[this.state.searchText]}
+                autoEscape
+                textToHighlight={text.toString()}
+                />
+                ) : (
+                    text
+                )
         }
-        // render: (text) =>
-        //   this.state.searchedColumn === dataIndex ? (
-        //     <Highlighter
-        //       highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-        //       searchWords={[this.state.searchText]}
-        //       autoEscape
-        //       textToHighlight={text.toString()}
-        //     />
-        //   ) : (
-        //     text
-        //   ),
       });
 
     public getTableFromMembers = (memberObj: AumtMembersObj): {lines: TableDataLine[], columns: TableColumn[]} => {
         const lines: TableDataLine[] = []
         Object.keys(memberObj).forEach((uid: string) => {
-            const line: TableDataLine = {
+            const member = memberObj[uid]
+            const line: TableDataLine = Object.assign({
                 key: uid,
-                ...memberObj[uid]
-            }
+                ...member
+            }, {
+                tableName: member.firstName + (member.preferredName ? ` "${member.preferredName}"` : '') + ' ' + member.lastName
+            })
             lines.push(line)
         })
         const columns: TableColumn[] = [
             {
                 title: 'Name',
-                children: [
-                    {
-                        dataIndex: 'firstName',
-                        title: 'First',
-                        sorter: (a: TableDataLine, b: TableDataLine) => a.firstName.localeCompare(b.firstName),
-                        ...this.getColumnSearchProps('firstName')
-                    },
-                    {
-                        dataIndex: 'lastName',
-                        title: 'Last',
-                        sorter: (a: TableDataLine, b: TableDataLine) => a.lastName.localeCompare(b.lastName)
-                    },
-                    {
-                        dataIndex: 'preferredName',
-                        title: 'Preferred',
-                        sorter: (a: TableDataLine, b: TableDataLine) => a.preferredName.localeCompare(b.preferredName)
-                    }
-                ]
+                dataIndex: 'tableName',
+                sorter: (a: TableDataLine, b: TableDataLine) => a.tableName.localeCompare(b.tableName),
+                ...this.getColumnSearchProps('tableName')
             },
             {
                 dataIndex: 'email',
                 title: 'Email',
-                sorter: (a: TableDataLine, b: TableDataLine) => a.email.localeCompare(b.email)
+                sorter: (a: TableDataLine, b: TableDataLine) => a.email.localeCompare(b.email),
+                ...this.getColumnSearchProps('email')
             },
             {
                 dataIndex: 'UPI',
                 title: 'UPI',
-                sorter: (a: TableDataLine, b: TableDataLine) => a.UPI.localeCompare(b.UPI)
+                sorter: (a: TableDataLine, b: TableDataLine) => a.UPI.localeCompare(b.UPI),
+                ...this.getColumnSearchProps('UPI')
             },
             {
                 dataIndex: 'membership',
@@ -141,23 +140,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 onFilter: (value: string, record: TableDataLine) => {
                     return record.isUoAStudent === value
                 }
-            },
-            {
-                title: 'Emergency Contact',
-                children: [
-                    {
-                        dataIndex: 'EmergencyContactName',
-                        title: 'Name'
-                    },
-                    {
-                        dataIndex: 'EmergencyContactNumber',
-                        title: 'Number'
-                    },
-                    {
-                        dataIndex: 'Relationship',
-                        title: 'Relationship'
-                    }
-                ]
             }
         ]
         return {lines, columns}

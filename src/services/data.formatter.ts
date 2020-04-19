@@ -1,8 +1,6 @@
 import { AumtWeeklyTraining, AumtMembersObj, AumtMember } from "../types"
 
 export type MemberPoint = Record<string, number>
-export type TableDataLine = AumtMember & {key: string}
-export type TableColumn = any
 
 class DataFormatUtil {
     getDataFromForm = (form: AumtWeeklyTraining): MemberPoint[] => {
