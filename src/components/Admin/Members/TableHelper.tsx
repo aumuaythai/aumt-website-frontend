@@ -142,13 +142,14 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             },
             {
                 dataIndex: 'UPI',
-                title: 'UPI',
+                title: 'upi',
                 sorter: (a: TableDataLine, b: TableDataLine) => a.UPI.localeCompare(b.UPI),
                 ...this.getColumnSearchProps('UPI')
             },
             {
                 dataIndex: 'membership',
                 title: 'Membership',
+                width: 130,
                 filters: [{ text: 'Sem 1', value: 'S1' },
                             { text: 'Full Year', value: 'FY' },
                             {text: 'None', value: null}],
@@ -157,13 +158,49 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 }
             },
             {
-                dataIndex: 'isUoAStudent',
-                title: 'UoA Student',
+                dataIndex: 'isReturningMember',
+                title: 'Returning',
+                width: 130,
                 filters: [{ text: 'Yes', value: 'Yes' },
-                            { text: 'No', value: 'No' }],
+                { text: 'No', value: 'No' }],
+                onFilter: (value: string, record: TableDataLine) => {
+                    return record.isReturningMember === value
+                }
+            },
+            {
+                dataIndex: 'isUoAStudent',
+                title: 'UoA',
+                width: 100,
+                filters: [{ text: 'Yes', value: 'Yes' },
+                { text: 'No', value: 'No' }],
                 onFilter: (value: string, record: TableDataLine) => {
                     return record.isUoAStudent === value
                 }
+            },
+            {
+                dataIndex: 'isUoAStudent',
+                title: 'Paid',
+                width:100
+            },
+            {
+                title: 'Emergency Contact',
+                children: [
+                    {
+                        dataIndex: 'EmergencyContactName',
+                        title: 'Name',
+                        ...this.getColumnSearchProps('EmergencyContactName')
+                    },
+                    {
+                        dataIndex: 'EmergencyContactNumber',
+                        title: 'Number',
+                        ...this.getColumnSearchProps('EmergencyContactNumber')
+                    },
+                    {
+                        dataIndex: 'Relationship',
+                        title: 'Relation',
+                        ...this.getColumnSearchProps('Relationship')
+                    }
+                ]                
             }
         ]
         this.setState({...this.state, currentData: lines, totalMembers: lines.length})

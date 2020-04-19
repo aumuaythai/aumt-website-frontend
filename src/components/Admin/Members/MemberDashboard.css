@@ -13,3 +13,24 @@
 .memberDashboardHeaderButton {
     margin: 0 5px;
 }
+.memberDisplaySection {
+    width: 100%;
+    padding: 10px;
+    float: left
+}
+.memberDisplaySectionNarrow {
+    width: 50%;
+    min-width: 500px;
+}
+.memberDetailsSection {
+    width: 50%;
+    float: right;
+    padding: 10px;
+}
+.memberDetailsTitle {
+    float: left;
+}
+.memberDetailsCloseIcon {
+    float: right;
+    cursor: pointer;
+}

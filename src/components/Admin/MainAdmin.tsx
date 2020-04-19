@@ -7,7 +7,7 @@ import CreateEvent from './Events/CreateEvent'
 import {ManageEvents} from './Events/ManageEvents'
 import './MainAdmin.css'
 import { TrainingDashboard } from './Trainings/TrainingDashboard'
-import { MemberDashboard } from './Members/MemberDashboard'
+import MemberDashboard from './Members/MemberDashboard'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import db from '../../services/db'
 
