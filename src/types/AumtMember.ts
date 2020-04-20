@@ -1,19 +1,18 @@
 export interface AumtMember {
-    EmergencyContactName: string
-    EmergencyContactNumber: string
-    Relationship: string
-    UPI: string
-    disabled: boolean
+    firstName: string
+    lastName: string
+    preferredName: string
+    upi: string
     displayName: string
     email: string
     emailVerified: boolean
-    firstName: string
     isReturningMember: 'Yes' | 'No'
     isUoAStudent: 'Yes' | 'No'
-    lastName: string
     membership: 'S1' | 'S2' | 'FY' | null
-    password: ''
-    preferredName: string
+    paid: 'Yes' | 'No'
+    EmergencyContactName: string
+    EmergencyContactNumber: string
+    EmergencyContactRelationship: string
 }
 
 export interface AumtMembersObj {

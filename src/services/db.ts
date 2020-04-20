@@ -146,6 +146,13 @@ class DB {
             .set(memberData)
     }
 
+    public removeMember = (memberId: string): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('members')
+            .doc(memberId)
+            .delete()
+    }
+
     public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<string> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('weekly_trainings')
@@ -261,6 +268,19 @@ class DB {
                             feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
                         })
                 }
+            })
+    }
+
+    formatMembers = () => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('members')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    doc.ref.update({
+                        paid: 'No'
+                    })
+                })
             })
     }
 
@@ -380,18 +400,17 @@ class DB {
         const member: AumtMember = {
             EmergencyContactName: docData.EmergencyContactName,
             EmergencyContactNumber: docData.EmergencyContactNumber,
-            Relationship: docData.Relationship,
-            UPI: docData.UPI,
-            disabled: docData.disabled,
+            EmergencyContactRelationship: docData.EmergencyContactRelationship,
+            upi: docData.upi,
             displayName: docData.displayName,
             email: docData.email,
             emailVerified: docData.emailVerified,
             firstName: docData.firstName,
             isReturningMember: docData.isReturningMember,
             isUoAStudent: docData.isUoAStudent,
+            paid: docData.paid,
             lastName: docData.lastName,
             membership: docData.membership,
-            password: docData.password,
             preferredName: docData.preferredName,
         }
         return member

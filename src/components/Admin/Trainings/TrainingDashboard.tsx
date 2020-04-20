@@ -35,7 +35,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         }
     }
     signMockData = () => {
-        db.signMockData()
+        db.formatMembers()
             .then(() => {
                 console.log('DONE')
             })
@@ -127,7 +127,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         return (
             <div className="trainingDashboardContainer">
                 <div className="weeklyStatSelectorContainer">
-                        {/* <Button onClick={this.signMockData}>Mock Data</Button> */}
+                        <Button onClick={this.signMockData}>Mock Data</Button>
                         <Link to='/admin/createtraining' className='trainingDashboardCreateButton'>
                             <Button type='primary' shape='round' size='large'>
                                 Create Training <PlusOutlined />

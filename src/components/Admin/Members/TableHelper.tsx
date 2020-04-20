@@ -141,10 +141,10 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 ...this.getColumnSearchProps('email')
             },
             {
-                dataIndex: 'UPI',
+                dataIndex: 'upi',
                 title: 'upi',
-                sorter: (a: TableDataLine, b: TableDataLine) => a.UPI.localeCompare(b.UPI),
-                ...this.getColumnSearchProps('UPI')
+                sorter: (a: TableDataLine, b: TableDataLine) => a.upi.localeCompare(b.upi),
+                ...this.getColumnSearchProps('upi')
             },
             {
                 dataIndex: 'membership',
@@ -178,9 +178,13 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 }
             },
             {
-                dataIndex: 'isUoAStudent',
+                dataIndex: 'paid',
                 title: 'Paid',
-                width:100
+                filters: [{ text: 'Yes', value: 'Yes' },
+                    { text: 'No', value: 'No' }],
+                onFilter: (value: string, record: TableDataLine) => {
+                    return record.paid === value
+                }
             },
             {
                 title: 'Emergency Contact',
@@ -196,9 +200,9 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                         ...this.getColumnSearchProps('EmergencyContactNumber')
                     },
                     {
-                        dataIndex: 'Relationship',
+                        dataIndex: 'EmergencyContactRelationship',
                         title: 'Relation',
-                        ...this.getColumnSearchProps('Relationship')
+                        ...this.getColumnSearchProps('EmergencyContactRelationship')
                     }
                 ]                
             }

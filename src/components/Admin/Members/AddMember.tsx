@@ -91,16 +91,15 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
             preferredName: this.state.currentPreferredName,
             email: this.state.currentEmail,
             isUoAStudent: this.state.currentIsUoaStudent,
-            UPI: this.state.currentUpi || '0',
+            upi: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
+            paid: 'No',
             isReturningMember: this.state.currentIsReturningMember,
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,
-            Relationship: this.state.currentECRelationship,
-            disabled: false,
+            EmergencyContactRelationship: this.state.currentECRelationship,
             displayName: '',
             emailVerified: false,
-            password: ''
         }
         if (!member.firstName || !member.lastName) {
             return notification.error({message: 'First and Last Name Required'})
@@ -110,7 +109,7 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
             return notification.error({message: 'You must specify if you are a returning member'})
         } else if (!member.isUoAStudent) {
             return notification.error({message: 'You must specify if you are a student'})
-        } else if (!member.EmergencyContactName || !member.EmergencyContactNumber || !member.Relationship) {
+        } else if (!member.EmergencyContactName || !member.EmergencyContactNumber || !member.EmergencyContactRelationship) {
             return notification.error({message: 'All Emergency Contact Details are Required'})
         }
         this.setState({

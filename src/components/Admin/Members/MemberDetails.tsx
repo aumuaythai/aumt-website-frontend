@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import { Tooltip, Input, Select, Button } from 'antd'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
+import { Tooltip, Input, Select, Button, Popconfirm } from 'antd'
 import {CopyOutlined} from '@ant-design/icons'
 import { MemberAttendance } from './MemberAttendance'
 import './MemberDetails.css'
@@ -8,7 +9,7 @@ import { notification } from 'antd'
 import { AumtMember } from '../../../types'
 import db from '../../../services/db'
 
-interface MemberDetailsProps {
+interface MemberDetailsProps extends RouteComponentProps {
     member: TableDataLine
 }
 
@@ -20,14 +21,16 @@ interface MemberDetailsState {
     currentIsUoaStudent: 'Yes' | 'No'
     currentUpi: string
     currentMembership: 'S1' | 'FY' | 'S2' | null
-    currentIsReturningMember: 'Yes' | 'No'
+    currentPaid: 'Yes' | 'No',
+    currentIsReturningMember: 'Yes' | 'No',
     currentECName: string
     currentECNumber: string
     currentECRelationship: string
     saving: boolean
+    removing: boolean
 }
 
-export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
+class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     constructor(props: MemberDetailsProps) {
         super(props)
         this.state = {
@@ -36,13 +39,15 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
             currentPreferredName: props.member.preferredName,
             currentEmail: props.member.email,
             currentIsUoaStudent: props.member.isUoAStudent,
-            currentUpi: props.member.UPI,
+            currentUpi: props.member.upi,
             currentMembership: props.member.membership,
+            currentPaid: props.member.paid,
             currentIsReturningMember: props.member.isReturningMember,
             currentECName: props.member.EmergencyContactName,
             currentECNumber: props.member.EmergencyContactNumber,
-            currentECRelationship: props.member.Relationship,
-            saving: false
+            currentECRelationship: props.member.EmergencyContactRelationship,
+            saving: false,
+            removing: false,
         }
     }
     componentDidUpdate = (prevProps: MemberDetailsProps) => {
@@ -54,12 +59,13 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
                 currentPreferredName: this.props.member.preferredName,
                 currentEmail: this.props.member.email,
                 currentIsUoaStudent: this.props.member.isUoAStudent,
-                currentUpi: this.props.member.UPI,
+                currentUpi: this.props.member.upi,
                 currentMembership: this.props.member.membership,
+                currentPaid: this.props.member.paid,
                 currentIsReturningMember: this.props.member.isReturningMember,
                 currentECName: this.props.member.EmergencyContactName,
                 currentECNumber: this.props.member.EmergencyContactNumber,
-                currentECRelationship: this.props.member.Relationship
+                currentECRelationship: this.props.member.EmergencyContactRelationship
             })
         }
     }
@@ -88,6 +94,9 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
         }
         this.setState({...this.state, currentMembership: newMembership})
     }
+    onPaidChange = (paid: 'Yes' | 'No') => {
+        this.setState({...this.state, currentPaid: paid})
+    }
     onIsReturningChange = (isReturning: 'Yes' | 'No') => {
         this.setState({...this.state, currentIsReturningMember: isReturning})
     }
@@ -100,6 +109,19 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
     onECRelationChange = (relation: string) => {
         this.setState({...this.state, currentECRelationship: relation})
     }
+    onRemoveClick = () => {
+        this.setState({...this.state, removing: true})
+        db.removeMember(this.props.member.key)
+            .then(() => {
+                this.setState({...this.state, removing: false})
+                notification.success({message: `${this.state.currentFirstName} ${this.state.currentLastName} removed`})
+                this.props.history.push('/admin/members')
+            })
+            .catch((err) => {
+                this.setState({...this.state, removing: false})
+                notification.error({message: err.toString()})
+            })
+    }
     onSaveClick = () => {
         const member: AumtMember = {
             firstName: this.state.currentFirstName,
@@ -107,16 +129,15 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
             preferredName: this.state.currentPreferredName,
             email: this.state.currentEmail,
             isUoAStudent: this.state.currentIsUoaStudent,
-            UPI: this.state.currentUpi || '0',
+            upi: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
+            paid: this.state.currentPaid,
             isReturningMember: this.state.currentIsReturningMember,
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,
-            Relationship: this.state.currentECRelationship,
-            disabled: false,
+            EmergencyContactRelationship: this.state.currentECRelationship,
             displayName: '',
-            emailVerified: false,
-            password: ''
+            emailVerified: false
         }
         if (!member.firstName || !member.lastName) {
             return notification.error({message: 'First and Last Name Required'})
@@ -124,7 +145,7 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
             return notification.error({message: 'Email Required'})
         } else if (!member.isUoAStudent || !member.isReturningMember) {
             return notification.error({message: 'Is UoA Student and Is Returning must be specified'})
-        } else if (!member.EmergencyContactName || !member.EmergencyContactNumber || !member.Relationship) {
+        } else if (!member.EmergencyContactName || !member.EmergencyContactNumber || !member.EmergencyContactRelationship) {
             return notification.error({message: 'All Emergency Contact Details are Required'})
         }
         this.setState({...this.state, saving: true})
@@ -181,7 +202,7 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
                         <div className={`memberDescriptionLine ${this.state.currentIsUoaStudent === 'Yes' ? '' : 'noHeight'}`}>
                             <span className='memberDescriptionTitle'>UPI: </span>
                             <Input className='memberEditInput' value={this.state.currentUpi} onChange={e => this.onUpiChange(e.target.value)}/>
-                            <Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.UPI)}/></Tooltip>
+                            <Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.upi)}/></Tooltip>
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Membership: </span>
@@ -190,6 +211,13 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
                                 <Select.Option value="S2">S2</Select.Option>
                                 <Select.Option value="FY">FY</Select.Option>
                                 <Select.Option value='None'>None</Select.Option>
+                            </Select>
+                        </div>
+                        <div className='memberDescriptionLine'>
+                            <span className='memberDescriptionTitle'>Paid: </span>
+                            <Select value={this.state.currentPaid} onChange={this.onPaidChange} style={{ width: 120 }}>
+                                <Select.Option value="Yes">Yes</Select.Option>
+                                <Select.Option value="No">No</Select.Option>
                             </Select>
                         </div>
                         <div className='memberDescriptionLine'>
@@ -217,7 +245,10 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
                         </div>
                     </div>
                     <div className="memberDescriptionSection">
-                        <Button type='primary' loading={this.state.saving} onClick={this.onSaveClick}>Save {this.state.currentFirstName} {this.state.currentLastName}</Button>
+                        <Button className='memberDescriptionButton' type='primary' loading={this.state.saving} onClick={this.onSaveClick}>Save {this.state.currentFirstName} {this.state.currentLastName}</Button>
+                        <Popconfirm title={`Confirm delete ${this.state.currentFirstName}? RIP`} onConfirm={this.onRemoveClick}>
+                            <Button className='memberDescriptionButton' type='danger' loading={this.state.removing}>Remove {this.state.currentFirstName} {this.state.currentLastName}</Button>
+                        </Popconfirm>
                     </div>
                     <div className="clearBoth"></div>
                 </div>
@@ -229,3 +260,5 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
         )
     }
 }
+
+export default withRouter(MemberDetails)

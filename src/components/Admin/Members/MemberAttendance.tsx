@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { notification, Divider } from 'antd'
+import { notification } from 'antd'
 import {SyncOutlined} from '@ant-design/icons'
 import './MemberAttendance.css'
 import { TableDataLine } from './TableHelper'

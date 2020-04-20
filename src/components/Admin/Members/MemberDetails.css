@@ -32,5 +32,7 @@
 .memberEditInput.longMemberEditInput {
     width: 250px;
 }
-.memberEditInput:focus {
+.memberDescriptionButton {
+    margin: 20px;
+    display: block;
 }
