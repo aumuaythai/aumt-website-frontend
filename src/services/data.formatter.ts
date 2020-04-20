@@ -48,15 +48,18 @@ class DataFormatUtil {
     }
 
     getAttendance = (memberId: string, forms: AumtWeeklyTraining[]) => {
-        const attendance: {formTitle: string, sessionTitle: string}[] = []
+        const attendance: {formTitle: string, formId: string, sessionTitle: string}[] = []
         forms.forEach((form) => {
+            let foundSession = ''
             form.sessions.forEach((session) => {
                 if (session.members[memberId]) {
-                    attendance.push({
-                        formTitle: form.title,
-                        sessionTitle: session.title
-                    })
+                    foundSession = session.title
                 }
+            })
+            attendance.push({
+                formTitle: form.title,
+                formId: form.trainingId,
+                sessionTitle: foundSession
             })
         })
         return attendance

@@ -15,3 +15,7 @@
     padding: 20px 5px;
     border-bottom: 1px solid #BBB;
 }
+.attendanceSessionEdit {
+    cursor: pointer;
+    margin: 0 5px;
+}

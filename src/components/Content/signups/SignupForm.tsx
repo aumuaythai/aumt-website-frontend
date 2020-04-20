@@ -13,6 +13,7 @@ export interface SignupFormProps {
     authedUser: AumtMember
     authedUserId: string
     notes: string
+    onSubmit?: () => void
 }
 
 interface SignupFormState {
@@ -72,7 +73,10 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             errorMessage: '',
             submittingState: true
         })
-        const displayName = this.props.authedUser.displayName.split(' ').join(this.props.authedUser.preferredName ? ` "${this.props.authedUser.preferredName}" ` : ' ')
+        const displayName = this.props.authedUser.firstName + 
+            (this.props.authedUser.preferredName ? ` "${this.props.authedUser.preferredName}" ` : ' ') +
+            this.props.authedUser.lastName
+
         db.signUserUp(
                 this.props.authedUserId,
                 displayName,
@@ -86,6 +90,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     signedUpOption: optionSelected,
                     submittingState: false,
                 })
+                if (this.props.onSubmit) {
+                    this.props.onSubmit()
+                }
             })
             .catch((err) => {
                 this.setState({
