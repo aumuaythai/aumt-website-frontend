@@ -101,14 +101,13 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
         this.setState({...this.state, currentECRelationship: relation})
     }
     onSaveClick = () => {
-        this.setState({...this.state, saving: true})
         const member: AumtMember = {
             firstName: this.state.currentFirstName,
             lastName: this.state.currentLastName,
             preferredName: this.state.currentPreferredName,
             email: this.state.currentEmail,
             isUoAStudent: this.state.currentIsUoaStudent,
-            UPI: this.state.currentUpi,
+            UPI: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
             isReturningMember: this.state.currentIsReturningMember,
             EmergencyContactName: this.state.currentECName,
@@ -119,6 +118,16 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
             emailVerified: false,
             password: ''
         }
+        if (!member.firstName || !member.lastName) {
+            return notification.error({message: 'First and Last Name Required'})
+        } else if (!member.email) {
+            return notification.error({message: 'Email Required'})
+        } else if (!member.isUoAStudent || !member.isReturningMember) {
+            return notification.error({message: 'Is UoA Student and Is Returning must be specified'})
+        } else if (!member.EmergencyContactName || !member.EmergencyContactNumber || !member.Relationship) {
+            return notification.error({message: 'All Emergency Contact Details are Required'})
+        }
+        this.setState({...this.state, saving: true})
         db.setMember(this.props.member.key, member)
             .then(() => {
                 this.setState({...this.state, saving: false})

@@ -17,12 +17,14 @@ interface MemberDashboardState {
     tableDataSource: TableDataLine[]
     tableColumns: TableColumn[]
     selectedMember: TableDataLine | null
+    dbListenerId: string
 }
 
 class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardState> {
     private helper: TableHelper| null = null
     private emptyHelper: boolean = true
     private shortTableColumns = ['Name', 'Email', 'Membership', 'UoA', 'Paid']
+    private firstListen = true
     constructor(props: MemberDashboardProps) {
         super(props)
         this.state = {
@@ -30,8 +32,12 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             loadingMembers: false,
             tableDataSource: [],
             tableColumns: [],
-            selectedMember: null
+            selectedMember: null,
+            dbListenerId: ''
         }
+    }
+    componentWillUnmount = () => {
+        db.unlisten(this.state.dbListenerId)
     }
     tableHelperChange = (helper: TableHelper) => {
         if (this.emptyHelper && helper) {
@@ -44,14 +50,11 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
         this.setState({...this.state, loadingMembers: true})
         db.getAllMembers()
             .then((memberObj) => {
-                if (this.helper) {
-                const {lines, columns} = this.helper.getTableFromMembers(memberObj)
-                    this.setState({
-                        ...this.state,
-                        tableDataSource: lines,
-                        tableColumns: columns
-                    })
-                }
+                this.setTableData(memberObj)
+                this.setState({
+                    ...this.state,
+                    dbListenerId: db.listenToMembers(this.onDbChange)
+                })
             })
             .catch((err) => {
                 notification.error({
@@ -61,6 +64,31 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             .finally(() => {
                 this.setState({...this.state, loadingMembers: false})
             })
+    }
+    onDbChange = (memberObj: AumtMembersObj) => {
+        if (!this.firstListen) {
+            this.setTableData(memberObj)
+            if (this.state.selectedMember) {
+                const changedMember = this.state.tableDataSource.find(line => line.key === this.state.selectedMember?.key)
+                if (changedMember) {
+                    this.setState({
+                        ...this.state,
+                        selectedMember: changedMember
+                    })
+                }
+            }
+        }
+        this.firstListen = false
+    }
+    setTableData = (memberObj: AumtMembersObj) => {
+        if (this.helper) {
+            const {lines, columns} = this.helper.getTableFromMembers(memberObj)
+            this.setState({
+                ...this.state,
+                tableDataSource: lines,
+                tableColumns: columns
+            })
+        }
     }
     onMemberSelect = (member: TableDataLine) => {
         this.setState({
@@ -93,7 +121,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                         <div className="memberDashboardHeader">
                             <h2 className='memberDashboardTitle'>AUMT Members</h2>
                             <div className="memberDashboardHeaderButtons">
-                                <Button className='memberDashboardHeaderButton' disabled={true}>Remove</Button>
+                                {/* <Button className='memberDashboardHeaderButton' disabled={true}>Remove</Button> */}
                                 <Link to='/admin/members/add'>
                                     <Button className='memberDashboardHeaderButton' type='primary' shape='round' size='large'>
                                         Add Member <PlusOutlined />

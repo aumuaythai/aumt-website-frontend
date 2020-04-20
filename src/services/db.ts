@@ -322,6 +322,21 @@ class DB {
         return listenerId
     }
 
+    listenToMembers = (callback: (members: AumtMembersObj) => void): string => {
+        if (!this.db) throw new Error('No db')
+        const listenerId = this.getListenerId()
+        this.listeners[listenerId] = this.db.collection('members')
+            .onSnapshot((querySnapshot) => {
+                const members: AumtMembersObj = {}
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data()
+                    members[doc.id] = this.docToMember(data)
+                })
+                callback(members)
+            })
+        return listenerId
+    }
+
     unlisten = (listenerId: string) => {
         if (this.listeners[listenerId]) {
             this.listeners[listenerId]()

@@ -8,7 +8,7 @@
     width: calc(100% - 150px);
     float: right;
     padding: 15px;
-    /* margin-top: -63px; */
+    margin-top: -63px;
 }
 .createTrainingTitle {
     text-align: left;

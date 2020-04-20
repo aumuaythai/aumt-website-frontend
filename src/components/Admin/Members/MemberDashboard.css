@@ -6,6 +6,7 @@
 }
 .memberDashboardHeaderButtons {
     float: right;
+    margin: 5px 0;
 }
 .clearBoth {
     clear: both
