@@ -5,6 +5,7 @@ import { SyncOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/ico
 import './MemberDashboard.css'
 import {TableColumn, TableDataLine} from './TableHelper'
 import { MemberDetails } from './MemberDetails'
+import { AddMember } from './AddMember'
 import { AumtMembersObj } from '../../../types'
 import db from '../../../services/db'
 import { TableHelper } from './TableHelper'
@@ -148,6 +149,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <h2 className="memberDetailsTitle">Add Member</h2>
                             <div className="memberDetailsCloseIcon"><CloseCircleOutlined onClick={this.exitAddMember} /></div>
                             <div className="clearBoth"></div>
+                            <AddMember></AddMember>
                         </div>
                     </Route>
                     <Route path='/admin/members/:id'>
