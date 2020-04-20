@@ -294,7 +294,7 @@ class DB {
                     const data = doc.data()
                     uids.push({
                         [doc.id]: {
-                            name: (data as AumtMember).firstName,
+                            name: data.firstName + (data.preferredName ? ` "${data.preferredName}" ` : ' ') + data.lastName,
                             timeAdded: this.getRandomDate(new Date(2020, 3, 5), new Date())
                         }
                     })
