@@ -34,3 +34,13 @@
     float: right;
     cursor: pointer;
 }
+@media(max-width: 1180px) {
+    .memberDisplaySectionNarrow {
+        width: 100%;
+        float: none
+    }
+    .memberDetailsSection {
+        float: none;
+        width: 100%;
+    }
+}

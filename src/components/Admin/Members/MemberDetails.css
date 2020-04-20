@@ -1,0 +1,15 @@
+.memberDescriptionTitle {
+    color: #999;
+    /* font-size: 12px; */
+}
+.membershipDescriptionValue {
+    color: #444;
+    margin: 0 10px;
+}
+.memberDescriptionSection {
+    float: left;
+    min-width: 320px;
+}
+.clearBoth {
+    clear: both
+}

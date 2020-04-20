@@ -4,6 +4,7 @@ import { Table, notification, Button } from 'antd'
 import { SyncOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import './MemberDashboard.css'
 import {TableColumn, TableDataLine} from './TableHelper'
+import { MemberDetails } from './MemberDetails'
 import { AumtMembersObj } from '../../../types'
 import db from '../../../services/db'
 import { TableHelper } from './TableHelper'
@@ -88,30 +89,30 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                 {this.state.loadingMembers ? 
                 <p className='retrievingMembersText'>Retrieving Members <SyncOutlined spin/></p> :
                 this.helper ? (
-                <div className={`memberDisplaySection ${this.longTable ? '' : 'memberDisplaySectionNarrow'}`}>
-                    <div className="memberDashboardHeader">
-                        <h2 className='memberDashboardTitle'>AUMT Members</h2>
-                        <div className="memberDashboardHeaderButtons">
-                            <Button className='memberDashboardHeaderButton' disabled={true}>Remove</Button>
-                            <Link to='/admin/members/add'>
-                                <Button className='memberDashboardHeaderButton' type='primary' shape='round' size='large'>
-                                    Add Member <PlusOutlined />
-                                </Button>
-                            </Link>
+                    <div className={`memberDisplaySection ${this.longTable ? '' : 'memberDisplaySectionNarrow'}`}>
+                        <div className="memberDashboardHeader">
+                            <h2 className='memberDashboardTitle'>AUMT Members</h2>
+                            <div className="memberDashboardHeaderButtons">
+                                <Button className='memberDashboardHeaderButton' disabled={true}>Remove</Button>
+                                <Link to='/admin/members/add'>
+                                    <Button className='memberDashboardHeaderButton' type='primary' shape='round' size='large'>
+                                        Add Member <PlusOutlined />
+                                    </Button>
+                                </Link>
+                            </div>
+                            <div className="clearBoth"></div>
                         </div>
-                        <div className="clearBoth"></div>
+                        <Table
+                            size='small'
+                            dataSource={this.state.tableDataSource}
+                            columns={this.state.tableColumns.filter(c => this.longTable ? c : this.shortTableColumns.indexOf(c.title) > -1)}
+                            bordered
+                            onRow={this.helper.onRow}
+                            onChange={this.helper.onTableChange}
+                            footer={this.helper.getFooter}
+                            pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
+                            scroll={{ y: 640 }}></Table>
                     </div>
-                    <Table
-                        size='small'
-                        dataSource={this.state.tableDataSource}
-                        columns={this.state.tableColumns.filter(c => this.longTable ? c : this.shortTableColumns.indexOf(c.title) > -1)}
-                        bordered
-                        onRow={this.helper.onRow}
-                        onChange={this.helper.onTableChange}
-                        footer={this.helper.getFooter}
-                        pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
-                        scroll={{ y: 640 }}></Table>
-                </div>
                 ) : ''}
                 <Switch>
                     <Route path='/admin/members/add'>
@@ -130,7 +131,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <h2 className="memberDetailsTitle">{this.state.selectedMember.tableName}</h2>
                             <div className="memberDetailsCloseIcon"><CloseCircleOutlined onClick={this.exitSelectedMember} /></div>
                             <div className="clearBoth"></div>
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam, vel perspiciatis fugiat neque, similique, dignissimos autem perferendis voluptatum molestiae id ratione nisi qui unde aliquid esse dolore animi. Eaque, maxime. Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus quasi, nobis iusto nostrum quam distinctio numquam neque eum quos cumque esse sint magni magnam exercitationem perspiciatis libero sequi rem odio. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam laborum, distinctio quas possimus illo rem sequi est illum saepe nulla delectus numquam itaque ut eius, mollitia, harum optio. Error, obcaecati.
+                            <MemberDetails member={this.state.selectedMember}></MemberDetails>
                         </div>
                         : 'no selected member :((('}
                     </Route>
