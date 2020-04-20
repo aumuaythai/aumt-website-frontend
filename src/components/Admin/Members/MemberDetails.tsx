@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import { Tooltip, Button } from 'antd'
+import { Tooltip, Divider } from 'antd'
 import {CopyOutlined} from '@ant-design/icons'
+import { MemberAttendance } from './MemberAttendance'
 import './MemberDetails.css'
 import { TableDataLine } from './TableHelper'
 import { notification } from 'antd'
@@ -92,12 +93,10 @@ export class MemberDetails extends Component<MemberDetailsProps, MemberDetailsSt
                         </p>
                     </div>
                     <div className="clearBoth"></div>
-                    <Button onClick={this.toggleAttendance}>{this.state.showingAttendance ? 'Hide Attendance' : 'ShowAttendance'}</Button>
                 </div>
                 <div className="atttendanceContainer">
-                    {this.state.showingAttendance ? 
-                    'asdfasdf'
-                    : ''}
+                    <h2>Attendance</h2>
+                    <MemberAttendance member={this.props.member}></MemberAttendance>
                 </div>
             </div>
         )

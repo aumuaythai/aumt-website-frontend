@@ -46,6 +46,21 @@ class DataFormatUtil {
         }, {totals: [] as MemberPoint[], memberMap: {} as MemberPoint})
         return newPoints.totals
     }
+
+    getAttendance = (memberId: string, forms: AumtWeeklyTraining[]) => {
+        const attendance: {formTitle: string, sessionTitle: string}[] = []
+        forms.forEach((form) => {
+            form.sessions.forEach((session) => {
+                if (session.members[memberId]) {
+                    attendance.push({
+                        formTitle: form.title,
+                        sessionTitle: session.title
+                    })
+                }
+            })
+        })
+        return attendance
+    }
 }
 
 export default new DataFormatUtil()
