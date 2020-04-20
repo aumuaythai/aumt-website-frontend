@@ -284,7 +284,7 @@ class DB {
             .then((uids: MockMember[]) => {
                 return this.getAllForms()
                     .then((forms: AumtWeeklyTraining[]) => {
-                        const form = forms.find(f => f.title.indexOf('Week 4') > -1)
+                        const form = forms.find(f => f.title.indexOf('Week 8') > -1)
                         if (!form) throw new Error('NO FORM')
                         form.sessions = form.sessions.map((session) => {
                             const randLimit = Math.floor(Math.random() * 15 + 16)
