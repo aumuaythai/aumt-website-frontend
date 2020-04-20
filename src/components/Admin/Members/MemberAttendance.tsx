@@ -24,7 +24,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
         }
     }
     componentDidUpdate = (prevProps: MemberAttendanceProps, prevState: MemberAttendanceState) => {
-        if (this.props !== prevProps) {
+        if (this.props.member.key !== prevProps.member.key) {
             this.getAttendance()
         }
     }

@@ -13,6 +13,24 @@
 .clearBoth {
     clear: both
 }
+.memberDescriptionLine {
+    margin: 10px 0;
+}
+.memberDescriptionLine.noHeight {
+    height: 0;
+    margin: 0;
+    overflow-y: hidden;
+}
 .atttendanceContainer {
     margin-top: 20px;
+}
+.memberEditInput {
+    border: 0;
+    width: 120px;
+    border-bottom: 1px solid #bbb;
+}
+.memberEditInput.longMemberEditInput {
+    width: 250px;
+}
+.memberEditInput:focus {
 }

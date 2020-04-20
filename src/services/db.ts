@@ -139,6 +139,13 @@ class DB {
                 })
     }
 
+    public setMember = (memberId: string, memberData: AumtMember): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object') 
+        return this.db.collection('members')
+            .doc(memberId)
+            .set(memberData)
+    }
+
     public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<string> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('weekly_trainings')

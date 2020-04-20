@@ -122,9 +122,6 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <div className="clearBoth"></div>
                         </div>
                     </Route>
-                    <Route path='/admin/members/editmember/:memberid'>
-                            Edit Edit Edit
-                    </Route>
                     <Route path='/admin/members/:id'>
                         {this.state.selectedMember ? 
                         <div className="memberDetailsSection">

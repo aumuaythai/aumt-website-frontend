@@ -8,7 +8,7 @@
     clear: both;
 }
 .attendanceListContainer {
-    max-height: 385px;
+    max-height: 355px;
     overflow-y: auto;
 }
 .attendanceLine {
