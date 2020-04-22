@@ -140,7 +140,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             onChange={this.helper.onTableChange}
                             footer={this.helper.getFooter}
                             pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
-                            scroll={{ y: 640 }}></Table>
+                            scroll={{ y: 625 }}></Table>
                     </div>
                 ) : ''}
                 <Switch>
