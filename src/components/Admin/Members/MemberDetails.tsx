@@ -136,7 +136,6 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,
             EmergencyContactRelationship: this.state.currentECRelationship,
-            displayName: '',
             emailVerified: false
         }
         if (!member.firstName || !member.lastName) {
@@ -171,7 +170,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             <div>
                 <div className="membershipDescriptionContainer">
                     <div className="memberDescriptionSection">
-                        <h4>Name</h4>
+                        <h4>Contact</h4>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>First: </span>
                             <Input className='memberEditInput' value={this.state.currentFirstName} onChange={e => this.onFirstNameChange(e.target.value)}/>

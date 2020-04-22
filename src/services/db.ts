@@ -402,7 +402,6 @@ class DB {
             EmergencyContactNumber: docData.EmergencyContactNumber,
             EmergencyContactRelationship: docData.EmergencyContactRelationship,
             upi: docData.upi,
-            displayName: docData.displayName,
             email: docData.email,
             emailVerified: docData.emailVerified,
             firstName: docData.firstName,

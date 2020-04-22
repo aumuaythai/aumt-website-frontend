@@ -137,12 +137,17 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {
                 dataIndex: 'email',
                 title: 'Email',
-                sorter: (a: TableDataLine, b: TableDataLine) => a.email.localeCompare(b.email),
+                width: 202,
+                sorter: (a: TableDataLine, b: TableDataLine) => {
+                    console.log('sorting')
+                    return a.email.localeCompare(b.email)
+                },
                 ...this.getColumnSearchProps('email')
             },
             {
                 dataIndex: 'upi',
                 title: 'upi',
+                width: 100,
                 sorter: (a: TableDataLine, b: TableDataLine) => a.upi.localeCompare(b.upi),
                 ...this.getColumnSearchProps('upi')
             },
@@ -180,6 +185,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {
                 dataIndex: 'paid',
                 title: 'Paid',
+                width: 100,
                 filters: [{ text: 'Yes', value: 'Yes' },
                     { text: 'No', value: 'No' }],
                 onFilter: (value: string, record: TableDataLine) => {

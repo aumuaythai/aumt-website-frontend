@@ -98,7 +98,6 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,
             EmergencyContactRelationship: this.state.currentECRelationship,
-            displayName: '',
             emailVerified: false,
         }
         if (!member.firstName || !member.lastName) {

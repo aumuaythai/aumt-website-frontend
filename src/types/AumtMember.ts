@@ -3,7 +3,6 @@ export interface AumtMember {
     lastName: string
     preferredName: string
     upi: string
-    displayName: string
     email: string
     emailVerified: boolean
     isReturningMember: 'Yes' | 'No'
