@@ -117,7 +117,19 @@ class DB {
             })
     }
 
+    public updatePaid = (memberId: string, newPaid: 'Yes' | 'No'): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('members')
+            .doc(memberId)
+            .update({paid: newPaid})
+    }
 
+    public updateMembership = (memberId: string, newMembership: 'S1' | 'S2' | 'FY'): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('members')
+            .doc(memberId)
+            .update({membership: newMembership})
+    }
 
     public getOpenForms = (): Promise<AumtWeeklyTraining[]> => {
             if (!this.db) return Promise.reject('No db object')

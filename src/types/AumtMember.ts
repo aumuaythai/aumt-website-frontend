@@ -7,7 +7,7 @@ export interface AumtMember {
     emailVerified: boolean
     isReturningMember: 'Yes' | 'No'
     isUoAStudent: 'Yes' | 'No'
-    membership: 'S1' | 'S2' | 'FY' | null
+    membership: 'S1' | 'S2' | 'FY'
     paid: 'Yes' | 'No'
     EmergencyContactName: string
     EmergencyContactNumber: string

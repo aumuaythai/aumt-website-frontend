@@ -13,7 +13,7 @@ interface AddMemberState {
     currentEmail: string
     currentIsUoaStudent: 'Yes' | 'No'
     currentUpi: string
-    currentMembership: 'S1' | 'FY' | 'S2' | null
+    currentMembership: 'S1' | 'FY' | 'S2'
     currentIsReturningMember: 'Yes' | 'No'
     currentECName: string
     currentECNumber: string
@@ -31,7 +31,7 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
             currentEmail: '',
             currentIsUoaStudent: 'Yes',
             currentUpi: '',
-            currentMembership: null,
+            currentMembership: 'S1',
             currentIsReturningMember: 'No',
             currentECName: '',
             currentECNumber: '',
@@ -65,11 +65,8 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
     onUpiChange = (upi: string) => {
         this.setState({...this.state, currentUpi: upi})
     }
-    onMembershipChange = (membership: 'S1' | 'S2' | 'FY' | 'None') => {
-        let newMembership: 'S1' | 'S2' | 'FY' | 'None' | null = membership
-        if (newMembership === 'None') {
-            newMembership = null
-        }
+    onMembershipChange = (membership: 'S1' | 'S2' | 'FY') => {
+        let newMembership: 'S1' | 'S2' | 'FY' = membership
         this.setState({...this.state, currentMembership: newMembership})
     }
     onIsReturningChange = (isReturning: 'Yes' | 'No') => {
@@ -165,7 +162,7 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
                     </div>
                     <div className='addMemberLine'>
                         <span className='addMemberFieldTitle'>Select Membership Duration<span className='requiredDot'>*</span>: </span>
-                        <Select value={this.state.currentMembership || 'None'} onChange={this.onMembershipChange} style={{ width: 220 }}>
+                        <Select value={this.state.currentMembership} onChange={this.onMembershipChange} style={{ width: 220 }}>
                             <Select.Option value="S1">Semester 1</Select.Option>
                             <Select.Option value="S2">Semester 2</Select.Option>
                             <Select.Option value="FY">Full Year</Select.Option>

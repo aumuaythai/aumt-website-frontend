@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import Highlighter from 'react-highlight-words';
-import { Input, Button } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { Input, Button, Tooltip, notification } from 'antd'
+import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
 import './TableHelper.css'
 import { AumtMember, AumtMembersObj } from '../../../types'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
+import db from '../../../services/db';
 
 export type TableDataLine = AumtMember & {key: string, tableName: string}
 export type TableColumn = any
@@ -33,6 +34,15 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
 
     private searchInput: Input|null = null
 
+    copyText = (text: string) => {
+        navigator.clipboard.writeText(text).then(() => {
+            notification.success({message: 'Copied'})
+        })
+        .catch((err) => {
+            notification.error({message: 'Text not copied: ' + err.toString()})
+        })
+    }
+
     private handleSearch = (selectedKeys: string[], confirm: Function, dataIndex: string) => {
         confirm();
         this.setState({
@@ -44,6 +54,18 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     private handleReset = (clearFilters: Function) => {
         clearFilters();
         this.setState({ searchText: '' });
+    }
+    private renderHighlightedText = (text: string, columnIndex: string) => {
+        return this.state.searchedColumn === columnIndex ? (
+            <Highlighter
+            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+            searchWords={[this.state.searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+            />
+            ) : (
+                text
+            )
     }
 
     private getColumnSearchProps = (dataIndex: keyof TableDataLine) => ({
@@ -82,18 +104,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             setTimeout(() => this.searchInput?.select())
           }
         },
-        render: (text: string) => {
-            return this.state.searchedColumn === dataIndex ? (
-                <Highlighter
-                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-                searchWords={[this.state.searchText]}
-                autoEscape
-                textToHighlight={text.toString()}
-                />
-                ) : (
-                    text
-                )
-        }
       });
 
     public onTableChange = (pagination: any, filter: any, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>) => {
@@ -115,6 +125,26 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         }
     }
 
+    public updatePaid = (line: TableDataLine, newPaid: 'Yes' | 'No') => {
+        db.updatePaid(line.key, newPaid)
+            .then(() => {
+                notification.success({message: `Updated Paid for ${line.firstName} to ${newPaid}`})
+            })
+            .catch((err) => {
+                notification.error({message: 'Could not update ' + err.toString()})
+            })
+    }
+
+    private updateMembership = (line: TableDataLine, newMembership: 'S1' | 'S2' | 'FY') => {
+        db.updateMembership(line.key, newMembership)
+            .then(() => {
+                notification.success({message: `Updated membership for ${line.firstName} to ${newMembership}`})
+            })
+            .catch((err) => {
+                notification.error({message: 'Could not update ' + err.toString()})
+            })
+    }
+
     public getTableFromMembers = (memberObj: AumtMembersObj): {lines: TableDataLine[], columns: TableColumn[]} => {
         const lines: TableDataLine[] = []
         Object.keys(memberObj).forEach((uid: string) => {
@@ -132,40 +162,55 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 title: 'Name',
                 dataIndex: 'tableName',
                 sorter: (a: TableDataLine, b: TableDataLine) => a.tableName.localeCompare(b.tableName),
+                render: (t: string) => this.renderHighlightedText(t, 'tableName'),
                 ...this.getColumnSearchProps('tableName')
             },
             {
                 dataIndex: 'email',
                 title: 'Email',
-                width: 202,
+                width: 222,
                 sorter: (a: TableDataLine, b: TableDataLine) => {
-                    console.log('sorting')
                     return a.email.localeCompare(b.email)
                 },
-                ...this.getColumnSearchProps('email')
+                ...this.getColumnSearchProps('email'),
+                render: (text: string) => {
+                    return <span>{this.renderHighlightedText(text, 'email')} <Tooltip title='Copy'>
+                        <span className='noLinkA rightTableText' onClick={e => e.stopPropagation()}><CopyOutlined onClick={e => this.copyText(text)}/></span>
+                        </Tooltip></span>
+                }
             },
             {
                 dataIndex: 'upi',
                 title: 'upi',
-                width: 100,
+                render: (t: string) => this.renderHighlightedText(t, 'upi'),
                 sorter: (a: TableDataLine, b: TableDataLine) => a.upi.localeCompare(b.upi),
                 ...this.getColumnSearchProps('upi')
             },
             {
                 dataIndex: 'membership',
                 title: 'Membership',
-                width: 130,
                 filters: [{ text: 'Sem 1', value: 'S1' },
-                            { text: 'Full Year', value: 'FY' },
-                            {text: 'None', value: null}],
+                            { text: 'Sem 2', value: 'S2' },
+                            { text: 'Full Year', value: 'FY' }],
                 onFilter: (value: string, record: TableDataLine) => {
                     return (!record.membership && value === 'None') || record.membership === value
+                },
+                render: (text: 'S1' | 'S2' | 'FY', line: TableDataLine) => {
+                    let newText: 'S1' | 'S2' | 'FY' = 'S2'
+                    if (text === 'S2') newText = 'FY'
+                    if (text === 'FY') newText = 'S1'
+                    return <span>
+                        {text} <Tooltip title={`Change to ${newText}`}>
+                            <span className="noLinkA rightTableText" onClick={e => e.stopPropagation()}>
+                                <FormOutlined onClick={e => this.updateMembership(line, newText)}/>
+                            </span>
+                        </Tooltip>
+                    </span>
                 }
             },
             {
                 dataIndex: 'isReturningMember',
                 title: 'Returning',
-                width: 130,
                 filters: [{ text: 'Yes', value: 'Yes' },
                 { text: 'No', value: 'No' }],
                 onFilter: (value: string, record: TableDataLine) => {
@@ -175,7 +220,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {
                 dataIndex: 'isUoAStudent',
                 title: 'UoA',
-                width: 100,
                 filters: [{ text: 'Yes', value: 'Yes' },
                 { text: 'No', value: 'No' }],
                 onFilter: (value: string, record: TableDataLine) => {
@@ -185,11 +229,20 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {
                 dataIndex: 'paid',
                 title: 'Paid',
-                width: 100,
                 filters: [{ text: 'Yes', value: 'Yes' },
                     { text: 'No', value: 'No' }],
                 onFilter: (value: string, record: TableDataLine) => {
                     return record.paid === value
+                },
+                render: (text: 'Yes' | 'No', line: TableDataLine) => {
+                    const newPaid = text === 'Yes'  ? 'No' : 'Yes'
+                    return <span>
+                        {text} <Tooltip title={`Change to ${newPaid}`}>
+                            <span className="noLinkA rightTableText" onClick={e => e.stopPropagation()}>
+                                <FormOutlined onClick={e => this.updatePaid(line, newPaid)}/>
+                            </span>
+                        </Tooltip>
+                    </span>
                 }
             },
             {
@@ -198,16 +251,25 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                     {
                         dataIndex: 'EmergencyContactName',
                         title: 'Name',
+                        render: (t: string) => this.renderHighlightedText(t, 'EmergencyContactName'),
                         ...this.getColumnSearchProps('EmergencyContactName')
                     },
                     {
                         dataIndex: 'EmergencyContactNumber',
                         title: 'Number',
+                        render: (text: string) => {
+                            return <span>{this.renderHighlightedText(text, 'EmergencyContactNumber')} <Tooltip title='Copy'>
+                                <span className='noLinkA rightTableText' onClick={e => e.stopPropagation()}><
+                                    CopyOutlined onClick={e => this.copyText(text)}/>
+                                </span>
+                                </Tooltip></span>
+                        },
                         ...this.getColumnSearchProps('EmergencyContactNumber')
                     },
                     {
                         dataIndex: 'EmergencyContactRelationship',
                         title: 'Relation',
+                        render: (t: string) => this.renderHighlightedText(t, 'EmergencyContactRelationship'),
                         ...this.getColumnSearchProps('EmergencyContactRelationship')
                     }
                 ]                

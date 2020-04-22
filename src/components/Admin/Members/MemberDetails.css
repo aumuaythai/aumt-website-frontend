@@ -36,3 +36,7 @@
     margin: 20px;
     display: block;
 }
+.membershipDescriptionContainer {
+    max-height: 380px;
+    overflow-y: auto;
+}

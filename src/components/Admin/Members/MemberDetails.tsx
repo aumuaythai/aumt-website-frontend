@@ -20,7 +20,7 @@ interface MemberDetailsState {
     currentEmail: string
     currentIsUoaStudent: 'Yes' | 'No'
     currentUpi: string
-    currentMembership: 'S1' | 'FY' | 'S2' | null
+    currentMembership: 'S1' | 'FY' | 'S2'
     currentPaid: 'Yes' | 'No',
     currentIsReturningMember: 'Yes' | 'No',
     currentECName: string
@@ -87,11 +87,8 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     onUpiChange = (upi: string) => {
         this.setState({...this.state, currentUpi: upi})
     }
-    onMembershipChange = (membership: 'S1' | 'S2' | 'FY' | 'None') => {
-        let newMembership: 'S1' | 'S2' | 'FY' | 'None' | null = membership
-        if (newMembership === 'None') {
-            newMembership = null
-        }
+    onMembershipChange = (membership: 'S1' | 'S2' | 'FY') => {
+        let newMembership: 'S1' | 'S2' | 'FY' = membership
         this.setState({...this.state, currentMembership: newMembership})
     }
     onPaidChange = (paid: 'Yes' | 'No') => {
