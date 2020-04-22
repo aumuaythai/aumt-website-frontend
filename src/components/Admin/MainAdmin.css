@@ -1,5 +1,6 @@
 .adminContainer {
     text-align: left;
+    height: calc(100% - 97px);
 }
 .menuContainer {
     border-top: 0.5px solid #999
@@ -7,6 +8,7 @@
 .adminContent {
     width: calc(100% - 150px);
     float: right;
+    height: calc(100% + 63px);
     padding: 15px;
     margin-top: -63px;
 }
@@ -37,6 +39,11 @@
 .mainAdminCreateBack {
     margin: 0 10px;
 }
+.adminMenu {
+    width: 150px;
+    height: 100%;
+    float: left;
+}
 
 @media only screen and (max-width: 500px) {
     .adminContent {
@@ -46,5 +53,9 @@
     }
     .trainingDashboardFormSelector, .createTrainingTitle, .manageEventTitle, .mainAdminCreateEventButton {
         float: none
+    }
+    .adminMenu {
+        height: 70px;
+        float: none;
     }
 }

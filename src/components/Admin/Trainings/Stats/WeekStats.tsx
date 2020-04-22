@@ -79,10 +79,10 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
             )
         }
         return (
-            <div className='WeekStatsContainer'>
+            <div className='weekStatsComponentContainer'>
                 <div className="clearBoth"></div>
                 <div className="WeekStatGraphWrapper">
-                    <ResponsiveContainer width = '100%' height = {330} >
+                    <ResponsiveContainer width = '100%' height = '100%' >
                         <AreaChart data={this.state.currentGraphData}>
                             <XAxis
                                 dataKey = 'time'

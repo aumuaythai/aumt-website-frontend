@@ -51,8 +51,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     render() {
         return (
             <div className='adminContainer'>
-                <Menu
-                    style={{ width: 150, float: 'left' }}
+                <Menu className='adminMenu'
                     defaultSelectedKeys={['trainings']}
                     >
                     <Menu.Item key="trainings">

@@ -2,6 +2,9 @@
     text-align: center;
     margin-top: 30px;
 }
+.memberDashboardContainer {
+    height: 100%;
+}
 .memberDashboardTitle {
     float: left;
 }

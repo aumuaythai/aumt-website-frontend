@@ -139,36 +139,38 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                         </Dropdown>
                         <div className="clearBoth"></div>
                     </div>
-                <div className="weekStatsContainer">
-                    <h2 className="sectionHeader">Weekly Stats</h2>
-                    <WeekStats loadingForms={this.state.loadingForms} form={this.state.currentForm}></WeekStats>
-                </div>
-                <div className="editMembersContainer">
-                <h2 className="sectionHeader">Edit Members</h2>
-                    {this.state.loadingForms ?
-                        <p>Loading current forms <SyncOutlined spin /></p> :
-                        this.state.currentForm ?
-                        <EditSignups form={this.state.currentForm}></EditSignups> :
-                        <p>No Form Selected</p>
-                    }
-                </div>
-                <div className="clearBoth"></div>
-                <div className="manageTrainingsWrapper">
-                    <h2 className="sectionHeader">Manage Trainings</h2>
-                    <div className="manageTrainingsComponentWrapper">
-                        <ManageTrainings
-                            trainings={this.state.allForms}
-                            loadingTrainings={this.state.loadingForms}
-                            onTrainingClick={this.onClickTraining}
-                            onEditTrainingRequest={this.props.onEditTrainingRequest}
-                            ></ManageTrainings>
+                <div className="trainingDashboardContentContainer">
+                    <div className="weekStatsContainer trainingDashboardSection">
+                        <h2 className="sectionHeader">Weekly Stats</h2>
+                        <WeekStats loadingForms={this.state.loadingForms} form={this.state.currentForm}></WeekStats>
                     </div>
+                    <div className="editMembersContainer trainingDashboardSection">
+                    <h2 className="sectionHeader">Edit Members</h2>
+                        {this.state.loadingForms ?
+                            <p>Loading current forms <SyncOutlined spin /></p> :
+                            this.state.currentForm ?
+                            <EditSignups form={this.state.currentForm}></EditSignups> :
+                            <p>No Form Selected</p>
+                        }
+                    </div>
+                    <div className="clearBoth"></div>
+                    <div className="manageTrainingsWrapper trainingDashboardSection">
+                        <h2 className="sectionHeader">Manage Trainings</h2>
+                        <div className="manageTrainingsComponentWrapper">
+                            <ManageTrainings
+                                trainings={this.state.allForms}
+                                loadingTrainings={this.state.loadingForms}
+                                onTrainingClick={this.onClickTraining}
+                                onEditTrainingRequest={this.props.onEditTrainingRequest}
+                                ></ManageTrainings>
+                        </div>
+                    </div>
+                    <div className="yearStatsWrapper trainingDashboardSection">
+                        <h2 className="sectionHeader">Yearly Stats</h2>
+                        <YearStats forms={this.state.allForms} onTrainingClick={this.onClickTraining}></YearStats>
+                    </div>
+                    <div className="clearBoth"></div>
                 </div>
-                <div className="yearStatsWrapper">
-                    <h2 className="sectionHeader">Yearly Stats</h2>
-                    <YearStats forms={this.state.allForms} onTrainingClick={this.onClickTraining}></YearStats>
-                </div>
-                <div className="clearBoth"></div>
             </div>
         )
     }

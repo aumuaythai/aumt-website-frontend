@@ -7,7 +7,7 @@
 .editSignedUpMembersContainer {
     padding: 0 10px;
     overflow-y: auto;
-    max-height: 320px;
+    max-height: 100%;
 }
 .sessionSelectContainer {
     padding-bottom: 10px;
