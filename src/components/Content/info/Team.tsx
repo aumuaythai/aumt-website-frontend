@@ -74,10 +74,6 @@ export class Team extends Component {
                             <img className='headshot' src="./photos/alex.jpg" alt="Alex Walker"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Rohan Pradeep - Public Relations</p>
-                            <img className='headshot' src="./photos/rohan.jpg" alt="Rohan Pradeep"/>
-                        </div>
-                        <div className='personContainer'>
                             <p className="name">Annie Milsom - Public Relations</p>
                             <img className='headshot' src="./photos/annie2.jpg" alt="Annie Milsom"/>
                         </div>

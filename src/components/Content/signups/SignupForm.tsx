@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Radio, Button, Alert, Tooltip, notification, Input, Tag } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
-import { SyncOutlined, CheckSquareTwoTone } from '@ant-design/icons'
+import { LoadingOutlined, CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession, AumtMember } from '../../../types'
 import db from '../../../services/db';
@@ -61,6 +61,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         this.setState({
             ...this.state,
             currentSessionId: e.target.value,
+            errorMessage: ''
         });
     }
     onFeedbackChange = (feedback: string) => {
@@ -90,6 +91,13 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     }
     onSubmitClick = () => {
         const optionSelected = this.state.currentSessionId
+        if (!optionSelected) {
+            this.setState({
+                ...this.state,
+                errorMessage: 'You must select a session'
+            })
+            return
+        }
         this.setState({
             ...this.state,
             errorMessage: '',
@@ -168,9 +176,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     size='large'
                     loading={this.state.submittingState}
                     onClick={this.onSubmitClick}>Submit</Button>
-                <span className='signupFormRemove' onClick={this.onRemoveClick}>
-                    {this.state.removingState ? <span>Removing <SyncOutlined spin/> </span>:'Remove Signup'}
-                </span>
+                <Button disabled={!this.state.signedUpOption} type='link' className='signupFormRemove' onClick={this.onRemoveClick} block>
+                    {this.state.removingState ? <span><LoadingOutlined className='signupFormRemoveLoadingIcon'/> </span>: ''} Remove Signup
+                </Button>
             </div>
         )
     }

@@ -27,11 +27,12 @@
     width: 300px;
 }
 .signupFormRemove {
-    cursor: pointer;
-    color: #008080;;
     display: block;
     margin-top: 20px;
 }
 .optionLine {
     margin: 25px 0;
+}
+.signupFormRemoveLoadingIcon {
+    margin-right: 5px;
 }
