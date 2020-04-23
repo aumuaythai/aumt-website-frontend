@@ -84,7 +84,10 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 break
             }
         }
-        this.onFormSelect({key: this.state.currentForm ? this.state.currentForm.trainingId : currentForm.trainingId})
+        const isCurrentFormInForms = forms.find(f => f === this.state.currentForm)
+        if (!isCurrentFormInForms) {
+            this.onFormSelect({key: currentForm.trainingId})
+        }
     }
     onDbChanges = (forms: AumtWeeklyTraining[]) => {
         if (!this.isFirstListen && forms && forms.length) {

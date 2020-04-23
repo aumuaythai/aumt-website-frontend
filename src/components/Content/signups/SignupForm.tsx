@@ -14,7 +14,7 @@ export interface SignupFormProps {
     authedUser: AumtMember
     authedUserId: string
     notes: string
-    onSubmit?: () => void
+    onSignupChanged?: () => void
 }
 
 interface SignupFormState {
@@ -83,6 +83,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                         signedUpOption: '',
                         removingState: false
                     })
+                    if (this.props.onSignupChanged) {
+                        this.props.onSignupChanged()
+                    }
                 })
                 .catch((err) => {
                     notification.error({message: 'Could not remove from training: ' + err.toString()})
@@ -120,8 +123,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     signedUpOption: optionSelected,
                     submittingState: false,
                 })
-                if (this.props.onSubmit) {
-                    this.props.onSubmit()
+                if (this.props.onSignupChanged) {
+                    this.props.onSignupChanged()
                 }
             })
             .catch((err) => {

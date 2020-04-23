@@ -70,7 +70,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
                 authedUser={this.props.member}
                 authedUserId={this.props.member.key}
                 notes={form.notes}
-                onSubmit={() => this.getAttendance(true)}></SignupForm>
+                onSignupChanged={() => this.getAttendance(true)}></SignupForm>
         )
     }
     render() {

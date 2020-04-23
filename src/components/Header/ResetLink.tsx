@@ -1,5 +1,5 @@
 import React, {Component, ChangeEvent} from 'react'
-import {Modal, Input, Alert} from 'antd'
+import {Modal, Input, Alert, Button} from 'antd'
 import * as firebase from 'firebase/app'
 import UserOutlined from '@ant-design/icons/UserOutlined'
 import './ResetLink.css'
@@ -69,7 +69,7 @@ export class ResetPasswordLink extends Component {
     const { visible, confirmLoading } = this.state;
     return (
       <div className="resetContainer">
-        <span className="mockLink" onClick={this.showModal}>Reset Password</span>
+        <Button type='link' className="mockLink" onClick={this.showModal}>Reset Password</Button>
         <Modal
           title="Reset Password"
           visible={visible}

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import * as firebase from 'firebase/app'
-import {Menu, Dropdown} from 'antd'
+import {Menu, Dropdown, Button} from 'antd'
 import DownOutlined from '@ant-design/icons/DownOutlined'
 import {ResetPasswordLink} from './ResetLink'
 import './UserInfo.css'
@@ -21,7 +21,7 @@ export class UserInfo extends Component<UserInfoProps, object> {
     private menu = (
         <Menu>
             <Menu.Item onClick={this.onSignOutClick}>
-                <span className='signOutLink'>Sign Out</span>
+                <Button type='link' className='signOutLink'>Sign Out</Button>
             </Menu.Item>
             <Menu.Item>
                 <ResetPasswordLink>Reset Password</ResetPasswordLink>
@@ -32,9 +32,9 @@ export class UserInfo extends Component<UserInfoProps, object> {
     render() {
         return (
             <Dropdown overlay={this.menu} placement="bottomRight">
-                <span className="ant-dropdown-link userInfoLink" onClick={e => e.preventDefault()}>
+                <Button type='link' className="ant-dropdown-link userInfoLink" onClick={e => e.preventDefault()}>
                     {this.props.authedUser.preferredName || this.props.authedUser.firstName} <DownOutlined />
-                </span>
+                </Button>
             </Dropdown>
         )
     }
