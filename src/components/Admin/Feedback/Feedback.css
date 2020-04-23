@@ -1,0 +1,24 @@
+.feedbackListObject {
+    padding: 10px;
+    margin: 20px;
+    float: left;
+    width: calc(50% - 40px);
+    height: 300px;
+    overflow-y: auto;
+}
+.feedbackListTitle {
+    color: auto;
+}
+.allFeedbackContainer {
+    height: 100%;
+    overflow-y: auto;
+}
+.clearBoth {
+    clear: both;
+}
+@media(max-width: 1145px) {
+    .feedbackListObject {
+        float: none;
+        width: calc(100% - 40px);
+    }
+}

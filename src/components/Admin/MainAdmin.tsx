@@ -7,6 +7,7 @@ import CreateEvent from './Events/CreateEvent'
 import {ManageEvents} from './Events/ManageEvents'
 import './MainAdmin.css'
 import { TrainingDashboard } from './Trainings/TrainingDashboard'
+import { Feedback } from './Feedback/Feedback';
 import MemberDashboard from './Members/MemberDashboard'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import db from '../../services/db'
@@ -63,6 +64,9 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                     <Menu.Item key="members">
                         <Link to='/admin/members'>Members</Link>
                     </Menu.Item>
+                    <Menu.Item key="feedback">
+                        <Link to='/admin/feedback'>Feedback</Link>
+                    </Menu.Item>
                 </Menu>
                 <div className="adminContent">
                     <Switch>
@@ -80,6 +84,9 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                         </Route>
                         <Route path='/admin/members'>
                             <MemberDashboard></MemberDashboard>
+                        </Route>
+                        <Route path='/admin/feedback'>
+                            <Feedback></Feedback>
                         </Route>
                         <Route path='/admin/createtraining'>
                             <div className="mainAdminCreateFormContainer">
