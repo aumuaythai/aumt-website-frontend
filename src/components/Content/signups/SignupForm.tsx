@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Radio, Button, Alert, Tooltip, notification, Input, Tag } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
+import { SyncOutlined, CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession, AumtMember } from '../../../types'
 import db from '../../../services/db';
@@ -22,6 +23,7 @@ interface SignupFormState {
     signedUpOption: string
     submittingState: boolean
     errorMessage: string
+    removingState: boolean
 }
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
@@ -32,7 +34,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             currentFeedback: '',
             errorMessage: '',
             signedUpOption: '',
-            submittingState: false
+            submittingState: false,
+            removingState: false
         }
     }
     componentDidMount() {
@@ -65,6 +68,25 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             ...this.state,
             currentFeedback: feedback
         })
+    }
+    onRemoveClick = () => {
+        if (this.state.signedUpOption) {
+            this.setState({
+                ...this.state,
+                removingState: true
+            })
+            db.removeMemberFromForm(this.props.authedUserId, this.props.id, this.state.signedUpOption)
+                .then((sessionId: string) => {
+                    this.setState({
+                        ...this.state,
+                        signedUpOption: '',
+                        removingState: false
+                    })
+                })
+                .catch((err) => {
+                    notification.error({message: 'Could not remove from training: ' + err.toString()})
+                })
+        }
     }
     onSubmitClick = () => {
         const optionSelected = this.state.currentSessionId
@@ -126,9 +148,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                                             value={session.sessionId}>{session.title}
                                         </Radio> 
                                     </Tooltip>
-                                        {/* spotsLeft < 10 ? (<span className='spotsLeftText'>({spotsLeft} spots left)</span>) : ''} */}
                                         {spotsLeft < 10 ? <Tag color={spotsLeft === 0 ? 'error' : 'warning'}>{spotsLeft} spots left</Tag> : ''}
-                                        {this.state.signedUpOption === session.sessionId ? <Tag color='success'> Signed up</Tag> : ''}
+                                        {this.state.signedUpOption === session.sessionId ? <CheckSquareTwoTone twoToneColor="#52c41a" /> : ''}
                                 </div>
                             )
                         })}
@@ -136,12 +157,20 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 </div>
                 <div className="feedbackInputContainer">
                     <p>Thoughts on last training/feedback?</p>
-                    <Input onChange={e => this.onFeedbackChange(e.target.value)}/>
+                    <Input placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
                 </div>
                 <div className="messageContainer">
                     {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
                 </div>
-                <Button type='primary' loading={this.state.submittingState} onClick={this.onSubmitClick}>Submit</Button>
+                <Button
+                    className='signupFormButton'
+                    type='primary'
+                    size='large'
+                    loading={this.state.submittingState}
+                    onClick={this.onSubmitClick}>Submit</Button>
+                <span className='signupFormRemove' onClick={this.onRemoveClick}>
+                    {this.state.removingState ? <span>Removing <SyncOutlined spin/> </span>:'Remove Signup'}
+                </span>
             </div>
         )
     }

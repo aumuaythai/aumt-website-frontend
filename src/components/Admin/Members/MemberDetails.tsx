@@ -202,11 +202,10 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Membership: </span>
-                            <Select value={this.state.currentMembership || 'None'} onChange={this.onMembershipChange} style={{ width: 120 }}>
+                            <Select value={this.state.currentMembership} onChange={this.onMembershipChange} style={{ width: 120 }}>
                                 <Select.Option value="S1">S1</Select.Option>
                                 <Select.Option value="S2">S2</Select.Option>
                                 <Select.Option value="FY">FY</Select.Option>
-                                <Select.Option value='None'>None</Select.Option>
                             </Select>
                         </div>
                         <div className='memberDescriptionLine'>

@@ -16,15 +16,18 @@ interface SignupState {
     forms: AumtWeeklyTraining[]
     noFormText: string,
     loadingForms: boolean
+    dbListenerId: string
 }
 
 export class Signups extends Component<SignupProps, SignupState> {
+    private isFirstUpdate = true
     constructor(props: SignupProps) {
         super(props)
         this.state = {
             forms: [],
             noFormText: '',
-            loadingForms: false
+            loadingForms: false,
+            dbListenerId: ''
         }
     }
     componentDidMount() {
@@ -35,10 +38,11 @@ export class Signups extends Component<SignupProps, SignupState> {
         db.getOpenForms()
             .then((forms) => {
                 this.setState({
-                    forms: forms,
+                    ...this.state,
                     loadingForms: false,
-                    noFormText: forms.length ? '' : 'There are no active signup forms at this time. If there is a training next week, signups open Sunday.'
+                    dbListenerId: db.listenToTrainings(this.onDbChanges)
                 })
+                this.handleNewForms(forms)
             })
             .catch((err) => {
                 notification.error({
@@ -49,6 +53,22 @@ export class Signups extends Component<SignupProps, SignupState> {
                     loadingForms: false
                 })
             })
+    }
+    onDbChanges = (newForms: AumtWeeklyTraining[]) => {
+        const now = new Date()
+        const openForms = newForms.filter(f => f.closes > now && f.opens < now)
+        if (openForms !== this.state.forms) {
+            this.handleNewForms(openForms)  
+        }
+    }
+    handleNewForms = (forms: AumtWeeklyTraining[]) => {
+        this.setState({
+            forms: forms,
+            noFormText: forms.length ? '' : 'There are no active signup forms at this time. If there is a training next week, signups open Sunday.'
+        })
+    }
+    componentWillUnmount = () => {
+        db.unlisten(this.state.dbListenerId)
     }
     render() {
         if (this.state.loadingForms) {

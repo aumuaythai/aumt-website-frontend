@@ -22,3 +22,16 @@
     max-width: 400px;
     margin: 30px auto;
 }
+.signupFormButton {
+    margin: 0 10px;
+    width: 300px;
+}
+.signupFormRemove {
+    cursor: pointer;
+    color: #008080;;
+    display: block;
+    margin-top: 20px;
+}
+.optionLine {
+    margin: 25px 0;
+}
