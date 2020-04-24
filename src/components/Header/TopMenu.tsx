@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import {Menu} from 'antd';
+import {DownOutlined} from '@ant-design/icons'
+import './TopMenu.css'
 
 export interface TopMenuProps extends RouteComponentProps {
   isAdmin: boolean
@@ -58,7 +60,11 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
   render() {
     return (
       <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
-        <Menu.SubMenu title='About'>
+        <Menu.SubMenu title={
+            <>
+            About <DownOutlined className='menuDownIcon' />
+            </>
+          }>
           <Menu.Item key="About">
             <Link to='/'>Club Info</Link>
           </Menu.Item>
