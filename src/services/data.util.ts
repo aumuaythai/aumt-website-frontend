@@ -1,4 +1,5 @@
 import { AumtWeeklyTraining } from "../types"
+import { notification } from 'antd'
 
 export type MemberPoint = Record<string, number>
 
@@ -63,6 +64,15 @@ class DataFormatUtil {
             })
         })
         return attendance
+    }
+
+    copyText = (text: string): void => {
+        navigator.clipboard.writeText(text).then(() => {
+            notification.success({message: 'Copied'})
+        })
+        .catch((err) => {
+            notification.error({message: 'Text not copied: ' + err.toString()})
+        })
     }
 }
 

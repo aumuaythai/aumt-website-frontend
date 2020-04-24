@@ -4,7 +4,7 @@ import {SyncOutlined, EditOutlined} from '@ant-design/icons'
 import './MemberAttendance.css'
 import { TableDataLine } from './TableHelper'
 import db from '../../../services/db'
-import DataFormatter from '../../../services/data.formatter'
+import DataFormatUtil from '../../../services/data.util'
 import { AumtWeeklyTraining } from '../../../types'
 import { SignupForm } from '../../Content/signups/SignupForm'
 
@@ -44,7 +44,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
         }
         db.getAllForms()
             .then(forms => {
-                const attendance = DataFormatter.getAttendance(this.props.member.key, forms)
+                const attendance = DataFormatUtil.getAttendance(this.props.member.key, forms)
                 this.setState({
                     ...this.state,
                     forms,

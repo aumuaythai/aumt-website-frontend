@@ -7,6 +7,7 @@ import { AumtMember, AumtMembersObj } from '../../../types'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
 import db from '../../../services/db';
 
+import DataFormatterUtil from '../../../services/data.util'
 export type TableDataLine = AumtMember & {key: string, tableName: string}
 export type TableColumn = any
 
@@ -35,12 +36,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     private searchInput: Input|null = null
 
     copyText = (text: string) => {
-        navigator.clipboard.writeText(text).then(() => {
-            notification.success({message: 'Copied'})
-        })
-        .catch((err) => {
-            notification.error({message: 'Text not copied: ' + err.toString()})
-        })
+        DataFormatterUtil.copyText(text)
     }
 
     private handleSearch = (selectedKeys: string[], confirm: Function, dataIndex: string) => {

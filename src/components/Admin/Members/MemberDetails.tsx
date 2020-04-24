@@ -8,6 +8,7 @@ import { TableDataLine } from './TableHelper'
 import { notification } from 'antd'
 import { AumtMember } from '../../../types'
 import db from '../../../services/db'
+import DataFormatterUtil from '../../../services/data.util'
 
 interface MemberDetailsProps extends RouteComponentProps {
     member: TableDataLine
@@ -155,12 +156,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             })
     }
     copyText = (text: string) => {
-        navigator.clipboard.writeText(text).then(() => {
-            notification.success({message: 'Copied'})
-        })
-        .catch((err) => {
-            notification.error({message: 'Text not copied: ' + err.toString()})
-        })
+        DataFormatterUtil.copyText(text)
     }
     render() {
         return (

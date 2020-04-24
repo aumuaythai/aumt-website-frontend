@@ -11,6 +11,7 @@ import {About} from './Content/info/About'
 import {Signups} from './Content/signups/Signups'
 import EventsWrapper from './Content/events/EventsWrapper'
 import {Faq} from './Content/info/Faq'
+import { MainJoin } from './Content/join/MainJoin'
 import './Aumt.css'
 import {Team} from './Content/info/Team';
 import DB from '../services/db'
@@ -109,14 +110,21 @@ export class Aumt extends Component<AumtProps, AumtState> {
                       <Route path="/team">
                         <Team></Team>
                       </Route>
-                      <Route path="/signups">
-                        {this.state.authedUser ? <Signups authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups> : <p>You must sign in to be able to sign up for trainings!</p>}
-                      </Route>
-                      <Route path="/events">
-                        <EventsWrapper></EventsWrapper>
-                      </Route>
                       <Route path="/faq">
                         <Faq></Faq>
+                      </Route>
+                      <Route path="/signups">
+                        {this.state.authedUser ?
+                          <Signups authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups>
+                          : <p>You must sign in to be able to sign up for trainings!</p>}
+                      </Route>
+                      <Route path="/events">
+                      {this.state.authedUser ?
+                        <EventsWrapper></EventsWrapper>
+                        : <p>You must sign in to be able to view events!</p>}
+                      </Route>
+                      <Route path="/join">
+                        <MainJoin></MainJoin>
                       </Route>
                       <Route path="/admin">
                         {

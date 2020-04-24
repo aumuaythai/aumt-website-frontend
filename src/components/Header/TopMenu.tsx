@@ -39,7 +39,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
 
     setStateFromPathChange = (windowPath: string) => {
         const pathname = windowPath.split('/')[1]
-        const menuPages = ['About', 'Signups', 'Events', 'FAQ', 'Team', 'Admin']
+        const menuPages = ['About', 'Signups', 'Events', 'Join', 'FAQ', 'Team', 'Admin']
         for (const page of menuPages) {
           if (page.toLowerCase() === pathname.toLowerCase()) {
             this.setState({
@@ -71,6 +71,9 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
           <Menu.Item key="Team">
             <Link to='/team'>Our Team</Link>
           </Menu.Item>
+          <Menu.Item key="FAQ">
+            <Link to='/faq'>FAQ</Link>
+          </Menu.Item>
         </Menu.SubMenu>
         <Menu.Item key="Signups">
           <Link to='/signups'>Sign-ups</Link>
@@ -78,8 +81,8 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
         <Menu.Item key="Events">
           <Link to='/events'>Events</Link>
         </Menu.Item>
-        <Menu.Item key="FAQ">
-          <Link to='/faq'>FAQ</Link>
+        <Menu.Item key="Join">
+          <Link to='/join'>Join</Link>
         </Menu.Item>
         {this.props.isAdmin ?
           (

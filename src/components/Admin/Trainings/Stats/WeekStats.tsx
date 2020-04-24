@@ -13,7 +13,7 @@ import {
 import './WeekStats.css'
 import { AumtWeeklyTraining } from '../../../../types'
 import moment from 'moment'
-import DataFormatUtil, {MemberPoint} from '../../../../services/data.formatter'
+import DataFormatUtil, {MemberPoint} from '../../../../services/data.util'
 import { TrainingGraphTooltip, GraphSessionMap } from './TrainingGraphTooltip'
 
 
