@@ -203,9 +203,9 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                         <h4>Details</h4>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>UoA Student: </span>
-                            <Radio.Group value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
-                                <Radio value="Yes">Yes</Radio>
-                                <Radio value="No">No</Radio>
+                            <Radio.Group  value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
+                                <Radio.Button value="Yes">Yes</Radio.Button>
+                                <Radio.Button value="No">No</Radio.Button>
                             </Radio.Group>
                         </div>
                         <div className={`memberDescriptionLine ${this.state.currentIsUoaStudent === 'Yes' ? '' : 'noHeight'}`}>
@@ -215,24 +215,24 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Membership: </span>
-                            <Radio.Group value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
-                                <Radio value="S1">S1</Radio>
-                                <Radio value="S2">S2</Radio>
-                                <Radio value="FY">FY</Radio>
+                            <Radio.Group  value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
+                                <Radio.Button value="S1">S1</Radio.Button>
+                                <Radio.Button value="S2">S2</Radio.Button>
+                                <Radio.Button value="FY">FY</Radio.Button>
                             </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Paid: </span>
-                            <Radio.Group value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
-                                <Radio value="Yes">Yes</Radio>
-                                <Radio value="No">No</Radio>
+                            <Radio.Group  value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
+                                <Radio.Button value="Yes">Yes</Radio.Button>
+                                <Radio.Button value="No">No</Radio.Button>
                             </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Returning Member: </span>
-                            <Radio.Group value={this.state.currentIsReturningMember} onChange={e => this.onIsReturningChange(e.target.value)}>
-                                <Radio value="Yes">Yes</Radio>
-                                <Radio value="No">No</Radio>
+                            <Radio.Group  value={this.state.currentIsReturningMember} onChange={e => this.onIsReturningChange(e.target.value)}>
+                                <Radio.Button value="Yes">Yes</Radio.Button>
+                                <Radio.Button value="No">No</Radio.Button>
                             </Radio.Group>
                         </div>
                     </div>
