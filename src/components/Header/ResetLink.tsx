@@ -1,8 +1,8 @@
 import React, {Component, ChangeEvent} from 'react'
 import {Modal, Input, Alert, Button} from 'antd'
-import * as firebase from 'firebase/app'
 import UserOutlined from '@ant-design/icons/UserOutlined'
 import './ResetLink.css'
+import FirebaseUtil from '../../services/firebase.util'
 
 
 
@@ -33,8 +33,7 @@ export class ResetPasswordLink extends Component {
       confirmLoading: true,
       errorText: ''
     });
-    // firebase auth request
-    firebase.auth().sendPasswordResetEmail(this.state.currentEmail)
+    FirebaseUtil.sendPasswordResetEmail(this.state.currentEmail)
       .then((success) => {
         console.log('RESET EMAIL success', success)
         this.setState({

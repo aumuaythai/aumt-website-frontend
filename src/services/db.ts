@@ -14,7 +14,6 @@ class DB {
     public initialize = () => {
         if (!this.db) {
             this.db = firebase.firestore()
-
         }
     }
 
@@ -415,11 +414,15 @@ class DB {
             EmergencyContactRelationship: docData.EmergencyContactRelationship,
             upi: docData.upi,
             email: docData.email,
+            phoneNumber: docData.phoneNumber || '',
             emailVerified: docData.emailVerified,
             firstName: docData.firstName,
+            instagramHandle: docData.instagramHandle || '',
+            paymentType: docData.paymentType || 'Cash',
             isReturningMember: docData.isReturningMember,
             isUoAStudent: docData.isUoAStudent,
             paid: docData.paid,
+            initialExperience: docData.initialExperience || '',
             lastName: docData.lastName,
             membership: docData.membership,
             preferredName: docData.preferredName,

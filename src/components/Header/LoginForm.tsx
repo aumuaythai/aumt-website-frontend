@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import * as firebase from 'firebase/app'
 import {Button, Input} from 'antd'
 import UserOutlined from '@ant-design/icons/UserOutlined'
 import {ResetPasswordLink} from './ResetLink'
 import './LoginForm.css'
 import { Redirect, Link } from 'react-router-dom'
 import { LoginErrorMessage } from './LoginErrorMessage'
+import FirebaseUtil from '../../services/firebase.util'
 
 export interface LoginProps {
 
@@ -29,7 +29,7 @@ export class LoginForm extends Component<LoginProps, LoginState> {
             password: '',
             errorCode: '',
             authing: false,
-            isAuthed: !!firebase.auth().currentUser
+            isAuthed: !!FirebaseUtil.getCurrentUser()
         }
     }
     componentDidMount() {
@@ -56,7 +56,7 @@ export class LoginForm extends Component<LoginProps, LoginState> {
             errorCode: ''
             
         })
-        firebase.auth().signInWithEmailAndPassword(this.state.username, this.state.password)
+        FirebaseUtil.signIn(this.state.username, this.state.password)
             .then((userInfo) => {
                 this.setState({
                     ...this.state,

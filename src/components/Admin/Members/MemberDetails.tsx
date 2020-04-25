@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import { Tooltip, Input, Select, Button, Popconfirm } from 'antd'
+import { Tooltip, Input, Radio, Button, Popconfirm } from 'antd'
 import {CopyOutlined} from '@ant-design/icons'
 import { MemberAttendance } from './MemberAttendance'
 import './MemberDetails.css'
@@ -19,11 +19,13 @@ interface MemberDetailsState {
     currentLastName: string
     currentPreferredName: string
     currentEmail: string
+    currentPhoneNumber: string
     currentIsUoaStudent: 'Yes' | 'No'
     currentUpi: string
     currentMembership: 'S1' | 'FY' | 'S2'
     currentPaid: 'Yes' | 'No',
-    currentIsReturningMember: 'Yes' | 'No',
+    currentIsReturningMember: 'Yes' | 'No'
+    currentInitialExperience: string
     currentECName: string
     currentECNumber: string
     currentECRelationship: string
@@ -39,11 +41,13 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             currentLastName: props.member.lastName,
             currentPreferredName: props.member.preferredName,
             currentEmail: props.member.email,
+            currentPhoneNumber: props.member.phoneNumber,
             currentIsUoaStudent: props.member.isUoAStudent,
             currentUpi: props.member.upi,
             currentMembership: props.member.membership,
             currentPaid: props.member.paid,
             currentIsReturningMember: props.member.isReturningMember,
+            currentInitialExperience: props.member.initialExperience,
             currentECName: props.member.EmergencyContactName,
             currentECNumber: props.member.EmergencyContactNumber,
             currentECRelationship: props.member.EmergencyContactRelationship,
@@ -59,6 +63,8 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                 currentLastName: this.props.member.lastName,
                 currentPreferredName: this.props.member.preferredName,
                 currentEmail: this.props.member.email,
+                currentPhoneNumber: this.props.member.phoneNumber,
+                currentInitialExperience: this.props.member.initialExperience,
                 currentIsUoaStudent: this.props.member.isUoAStudent,
                 currentUpi: this.props.member.upi,
                 currentMembership: this.props.member.membership,
@@ -82,6 +88,9 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     onEmailChange = (newEmail: string) => {
         this.setState({...this.state, currentEmail: newEmail})
     }
+    onPhoneNumberChange = (phoneNumber: string) => {
+        this.setState({...this.state, currentPhoneNumber: phoneNumber})
+    }
     onIsUoaChange = (isUoa: 'Yes' | 'No') => {
         this.setState({...this.state, currentIsUoaStudent: isUoa})
     }
@@ -97,6 +106,9 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     }
     onIsReturningChange = (isReturning: 'Yes' | 'No') => {
         this.setState({...this.state, currentIsReturningMember: isReturning})
+    }
+    onInitialExperienceChange = (experience: string) => {
+        this.setState({...this.state, currentInitialExperience: experience})
     }
     onECNameChange = (name: string) => {
         this.setState({...this.state, currentECName: name})
@@ -126,15 +138,20 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             lastName: this.state.currentLastName,
             preferredName: this.state.currentPreferredName,
             email: this.state.currentEmail,
+            phoneNumber: this.state.currentPhoneNumber || '',
             isUoAStudent: this.state.currentIsUoaStudent,
             upi: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
             paid: this.state.currentPaid,
             isReturningMember: this.state.currentIsReturningMember,
+            initialExperience: this.state.currentInitialExperience || '',
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,
             EmergencyContactRelationship: this.state.currentECRelationship,
-            emailVerified: false
+            emailVerified: false,
+            // TODO
+            instagramHandle: '',
+            paymentType: 'Cash'
         }
         if (!member.firstName || !member.lastName) {
             return notification.error({message: 'First and Last Name Required'})
@@ -186,10 +203,10 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                         <h4>Details</h4>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>UoA Student: </span>
-                            <Select value={this.state.currentIsUoaStudent} onChange={this.onIsUoaChange} style={{ width: 120 }}>
-                                <Select.Option value="Yes">Yes</Select.Option>
-                                <Select.Option value="No">No</Select.Option>
-                            </Select>
+                            <Radio.Group value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
+                                <Radio value="Yes">Yes</Radio>
+                                <Radio value="No">No</Radio>
+                            </Radio.Group>
                         </div>
                         <div className={`memberDescriptionLine ${this.state.currentIsUoaStudent === 'Yes' ? '' : 'noHeight'}`}>
                             <span className='memberDescriptionTitle'>UPI: </span>
@@ -198,25 +215,25 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Membership: </span>
-                            <Select value={this.state.currentMembership} onChange={this.onMembershipChange} style={{ width: 120 }}>
-                                <Select.Option value="S1">S1</Select.Option>
-                                <Select.Option value="S2">S2</Select.Option>
-                                <Select.Option value="FY">FY</Select.Option>
-                            </Select>
+                            <Radio.Group value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
+                                <Radio value="S1">S1</Radio>
+                                <Radio value="S2">S2</Radio>
+                                <Radio value="FY">FY</Radio>
+                            </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Paid: </span>
-                            <Select value={this.state.currentPaid} onChange={this.onPaidChange} style={{ width: 120 }}>
-                                <Select.Option value="Yes">Yes</Select.Option>
-                                <Select.Option value="No">No</Select.Option>
-                            </Select>
+                            <Radio.Group value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
+                                <Radio value="Yes">Yes</Radio>
+                                <Radio value="No">No</Radio>
+                            </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Returning Member: </span>
-                            <Select value={this.state.currentIsReturningMember} onChange={this.onIsReturningChange} style={{ width: 120 }}>
-                                <Select.Option value="Yes">Yes</Select.Option>
-                                <Select.Option value="No">No</Select.Option>
-                            </Select>
+                            <Radio.Group value={this.state.currentIsReturningMember} onChange={e => this.onIsReturningChange(e.target.value)}>
+                                <Radio value="Yes">Yes</Radio>
+                                <Radio value="No">No</Radio>
+                            </Radio.Group>
                         </div>
                     </div>
                     <div className="memberDescriptionSection">

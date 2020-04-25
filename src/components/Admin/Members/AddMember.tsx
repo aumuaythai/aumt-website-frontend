@@ -11,7 +11,9 @@ interface AddMemberState {
     currentLastName: string
     currentPreferredName: string
     currentEmail: string
+    currentPhoneNumber: string
     currentIsUoaStudent: 'Yes' | 'No'
+    currentInitialExperience: string
     currentUpi: string
     currentMembership: 'S1' | 'FY' | 'S2'
     currentIsReturningMember: 'Yes' | 'No'
@@ -29,8 +31,10 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
             currentLastName: '',
             currentPreferredName: '',
             currentEmail: '',
+            currentPhoneNumber: '',
             currentIsUoaStudent: 'Yes',
             currentUpi: '',
+            currentInitialExperience: '',
             currentMembership: 'S1',
             currentIsReturningMember: 'No',
             currentECName: '',
@@ -59,6 +63,9 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
     onEmailChange = (newEmail: string) => {
         this.setState({...this.state, currentEmail: newEmail})
     }
+    onPhoneNumberChange = (newPhone: string) => {
+        this.setState({...this.state, currentPhoneNumber: newPhone})
+    }
     onIsUoaChange = (isUoa: 'Yes' | 'No') => {
         this.setState({...this.state, currentIsUoaStudent: isUoa})
     }
@@ -68,6 +75,9 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
     onMembershipChange = (membership: 'S1' | 'S2' | 'FY') => {
         let newMembership: 'S1' | 'S2' | 'FY' = membership
         this.setState({...this.state, currentMembership: newMembership})
+    }
+    onInitialExperienceChange = (experience: string) => {
+        this.setState({...this.state, currentInitialExperience: experience})
     }
     onIsReturningChange = (isReturning: 'Yes' | 'No') => {
         this.setState({...this.state, currentIsReturningMember: isReturning})
@@ -90,7 +100,11 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
             isUoAStudent: this.state.currentIsUoaStudent,
             upi: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
+            initialExperience: this.state.currentInitialExperience,
+            phoneNumber: this.state.currentPhoneNumber,
             paid: 'No',
+            instagramHandle: '',
+            paymentType: 'Cash',
             isReturningMember: this.state.currentIsReturningMember,
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,

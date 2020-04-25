@@ -1,17 +1,17 @@
 import React, {Component} from 'react'
-import * as firebase from 'firebase/app'
 import {Menu, Dropdown, Button} from 'antd'
 import DownOutlined from '@ant-design/icons/DownOutlined'
 import {ResetPasswordLink} from './ResetLink'
 import './UserInfo.css'
 import { AumtMember } from '../../types'
+import FirebaseUtil from '../../services/firebase.util'
 interface UserInfoProps {
     authedUser: AumtMember
 }
 
 export class UserInfo extends Component<UserInfoProps, object> {
     onSignOutClick = () => {
-        firebase.auth().signOut().then(() => {
+        FirebaseUtil.signOut().then(() => {
             console.log('Signing out success')
         }).catch((signOutError) => {
             console.log('Sign out error')
