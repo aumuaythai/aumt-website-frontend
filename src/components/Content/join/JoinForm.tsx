@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {Form, Radio, Input, Button} from 'antd'
+import {Form, Radio, Input, Button, Tooltip} from 'antd'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 import './JoinForm.css'
 import { FormInstance } from 'antd/lib/form';
 import DataFormatterUtil from '../../../services/data.util'
@@ -29,9 +30,9 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 <h2>AUMT 2020 Club Sign-ups</h2>
                 <p>Membership is $50 for the semester, or $90 for the year, and includes a training session each week!
                     Please pay membership fees to the account below and add your NAME and 'AUMTS1' (for one semester) or AUMTFY (for one year) as the reference.</p>
-                <p>06-0158-0932609-00 <Button onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                 <p>Our sign-up sheets for training will be posted to aumt.co.nz/signups, so look out for it!</p>
-                <h4>DISCLAIMER:</h4>
+                <h3>DISCLAIMER:</h3>
                 <p>I understand that by filling up and submitting this form, I am taking part in the club activities at my own risk and any injuries sustained to any person or any damage to any equipment during the ordinary course of training will not be the responsibility of the club. Any loss of equipment or personal belongings is under the sole responsibility of the member, and the club as well as the training facility will not be held responsible. </p>
                 <div className="joinFormEntry">
                     <Form ref={this.formRef} onFinish={this.onSubmit}>
@@ -46,9 +47,16 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio value={'No'}>No</Radio>
                             </Radio.Group>
                         </Form.Item>
-                        {this.formRef.current?.getFieldValue('Uoa Student') === 'Yes' ? 
-                           <Form.Item  {...this.alignInputLayout} name='upi' label='UPI' rules={[{ required: true}]}>
-                               <Input className='joinFormInput' placeholder='The part before your university email'/>
+                        {this.formRef.current?.getFieldValue('Uoa Student') !== 'No' ? 
+                           <Form.Item  {...this.alignInputLayout} name='upi' label={
+                            <span>
+                                UPI&nbsp;
+                                <Tooltip title="This is the part before your university email (e.g. jdoe295)">
+                                    <QuestionCircleOutlined />
+                                </Tooltip>
+                            </span>
+                           } rules={[{ required: true}]}>
+                               <Input className='joinFormInput'/>
                            </Form.Item>
                            : ''}
                         <Form.Item name='Returning Member' rules={[{ required: true }]} label='Are you a returning AUMT member? '>
@@ -66,9 +74,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <Form.Item  {...this.alignInputLayout} name='Preferred Name' label='Preferred Name'>
                             <Input className='joinFormInput' placeholder='If different from first name'/>
                         </Form.Item>
-                        <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='email' label='Email'>
-                            <Input className='joinFormInput'/>
-                        </Form.Item>
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='Phone Number' label='Phone Number'>
                             <Input className='joinFormInput'/>
                         </Form.Item>
@@ -84,7 +89,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 
                             </Radio.Group>
                         </Form.Item>
-                        <h4>Emergency Contact Details</h4>
+                        <h3 className='formSectionHeader'>Emergency Contact Details</h3>
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='Emergency Contact Name' label='Name'>
                             <Input className='joinFormInput'/>
                         </Form.Item>
@@ -94,13 +99,36 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='Emergency Contact Relationship' label='Relationship'>
                             <Input className='joinFormInput'/>
                         </Form.Item>
-                        <h4>Payment</h4>
+                        <h3 className='formSectionHeader'>Socials</h3>
+                        <Form.Item name='Facebook Account' rules={[{ required: true }]} label='Do you have a Facebook account?'>
+                            <Radio.Group name="HasFacebookRadio">
+                                <Radio value={'Yes'}>Yes - like our page, Auckland University Muay Thai, for all important info and announcements</Radio>
+                                <Radio value={'No'}>No</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        <Form.Item  name='Insta' label='What is your instagram handle?'>
+                            <Input className='joinFormInput' placeholder='Optional, if you want the club to follow you'/>
+                        </Form.Item>
+                        <h3 className='formSectionHeader'>Account</h3>
+                        <p>This is your account to sign in to this site for trainings and events.
+                            Your email here will be used both as your username for the account and as a point of contact for club announcements and invitations.
+                            You can reset your password at any time.</p>
+                        <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='email' label='Email'>
+                            <Input className='joinFormInput'/>
+                        </Form.Item>
+                        <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='password' label='Password'>
+                            <Input.Password className='joinFormInput'/>
+                        </Form.Item>
+                        <h3 className='formSectionHeader'>Payment</h3>
                         <Form.Item name='Payment' rules={[{ required: true }]} label='Payment Type'>
                             <Radio.Group name="UoaStudentRadio" onChange={e => this.forceUpdate()}>
                                 <Radio value={'Bank Transfer'}>Bank Transfer</Radio>
                                 <Radio value={'Cash'}>Cash</Radio>
                             </Radio.Group>
                         </Form.Item>
+                        <p>If paying by Bank Transfer, include your NAME and AUMTS2 as the reference. Semester 2 membership is $50. Please make your payment to the following account:</p>
+                        <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                        <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>
                         <Form.Item>
                             <Button block type="primary" htmlType="submit">
                                 Submit

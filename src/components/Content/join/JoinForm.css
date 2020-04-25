@@ -19,3 +19,6 @@
     outline: none;
     box-shadow: none;
 }
+.formSectionHeader {
+    margin-top: 50px;
+}
