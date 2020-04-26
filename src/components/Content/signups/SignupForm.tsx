@@ -11,8 +11,8 @@ export interface SignupFormProps {
     id: string
     closes: Date
     sessions: AumtTrainingSession[]
-    authedUser: AumtMember
-    authedUserId: string
+    displayName: string | null
+    authedUserId: string | null
     notes: string
     onSignupChanged?: () => void
 }
@@ -22,6 +22,7 @@ interface SignupFormState {
     currentFeedback: string
     signedUpOption: string
     submittingState: boolean
+    currentDisplayName: string
     errorMessage: string
     removingState: boolean
 }
@@ -32,6 +33,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         this.state = {
             currentSessionId: '',
             currentFeedback: '',
+            currentDisplayName: '',
             errorMessage: '',
             signedUpOption: '',
             submittingState: false,
@@ -42,20 +44,22 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         this.checkSignedUp()
     }
     checkSignedUp = () => {
-        db.isMemberSignedUpToForm(this.props.authedUserId, this.props.id)
-            .then((sessionId: string) => {
-                if (sessionId) {
-                    this.setState({
-                        ...this.state,
-                        signedUpOption: sessionId
-                    })
-                }
-            })
-            .catch((err) => {
-                notification.error({
-                    message: 'Error retrieving if already signed up: ' + err
+        if (this.props.authedUserId) {
+            db.isMemberSignedUpToForm(this.props.authedUserId, this.props.id)
+                .then((sessionId: string) => {
+                    if (sessionId) {
+                        this.setState({
+                            ...this.state,
+                            signedUpOption: sessionId
+                        })
+                    }
                 })
-            })
+                .catch((err) => {
+                    notification.error({
+                        message: 'Error retrieving if already signed up: ' + err
+                    })
+                })
+        }
     }
     onOptionChange = (e: RadioChangeEvent) => {
         this.setState({
@@ -70,8 +74,22 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             currentFeedback: feedback
         })
     }
+    onDisplayNameChange = (name: string) => {
+        this.setState({
+            ...this.state,
+            currentDisplayName: name
+        })
+    }
+    generateMockUid = () => {
+        let alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
+        let uid = 'NONMEMBER'
+        for (let i = 0; i < 10; i++) {
+            uid += alphabet[Math.floor(Math.random() * alphabet.length)]
+        }
+        return uid
+    }
     onRemoveClick = () => {
-        if (this.state.signedUpOption) {
+        if (this.state.signedUpOption && this.props.authedUserId) {
             this.setState({
                 ...this.state,
                 removingState: true
@@ -100,19 +118,22 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 errorMessage: 'You must select a session'
             })
             return
+        } else if (!this.props.displayName && !this.state.currentDisplayName) {
+            this.setState({
+                ...this.state,
+                errorMessage: 'You must enter your name'
+            })
+            return
         }
         this.setState({
             ...this.state,
             errorMessage: '',
             submittingState: true
         })
-        const displayName = this.props.authedUser.firstName + 
-            (this.props.authedUser.preferredName ? ` "${this.props.authedUser.preferredName}" ` : ' ') +
-            this.props.authedUser.lastName
 
         db.signUserUp(
-                this.props.authedUserId,
-                displayName,
+                this.props.authedUserId || this.generateMockUid(),
+                this.props.displayName || this.state.currentDisplayName,
                 new Date(),
                 this.props.id,
                 optionSelected,
@@ -166,10 +187,17 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                         })}
                     </Radio.Group>
                 </div>
+                {this.props.authedUserId ? 
                 <div className="feedbackInputContainer">
                     <p>Thoughts on last training/feedback?</p>
                     <Input placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
                 </div>
+                :
+                <div className="feedbackInputContainer">
+                    <p>Enter your Name</p>
+                    <Input onChange={e => this.onDisplayNameChange(e.target.value)}/>
+                </div>
+                }
                 <div className="messageContainer">
                     {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
                 </div>

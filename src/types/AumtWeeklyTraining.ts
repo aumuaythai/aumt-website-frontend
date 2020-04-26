@@ -26,4 +26,5 @@ export interface AumtWeeklyTraining {
     opens: Date
     closes: Date
     notes: string
+    openToPublic: boolean
 }

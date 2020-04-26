@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Link } from 'react-router-dom'
 import {Divider} from 'antd'
 import { Links } from '../../../services/links'
 import './Faq.css'
@@ -30,6 +31,15 @@ export class Faq extends Component {
                     </p>
                     <p className="answer">
                         A: Membership is $50 for one semester or $90 for the full year
+                    </p>
+                    <Divider/>
+                </div>
+                <div className="questionContainer">
+                    <p className="question">
+                        Q: How do I join?
+                    </p>
+                    <p className="answer">
+                        A: Club signups are only open at the beginning of each semester. When they open, you can join at <Link to='/join'>aumt.co.nz/join</Link>.
                     </p>
                     <Divider/>
                 </div>

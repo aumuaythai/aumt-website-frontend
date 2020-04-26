@@ -8,8 +8,8 @@ import { notification } from 'antd'
 
 
 interface SignupProps {
-    authedUser: AumtMember
-    authedUserId: string
+    authedUser: AumtMember | null
+    authedUserId: string | null
 }
 
 interface SignupState {
@@ -61,6 +61,16 @@ export class Signups extends Component<SignupProps, SignupState> {
             this.handleNewForms(openForms)  
         }
     }
+    getDisplayName = (): string | null => {
+        if (this.props.authedUser) {
+            const displayName = this.props.authedUser.firstName + 
+                (this.props.authedUser.preferredName ? ` "${this.props.authedUser.preferredName}" ` : ' ') +
+                this.props.authedUser.lastName
+            return displayName
+        } else {
+            return null
+        }
+    }
     handleNewForms = (forms: AumtWeeklyTraining[]) => {
         this.setState({
             forms: forms,
@@ -80,19 +90,37 @@ export class Signups extends Component<SignupProps, SignupState> {
         return (
             <div className='signupsContainer'>
                 {this.state.forms.map((form) => {
-                    return (
-                        <div key={form.trainingId} className="formContainer">
-                            <SignupForm
-                                title={form.title} 
-                                id={form.trainingId} 
-                                closes={form.closes} 
-                                sessions={form.sessions} 
-                                authedUser={this.props.authedUser}
-                                authedUserId={this.props.authedUserId}
-                                notes={form.notes}
-                                ></SignupForm>
+                    if (form.openToPublic) {
+                        return (
+                            <div key={form.trainingId} className='formContainer'>
+                                <SignupForm
+                                    title={form.title} 
+                                    id={form.trainingId} 
+                                    closes={form.closes} 
+                                    sessions={form.sessions} 
+                                    displayName={this.getDisplayName()}
+                                    authedUserId={this.props.authedUserId}
+                                    notes={form.notes}
+                                    ></SignupForm>
                             </div>
                         )
+                    } else if (this.props.authedUserId) {
+                        return (
+                            <div key={form.trainingId} className="formContainer">
+                                <SignupForm
+                                    title={form.title} 
+                                    id={form.trainingId} 
+                                    closes={form.closes} 
+                                    sessions={form.sessions} 
+                                    displayName={this.getDisplayName()}
+                                    authedUserId={this.props.authedUserId}
+                                    notes={form.notes}
+                                    ></SignupForm>
+                                </div>
+                            )
+                    } else {
+                        return ''
+                    }
                     })}
             </div>
         )

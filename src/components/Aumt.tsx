@@ -100,9 +100,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         <Faq></Faq>
                       </Route>
                       <Route path="/signups">
-                        {this.state.authedUser ?
+                        {/* {this.state.authedUser ? */}
                           <Signups authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups>
-                          : <p>You must sign in to be able to sign up for trainings!</p>}
+                          {/* : <p>You must sign in to be able to sign up for trainings!</p>} */}
                       </Route>
                       <Route path="/events">
                       {this.state.authedUser ?

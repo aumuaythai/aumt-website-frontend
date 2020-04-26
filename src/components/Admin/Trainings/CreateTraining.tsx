@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
-import { Button, Input, InputNumber, DatePicker, notification } from 'antd'
+import { Button, Input, InputNumber, DatePicker, notification, Radio } from 'antd'
 import moment from 'moment'
 import { MinusCircleOutlined} from '@ant-design/icons'
 import './CreateTraining.css'
@@ -19,6 +19,7 @@ interface CreateTrainingState {
     currentSessions: AumtTrainingSession[]
     isSubmitting: boolean
     currentNotes: string
+    currentOpenToPublic: boolean
     currentPopulateWeekValue: number
 }
 
@@ -34,6 +35,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentOpens: new Date(),
             currentCloses: new Date(),
             currentSessions: [],
+            currentOpenToPublic: false,
             isSubmitting: false,
             currentNotes: '',
             currentPopulateWeekValue: 1
@@ -46,6 +48,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 currentCloses: this.props.defaultValues.closes,
                 currentSessions: this.props.defaultValues.sessions,
                 currentNotes: this.props.defaultValues.notes,
+                currentOpenToPublic: this.props.defaultValues.openToPublic,
             }
         }
     }
@@ -102,6 +105,12 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 currentCloses: d
             })
         }
+    }
+    onOpenToPublicChange = (open: boolean) => {
+        this.setState({
+            ...this.state,
+            currentOpenToPublic: open
+        })
     }
     onTrainingTitleChange = (title: string) => {
         this.setState({
@@ -184,6 +193,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             sessions: this.state.currentSessions,
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
+            openToPublic: this.state.currentOpenToPublic,
             notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
             trainingId: this.props.defaultValues ?
                 this.props.defaultValues.trainingId :
@@ -221,6 +231,13 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 <div>
                     <span className="formItemTitle">Closes: </span>
                     <DatePicker value={moment(this.state.currentCloses)} showTime onChange={d => this.onClosesDateChange(d?.toDate())} />
+                </div>
+                <div>
+                    Open to Public:
+                    <Radio.Group value={this.state.currentOpenToPublic} onChange={e => this.onOpenToPublicChange(e.target.value)}>
+                        <Radio.Button value={true}>Yes</Radio.Button>
+                        <Radio.Button value={false}>No</Radio.Button>
+                    </Radio.Group>
                 </div>
                 <h4 className='formSectionTitle'>Sessions</h4>
                 <div className="sessionSection">

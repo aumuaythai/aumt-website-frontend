@@ -1,13 +1,16 @@
 import React, {Component} from 'react'
-import {Form, Radio, Input, Button, Tooltip} from 'antd'
+import {Form, Radio, Input, Button, Tooltip, message, notification, Alert} from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import './JoinForm.css'
 import { FormInstance } from 'antd/lib/form';
 import DataFormatterUtil from '../../../services/data.util'
 import { AumtMember } from '../../../types';
 import FirebaseUtil from '../../../services/firebase.util';
+import db from '../../../services/db';
 
-interface JoinFormProps {}
+interface JoinFormProps {
+    isAdmin: boolean
+}
 
 interface JoinFormState {
     currentExperienceInMuayThai: string
@@ -28,6 +31,12 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
         this.state = {
             currentExperienceInMuayThai: '',
             submitting: false
+        }
+    }
+    private onSubmitFail = (obj: any) => {
+        const {errorFields} = obj
+        if (errorFields && errorFields.length) {
+            notification.error({message: obj.errorFields[0].errors[0]})
         }
     }
     private onSubmit = (values: any) => {
@@ -65,19 +74,38 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 EmergencyContactRelationship,
                 emailVerified: false,
             }
+            this.setState({
+                ...this.state,
+                submitting: true
+            })
+            const key = 'submitFormMessage'
+            message.loading({content: 'Creating User', key})
             FirebaseUtil.createUser(email, password)
                 .then((userCredential) => {
                     const {user} = userCredential
-                    if (user) {
-
-                    } else {
-
+                    if (!user) {
+                        throw new Error('No user returned from Firebase create')
                     }
-                    console.log(user)
+                    return user.uid
+                })
+                .then((uid: string) => {
+                    message.loading({content: 'Adding to Club', key})
+                    return db.setMember(uid, member)
+                })
+                .then(() => {
+                    message.success({content: 'You are now part of the club!', key, duration: 5})
                 })
                 .catch((err) => {
                     if (err.code === 'auth/email-already-in-use') {
+                        return message.error({content: 'Email already in use. Contact the AUMT committee ', key, duration: 5})
                     }
+                    return message.error({content: err.toString(), key, duration: 5})
+                })
+                .finally(() => {
+                    this.setState({
+                        ...this.state,
+                        submitting: false
+                    })
                 })
     }
     private copyText = (text: string) => {
@@ -86,20 +114,30 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
     render() {
         return (
             <div className='joinFormContainer'>
-                <h2>AUMT 2020 Sem 2 Club Sign-ups</h2>
-                <p>Membership is $50 for the semester and includes a training session each week!
-                    Please pay membership fees to the account below and add your NAME and 'AUMTS2' as the reference.</p>
-                <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
-                <p>Our sign-up sheets for training will be posted to aumt.co.nz/signups, so look out for it!</p>
-                <h3>DISCLAIMER:</h3>
-                <p>I understand that by filling up and submitting this form, I am taking part in the club activities at my own risk and any injuries sustained to any person or any damage to any equipment during the ordinary course of training will not be the responsibility of the club. Any loss of equipment or personal belongings is under the sole responsibility of the member, and the club as well as the training facility will not be held responsible. </p>
+                {!this.props.isAdmin ?
+                <div>
+                    <h2>AUMT 2020 Sem 2 Club Sign-ups</h2>
+                    <p>Membership is $50 for the semester and includes a training session each week!
+                        Please pay membership fees to the account below and add your NAME and 'AUMTS2' as the reference.</p>
+                    <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                    <p>Our sign-up sheets for training will be posted to aumt.co.nz/signups, so look out for it!</p>
+                    <h3>DISCLAIMER:</h3>
+                    <p>I understand that by filling up and submitting this form, I am taking part in the club activities at my own risk and any injuries sustained to any person or any damage to any equipment during the ordinary course of training will not be the responsibility of the club. Any loss of equipment or personal belongings is under the sole responsibility of the member, and the club as well as the training facility will not be held responsible. </p>
+                </div>
+                :
+                <div>
+                    <Alert type='warning' message='NOTE TO ADMIN' description='Adding a member here will only add them to the database and not give them a login (email and password). You must also create an account for them at the Firebase console in the Authentication section'></Alert>
+                </div>
+                }
                 <div className="joinFormEntry">
-                    <Form ref={this.formRef} onFinish={this.onSubmit}>
+                    <Form scrollToFirstError ref={this.formRef} onFinishFailed={this.onSubmitFail} onFinish={this.onSubmit}>
+                        {this.props.isAdmin ? 
                         <Form.Item name='Disclaimer' rules={[{ required: true }]} label='Have you read and understood the above disclaimer?'>
                             <Radio.Group name="DisclaimerRadio">
                                 <Radio value='Yes'>Yes</Radio>
                             </Radio.Group>
                         </Form.Item>
+                        : ''}
                         <Form.Item name='UoaStudent' rules={[{ required: true }]} label='Are you a current UoA student? '>
                             <Radio.Group buttonStyle="solid" name="UoaStudentRadio" onChange={e => this.forceUpdate()}>
                                 <Radio.Button value={'Yes'}>Yes</Radio.Button>
@@ -165,16 +203,22 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <Form.Item  name='Insta' label='What is your instagram handle?'>
                             <Input prefix='@' className='joinFormInput' placeholder='Optional, if you want the club to follow you'/>
                         </Form.Item>
-                        <h3 className='formSectionHeader'>Account</h3>
-                        <p>This is your account to sign in to this site for trainings and events.
-                            Your email here will be used both as your username for the account and as a point of contact for club announcements and invitations.
-                            You can reset your password at any time.</p>
+                        {this.props.isAdmin ? 
+                        <div>
+                            <h3 className='formSectionHeader'>Account</h3>
+                            <p>This is your account to sign in to this site for trainings and events.
+                                Your email here will be used both as your username for the account and as a point of contact for club announcements and invitations.
+                                You can reset your password at any time.</p>
+                        </div>
+                        : ''}
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='email' label='Email'>
                             <Input className='joinFormInput'/>
                         </Form.Item>
-                        <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='password' label='Password'>
+                        {this.props.isAdmin ?
+                        <Form.Item {...this.alignInputLayout} rules={[{ required: true }]} name='password' label='Password'>
                             <Input.Password className='joinFormInput'/>
                         </Form.Item>
+                        : ''}
                         <h3 className='formSectionHeader'>Payment</h3>
                         <Form.Item name='Payment' rules={[{ required: true }]} label='Payment Type'>
                             <Radio.Group buttonStyle="solid" name="UoaStudentRadio" onChange={e => this.forceUpdate()}>
@@ -186,7 +230,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                         <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>
                         <Form.Item>
-                            <Button block type="primary" htmlType="submit">
+                            <Button loading={this.state.submitting} block type="primary" htmlType="submit">
                                 Submit
                             </Button>
                         </Form.Item>

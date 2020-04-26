@@ -1,3 +1,6 @@
 .menuDownIcon {
     font-size: 9px !important;
 }
+.dropdownTopMenuItem {
+    padding: 0
+}

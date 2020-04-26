@@ -29,6 +29,7 @@
 }
 .memberDetailsSection {
     width: 50%;
+    height: 100%;
     float: right;
     padding: 10px;
 }
@@ -40,6 +41,10 @@
     font-size: 20px;
     cursor: pointer;
 }
+.joinFormAdminContainer {
+    max-height: calc(100% - 30px);
+    overflow-y: auto;
+}
 @media(max-width: 1180px) {
     .memberDisplaySectionNarrow {
         width: 100%;
@@ -48,5 +53,11 @@
     .memberDetailsSection {
         float: none;
         width: 100%;
+    }
+    .memberDetailsSection {
+        height: unset
+    }
+    .joinFormAdminContainer {
+        max-height: unset
     }
 }

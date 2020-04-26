@@ -35,7 +35,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         }
     }
     signMockData = () => {
-        db.signMockData()
+        db.formatMembers()
             .then(() => {
                 console.log('DONE')
             })

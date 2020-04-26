@@ -27,7 +27,7 @@ class DB {
                 if (doc.exists && docData) {
                     return docData as AumtMember
                 } else {
-                    throw new Error('No user exists for user id' + fbUser.uid)
+                    throw new Error('No AUMT member exists for this acccount ' + fbUser.uid)
                 }
             })
     }
@@ -285,12 +285,12 @@ class DB {
     formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         const experiences = ['Cash', 'Bank Transfer']
-        return this.db.collection('members')
+        return this.db.collection('weekly_trainings')
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     doc.ref.update({
-                        instagramHandle: ''
+                        openToPublic: false
                     })
                 })
             })
@@ -401,6 +401,7 @@ class DB {
             feedback: docData.feedback,
             trainingId: docData.trainingId,
             sessions: docSessions,
+            openToPublic: docData.openToPublic || false,
             opens: new Date(docData.opens.seconds * 1000),
             closes: new Date(docData.closes.seconds * 1000),
             notes: docData.notes.split('%%NEWLINE%%').join('\n')

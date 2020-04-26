@@ -35,6 +35,16 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
     componentDidMount = () => {
         this.getAttendance()
     }
+    getDisplayName = (): string | null => {
+        if (this.props.member) {
+            const displayName = this.props.member.firstName + 
+                (this.props.member.preferredName ? ` "${this.props.member.preferredName}" ` : ' ') +
+                this.props.member.lastName
+            return displayName
+        } else {
+            return null
+        }
+    }
     getAttendance = (noLoad?: boolean) => {
         if (!noLoad) {
             this.setState({
@@ -67,7 +77,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
                 id={form.trainingId}
                 closes={form.closes}
                 sessions={form.sessions}
-                authedUser={this.props.member}
+                displayName={this.getDisplayName()}
                 authedUserId={this.props.member.key}
                 notes={form.notes}
                 onSignupChanged={() => this.getAttendance(true)}></SignupForm>
