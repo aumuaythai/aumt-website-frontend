@@ -284,12 +284,13 @@ class DB {
 
     formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
+        const experiences = ['Cash', 'Bank Transfer']
         return this.db.collection('members')
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     doc.ref.update({
-                        paid: 'No'
+                        instagramHandle: ''
                     })
                 })
             })
@@ -306,7 +307,7 @@ class DB {
                     uids.push({
                         [doc.id]: {
                             name: data.firstName + (data.preferredName ? ` "${data.preferredName}" ` : ' ') + data.lastName,
-                            timeAdded: this.getRandomDate(new Date(2020, 3, 5), new Date())
+                            timeAdded: this.getRandomDate(new Date(2020, 3, 20), new Date())
                         }
                     })
                 })
@@ -315,7 +316,7 @@ class DB {
             .then((uids: MockMember[]) => {
                 return this.getAllForms()
                     .then((forms: AumtWeeklyTraining[]) => {
-                        const form = forms.find(f => f.title.indexOf('Week 8') > -1)
+                        const form = forms.find(f => f.title.indexOf('Week 9') > -1)
                         if (!form) throw new Error('NO FORM')
                         form.sessions = form.sessions.map((session) => {
                             const randLimit = Math.floor(Math.random() * 15 + 16)
@@ -414,7 +415,6 @@ class DB {
             EmergencyContactRelationship: docData.EmergencyContactRelationship,
             upi: docData.upi,
             email: docData.email,
-            phoneNumber: docData.phoneNumber || '',
             emailVerified: docData.emailVerified,
             firstName: docData.firstName,
             instagramHandle: docData.instagramHandle || '',

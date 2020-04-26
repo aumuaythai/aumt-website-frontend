@@ -22,11 +22,11 @@ class FirebaseUtil {
         }
     }
 
-    public signIn = (email: string, password: string) => {
+    public signIn = (email: string, password: string): Promise<firebase.auth.UserCredential> => {
         return firebase.auth().signInWithEmailAndPassword(email, password)
     }
 
-    public getCurrentUser = () => {
+    public getCurrentUser = (): User | null => {
         return firebase.auth().currentUser
     }
 
@@ -34,8 +34,16 @@ class FirebaseUtil {
         return firebase.auth().createUserWithEmailAndPassword(email, password)
     }
 
-    public signOut = () => {
+    public signOut = (): Promise<void> => {
         return firebase.auth().signOut()
+    }
+
+    public deleteCurrentUser = (): Promise<void> => {
+        const user = firebase.auth().currentUser
+        if (!user) {
+            return Promise.reject('Cannot delete - user is not signed in')
+        }
+        return user.delete()
     }
 
     public sendPasswordResetEmail = (email: string) => {

@@ -11,7 +11,6 @@ interface AddMemberState {
     currentLastName: string
     currentPreferredName: string
     currentEmail: string
-    currentPhoneNumber: string
     currentIsUoaStudent: 'Yes' | 'No'
     currentInitialExperience: string
     currentUpi: string
@@ -31,7 +30,6 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
             currentLastName: '',
             currentPreferredName: '',
             currentEmail: '',
-            currentPhoneNumber: '',
             currentIsUoaStudent: 'Yes',
             currentUpi: '',
             currentInitialExperience: '',
@@ -62,9 +60,6 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
     }
     onEmailChange = (newEmail: string) => {
         this.setState({...this.state, currentEmail: newEmail})
-    }
-    onPhoneNumberChange = (newPhone: string) => {
-        this.setState({...this.state, currentPhoneNumber: newPhone})
     }
     onIsUoaChange = (isUoa: 'Yes' | 'No') => {
         this.setState({...this.state, currentIsUoaStudent: isUoa})
@@ -101,7 +96,6 @@ export class AddMember extends Component<AddMemberProps, AddMemberState> {
             upi: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
             initialExperience: this.state.currentInitialExperience,
-            phoneNumber: this.state.currentPhoneNumber,
             paid: 'No',
             instagramHandle: '',
             paymentType: 'Cash',

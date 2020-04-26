@@ -9,7 +9,6 @@ export interface AumtMember {
     isUoAStudent: 'Yes' | 'No'
     membership: 'S1' | 'S2' | 'FY'
     initialExperience: string
-    phoneNumber: string
     instagramHandle: string
     paymentType: 'Cash' | 'Bank Transfer'
     paid: 'Yes' | 'No'

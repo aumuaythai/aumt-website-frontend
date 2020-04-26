@@ -19,7 +19,7 @@ interface MemberDetailsState {
     currentLastName: string
     currentPreferredName: string
     currentEmail: string
-    currentPhoneNumber: string
+    currentIgHandle: string
     currentIsUoaStudent: 'Yes' | 'No'
     currentUpi: string
     currentMembership: 'S1' | 'FY' | 'S2'
@@ -41,7 +41,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             currentLastName: props.member.lastName,
             currentPreferredName: props.member.preferredName,
             currentEmail: props.member.email,
-            currentPhoneNumber: props.member.phoneNumber,
+            currentIgHandle: props.member.instagramHandle,
             currentIsUoaStudent: props.member.isUoAStudent,
             currentUpi: props.member.upi,
             currentMembership: props.member.membership,
@@ -63,7 +63,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                 currentLastName: this.props.member.lastName,
                 currentPreferredName: this.props.member.preferredName,
                 currentEmail: this.props.member.email,
-                currentPhoneNumber: this.props.member.phoneNumber,
+                currentIgHandle: this.props.member.instagramHandle,
                 currentInitialExperience: this.props.member.initialExperience,
                 currentIsUoaStudent: this.props.member.isUoAStudent,
                 currentUpi: this.props.member.upi,
@@ -88,8 +88,8 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     onEmailChange = (newEmail: string) => {
         this.setState({...this.state, currentEmail: newEmail})
     }
-    onPhoneNumberChange = (phoneNumber: string) => {
-        this.setState({...this.state, currentPhoneNumber: phoneNumber})
+    onInstagramChange = (newHandle: string) => {
+        this.setState({...this.state, currentIgHandle: newHandle})
     }
     onIsUoaChange = (isUoa: 'Yes' | 'No') => {
         this.setState({...this.state, currentIsUoaStudent: isUoa})
@@ -138,7 +138,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             lastName: this.state.currentLastName,
             preferredName: this.state.currentPreferredName,
             email: this.state.currentEmail,
-            phoneNumber: this.state.currentPhoneNumber || '',
+            instagramHandle: this.state.currentIgHandle || '',
             isUoAStudent: this.state.currentIsUoaStudent,
             upi: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
@@ -150,7 +150,6 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             EmergencyContactRelationship: this.state.currentECRelationship,
             emailVerified: false,
             // TODO
-            instagramHandle: '',
             paymentType: 'Cash'
         }
         if (!member.firstName || !member.lastName) {
@@ -198,12 +197,16 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                             <Input className='memberEditInput longMemberEditInput' value={this.state.currentEmail} onChange={e => this.onEmailChange(e.target.value)}/>
                             <Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.state.currentEmail)}/></Tooltip>
                         </div>
+                        <div className='memberDescriptionLine'>
+                            <span className='memberDescriptionTitle'>Instagram Handle: </span>
+                            <Input prefix='@' className='memberEditInput' value={this.state.currentIgHandle} onChange={e => this.onInstagramChange(e.target.value)}/>
+                        </div>
                     </div>
                     <div className="memberDescriptionSection">
                         <h4>Details</h4>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>UoA Student: </span>
-                            <Radio.Group  value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
+                            <Radio.Group value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
                                 <Radio.Button value="Yes">Yes</Radio.Button>
                                 <Radio.Button value="No">No</Radio.Button>
                             </Radio.Group>
@@ -215,7 +218,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Membership: </span>
-                            <Radio.Group  value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
+                            <Radio.Group value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
                                 <Radio.Button value="S1">S1</Radio.Button>
                                 <Radio.Button value="S2">S2</Radio.Button>
                                 <Radio.Button value="FY">FY</Radio.Button>
@@ -223,14 +226,14 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Paid: </span>
-                            <Radio.Group  value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
+                            <Radio.Group value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
                                 <Radio.Button value="Yes">Yes</Radio.Button>
                                 <Radio.Button value="No">No</Radio.Button>
                             </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>
                             <span className='memberDescriptionTitle'>Returning Member: </span>
-                            <Radio.Group  value={this.state.currentIsReturningMember} onChange={e => this.onIsReturningChange(e.target.value)}>
+                            <Radio.Group value={this.state.currentIsReturningMember} onChange={e => this.onIsReturningChange(e.target.value)}>
                                 <Radio.Button value="Yes">Yes</Radio.Button>
                                 <Radio.Button value="No">No</Radio.Button>
                             </Radio.Group>

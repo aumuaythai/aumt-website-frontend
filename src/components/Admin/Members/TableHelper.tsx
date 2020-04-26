@@ -242,6 +242,23 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 }
             },
             {
+                dataIndex: 'paymentType',
+                title: 'Payment Type',
+                filters: [{ text: 'Bank Transfer', value: 'Bank Transfer' },
+                    { text: 'Cash', value: 'Cash' }],
+                onFilter: (value: string, record: TableDataLine) => {
+                    return record.paymentType === value
+                },
+            },
+            {
+                dataIndex: 'instagramHandle',
+                title: 'Insta',
+                ...this.getColumnSearchProps('instagramHandle'),
+                render: (text: string) => {
+                    return text ? <span>@{this.renderHighlightedText(text, 'instagramHandle')}</span> : {text}
+                }
+            },
+            {
                 title: 'Emergency Contact',
                 children: [
                     {

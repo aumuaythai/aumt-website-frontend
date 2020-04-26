@@ -37,7 +37,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             FirstName,
             LastName,
             PreferredName,
-            PhoneNumber,
             Experience,
             EmergencyContactName,
             EmergencyContactNumber,
@@ -57,7 +56,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 upi: upi || '0',
                 membership: 'S2',
                 initialExperience: Experience,
-                phoneNumber: PhoneNumber,
                 instagramHandle: Insta || '',
                 paymentType: Payment,
                 paid: 'No',
@@ -68,12 +66,17 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 emailVerified: false,
             }
             FirebaseUtil.createUser(email, password)
-                .then((user: {}) => {
+                .then((userCredential) => {
+                    const {user} = userCredential
+                    if (user) {
+
+                    } else {
+
+                    }
                     console.log(user)
                 })
                 .catch((err) => {
                     if (err.code === 'auth/email-already-in-use') {
-
                     }
                 })
     }
@@ -129,9 +132,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         </Form.Item>
                         <Form.Item  {...this.alignInputLayout} name='PreferredName' label='Preferred Name'>
                             <Input className='joinFormInput' placeholder='If different from first name'/>
-                        </Form.Item>
-                        <Form.Item  {...this.alignInputLayout} name='PhoneNumber' label='Phone Number'>
-                            <Input className='joinFormInput'/>
                         </Form.Item>
                         <Form.Item rules={[{ required: true }]} name='Experience' label='Experience in Muay Thai'>
                             <Radio.Group name="ExperienceRadio" onChange={v => this.setState({...this.state,currentExperienceInMuayThai: v.target.value})}>

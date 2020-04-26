@@ -110,7 +110,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         : <p>You must sign in to be able to view events!</p>}
                       </Route>
                       <Route path="/join">
-                        <MainJoin></MainJoin>
+                        <MainJoin authedUser={this.state.authedUser} authedUserId={this.state.authedUserId}></MainJoin>
                       </Route>
                       <Route path="/admin">
                         {
