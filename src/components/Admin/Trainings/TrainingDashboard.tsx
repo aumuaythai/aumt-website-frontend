@@ -70,7 +70,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
     }
     handleNewForms = (forms: AumtWeeklyTraining[]) => {
         const sortedForms = forms.sort((a, b) => {
-            return a.closes > b.closes ? 1 : -1
+            return a.closes < b.closes ? 1 : -1
         })
         this.setState({
             ...this.state,
@@ -79,7 +79,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         const currentTime = new Date()
         let currentForm = sortedForms[sortedForms.length - 1]
         for (let i = 0; i < sortedForms.length; i ++) {
-            if (sortedForms[i].closes > currentTime) {
+            if (sortedForms[i].opens < currentTime) {
                 currentForm = sortedForms[i]
                 break
             }

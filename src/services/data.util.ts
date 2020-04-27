@@ -49,6 +49,9 @@ class DataFormatUtil {
     }
 
     getAttendance = (memberId: string, forms: AumtWeeklyTraining[]) => {
+        forms.sort((a, b) => {
+            return a.closes < b.closes ? 1 : -1
+        })
         const attendance: {formTitle: string, formId: string, sessionTitle: string}[] = []
         forms.forEach((form) => {
             let foundSession = ''
