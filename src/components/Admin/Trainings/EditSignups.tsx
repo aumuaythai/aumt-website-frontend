@@ -153,7 +153,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                     >
                                         {Object.keys(session.members).sort((a, b) => this.memberSort(a, b, session)).map((member) => {
                                                 return (
-                                                    <Select.Option key={member} value={member}>{session.members[member].name}</Select.Option>
+                                                <Select.Option key={member} value={member}>{session.members[member].name}{member.indexOf('NONMEMBER') > -1 ? ' (non-member)': ''}</Select.Option>
                                                 )
                                         })}
                                 </Select>

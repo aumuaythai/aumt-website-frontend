@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
-import './Signups.css'
+import { Link } from 'react-router-dom'
+import { notification } from 'antd'
 import {LoadingOutlined} from '@ant-design/icons'
+import './Signups.css'
 import { SignupForm } from './SignupForm'
 import { AumtWeeklyTraining, AumtMember } from '../../../types'
 import db from '../../../services/db'
-import { notification } from 'antd'
 
 
 interface SignupProps {
@@ -92,7 +93,7 @@ export class Signups extends Component<SignupProps, SignupState> {
                 <div>
                     <p>You must be signed in to view trainings.</p>
                     <h4>Not a member?</h4>
-                    <p>Join the club! Club signups are open at the beginning of each semester.</p>
+                    <p><Link to='/join'>Join the club!</Link> Club signups are open at the beginning of each semester.</p>
                 </div>
             )
         }
