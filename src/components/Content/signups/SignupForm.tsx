@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {Radio, Button, Alert, Tooltip, notification, Input, Tag } from 'antd'
+import {Spin, Radio, Button, Alert, Tooltip, notification, Input, Tag } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
-import { LoadingOutlined, CheckSquareTwoTone } from '@ant-design/icons'
+import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
-import { AumtTrainingSession, AumtMember } from '../../../types'
+import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';
 
 export interface SignupFormProps {
@@ -210,7 +210,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     loading={this.state.submittingState}
                     onClick={this.onSubmitClick}>Submit</Button>
                 <Button disabled={!this.state.signedUpOption} type='link' className='signupFormRemove' onClick={this.onRemoveClick} block>
-                    {this.state.removingState ? <span><LoadingOutlined className='signupFormRemoveLoadingIcon'/> </span>: ''} Remove Signup
+                    {this.state.removingState ? <span><Spin className='signupFormRemoveLoadingIcon'/> </span>: ''} Remove Signup
                 </Button>
             </div>
         )

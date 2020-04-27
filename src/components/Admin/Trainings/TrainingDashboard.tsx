@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Menu, Dropdown, notification } from 'antd'
-import { LoadingOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons'
+import { Spin, Button, Menu, Dropdown, notification } from 'antd'
+import { DownOutlined, PlusOutlined } from '@ant-design/icons'
 import './TrainingDashboard.css'
 import { WeekStats } from './Stats/WeekStats'
 import { YearStats } from './Stats/YearStats'
@@ -150,7 +150,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                     <div className="editMembersContainer trainingDashboardSection">
                     <h2 className="sectionHeader">Edit Members</h2>
                         {this.state.loadingForms ?
-                            <p>Loading current forms <LoadingOutlined /></p> :
+                            <p>Loading current forms <Spin /></p> :
                             this.state.currentForm ?
                             <EditSignups form={this.state.currentForm}></EditSignups> :
                             <p>No Form Selected</p>

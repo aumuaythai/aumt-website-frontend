@@ -1,5 +1,5 @@
 import * as firebase from 'firebase'
-import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig } from '../types';
 
 type MockMember = {
     [uid: string]: {
@@ -37,6 +37,20 @@ class DB {
         return this.db.collection('admin').doc(userId).get()
             .then((doc) => {
                 return !!doc.exists
+            })
+    }
+
+    public getClubConfig = (): Promise<ClubConfig> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db
+            .collection('config')
+            .doc('config')
+            .get()
+            .then((doc) => {
+                const data: any = doc.data()
+                return {
+                    clubSignupStatus: data.clubSignupStatus
+                }
             })
     }
 
@@ -284,7 +298,7 @@ class DB {
 
     formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
-        const experiences = ['Cash', 'Bank Transfer']
+        // const experiences = ['Cash', 'Bank Transfer']
         return this.db.collection('weekly_trainings')
             .get()
             .then((querySnapshot) => {

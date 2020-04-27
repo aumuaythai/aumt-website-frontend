@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import { notification } from 'antd'
-import {LoadingOutlined} from '@ant-design/icons'
+import {Spin, notification } from 'antd'
 import './Signups.css'
 import { SignupForm } from './SignupForm'
 import { AumtWeeklyTraining, AumtMember } from '../../../types'
@@ -83,7 +82,7 @@ export class Signups extends Component<SignupProps, SignupState> {
     }
     render() {
         if (this.state.loadingForms) {
-            return (<p>Retrieving Sessions <LoadingOutlined/></p>)
+            return (<p>Retrieving Sessions <Spin/></p>)
         }
         if (!this.state.forms.length) {
             return (<p>{this.state.noFormText}</p>)

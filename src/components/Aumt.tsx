@@ -21,33 +21,45 @@ export interface AumtProps {
 }
 
 export interface AumtState {
+    loadingAuthedUser: boolean
     authedUser: AumtMember | null
     userIsAdmin: boolean
     authedUserId: string
+    clubSignupStatus: 'open' | 'closed' | 'loading'
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {
     constructor(props: AumtProps) {
         super(props)
-        let authedUser = null
-        this.state = { authedUser, userIsAdmin: false, authedUserId: '' }
+        const authedUser = null
+        this.state = { authedUser, loadingAuthedUser: true, userIsAdmin: false, authedUserId: '', clubSignupStatus: 'loading' }
         FirebaseUtil.initialize(this.authStateChange)
         DB.initialize()
+        DB.getClubConfig()
+          .then((config) => {
+            this.setState({
+              ...this.state,
+              clubSignupStatus: config.clubSignupStatus
+            })
+          })
     }
 
     private authStateChange = (fbUser: User | null) => {
       if (fbUser) {
-        DB.getUserInfo(fbUser).then((userInfo: AumtMember) => {
-          this.setState({
-            ...this.state,
-            authedUser: userInfo,
-            authedUserId: fbUser.uid
-          })
-          DB.getIsAdmin(fbUser.uid).then((isAdmin: boolean) => {
+        DB.getUserInfo(fbUser)
+          .then((userInfo: AumtMember) => {
             this.setState({
               ...this.state,
-              userIsAdmin: isAdmin
+              authedUser: userInfo,
+              loadingAuthedUser: false,
+              authedUserId: fbUser.uid
             })
+            return DB.getIsAdmin(fbUser.uid)
+        })
+        .then((isAdmin: boolean) => {
+          this.setState({
+            ...this.state,
+            userIsAdmin: isAdmin
           })
         })
         .catch((err) => {
@@ -65,6 +77,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
             ...this.state,
             authedUser: null,
             authedUserId: '',
+            loadingAuthedUser: false,
             userIsAdmin: false
           })
           return FirebaseUtil.signOut()
@@ -74,6 +87,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
           ...this.state,
           authedUser: null,
           authedUserId: '',
+          loadingAuthedUser: false,
           userIsAdmin: false
         })
       }
@@ -100,9 +114,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         <Faq></Faq>
                       </Route>
                       <Route path="/signups">
-                        {/* {this.state.authedUser ? */}
-                          <Signups authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups>
-                          {/* : <p>You must sign in to be able to sign up for trainings!</p>} */}
+                        <Signups authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups>
                       </Route>
                       <Route path="/events">
                       {this.state.authedUser ?
@@ -110,7 +122,11 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         : <p>You must sign in to be able to view events!</p>}
                       </Route>
                       <Route path="/join">
-                        <MainJoin authedUser={this.state.authedUser} authedUserId={this.state.authedUserId}></MainJoin>
+                        <MainJoin
+                          loadingAuthedUser={this.state.loadingAuthedUser}
+                          clubSignupStatus={this.state.clubSignupStatus}
+                          authedUser={this.state.authedUser}
+                          authedUserId={this.state.authedUserId}></MainJoin>
                       </Route>
                       <Route path="/admin">
                         {

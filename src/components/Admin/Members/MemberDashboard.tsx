@@ -1,11 +1,10 @@
 import React, {Component} from 'react'
 import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import { Table, notification, Button } from 'antd'
-import { LoadingOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { Spin, Table, notification, Button } from 'antd'
+import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import './MemberDashboard.css'
 import {TableColumn, TableDataLine} from './TableHelper'
 import MemberDetails from './MemberDetails'
-import { AddMember } from './AddMember'
 import { JoinForm } from '../../Content/join/JoinForm'
 import { AumtMembersObj } from '../../../types'
 import db from '../../../services/db'
@@ -117,7 +116,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             <div className='memberDashboardContainer'>
                 <TableHelper onMemberSelect={this.onMemberSelect} ref={this.tableHelperChange}></TableHelper>
                 {this.state.loadingMembers ? 
-                <p className='retrievingMembersText'>Retrieving Members <LoadingOutlined/></p> :
+                <p className='retrievingMembersText'>Retrieving Members <Spin/></p> :
                 this.helper ? (
                     <div className={`memberDisplaySection ${this.longTable ? '' : 'memberDisplaySectionNarrow'}`}>
                         <div className="memberDashboardHeader">

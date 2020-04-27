@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import { Popconfirm, Alert, Button, notification, Divider } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { Spin, Popconfirm, Alert, Button, notification, Divider } from 'antd'
 import './ManageEvents.css'
 import { AumtEvent } from '../../../types'
 import db from '../../../services/db'
@@ -105,7 +104,7 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
         if (this.state.errorText) {
             return (<Alert type='error' message={this.state.errorText}></Alert>)
         } else if (this.state.loadingEvents) {
-            return (<p>Loading Events <LoadingOutlined/></p>)
+            return (<p>Loading Events <Spin/></p>)
         } else if (!this.state.events.length) {
             return (<p>No Events in DB</p>)
         }

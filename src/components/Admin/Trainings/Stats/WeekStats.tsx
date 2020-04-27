@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { LoadingOutlined } from '@ant-design/icons'
+import { Spin } from 'antd'
 import {
     CartesianGrid,
     ResponsiveContainer,
@@ -71,7 +71,7 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
 
     render() {
         if (this.props.loadingForms) {
-            return (<p>Retrieving stats <LoadingOutlined/></p>)
+            return (<p>Retrieving stats <Spin/></p>)
         }
         if (!this.props.form) {
             return (
