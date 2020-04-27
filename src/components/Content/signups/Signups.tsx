@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './Signups.css'
-import {SyncOutlined} from '@ant-design/icons'
+import {LoadingOutlined} from '@ant-design/icons'
 import { SignupForm } from './SignupForm'
 import { AumtWeeklyTraining, AumtMember } from '../../../types'
 import db from '../../../services/db'
@@ -82,10 +82,19 @@ export class Signups extends Component<SignupProps, SignupState> {
     }
     render() {
         if (this.state.loadingForms) {
-            return (<p>Retrieving Sessions <SyncOutlined spin/></p>)
+            return (<p>Retrieving Sessions <LoadingOutlined/></p>)
         }
         if (!this.state.forms.length) {
             return (<p>{this.state.noFormText}</p>)
+        }
+        if (!this.props.authedUserId && !this.state.forms.find(f => f.openToPublic)) {
+            return (
+                <div>
+                    <p>You must be signed in to view trainings.</p>
+                    <h4>Not a member?</h4>
+                    <p>Join the club! Club signups are open at the beginning of each semester.</p>
+                </div>
+            )
         }
         return (
             <div className='signupsContainer'>

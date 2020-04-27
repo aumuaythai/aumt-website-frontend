@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { SyncOutlined } from '@ant-design/icons'
+import { LoadingOutlined } from '@ant-design/icons'
 import {
     CartesianGrid,
     ResponsiveContainer,
@@ -71,7 +71,7 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
 
     render() {
         if (this.props.loadingForms) {
-            return (<p>Retrieving stats <SyncOutlined spin/></p>)
+            return (<p>Retrieving stats <LoadingOutlined/></p>)
         }
         if (!this.props.form) {
             return (

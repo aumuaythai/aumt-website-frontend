@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Menu, Dropdown, notification } from 'antd'
-import { SyncOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons'
+import { LoadingOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons'
 import './TrainingDashboard.css'
 import { WeekStats } from './Stats/WeekStats'
 import { YearStats } from './Stats/YearStats'
@@ -130,7 +130,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         return (
             <div className="trainingDashboardContainer">
                 <div className="weeklyStatSelectorContainer">
-                        <Button onClick={this.signMockData}>Mock Data</Button>
+                        {/* <Button onClick={this.signMockData}>Mock Data</Button> */}
                         <Link to='/admin/createtraining' className='trainingDashboardCreateButton'>
                             <Button type='primary' shape='round' size='large'>
                                 Create Training <PlusOutlined />
@@ -150,7 +150,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                     <div className="editMembersContainer trainingDashboardSection">
                     <h2 className="sectionHeader">Edit Members</h2>
                         {this.state.loadingForms ?
-                            <p>Loading current forms <SyncOutlined spin /></p> :
+                            <p>Loading current forms <LoadingOutlined /></p> :
                             this.state.currentForm ?
                             <EditSignups form={this.state.currentForm}></EditSignups> :
                             <p>No Form Selected</p>

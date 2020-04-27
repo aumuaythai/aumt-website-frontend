@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Modal, Alert, Button, notification, Divider } from 'antd'
-import { SyncOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import './ManageTrainings.css'
 import CreateTraining from './CreateTraining'
 import { AumtWeeklyTraining } from '../../../types'
@@ -100,7 +100,7 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
         if (this.state.errorText) {
             return (<Alert type='error' message={this.state.errorText}></Alert>)
         } else if (this.props.loadingTrainings) {
-            return (<p>Loading Trainings <SyncOutlined spin/></p>)
+            return (<p>Loading Trainings <LoadingOutlined/></p>)
         } else if (!this.props.trainings.length) {
             return (<p>No Training Forms in DB</p>)
         }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { notification, Popover, Tooltip } from 'antd'
-import {SyncOutlined, EditOutlined} from '@ant-design/icons'
+import {LoadingOutlined, EditOutlined} from '@ant-design/icons'
 import './MemberAttendance.css'
 import { TableDataLine } from './TableHelper'
 import db from '../../../services/db'
@@ -85,7 +85,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
     }
     render() {
         if (this.state.loadingAttendance) {
-            return (<p>Getting Attendance <SyncOutlined spin/></p>)
+            return (<p>Getting Attendance <LoadingOutlined/></p>)
         }
         return (
             <div className='attendanceListContainer'>

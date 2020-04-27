@@ -50,7 +50,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     if (sessionId) {
                         this.setState({
                             ...this.state,
-                            signedUpOption: sessionId
+                            signedUpOption: sessionId,
+                            currentSessionId: sessionId
                         })
                     }
                 })
@@ -99,6 +100,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     this.setState({
                         ...this.state,
                         signedUpOption: '',
+                        currentSessionId: '',
                         removingState: false
                     })
                     if (this.props.onSignupChanged) {

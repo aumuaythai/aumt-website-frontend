@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { RouteComponentProps, Switch, Route, withRouter, Link } from 'react-router-dom';
 import { Alert } from 'antd';
-import { SyncOutlined } from '@ant-design/icons'
+import { LoadingOutlined } from '@ant-design/icons'
 import EventsList from './EventsList'
 import {Event} from './Event'
 import './EventsWrapper.css'
@@ -80,7 +80,7 @@ class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapp
         if (this.state.errorMessage) {
             return (<Alert message={this.state.errorMessage} type='error'></Alert>)
         } else if (this.state.loadingEvents) {
-            return (<p className='retrievingEventsText'>Retrieving Events <SyncOutlined spin/></p>)
+            return (<p className='retrievingEventsText'>Retrieving Events <LoadingOutlined/></p>)
         }
 
         return (

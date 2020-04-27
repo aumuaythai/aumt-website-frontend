@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { notification, List } from 'antd'
-import { SyncOutlined } from '@ant-design/icons'
+import { LoadingOutlined } from '@ant-design/icons'
 import './Feedback.css'
 import { AumtWeeklyTraining } from '../../../types'
 import db from '../../../services/db'
@@ -46,7 +46,7 @@ export class Feedback extends Component<FeedbackProps, FeedbackState> {
     }
     render() {
         if (this.state.loadingForms) {
-            return (<p className='retrievingFeedbackText'>Retrieving feedback <SyncOutlined spin/></p>)
+            return (<p className='retrievingFeedbackText'>Retrieving feedback <LoadingOutlined/></p>)
         }
         return (
             <div className='allFeedbackContainer'>
