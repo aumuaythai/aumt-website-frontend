@@ -85,7 +85,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
     }
     render() {
         if (this.state.loadingAttendance) {
-            return (<p>Getting Attendance <Spin/></p>)
+            return (<div>Getting Attendance <Spin/></div>)
         }
         return (
             <div className='attendanceListContainer'>

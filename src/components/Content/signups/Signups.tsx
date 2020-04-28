@@ -82,7 +82,7 @@ export class Signups extends Component<SignupProps, SignupState> {
     }
     render() {
         if (this.state.loadingForms) {
-            return (<p>Retrieving Sessions <Spin/></p>)
+            return (<div>Retrieving Sessions <Spin/></div>)
         }
         if (!this.state.forms.length) {
             return (<p>{this.state.noFormText}</p>)

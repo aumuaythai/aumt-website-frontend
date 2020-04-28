@@ -49,7 +49,8 @@ class DB {
             .then((doc) => {
                 const data: any = doc.data()
                 return {
-                    clubSignupStatus: data.clubSignupStatus
+                    clubSignupStatus: data.clubSignupStatus,
+                    clubSignupSem: data.clubSignupSem
                 }
             })
     }

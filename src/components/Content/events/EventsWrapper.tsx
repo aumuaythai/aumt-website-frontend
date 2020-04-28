@@ -79,7 +79,7 @@ class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapp
         if (this.state.errorMessage) {
             return (<Alert message={this.state.errorMessage} type='error'></Alert>)
         } else if (this.state.loadingEvents) {
-            return (<p className='retrievingEventsText'>Retrieving Events <Spin/></p>)
+            return (<div className='retrievingEventsText'>Retrieving Events <Spin/></div>)
         }
 
         return (

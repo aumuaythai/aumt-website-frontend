@@ -104,7 +104,7 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
         if (this.state.errorText) {
             return (<Alert type='error' message={this.state.errorText}></Alert>)
         } else if (this.state.loadingEvents) {
-            return (<p>Loading Events <Spin/></p>)
+            return (<div>Loading Events <Spin/></div>)
         } else if (!this.state.events.length) {
             return (<p>No Events in DB</p>)
         }

@@ -71,7 +71,7 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
 
     render() {
         if (this.props.loadingForms) {
-            return (<p>Retrieving stats <Spin/></p>)
+            return (<div>Retrieving stats <Spin/></div>)
         }
         if (!this.props.form) {
             return (

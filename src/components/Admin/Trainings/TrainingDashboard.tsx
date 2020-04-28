@@ -150,7 +150,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                     <div className="editMembersContainer trainingDashboardSection">
                     <h2 className="sectionHeader">Edit Members</h2>
                         {this.state.loadingForms ?
-                            <p>Loading current forms <Spin /></p> :
+                            <div>Loading current forms <Spin /></div> :
                             this.state.currentForm ?
                             <EditSignups form={this.state.currentForm}></EditSignups> :
                             <p>No Form Selected</p>

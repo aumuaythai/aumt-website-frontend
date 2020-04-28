@@ -10,6 +10,7 @@ interface MainJoinProps {
     authedUserId: string
     loadingAuthedUser: boolean
     clubSignupStatus: 'open' | 'closed' | 'loading'
+    clubSignupSem: 'S1' | 'S2'
 }
 
 interface MainJoinState {}
@@ -49,7 +50,7 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
         }
         return (
             <div>
-                <JoinForm isAdmin={false}></JoinForm>
+                <JoinForm clubSignupSem={this.props.clubSignupSem} isAdmin={false}></JoinForm>
             </div>
         )
     }

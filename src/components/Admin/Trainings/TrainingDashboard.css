@@ -32,5 +32,7 @@
 @media (max-width: 1195px) {
     .trainingDashboardSection {
         width: 100%;
+        height: unset;
+        min-height: unset;
     }
 }

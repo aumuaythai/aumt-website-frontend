@@ -26,20 +26,29 @@ export interface AumtState {
     userIsAdmin: boolean
     authedUserId: string
     clubSignupStatus: 'open' | 'closed' | 'loading'
+    clubSignupSem: 'S1' | 'S2'
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {
     constructor(props: AumtProps) {
         super(props)
         const authedUser = null
-        this.state = { authedUser, loadingAuthedUser: true, userIsAdmin: false, authedUserId: '', clubSignupStatus: 'loading' }
+        this.state = {
+          authedUser,
+          loadingAuthedUser: true,
+          userIsAdmin: false,
+          authedUserId: '',
+          clubSignupStatus: 'loading',
+          clubSignupSem: 'S1'
+        }
         FirebaseUtil.initialize(this.authStateChange)
         DB.initialize()
         DB.getClubConfig()
           .then((config) => {
             this.setState({
               ...this.state,
-              clubSignupStatus: config.clubSignupStatus
+              clubSignupStatus: config.clubSignupStatus,
+              clubSignupSem: config.clubSignupSem
             })
           })
     }
@@ -123,6 +132,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                       </Route>
                       <Route path="/join">
                         <MainJoin
+                          clubSignupSem={this.state.clubSignupSem}
                           loadingAuthedUser={this.state.loadingAuthedUser}
                           clubSignupStatus={this.state.clubSignupStatus}
                           authedUser={this.state.authedUser}

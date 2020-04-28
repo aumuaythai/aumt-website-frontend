@@ -116,7 +116,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             <div className='memberDashboardContainer'>
                 <TableHelper onMemberSelect={this.onMemberSelect} ref={this.tableHelperChange}></TableHelper>
                 {this.state.loadingMembers ? 
-                <p className='retrievingMembersText'>Retrieving Members <Spin/></p> :
+                <div className='retrievingMembersText'>Retrieving Members <Spin/></div> :
                 this.helper ? (
                     <div className={`memberDisplaySection ${this.longTable ? '' : 'memberDisplaySectionNarrow'}`}>
                         <div className="memberDashboardHeader">
@@ -139,7 +139,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             onRow={this.helper.onRow}
                             onChange={this.helper.onTableChange}
                             footer={this.helper.getFooter}
-                            pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
+                            pagination={{defaultPageSize: window.innerWidth < 800 ? 20 : 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
                             scroll={{ y: 625, x: window.innerWidth < 800 ? true : undefined }}></Table>
                     </div>
                 ) : ''}
@@ -151,7 +151,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <div className="clearBoth"></div>
                             {/* <AddMember></AddMember> */}
                             <div className="joinFormAdminContainer">
-                                <JoinForm isAdmin={true}></JoinForm>
+                                <JoinForm clubSignupSem={null} isAdmin={true}></JoinForm>
                             </div>
                         </div>
                     </Route>

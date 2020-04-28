@@ -45,7 +45,7 @@ export class Feedback extends Component<FeedbackProps, FeedbackState> {
     }
     render() {
         if (this.state.loadingForms) {
-            return (<p className='retrievingFeedbackText'>Retrieving feedback <Spin/></p>)
+            return (<div className='retrievingFeedbackText'>Retrieving feedback <Spin/></div>)
         }
         return (
             <div className='allFeedbackContainer'>

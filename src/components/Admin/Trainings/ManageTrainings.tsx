@@ -100,7 +100,7 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
         if (this.state.errorText) {
             return (<Alert type='error' message={this.state.errorText}></Alert>)
         } else if (this.props.loadingTrainings) {
-            return (<p>Loading Trainings <Spin/></p>)
+            return (<div>Loading Trainings <Spin/></div>)
         } else if (!this.props.trainings.length) {
             return (<p>No Training Forms in DB</p>)
         }
