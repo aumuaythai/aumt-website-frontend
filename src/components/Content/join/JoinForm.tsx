@@ -226,10 +226,13 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         </Form.Item>
                         : ''}
                         <h3 className='formSectionHeader'>Payment</h3>
-                        {this.props.clubSignupSem === 'S1' ? 
+                        {(this.props.clubSignupSem === 'S1' || this.props.isAdmin) ? 
                         <Form.Item name='Membership' rules={[{ required: true }]} label='Membership Duration'>
                             <Radio.Group buttonStyle="solid" name="MembershipRadio">
                                 <Radio.Button value={'S1'}>Semester 1</Radio.Button>
+                                {this.props.isAdmin ? 
+                                <Radio.Button value='S2'>Semester 2</Radio.Button>
+                                : ''}
                                 <Radio.Button value={'FY'}>Full Year</Radio.Button>
                             </Radio.Group>
                         </Form.Item>

@@ -123,7 +123,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         <Faq></Faq>
                       </Route>
                       <Route path="/signups">
-                        <Signups authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups>
+                        <Signups paid={this.state.authedUser?.paid === 'Yes'} authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups>
                       </Route>
                       <Route path="/events">
                       {this.state.authedUser ?

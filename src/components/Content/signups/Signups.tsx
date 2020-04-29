@@ -1,15 +1,17 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import {Spin, notification } from 'antd'
+import {Spin, notification, Button } from 'antd'
 import './Signups.css'
 import { SignupForm } from './SignupForm'
 import { AumtWeeklyTraining, AumtMember } from '../../../types'
 import db from '../../../services/db'
+import DataFormatterUtil from '../../../services/data.util'
 
 
 interface SignupProps {
     authedUser: AumtMember | null
     authedUserId: string | null
+    paid: boolean
 }
 
 interface SignupState {
@@ -29,6 +31,9 @@ export class Signups extends Component<SignupProps, SignupState> {
             loadingForms: false,
             dbListenerId: ''
         }
+    }
+    copyText = (text: string) => {
+        DataFormatterUtil.copyText(text)
     }
     componentDidMount() {
         this.setState({
@@ -81,18 +86,29 @@ export class Signups extends Component<SignupProps, SignupState> {
         db.unlisten(this.state.dbListenerId)
     }
     render() {
+        const areOpenForms = this.state.forms.find(f => f.openToPublic)
         if (this.state.loadingForms) {
-            return (<div>Retrieving Sessions <Spin/></div>)
+            return (<div><Spin/></div>)
         }
         if (!this.state.forms.length) {
             return (<p>{this.state.noFormText}</p>)
         }
-        if (!this.props.authedUserId && !this.state.forms.find(f => f.openToPublic)) {
+        if (!this.props.authedUserId && !areOpenForms) {
             return (
                 <div>
+                    <h2>AUMT Training Signups happen here.</h2>
                     <p>You must be signed in to view trainings.</p>
-                    <h4>Not a member?</h4>
+                    <p>Not a member?</p>
                     <p><Link to='/join'>Join the club!</Link> Club signups are open at the beginning of each semester.</p>
+                </div>
+            )
+        }
+        if (!areOpenForms && this.props.authedUserId && !this.props.paid) {
+            return (
+                <div className='signupsNotPaidContainer'>
+                    <h4>Our records show you have not paid the membership fee - once you do you can sign up to trainings!</h4>
+                    <p>Membership is $50 for the semester or $90 for the year and can be paid by cash to a committee member or transfer to the bank account below (with your NAME in the reference).</p>
+                    <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                 </div>
             )
         }
@@ -113,7 +129,7 @@ export class Signups extends Component<SignupProps, SignupState> {
                                     ></SignupForm>
                             </div>
                         )
-                    } else if (this.props.authedUserId) {
+                    } else if (this.props.authedUserId && this.props.paid) {
                         return (
                             <div key={form.trainingId} className="formContainer">
                                 <SignupForm

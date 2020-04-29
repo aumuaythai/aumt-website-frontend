@@ -24,6 +24,7 @@ interface MemberDetailsState {
     currentUpi: string
     currentMembership: 'S1' | 'FY' | 'S2'
     currentPaid: 'Yes' | 'No',
+    currentPaymentType: 'Bank Transfer' | 'Cash'
     currentIsReturningMember: 'Yes' | 'No'
     currentInitialExperience: string
     currentECName: string
@@ -46,6 +47,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             currentUpi: props.member.upi,
             currentMembership: props.member.membership,
             currentPaid: props.member.paid,
+            currentPaymentType: props.member.paymentType,
             currentIsReturningMember: props.member.isReturningMember,
             currentInitialExperience: props.member.initialExperience,
             currentECName: props.member.EmergencyContactName,
@@ -69,6 +71,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                 currentUpi: this.props.member.upi,
                 currentMembership: this.props.member.membership,
                 currentPaid: this.props.member.paid,
+                currentPaymentType: this.props.member.paymentType,
                 currentIsReturningMember: this.props.member.isReturningMember,
                 currentECName: this.props.member.EmergencyContactName,
                 currentECNumber: this.props.member.EmergencyContactNumber,
@@ -103,6 +106,9 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     }
     onPaidChange = (paid: 'Yes' | 'No') => {
         this.setState({...this.state, currentPaid: paid})
+    }
+    onPaymentTypeChange = (payment: 'Bank Transfer' | 'Cash') => {
+        this.setState({...this.state, currentPaymentType: payment})
     }
     onIsReturningChange = (isReturning: 'Yes' | 'No') => {
         this.setState({...this.state, currentIsReturningMember: isReturning})
@@ -149,8 +155,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             EmergencyContactNumber: this.state.currentECNumber,
             EmergencyContactRelationship: this.state.currentECRelationship,
             emailVerified: false,
-            // TODO
-            paymentType: 'Cash'
+            paymentType: this.state.currentPaymentType
         }
         if (!member.firstName || !member.lastName) {
             return notification.error({message: 'First and Last Name Required'})
@@ -225,10 +230,14 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                             </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Paid: </span>
+                            <span className='memberDescriptionTitle'>Payment: </span>
                             <Radio.Group value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
                                 <Radio.Button value="Yes">Yes</Radio.Button>
                                 <Radio.Button value="No">No</Radio.Button>
+                            </Radio.Group>
+                            <Radio.Group className='memberDetailsPaymentTypeRadio' value={this.state.currentPaymentType} onChange={e => this.onPaymentTypeChange(e.target.value)}>
+                                <Radio.Button value="Cash">Cash</Radio.Button>
+                                <Radio.Button value="Bank Transfer">Transfer</Radio.Button>
                             </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>

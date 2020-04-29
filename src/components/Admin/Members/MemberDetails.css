@@ -7,7 +7,7 @@
     margin: 0 10px;
 }
 .memberDescriptionSection {
-    float: left;
+    display: inline-block;
     min-width: 320px;
 }
 .clearBoth {
@@ -39,4 +39,7 @@
 .membershipDescriptionContainer {
     max-height: 380px;
     overflow-y: auto;
+}
+.memberDetailsPaymentTypeRadio {
+    margin-left: 10px;
 }
