@@ -198,7 +198,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             trainingId: this.props.defaultValues ?
                 this.props.defaultValues.trainingId :
                 this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
-            feedback: []
+            feedback: this.props.defaultValues ? this.props.defaultValues.feedback : []
         })
         .then(() => {
             this.setState({

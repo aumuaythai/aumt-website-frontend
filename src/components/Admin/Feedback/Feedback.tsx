@@ -28,9 +28,12 @@ export class Feedback extends Component<FeedbackProps, FeedbackState> {
         })
         db.getAllForms()
             .then((forms) => {
+                forms.sort((a, b) => {
+                    return a.closes < b.closes ? 1 : -1
+                })
                 this.setState({
                     ...this.state, 
-                    forms: forms.reverse(),
+                    forms: forms,
                     loadingForms: false
                 })
             })

@@ -157,6 +157,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {
                 title: 'Name',
                 dataIndex: 'tableName',
+                defaultSortOrder: 'ascend',
                 sorter: (a: TableDataLine, b: TableDataLine) => a.tableName.localeCompare(b.tableName),
                 render: (t: string) => this.renderHighlightedText(t, 'tableName'),
                 ...this.getColumnSearchProps('tableName')
