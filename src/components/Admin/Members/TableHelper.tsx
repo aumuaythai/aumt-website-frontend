@@ -64,6 +64,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             )
     }
 
+
     private getColumnSearchProps = (dataIndex: keyof TableDataLine) => ({
         filterDropdown: (fns: { setSelectedKeys: Function, selectedKeys: string[], confirm: Function, clearFilters: Function }) => (
           <div style={{ padding: 8 }}>

@@ -45,6 +45,9 @@
     max-height: calc(100% - 30px);
     overflow-y: auto;
 }
+.memberDashboardSelectElement {
+    width: calc(100% - 50px);
+}
 @media(max-width: 1180px) {
     .memberDisplaySectionNarrow {
         width: 100%;
