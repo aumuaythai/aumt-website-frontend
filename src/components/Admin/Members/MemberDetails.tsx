@@ -230,7 +230,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                             </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Payment: </span>
+                            <span className='memberDescriptionTitle'>Paid: </span>
                             <Radio.Group value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
                                 <Radio.Button value="Yes">Yes</Radio.Button>
                                 <Radio.Button value="No">No</Radio.Button>
