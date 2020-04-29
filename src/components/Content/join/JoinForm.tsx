@@ -243,7 +243,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio.Button value={'Cash'}>Cash</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
-                        {this.props.isAdmin ?
+                        {!this.props.isAdmin ?
                         <div>
                             <p>If paying by Bank Transfer, include your NAME and
                                 {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
