@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import { Menu, Button } from 'antd'
-import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { Menu, Button, Drawer } from 'antd'
+import { PlusOutlined, ArrowLeftOutlined, MenuOutlined } from '@ant-design/icons'
 import CreateTraining from './Trainings/CreateTraining'
 import CreateEvent from './Events/CreateEvent'
 import {ManageEvents} from './Events/ManageEvents'
@@ -19,6 +19,7 @@ interface MainAdminProps extends RouteComponentProps {
 interface MainAdminState {
     editingTrainingData: AumtWeeklyTraining | null
     editingEventData: AumtEvent | null
+    menuOpen: boolean
 }
 
 class MainAdmin extends Component<MainAdminProps, MainAdminState> {
@@ -26,7 +27,8 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         super(props)
         this.state = {
             editingTrainingData: null,
-            editingEventData: null
+            editingEventData: null,
+            menuOpen: false
         }
     }
 
@@ -49,25 +51,45 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         return db.submitEvent(eventData)
     }
 
+    setMenuOpen = (open: boolean) => {
+        this.setState({...this.state, menuOpen: open})
+    }
+
+    getMenu = () => {
+        return (
+            <Menu className='adminMenu'
+                defaultSelectedKeys={['trainings']}
+                >
+                <Menu.Item key="trainings">
+                    <Link to='/admin'>Trainings</Link>
+                </Menu.Item>
+                <Menu.Item key="events">
+                    <Link to='/admin/events'>Events</Link>
+                </Menu.Item>
+                <Menu.Item key="members">
+                    <Link to='/admin/members'>Members</Link>
+                </Menu.Item>
+                <Menu.Item key="feedback">
+                    <Link to='/admin/feedback'>Feedback</Link>
+                </Menu.Item>
+            </Menu>
+        )
+    }
+
     render() {
         return (
             <div className='adminContainer'>
-                <Menu className='adminMenu'
-                    defaultSelectedKeys={['trainings']}
-                    >
-                    <Menu.Item key="trainings">
-                        <Link to='/admin'>Trainings</Link>
-                    </Menu.Item>
-                    <Menu.Item key="events">
-                        <Link to='/admin/events'>Events</Link>
-                    </Menu.Item>
-                    <Menu.Item key="members">
-                        <Link to='/admin/members'>Members</Link>
-                    </Menu.Item>
-                    <Menu.Item key="feedback">
-                        <Link to='/admin/feedback'>Feedback</Link>
-                    </Menu.Item>
-                </Menu>
+                {window.innerWidth < 1180 ? 
+                <div className="openMenuButton">
+                    <Button onClick={e => this.setMenuOpen(true)}><MenuOutlined />Menu</Button>
+                    <Drawer placement='left' visible={this.state.menuOpen} onClose={e => this.setMenuOpen(false)}>
+                        {this.getMenu()}
+                    </Drawer>
+                </div>
+                :
+                <div className="adminMenu">
+                    {this.getMenu()}
+                </div>}
                 <div className="adminContent">
                     <Switch>
                         <Route path='/admin/events'>

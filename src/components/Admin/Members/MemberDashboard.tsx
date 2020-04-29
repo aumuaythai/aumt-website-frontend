@@ -107,7 +107,6 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                 ...this.state,
                 memberInDropdown: member
             })
-            this.onMemberSelect(member)
         }
     }
     goToSelectedMember = () => {
@@ -151,7 +150,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                 </div>
                                 <div className="clearBoth"></div>
                             </div>
-                            {window.innerWidth < 800 ?
+                            {window.innerWidth < 1180 ?
                             <div className="memberDashboardSelect">
                             <Select
                                 showSearch
@@ -180,8 +179,8 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                 onRow={this.helper.onRow}
                                 onChange={this.helper.onTableChange}
                                 footer={this.helper.getFooter}
-                                pagination={{defaultPageSize: window.innerWidth < 800 ? 20 : 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
-                                scroll={{ y: 625, x: window.innerWidth < 800 ? true : undefined }}></Table>
+                                pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
+                                scroll={{ y: 625 }}></Table>
                             }
                         </div>
                 ) : ''}

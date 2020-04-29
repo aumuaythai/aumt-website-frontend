@@ -166,7 +166,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {
                 dataIndex: 'email',
                 title: 'Email',
-                width: window.innerWidth > 800 ? 222 : undefined,
+                width: window.innerWidth > 600 ? 222 : undefined,
                 sorter: (a: TableDataLine, b: TableDataLine) => {
                     return a.email.localeCompare(b.email)
                 },

@@ -20,9 +20,12 @@
 .clearBoth {
     clear: both;
 }
-@media(max-width: 1145px) {
+@media(max-width: 1180px) {
     .feedbackListObject {
         float: none;
         width: calc(100% - 40px);
+    }
+    .allFeedbackContainer {
+        height: unset;
     }
 }

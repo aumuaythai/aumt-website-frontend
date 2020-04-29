@@ -51,7 +51,9 @@
 @media(max-width: 1180px) {
     .memberDisplaySectionNarrow {
         width: 100%;
-        float: none
+        float: none;
+        height: unset;
+        min-width: unset;
     }
     .memberDetailsSection {
         float: none;

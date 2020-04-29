@@ -202,7 +202,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <p>Like our facebook page, Auckland University Muay Thai, for all important info and announcements.</p>
                         <Form.Item name='FacebookAccount' rules={[{ required: true }]} label='Do you have a Facebook account?'>
                             <Radio.Group name="HasFacebookRadio">
-                                <Radio value={'Yes'}>Yes - like our page, Auckland University Muay Thai</Radio>
+                                <Radio value={'Yes'}>Yes - like our page</Radio>
                                 <Radio value={'No'}>No</Radio>
                             </Radio.Group>
                         </Form.Item>
@@ -243,13 +243,17 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio.Button value={'Cash'}>Cash</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
-                        <p>If paying by Bank Transfer, include your NAME and
-                            {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
-                            as the reference.
-                            Membership is $50 {this.props.clubSignupSem === 'S1' ? ' for one semester or $90 for the year': ' for Semester 2'}.
-                            Please make your payment to the following account:</p>
-                        <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
-                        <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>
+                        {this.props.isAdmin ?
+                        <div>
+                            <p>If paying by Bank Transfer, include your NAME and
+                                {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
+                                as the reference.
+                                Membership is $50 {this.props.clubSignupSem === 'S1' ? ' for one semester or $90 for the year': ' for Semester 2'}.
+                                Please make your payment to the following account:</p>
+                            <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                            <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>
+                        </div>
+                        : ''}
                         <Form.Item>
                             <Button loading={this.state.submitting} block type="primary" htmlType="submit">
                                 Submit

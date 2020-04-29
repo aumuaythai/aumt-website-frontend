@@ -19,3 +19,8 @@
     cursor: pointer;
     margin: 0 5px;
 }
+@media(max-width: 1180px) {
+    .attendanceListContainer {
+        max-height: unset;
+    }
+}
