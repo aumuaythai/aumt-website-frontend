@@ -64,6 +64,24 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             )
     }
 
+    private sortTableKeys = (a: string, b: string) => {
+        const keyMap = {
+            firstName:100,
+            lastName:95,
+            preferredName: 90,
+            email: 85,
+            paid: 80,
+            membership: 75,
+            isReturningMember: 70,
+            isUoAStudent: 65,
+            EmergencyContactName: 30,
+            EmergencyContactNumber: 25,
+            EmergencyContactRelationship: 20,
+            key: 10
+        }
+        return ((keyMap as any)[a] || 50) > ((keyMap as any)[b] || 50) ? -1 : 1
+    }
+
 
     private getColumnSearchProps = (dataIndex: keyof TableDataLine) => ({
         filterDropdown: (fns: { setSelectedKeys: Function, selectedKeys: string[], confirm: Function, clearFilters: Function }) => (
@@ -103,6 +121,27 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         },
       });
 
+    public downloadCsvData = () => {
+        let csvStr = ''
+        let header = ''
+        this.state.currentData.forEach((dataLine) => {
+            if (!header) {
+                header = Object.keys(dataLine).sort(this.sortTableKeys).join(',')
+                csvStr += header + '\n'
+            }
+            csvStr += Object.keys(dataLine).sort(this.sortTableKeys).map((key: string) => {
+                return (dataLine as any)[key]
+             }).join(',') + '\n'
+        })
+        const blob = new Blob([csvStr]);
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "AumtMembers.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
     public onTableChange = (pagination: any, filter: any, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>) => {
         this.setState({
             ...this.state,
@@ -111,7 +150,10 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     }
     
     public getFooter = (currentDisplay: TableDataLine[]) => {
-        return `Members: ${this.state.currentData.length}/${this.state.totalMembers}`
+        return <div>
+            {`Members: ${this.state.currentData.length}/${this.state.totalMembers}`}
+            <Button onClick={this.downloadCsvData} type='link'>Download .csv</Button>
+        </div>
     }
 
     public onRow = (record: TableDataLine) => {

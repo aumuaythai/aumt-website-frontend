@@ -24,8 +24,8 @@ interface CreateTrainingState {
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
-const TRAINING_0_OPENS_DATE = new Date(2020, 1, 23, 0, 0, 0)
-const TRAINING_0_CLOSES_DATE = new Date(2020, 1, 28, 19, 30, 0)
+const TRAINING_0_OPENS_DATE = new Date(2020, 1, 23, 1, 0, 0)
+const TRAINING_0_CLOSES_DATE = new Date(2020, 1, 28, 20, 30, 0)
 
 class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {

@@ -141,7 +141,6 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <div className="memberDashboardHeader">
                                 <h2 className='memberDashboardTitle'>AUMT Members</h2>
                                 <div className="memberDashboardHeaderButtons">
-                                    {/* <Button className='memberDashboardHeaderButton' disabled={true}>Remove</Button> */}
                                     <Link to='/admin/members/add'>
                                         <Button className='memberDashboardHeaderButton' type='primary' shape='round' size='large'>
                                             Add Member <PlusOutlined />

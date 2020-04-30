@@ -53,6 +53,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             EmergencyContactNumber,
             EmergencyContactRelationship,
             Insta,
+            Paid,
             Membership,
             upi,
             email,
@@ -70,7 +71,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 initialExperience: Experience,
                 instagramHandle: Insta || '',
                 paymentType: Payment,
-                paid: 'No',
+                paid: Paid || 'No',
                 isReturningMember: ReturningMember,
                 EmergencyContactName,
                 EmergencyContactNumber,
@@ -238,11 +239,19 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         </Form.Item>
                         : ''}
                         <Form.Item name='Payment' rules={[{ required: true }]} label='Payment Type'>
-                            <Radio.Group buttonStyle="solid" name="UoaStudentRadio">
+                            <Radio.Group buttonStyle="solid" name="PaymentRadio">
                                 <Radio.Button value={'Bank Transfer'}>Bank Transfer</Radio.Button>
                                 <Radio.Button value={'Cash'}>Cash</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
+                        {this.props.isAdmin ?
+                        <Form.Item name='Paid' rules={[{ required: true }]} label='Paid?'>
+                            <Radio.Group buttonStyle="solid" name="PaidRadio">
+                                <Radio.Button value={'Yes'}>Yes</Radio.Button>
+                                <Radio.Button value={'No'}>No</Radio.Button>
+                            </Radio.Group>
+                        </Form.Item>
+                        : ''}
                         {!this.props.isAdmin ?
                         <div>
                             <p>If paying by Bank Transfer, include your NAME and
