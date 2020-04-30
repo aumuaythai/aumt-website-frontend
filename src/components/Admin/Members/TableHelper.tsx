@@ -19,6 +19,7 @@ interface TableHelperState {
     searchedColumn: string
     searchText: string
     currentData: TableDataLine[]
+    currentFilters: Record<string, React.ReactText[] | null>
     totalMembers: number
 }
 
@@ -29,6 +30,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             searchText: '',
             searchedColumn: '',
             currentData: [],
+            currentFilters: {},
             totalMembers: 0
         }
     }
@@ -124,6 +126,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     public downloadCsvData = () => {
         let csvStr = ''
         let header = ''
+        let fileName = 'AumtMembers'
         this.state.currentData.forEach((dataLine) => {
             if (!header) {
                 header = Object.keys(dataLine).sort(this.sortTableKeys).join(',')
@@ -133,18 +136,32 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 return (dataLine as any)[key]
              }).join(',') + '\n'
         })
+        if (this.state.currentFilters) {
+            const filterKeys = Object.keys(this.state.currentFilters)
+            for (let i = 0; i < filterKeys.length; i ++) {
+                const key = filterKeys[i]
+                if (this.state.currentFilters[key]) {
+                    fileName += `_${key}${this.state.currentFilters[key]?.join('')}`
+                }
+                if (fileName.length > 50) {
+                    fileName += '_andmore'
+                    break
+                }
+            }
+        }
         const blob = new Blob([csvStr]);
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = "AumtMembers.csv";
+        a.download = fileName + '.csv';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
     }
 
-    public onTableChange = (pagination: any, filter: any, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>) => {
+    public onTableChange = (pagination: any, filter: Record<keyof TableDataLine, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>) => {
         this.setState({
             ...this.state,
+            currentFilters: filter,
             currentData: dataSource.currentDataSource
         })
     }

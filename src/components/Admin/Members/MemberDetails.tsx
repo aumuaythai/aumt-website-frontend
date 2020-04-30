@@ -166,7 +166,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
         } else if (!member.EmergencyContactName || !member.EmergencyContactNumber || !member.EmergencyContactRelationship) {
             return notification.error({message: 'All Emergency Contact Details are Required'})
         }
-        if (this.props.member.email != this.state.currentEmail) {
+        if (this.props.member.email !== this.state.currentEmail) {
             notification.open({message: 'Reminder: If you change the email here, also change it in the Firebase Admin Console under the Authentication tab'})
         }
         this.setState({...this.state, saving: true})
