@@ -1,24 +1,47 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
 import './About.css'
+import { Divider } from 'antd'
 
 export class About extends Component {
     render() {
         return (
             <div className='aboutContainer'>
+                <h1 className="introTitle">
+                    Welcome to Auckland University Muay Thai!
+                </h1>
+                <div className="groupHeaderContainer">
+                    <img src="./photos/content/group1.jpg" alt="group" className='groupHeader'/>
+                </div>
                 <div className="introContainer">
-                    <h2 className="introTitle">
-                        Welcome to the Brand New AUMT Website!
-                    </h2>
+                    <h3 className='aboutSectionHead'>AUMT aims to introduce the UoA community to Muay Thai.</h3>
                     <p className="introStr">
-                    Here we will be sharing signups and other exclusive club member content. 
-                    Our club strives to provide the best of the best for our members through every aspect, from thoroughly planned trainings to easy online communication.
+                     Run by a passionate group of Muay Thai enthusiasts, we organise sessions where members can learn more about Muay Thai and pick up some self-defence skills in a safe, supportive environment.
                     </p>
                 </div>
+                <div className="aboutDescriptionRow">
+                    
+                    <div className="aboutDescriptionImg">
+                        <img className='aboutDescriptionImgElement' src="./photos/content/muaythai2.jpg" alt="muay thai 2"/>
+                    </div>
+                    <div className="aboutDescription">
+                        <h3 className="aboutSectionHead">What is Muay Thai?</h3>
+                        <p className="introStr">
+                            Known as 'the art of eight limbs', this martial art discipline from Thailand is characterized by combat utilizing the fists, elbows, knees and shins.
+                            It is a highly effective martial art in terms of variety and efficiency.
+                        </p>
+                    </div>
+                </div>
+                <div className="clearBoth"></div>
+                {/* Complete beginner or someone with a bit more experience? Just want to keep fit or looking to learn a new skill? We have something for everyone! */}
+                {/* <div className="aboutRightImageContainer">
+                    <img className='aboutImage' src="./photos/content/muaythai1.jpg" alt="muay thai 1"/>
+                </div>
+                <div className="clearBoth"></div> */}
                 <div className="membershipSection">
-                    <h2 className="membershipSection">
+                    {/* <h2 className="membershipSection">
                         Your Membership Gets You...
-                    </h2>
+                    </h2> */}
                     <h4>
                         An hour of training a week with our professional head trainer, Victor!
                     </h4>

@@ -1,12 +1,72 @@
 .introContainer {
-    max-width: 413px;
+    text-align:left;
+    padding: 40px;
+    max-width: 750px;
     margin: 0 auto;
-    margin-top: -33px;
 }
-.listContainer {
+.introTitle {
+    font-size: 4vw;
+    font-weight: bolder;
+}
+.groupHeaderContainer {
+    width: 100%;
+}
+.groupHeader {
+    width: 100%;
+}
+.aboutRightImageContainer {
+    float: right;
+    width: 50%;
+}
+.aboutImage {
+    width: 100%;
+}
+.photoLinePhoto {
+    width: calc(100% / 6);
+}
+.clearBoth {
+    clear: both;
+}
+.introPhotoLine {
+    margin: 30px 0;
+}
+.introStr {
+    font-size: 20px;
+}
+.aboutSectionHead {
+    font-size: 25px;
+}
+.aboutDescription {
+    width: 30%;
+    float: right;
     text-align: left;
-    max-width: 689px;
-    margin: 0 auto
+    padding: 0 40px;
+}
+.aboutDescriptionImg {
+    width: 70%;
+    float: right;
+}
+.aboutDescriptionImgElement {
+    width: 100%;
+}
+.aboutDescriptionRow {
+    /* max-width: 1300px;
+    margin: 0 auto; */
+}
+
+@media(max-width: 1217px) {
+    .aboutDescriptionImg {
+        width: 100%;
+        float: none
+    }
+    .aboutDescription {
+        float: none;
+        text-align:left;
+        padding: 40px;
+        width: unset;
+        max-width: 750px;
+        margin: 30px auto;
+    }
 }
 
 @media only screen and (max-width: 600px) {
