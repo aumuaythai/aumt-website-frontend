@@ -63,7 +63,6 @@
 }
 .aboutFooterNotes {
     padding: 40px;
-    text-align: left;
 }
 .aboutInlineLink {
     padding: 0 3px;
@@ -96,5 +95,8 @@
     }
     .aboutDescriptionRow {
         padding: 20px 0;
+    }
+    .aboutFooterNotes {
+        text-align: left;
     }
 }
