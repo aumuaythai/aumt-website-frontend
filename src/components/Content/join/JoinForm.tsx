@@ -149,7 +149,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         Please pay membership fees to the account below and add your NAME and 
                         {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
                          as the reference.</p>
-                    <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                    <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                     <p>Our sign-up sheets for training will be posted to aumt.co.nz/signups, so look out for it!</p>
                     <h3>DISCLAIMER:</h3>
                     <p>I understand that by filling up and submitting this form, I am taking part in the club activities at my own risk and any injuries sustained to any person or any damage to any equipment during the ordinary course of training will not be the responsibility of the club. Any loss of equipment or personal belongings is under the sole responsibility of the member, and the club as well as the training facility will not be held responsible. </p>
@@ -288,7 +288,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 as the reference.
                                 Membership is $50 {this.props.clubSignupSem === 'S1' ? ' for one semester or $90 for the year': ' for Semester 2'}.
                                 Please make your payment to the following account:</p>
-                            <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                            <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                             <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>
                         </div>
                         : ''}
