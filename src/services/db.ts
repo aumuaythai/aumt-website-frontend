@@ -1,4 +1,5 @@
-import * as firebase from 'firebase'
+import * as firebase from 'firebase/app'
+import 'firebase/firestore'
 import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig } from '../types';
 
 type MockMember = {
