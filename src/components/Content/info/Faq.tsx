@@ -66,7 +66,9 @@ export class Faq extends Component {
                         Q: Who do I contact if I have additional questions?
                     </p>
                     <p className="answer">
-                        A: The committee members will be more than happy to answer if you approach them at trainings or events or email them at uoamuaythai@gmail.com, otherwise you can message our&nbsp;
+                        A: The committee members will be more than happy to answer if you approach them at trainings or events or email them at
+                        <a href='mailto:uoamuaythai@gmail.com'> uoamuaythai@gmail.com, </a>
+                        otherwise you can message our&nbsp;
                         <span className='socialLink' onClick={this.fbClick}>facebook</span>
                         &nbsp;or&nbsp;
                         <span className='socialLink' onClick={this.igClick}>instagram page.</span>

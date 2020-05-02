@@ -17,7 +17,7 @@ export class About extends Component {
                 <div className="introContainer">
                     <h3 className='aboutSectionHead'>AUMT aims to introduce the UoA community to Muay Thai.</h3>
                     <p className="introStr">
-                     Run by a passionate group of Muay Thai enthusiasts, we organise sessions where members can learn more about Muay Thai and pick up some self-defence skills in a safe, supportive environment.
+                     Run by a passionate group of Muay Thai enthusiasts, we organise sessions where members can learn more about the sport and pick up some self-defence skills in a safe, supportive environment.
                     </p>
                 </div>
                 <Divider className='aboutDivider'/>
@@ -29,7 +29,7 @@ export class About extends Component {
                     <div className="aboutDescription">
                         <h3 className="aboutSectionHead">What is Muay Thai?</h3>
                         <p className="introStr">
-                            Known as 'the art of eight limbs', this martial art discipline from Thailand is characterized by combat utilizing the fists, elbows, knees and shins.
+                            Known as the Art of Eight Limbs, this martial art discipline from Thailand is characterized by combat utilising the fists, elbows, knees and shins.
                             It is a highly effective martial art in terms of variety and efficiency.
                         </p>
                     </div>
@@ -95,7 +95,9 @@ export class About extends Component {
                 <Divider className='aboutDivider'/>
                 <div className="aboutFooterNotes">
                     <h3 className='aboutSectionHead'>Want to know more?</h3>
-                    <p>Check out our <Link to='/faq'>FAQ</Link> page or message the committee on
+                    <p>Check out our <Link to='/faq'>FAQ</Link> page or contact the committee at
+                    <a href='mailto:uoamuaythai@gmail.com'> uoamuaythai@gmail.com </a>
+                    or through
                     <Button className='aboutInlineLink' type='link' onClick={Links.openAumtFb}>facebook</Button>
                     or
                     <Button className='aboutInlineLink' type='link' onClick={Links.openAumtInsta}>instagram</Button>.
