@@ -38,7 +38,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
     private onSubmitFail = (obj: any) => {
         const {errorFields} = obj
         if (errorFields && errorFields.length) {
-            notification.error({message: obj.errorFields[0].errors[0]})
+            notification.error({message: obj.errorFields[0].errors[0], duration: 1.5})
         }
     }
     private onSubmit = (values: any) => {

@@ -44,7 +44,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                 })
             this.setState({
                 ...this.state,
-                currentGraphData: graphData
+                currentGraphData: graphData.slice().reverse()
             })
         }
     }

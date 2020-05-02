@@ -31,10 +31,13 @@
     margin: 30px 0;
 }
 .introStr {
-    font-size: 20px;
+    font-size: 1.5vw;
 }
 .aboutSectionHead {
     font-size: 25px;
+}
+.listContainer {
+    font-size: 1vw;
 }
 .aboutDescription {
     width: 30%;
@@ -49,9 +52,21 @@
 .aboutDescriptionImgElement {
     width: 100%;
 }
+.aboutDivider {
+    margin: 40px 0;
+}
 .aboutDescriptionRow {
-    /* max-width: 1300px;
-    margin: 0 auto; */
+    padding: 40px 0;
+}
+.floatLeft {
+    float: left;
+}
+.aboutFooterNotes {
+    padding: 40px;
+    text-align: left;
+}
+.aboutInlineLink {
+    padding: 0 3px;
 }
 
 @media(max-width: 1217px) {
@@ -67,10 +82,19 @@
         max-width: 750px;
         margin: 30px auto;
     }
-}
-
-@media only screen and (max-width: 600px) {
-    .introContainer {
-        margin-top: 0;
+    .introStr {
+        font-size: 16px;
+    }
+    .introTitle {
+        font-size: 25px;
+    }
+    .aboutDivider {
+        display: none;
+    }
+    .listContainer {
+        font-size: 16px;
+    }
+    .aboutDescriptionRow {
+        padding: 20px 0;
     }
 }

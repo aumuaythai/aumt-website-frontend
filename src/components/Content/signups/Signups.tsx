@@ -90,9 +90,6 @@ export class Signups extends Component<SignupProps, SignupState> {
         if (this.state.loadingForms) {
             return (<div><Spin/></div>)
         }
-        if (!this.state.forms.length) {
-            return (<p>{this.state.noFormText}</p>)
-        }
         if (!this.props.authedUserId && !areOpenForms) {
             return (
                 <div>
@@ -111,6 +108,9 @@ export class Signups extends Component<SignupProps, SignupState> {
                     <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                 </div>
             )
+        }
+        if (!this.state.forms.length) {
+            return (<p>{this.state.noFormText}</p>)
         }
         return (
             <div className='signupsContainer'>
