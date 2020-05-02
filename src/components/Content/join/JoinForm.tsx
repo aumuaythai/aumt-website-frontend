@@ -58,6 +58,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             upi,
             email,
             password,
+            uid,
             Payment
         } = values
             const member: AumtMember = {
@@ -83,34 +84,57 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 submitting: true
             })
             const key = 'submitFormMessage'
-            message.loading({content: 'Creating User', key})
-            FirebaseUtil.createUser(email, password)
-                .then((userCredential) => {
-                    const {user} = userCredential
-                    if (!user) {
-                        throw new Error('No user returned from Firebase create')
-                    }
-                    return user.uid
-                })
-                .then((uid: string) => {
-                    message.loading({content: 'Adding to Club', key})
-                    return db.setMember(uid, member)
-                })
-                .then(() => {
-                    message.success({content: 'You are now part of the club!', key, duration: 5})
-                })
-                .catch((err) => {
-                    if (err.code === 'auth/email-already-in-use') {
-                        return message.error({content: 'Email already in use. Contact the AUMT committee ', key, duration: 5})
-                    }
-                    return message.error({content: err.toString(), key, duration: 5})
-                })
-                .finally(() => {
-                    this.setState({
-                        ...this.state,
-                        submitting: false
+            if (password) {
+                message.loading({content: 'Creating User', key})
+                FirebaseUtil.createUser(email, password)
+                    .then((userCredential) => {
+                        const {user} = userCredential
+                        if (!user) {
+                            throw new Error('No user returned from Firebase create')
+                        }
+                        return user.uid
                     })
-                })
+                    .then((uid: string) => {
+                        message.loading({content: 'Adding to Club', key})
+                        return db.setMember(uid, member)
+                    })
+                    .then(() => {
+                        message.success({content: 'You are now part of the club!', key, duration: 5})
+                    })
+                    .catch((err) => {
+                        if (err.code === 'auth/email-already-in-use') {
+                            return message.error({content: 'Email already in use. Contact the AUMT committee ', key, duration: 5})
+                        }
+                        return message.error({content: err.toString(), key, duration: 5})
+                    })
+                    .finally(() => {
+                        this.setState({
+                            ...this.state,
+                            submitting: false
+                        })
+                    })
+            } else if (uid) {
+                message.loading({content: 'Adding to Club', key})
+                db.setMember(uid, member)
+                    .then(() => {
+                        message.success({content: 'You are now part of the club!', key, duration: 5})
+                    })
+                    .catch((err) => {
+                        if (err.code === 'auth/email-already-in-use') {
+                            return message.error({content: 'Email already in use. Contact the AUMT committee ', key, duration: 5})
+                        }
+                        return message.error({content: err.toString(), key, duration: 5})
+                    })
+                    .finally(() => {
+                        this.setState({
+                            ...this.state,
+                            submitting: false
+                        })
+                    })
+
+            } else {
+                notification.error({message: 'No UID or password, somethings very very wrong'})
+            }
     }
     private copyText = (text: string) => {
         DataFormatterUtil.copyText(text)
@@ -132,7 +156,8 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 </div>
                 :
                 <div>
-                    <Alert type='warning' message='NOTE TO ADMIN' description='Adding a member here will only add them to the database and not give them a login (email and password). You must also create an account for them at the Firebase console in the Authentication section'></Alert>
+                    <Alert type='warning' message='NOTE TO ADMIN' description='Adding a member here will only add them to the database and not give them a login (email and password).
+                    You must FIRST create an account for them at the Firebase console in the Authentication section and then enter their UID in the form below.'></Alert>
                 </div>
                 }
                 <div className="joinFormEntry">
@@ -210,14 +235,14 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <Form.Item  name='Insta' label='What is your instagram handle?'>
                             <Input prefix='@' className='joinFormInput' placeholder='Optional, if you want the club to follow you'/>
                         </Form.Item>
-                        {!this.props.isAdmin ? 
                         <div>
                             <h3 className='formSectionHeader'>Account</h3>
+                            {!this.props.isAdmin ? 
                             <p>This is your account to sign in to this site for trainings and events.
                                 Your email here will be used both as your username for the account and as a point of contact for club announcements and invitations.
                                 You can reset your password at any time.</p>
+                                : ''}
                         </div>
-                        : ''}
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='email' label='Email'>
                             <Input className='joinFormInput'/>
                         </Form.Item>
@@ -225,7 +250,11 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <Form.Item {...this.alignInputLayout} rules={[{ required: true }]} name='password' label='Password'>
                             <Input.Password className='joinFormInput'/>
                         </Form.Item>
-                        : ''}
+                        : 
+                        <Form.Item {...this.alignInputLayout} rules={[{required: true}]} name='uid' label='UID' help='Found in the Firebase Authentication section'>
+                            <Input placeholder='See NOTE TO ADMIN' className='joinFormInput'/>
+                        </Form.Item>
+                        }
                         <h3 className='formSectionHeader'>Payment</h3>
                         {(this.props.clubSignupSem === 'S1' || this.props.isAdmin) ? 
                         <Form.Item name='Membership' rules={[{ required: true }]} label='Membership Duration'>
