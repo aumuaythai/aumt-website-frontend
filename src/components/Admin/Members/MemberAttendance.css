@@ -1,0 +1,26 @@
+.attendanceLineForm {
+    float: left;
+}
+.attendanceLineSession {
+    float: right;
+}
+.clearBoth {
+    clear: both;
+}
+.attendanceListContainer {
+    max-height: 355px;
+    overflow-y: auto;
+}
+.attendanceLine {
+    padding: 20px 5px;
+    border-bottom: 1px solid #BBB;
+}
+.attendanceSessionEdit {
+    cursor: pointer;
+    margin: 0 5px;
+}
+@media(max-width: 1180px) {
+    .attendanceListContainer {
+        max-height: unset;
+    }
+}

@@ -1,18 +1,17 @@
 import React, {Component} from 'react'
-import { User } from 'firebase/app'
-import * as firebase from 'firebase/app'
-import {Menu, Dropdown} from 'antd'
+import {Menu, Dropdown, Button} from 'antd'
 import DownOutlined from '@ant-design/icons/DownOutlined'
-import ResetLink from './ResetLink'
+import {ResetPasswordLink} from './ResetLink'
 import './UserInfo.css'
+import { AumtMember } from '../../types'
+import FirebaseUtil from '../../services/firebase.util'
 interface UserInfoProps {
-    authedUser: User
+    authedUser: AumtMember
 }
 
-export default class UserInfo extends Component<UserInfoProps, object> {
+export class UserInfo extends Component<UserInfoProps, object> {
     onSignOutClick = () => {
-        console.log('signing out')
-        firebase.auth().signOut().then(() => {
+        FirebaseUtil.signOut().then(() => {
             console.log('Signing out success')
         }).catch((signOutError) => {
             console.log('Sign out error')
@@ -22,10 +21,10 @@ export default class UserInfo extends Component<UserInfoProps, object> {
     private menu = (
         <Menu>
             <Menu.Item onClick={this.onSignOutClick}>
-                <span className='signOutLink'>Sign Out</span>
+                <Button type='link' className='signOutLink'>Sign Out</Button>
             </Menu.Item>
             <Menu.Item>
-                <ResetLink>Reset Password</ResetLink>
+                <ResetPasswordLink>Reset Password</ResetPasswordLink>
             </Menu.Item>
         </Menu>
       );
@@ -33,9 +32,9 @@ export default class UserInfo extends Component<UserInfoProps, object> {
     render() {
         return (
             <Dropdown overlay={this.menu} placement="bottomRight">
-                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                    {this.props.authedUser.email?.split('@')[0]} <DownOutlined />
-                </a>
+                <Button type='link' className="ant-dropdown-link userInfoLink" onClick={e => e.preventDefault()}>
+                    {this.props.authedUser.preferredName || this.props.authedUser.firstName} <DownOutlined />
+                </Button>
             </Dropdown>
         )
     }

@@ -1,5 +1,6 @@
 .headerContainer {
     width: 100%;
+    height: 97px;
 }
 .imageContainer {
     width: 155px;
@@ -27,7 +28,7 @@
     clear: both;
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 600px) {
     .imageContainer {
         display: none;
     }
@@ -38,6 +39,9 @@
     }
     .socialsContainer {
         float: right;
+    }
+    .headerContainer {
+        height: 60px;
     }
 
   }

@@ -1,0 +1,50 @@
+.memberDescriptionTitle {
+    color: #999;
+    /* font-size: 12px; */
+}
+.membershipDescriptionValue {
+    color: #444;
+    margin: 0 10px;
+}
+.memberDescriptionSection {
+    display: inline-block;
+    min-width: 320px;
+}
+.clearBoth {
+    clear: both
+}
+.memberDescriptionLine {
+    margin: 10px 0;
+}
+.memberDescriptionLine.noHeight {
+    height: 0;
+    margin: 0;
+    overflow-y: hidden;
+}
+.atttendanceContainer {
+    margin-top: 20px;
+}
+.memberEditInput {
+    border: 0;
+    width: 120px;
+    border-bottom: 1px solid #bbb;
+}
+.memberEditInput.longMemberEditInput {
+    width: 250px;
+}
+.memberDescriptionButton {
+    margin: 20px;
+    display: block;
+}
+.membershipDescriptionContainer {
+    max-height: 380px;
+    overflow-y: auto;
+}
+.memberDetailsPaymentTypeRadio {
+    margin-left: 10px;
+}
+@media(max-width: 1180px) {
+    .membershipDescriptionContainer {
+        max-height: unset;
+    }
+}

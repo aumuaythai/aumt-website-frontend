@@ -1,0 +1,68 @@
+.retrievingMembersText {
+    text-align: center;
+    margin-top: 30px;
+}
+.memberDashboardContainer {
+    height: 100%;
+}
+.memberDashboardTitle {
+    float: left;
+}
+.memberDashboardHeaderButtons {
+    float: right;
+    margin: 5px 0;
+}
+.clearBoth {
+    clear: both
+}
+.memberDashboardHeaderButton {
+    margin: 0 5px;
+}
+.memberDisplaySection {
+    width: 100%;
+    padding: 10px;
+    float: left
+}
+.memberDisplaySectionNarrow {
+    width: 50%;
+    min-width: 500px;
+}
+.memberDetailsSection {
+    width: 50%;
+    height: 100%;
+    float: right;
+    padding: 10px;
+}
+.memberDetailsTitle {
+    float: left;
+}
+.memberDetailsCloseIcon {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+.joinFormAdminContainer {
+    max-height: calc(100% - 30px);
+    overflow-y: auto;
+}
+.memberDashboardSelectElement {
+    width: calc(100% - 50px);
+}
+@media(max-width: 1180px) {
+    .memberDisplaySectionNarrow {
+        width: 100%;
+        float: none;
+        height: unset;
+        min-width: unset;
+    }
+    .memberDetailsSection {
+        float: none;
+        width: 100%;
+    }
+    .memberDetailsSection {
+        height: unset
+    }
+    .joinFormAdminContainer {
+        max-height: unset
+    }
+}

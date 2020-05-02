@@ -1,0 +1,14 @@
+.memberSelect {
+    width: 100%;
+}
+.editSignupsOptionButtons {
+    text-align: right;
+}
+.editSignedUpMembersContainer {
+    padding: 0 10px;
+    overflow-y: auto;
+    max-height: 100%;
+}
+.sessionSelectContainer {
+    padding-bottom: 10px;
+}

@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { User } from 'firebase/app'
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import {Button} from 'antd'
 import TopMenu from './TopMenu'
-import UserInfo from './UserInfo'
+import {UserInfo} from './UserInfo'
 import { Links } from '../../services/links'
 import './Header.css'
+import { AumtMember } from '../../types'
 
 export interface HeaderProps {
-    authedUser: User | null
+    authedUser: AumtMember | null
+    isAdmin: boolean
 }
 
 export interface HeaderState {
@@ -30,7 +31,7 @@ export class Header extends Component<HeaderProps, HeaderState> {
                     <Link to='/'><img className='logoImg' src={"./logorectangle.png"} alt=""/></Link>
                 </div>
                 <div className="topMenuContainer">
-                    <TopMenu></TopMenu>
+                    <TopMenu isAdmin={this.props.isAdmin}></TopMenu>
                 </div>
                 <div className="socialsContainer">
                     {

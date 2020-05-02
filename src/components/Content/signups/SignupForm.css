@@ -1,0 +1,38 @@
+.spotsLeft {
+    color: rgba(255, 0, 0, 0.7);
+}
+.signupFormNotes {
+    white-space: pre-line;
+}
+.sessionOption {
+    font-weight: bold;
+}
+.signedUpOptionText {
+    color: #4bdd42;
+}
+.messageContainer {
+    max-width: 300px;
+    margin: 5px auto;
+}
+.check {
+    color: green;
+}
+.feedbackInputContainer {
+    text-align: left;
+    max-width: 400px;
+    margin: 30px auto;
+}
+.signupFormButton {
+    margin: 0 10px;
+    width: 300px;
+}
+.signupFormRemove {
+    display: block;
+    margin-top: 20px;
+}
+.optionLine {
+    margin: 25px 0;
+}
+.signupFormRemoveLoadingIcon {
+    margin-right: 5px;
+}

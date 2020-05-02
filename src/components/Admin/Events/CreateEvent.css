@@ -1,0 +1,9 @@
+.shortInput {
+    max-width: calc(100% - 75px);
+}
+.formSectionTitle {
+    margin-top: 30px;
+}
+.createEventSubmitButton {
+    margin: 0 10px 0 0;
+}

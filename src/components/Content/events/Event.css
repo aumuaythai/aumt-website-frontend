@@ -1,0 +1,29 @@
+.eventContainer {
+    max-width: 500px;
+    text-align: center;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+.backToEventsLink, .backToEventsLink:hover {
+    color: black;
+    margin-top: 5px;
+}
+.eventHeader {
+    display: flex;
+    justify-content: space-between;
+}
+.eventHeaderSpacer {
+    width: 14px;
+}
+.eventDetailsContainer {
+    text-align: left;
+    margin: 0 auto;
+    padding: 20px;
+}
+.eventDescription {
+    white-space: pre-line;
+    text-align: left;
+}
+.detail {
+    padding: 5px;
+}

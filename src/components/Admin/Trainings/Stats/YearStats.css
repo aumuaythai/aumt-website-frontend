@@ -1,0 +1,27 @@
+.yearStatsTooltip {
+    background-color: #ffffff;
+    padding: 10px;
+    border: solid 0.5px #555
+}
+.yearStatsTooltipTitle {
+    border-bottom: 0.5px solid #999;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+.yearStatsTooltipName {
+    float: left;
+}
+.yearStatsTooltipVal {
+    float: right;
+    margin-left: 10px;
+}
+.clearBoth {
+    clear: both;
+}
+.yearStatTitle {
+    margin-left: 70px;
+}
+.yearStatsContainer {
+    height: 100%;
+}

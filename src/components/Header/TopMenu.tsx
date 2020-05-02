@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import {Menu} from 'antd';
+import {DownOutlined} from '@ant-design/icons'
+import './TopMenu.css'
+
+export interface TopMenuProps extends RouteComponentProps {
+  isAdmin: boolean
+}
 
 export interface TopMenuState {
     current: string
 }
 
-class TopMenuWithoutRouter extends Component<any, TopMenuState> {
+class TopMenu extends Component<TopMenuProps, TopMenuState> {
     private unlisten: null | Function = null;
-    constructor(props: any) {
+    constructor(props: TopMenuProps) {
         super(props)
         this.state = {
             current: 'About'
@@ -27,13 +33,13 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
       }
     }
 
-    onRouteChange = (location: typeof window.location & { state: string}, action: string) => {
+    onRouteChange = (location: any, action: string) => {
         this.setStateFromPathChange(location.pathname)
     }
 
     setStateFromPathChange = (windowPath: string) => {
         const pathname = windowPath.split('/')[1]
-        const menuPages = ['About', 'Signups', 'Events', 'FAQ', 'Team']
+        const menuPages = ['About', 'Signups', 'Events', 'Join', 'FAQ', 'Team', 'Admin']
         for (const page of menuPages) {
           if (page.toLowerCase() === pathname.toLowerCase()) {
             this.setState({
@@ -54,12 +60,19 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
   render() {
     return (
       <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
-        <Menu.SubMenu title='About'>
+        <Menu.SubMenu title={
+            <>
+            About <DownOutlined className='menuDownIcon' />
+            </>
+          }>
           <Menu.Item key="About">
             <Link to='/'>Club Info</Link>
           </Menu.Item>
           <Menu.Item key="Team">
             <Link to='/team'>Our Team</Link>
+          </Menu.Item>
+          <Menu.Item key="FAQ">
+            <Link to='/faq'>FAQ</Link>
           </Menu.Item>
         </Menu.SubMenu>
         <Menu.Item key="Signups">
@@ -68,14 +81,18 @@ class TopMenuWithoutRouter extends Component<any, TopMenuState> {
         <Menu.Item key="Events">
           <Link to='/events'>Events</Link>
         </Menu.Item>
-        <Menu.Item key="FAQ">
-          <Link to='/faq'>FAQ</Link>
+        <Menu.Item key="Join">
+          <Link to='/join'>Join</Link>
         </Menu.Item>
+        {this.props.isAdmin ?
+          (
+            <Menu.Item key="Admin">
+              <Link to='/admin'>Admin</Link>
+            </Menu.Item>
+          ) : ''}
       </Menu>
     );
   }
 }
 
-const TopMenu = withRouter(TopMenuWithoutRouter)
-
-export default TopMenu
+export default withRouter(TopMenu)
