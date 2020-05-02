@@ -34,4 +34,12 @@
         width: 100%;
         min-height: unset;
     }
+    .manageTrainingsComponentWrapper {
+        max-height: unset;
+        height: unset;
+        /* height: unset; */
+    }
+    .manageTrainingsWrapper, .editMembersContainer {
+        height: unset;
+    }
 }

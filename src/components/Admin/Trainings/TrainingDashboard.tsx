@@ -84,7 +84,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 break
             }
         }
-        const isCurrentFormInForms = forms.find(f => f === this.state.currentForm)
+        const isCurrentFormInForms = forms.find(f => f.trainingId === this.state.currentForm?.trainingId)
         if (!isCurrentFormInForms) {
             this.onFormSelect({key: currentForm.trainingId})
         }
@@ -137,6 +137,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                             </Button>
                         </Link>
                         <Dropdown className='trainingDashboardFormSelector'
+                            trigger={['click']}
                             overlay={this.getFormsDropdown}>
                             <Button size='large'>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
                         </Dropdown>
