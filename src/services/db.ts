@@ -56,6 +56,26 @@ class DB {
             })
     }
 
+    public setClubJoinForm = (open: boolean): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db
+            .collection('config')
+            .doc('config')
+            .update({
+                clubSignupStatus: open ? 'open' : 'closed'
+            })
+    }
+
+    public setClubSignupSem = (sem: 'S1' | 'S2'): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db
+            .collection('config')
+            .doc('config')
+            .update({
+                clubSignupSem: sem
+            })
+    }
+
     public getAllMembers = (): Promise<AumtMembersObj> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('members').get()

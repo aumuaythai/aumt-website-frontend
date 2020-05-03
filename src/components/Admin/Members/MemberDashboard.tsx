@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import { Spin, Table, notification, Button, Select } from 'antd'
+import { Spin, Table, notification, Button, Select, Switch as AntSwitch, Radio } from 'antd'
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import './MemberDashboard.css'
 import {TableColumn, TableDataLine} from './TableHelper'
@@ -20,6 +20,10 @@ interface MemberDashboardState {
     selectedMember: TableDataLine | null
     memberInDropdown: TableDataLine | null
     dbListenerId: string
+    currentClubFormOpen: boolean
+    clubFormLoading: boolean
+    clubSignupSem: '' | 'S1' | 'S2'
+    loadingSignupSem: boolean
 }
 
 class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardState> {
@@ -36,8 +40,24 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             tableColumns: [],
             selectedMember: null,
             memberInDropdown: null,
-            dbListenerId: ''
+            dbListenerId: '',
+            currentClubFormOpen: false,
+            clubFormLoading: true,
+            clubSignupSem: '',
+            loadingSignupSem: true,
         }
+    }
+    componentDidMount = () => {
+        db.getClubConfig()
+            .then((clubConfig) => {
+                this.setState({
+                    ...this.state,
+                    clubFormLoading: false,
+                    currentClubFormOpen: clubConfig.clubSignupStatus === 'open',
+                    clubSignupSem: clubConfig.clubSignupSem,
+                    loadingSignupSem: false
+                })
+            })
     }
     componentWillUnmount = () => {
         db.unlisten(this.state.dbListenerId)
@@ -82,6 +102,47 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             }
         }
         this.firstListen = false
+    }
+    onSignupSemChange = (sem: 'S1' | 'S2') => {
+        this.setState({
+            ...this.state,
+            loadingSignupSem: true,
+        })
+        db.setClubSignupSem(sem)
+            .then(() => {
+                this.setState({
+                    ...this.state,
+                    clubSignupSem: sem,
+                    loadingSignupSem: false ,
+                })
+            })
+            .catch((err) => {
+                this.setState({
+                    ...this.state,
+                    loadingSignupSem: false,
+                })
+                notification.error({message: 'Could not set signup Semester: ' + err.toString()})
+            })
+    }
+    onClubFormOpenChange = (open: boolean) => {
+        this.setState({
+            ...this.state,
+            clubFormLoading: true
+        })
+        db.setClubJoinForm(open)
+            .then(() => {
+                this.setState({
+                    ...this.state,
+                    clubFormLoading: false,
+                    currentClubFormOpen: open
+                })
+            })
+            .catch((err) => {
+                this.setState({
+                    ...this.state, clubFormLoading: false
+                })
+                notification.error({message: `Could not ${open ? 'open' : 'close'} club form: ${err.toString()}`})
+            })
     }
     setTableData = (memberObj: AumtMembersObj) => {
         if (this.helper) {
@@ -141,6 +202,28 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <div className="memberDashboardHeader">
                                 <h2 className='memberDashboardTitle'>AUMT Members</h2>
                                 <div className="memberDashboardHeaderButtons">
+                                    <div className="memberDashboardGlobalConfigOptionsContainer">
+                                        Signup Sem:
+                                        <div className="signupSemChangeContainer">
+                                            {this.state.loadingSignupSem ? 
+                                            <Spin/>
+                                            : 
+                                            <Radio.Group value={this.state.clubSignupSem} onChange={e => this.onSignupSemChange(e.target.value) }>
+                                                <Radio.Button value='S1'>Sem 1</Radio.Button>
+                                                <Radio.Button value='S2'>Sem 2</Radio.Button>
+                                            </Radio.Group>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="memberDashboardGlobalConfigOptionsContainer">
+                                        Join Form: <AntSwitch
+                                            className='memberDashboardClubOpenSwitch'
+                                            checked={this.state.currentClubFormOpen}
+                                            loading={this.state.clubFormLoading}
+                                            onChange={e => this.onClubFormOpenChange(e)}
+                                            checkedChildren="open"
+                                            unCheckedChildren="closed"></AntSwitch>
+                                    </div>
                                     <Link to='/admin/members/add'>
                                         <Button className='memberDashboardHeaderButton' type='primary' shape='round' size='large'>
                                             Add Member <PlusOutlined />
@@ -189,7 +272,6 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <h2 className="memberDetailsTitle">Add Member</h2>
                             <div className="memberDetailsCloseIcon"><CloseCircleOutlined onClick={this.exitAddMember} /></div>
                             <div className="clearBoth"></div>
-                            {/* <AddMember></AddMember> */}
                             <div className="joinFormAdminContainer">
                                 <JoinForm clubSignupSem={null} isAdmin={true}></JoinForm>
                             </div>

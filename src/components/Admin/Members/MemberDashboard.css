@@ -48,6 +48,22 @@
 .memberDashboardSelectElement {
     width: calc(100% - 50px);
 }
+.memberDashboardGlobalConfigOptionsContainer {
+    max-width: 70px;
+    display: inline;
+    margin: 0 20px;
+}
+.memberDashboardClubOpenSwitch {
+    width: 70px;
+}
+.signupSemChangeContainer {
+    display: inline-block;
+    width: 150px;
+    text-align: center;
+}
+.loadingSignupSemSpin {
+    position: absolute;
+}
 @media(max-width: 1180px) {
     .memberDisplaySectionNarrow {
         width: 100%;
