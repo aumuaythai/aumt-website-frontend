@@ -182,7 +182,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                                             value={session.sessionId}>{session.title}
                                         </Radio> 
                                     </Tooltip>
-                                        {spotsLeft < 10 ? <Tag color={spotsLeft === 0 ? 'error' : 'warning'}>{spotsLeft} spots left</Tag> : ''}
+                                        <Tag color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>
                                         {this.state.signedUpOption === session.sessionId ? <CheckSquareTwoTone twoToneColor="#52c41a" /> : ''}
                                 </div>
                             )

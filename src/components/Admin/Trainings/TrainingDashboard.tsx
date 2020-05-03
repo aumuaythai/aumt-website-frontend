@@ -35,7 +35,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         }
     }
     signMockData = () => {
-        db.formatMembers()
+        db.signMockData()
             .then(() => {
                 console.log('DONE')
             })
@@ -84,9 +84,11 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 break
             }
         }
-        const isCurrentFormInForms = forms.find(f => f.trainingId === this.state.currentForm?.trainingId)
-        if (!isCurrentFormInForms) {
+        const currentFormInNewForms = forms.find(f => f.trainingId === this.state.currentForm?.trainingId)
+        if (!currentFormInNewForms) {
             this.onFormSelect({key: currentForm.trainingId})
+        } else if (currentFormInNewForms) {
+            this.onFormSelect({key: currentFormInNewForms.trainingId})
         }
     }
     onDbChanges = (forms: AumtWeeklyTraining[]) => {
