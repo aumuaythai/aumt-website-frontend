@@ -12,7 +12,7 @@ export class About extends Component {
                     Welcome to Auckland University Muay Thai
                 </h1>
                 <div className="groupHeaderContainer">
-                    <img src="./photos/content/group1.jpg" alt="group" className='groupHeader'/>
+                    <img src="./photos/content/group1.jpg" alt="group" className='absoluteResponsiveImg'/>
                 </div>
                 <div className="introContainer">
                     <h3 className='aboutSectionHead'>AUMT aims to introduce the UoA community to Muay Thai.</h3>
@@ -22,9 +22,10 @@ export class About extends Component {
                 </div>
                 <Divider className='aboutDivider'/>
                 <div className="aboutDescriptionRow">
-                    
                     <div className="aboutDescriptionImg">
-                        <img className='aboutDescriptionImgElement' src="./photos/content/muaythai2.jpg" alt="muay thai 2"/>
+                        <div className="whatIsMuayThaiPhotoWrapper">
+                            <img className='absoluteResponsiveImg' src="./photos/content/muaythai2.jpg" alt="muay thai 2"/>
+                        </div>
                     </div>
                     <div className="aboutDescription">
                         <h3 className="aboutSectionHead">What is Muay Thai?</h3>
@@ -38,7 +39,9 @@ export class About extends Component {
                 <Divider className='aboutDivider'/>
                 <div className="aboutDescriptionRow">
                     <div className="aboutDescriptionImg floatLeft">
-                        <img className='aboutDescriptionImgElement' src="./photos/content/muaythai3.jpg" alt="muay thai 3"/>
+                        <div className="aboutTrainingsPhotoWrapper">
+                            <img className='absoluteResponsiveImg' src="./photos/content/muaythai3.jpg" alt="muay thai 3"/>
+                        </div>
                     </div>
                     <div className="aboutDescription floatLeft">
                         <h3 className='aboutSectionHead'>Trainings</h3>
@@ -66,7 +69,9 @@ export class About extends Component {
                 <Divider className='aboutDivider'/>
                 <div className='aboutDescriptionRow'>
                     <div className="aboutDescriptionImg">
-                        <img className='aboutDescriptionImgElement' src="./photos/content/event1.jpg" alt="event 1"/>
+                        <div className="eventsPhotoWrapper">
+                            <img className='absoluteResponsiveImg' src="./photos/content/event1.jpg" alt="event 1"/>
+                        </div>
                     </div>
                     <div className="aboutDescription">
                     <h3 className='aboutSectionHead'>
