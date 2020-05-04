@@ -1,6 +1,6 @@
 # Admin Section Usage
 
-This guide will go over how to use the admin tab of aumt.co.nz, tab by tab.
+This guide will go over how to use the admin section of aumt.co.nz, tab by tab.
 
 ## Trainings
 
