@@ -2,6 +2,7 @@ import React, {Component, ReactText} from 'react'
 import Highlighter from 'react-highlight-words';
 import { Input, Button, Tooltip, notification } from 'antd'
 import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
+import PapaParse from 'papaparse'
 import './TableHelper.css'
 import { AumtMember, AumtMembersObj } from '../../../types'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
@@ -133,20 +134,78 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         },
     });
 
+    private objToTableDataLine = (obj: any): TableDataLine | null => {
+        const yn = ['Yes', 'No']
+        // console.log(obj)
+        if (!obj.key ||
+            !obj.firstName ||
+            !obj.lastName ||
+            !obj.email ||
+            yn.indexOf(obj.isReturningMember) < 0 ||
+            yn.indexOf(obj.paid) < 0 ||
+            yn.indexOf(obj.isUoAStudent) < 0 ||
+            ['S1', 'S2', 'FY'].indexOf(obj.membership) < 0 ||
+            !obj.EmergencyContactName ||
+            !obj.EmergencyContactNumber) {
+                return null
+            } 
+        else {
+            return {...obj}
+        }
+    }
+
+    public importMembers = (members: TableDataLine[]): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, 4000)
+        })
+    }
+
+    public parseMemberFile = (file: File): Promise<{members: TableDataLine[], messages: string[]}> => {
+        return new Promise((resolve, reject) => {
+            const messages: string[] = []
+            PapaParse.parse(file, {
+                header: true,
+                complete: (papaData) => {
+                    const {data, errors} = papaData
+                    const memberData = data.map((line: any, idx) => {
+                        const error = errors.find(e => e.row === idx)
+                        if (error) {
+                            messages.push(`ERROR - Removed member ${idx + 1} - ${error.message}`)
+                            return null
+                        }
+                        const dataLine = this.objToTableDataLine(line)
+                        if (!dataLine) {
+                            messages.push(`ERROR - Removed member with invalid data values at member number ${idx + 1}`)
+                        }
+                        return dataLine
+                    })
+                    const members = memberData.filter(l => l) as TableDataLine[]
+                    return resolve({
+                        members,
+                        messages: messages.concat([`Able to import ${members.length} members`])
+                    })
+                },
+                error: (err) => {
+                    reject(`Could not parse file: ${err.message}`)
+                }
+            })
+        })
+    }
+
     public downloadCsvData = () => {
         let csvStr = ''
         let header = ''
         let fileName = 'AumtMembers'
-        this.getSelectedRows().forEach((dataLine) => {
+        this.getSelectedRows().forEach((dataLine, idx, arr) => {
             if (!header) {
                 header = Object.keys(dataLine).sort(this.sortTableKeys).join(',')
                 csvStr += header + '\n'
             }
             csvStr += Object.keys(dataLine).sort(this.sortTableKeys).map((key: string) => {
                 return (dataLine as any)[key]
-             }).join(',') + '\n'
+             }).join(',') + (idx < arr.length - 1 ? '\n' : '')
         })
-        if (this.state.currentFilters) {
+        if (this.state.currentFilters && !this.state.currentSelectedRows.length) {
             const filterKeys = Object.keys(this.state.currentFilters)
             for (let i = 0; i < filterKeys.length; i ++) {
                 const key = filterKeys[i]
@@ -169,7 +228,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     }
 
     private copyCurrentEmails = () => {
-        const emails = this.getSelectedRows().map((row: TableDataLine) => row.email).join('\n')
+        const emails = this.getSelectedRows().map(row => row.email).join('\n')
         this.copyText(emails)
     }
 
@@ -190,10 +249,10 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     
     public getFooter = (currentDisplay: TableDataLine[]) => {
         return <div>
-            {`Members: ${this.state.currentSelectedRows.length || this.state.currentData.length}/${this.state.totalMembers}`}
+            {`Members: ${this.getSelectedRows().length}/${this.state.totalMembers}`}
             <Button onClick={this.downloadCsvData} type='link'>Download .csv</Button>
             <Button onClick={this.copyCurrentEmails} type='link'>Copy Emails</Button>
-            <Button disabled={!this.state.currentSelectedRows.length} type='link'>Bulk options...</Button>
+            <Button disabled={!this.state.currentSelectedRows.length} type='link'>Remove Selected</Button>
         </div>
     }
 

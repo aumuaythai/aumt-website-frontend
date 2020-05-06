@@ -1,7 +1,7 @@
 import React, {Component,ReactText} from 'react'
 import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import { Spin, Table, notification, Button, Select, Switch as AntSwitch, Radio } from 'antd'
-import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { Modal, Spin, Table, notification, Button, Select, Switch as AntSwitch, Radio, Alert } from 'antd'
+import { PlusOutlined, UploadOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import './MemberDashboard.css'
 import {TableColumn, TableDataLine} from './TableHelper'
 import MemberDetails from './MemberDetails'
@@ -25,6 +25,12 @@ interface MemberDashboardState {
     clubFormLoading: boolean
     clubSignupSem: '' | 'S1' | 'S2'
     loadingSignupSem: boolean
+    importMembersVisible: boolean
+    importMemberErrorText: string
+    importMemberSuccessText: string[]
+    importMemberParsing: boolean
+    membersToImport: TableDataLine[]
+    memberImportInProgress: boolean
 }
 
 class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardState> {
@@ -32,8 +38,10 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
     private emptyHelper: boolean = true
     private shortTableColumns = ['Name', 'Email', 'Membership', 'UoA', 'Paid']
     private firstListen = true
+    private importMemberInput: React.RefObject<HTMLInputElement> | null = null
     constructor(props: MemberDashboardProps) {
         super(props)
+        this.importMemberInput = React.createRef();
         this.state = {
             currentMembers: {},
             loadingMembers: false,
@@ -46,7 +54,13 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             currentClubFormOpen: false,
             clubFormLoading: true,
             clubSignupSem: '',
+            importMembersVisible: false,
             loadingSignupSem: true,
+            importMemberErrorText: '',
+            importMemberSuccessText: [],
+            importMemberParsing: false,
+            membersToImport: [],
+            memberImportInProgress: false
         }
     }
     componentDidMount = () => {
@@ -156,6 +170,69 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             })
         }
     }
+    showImportMembers = () => {
+        this.setState({
+            ...this.state,
+            importMembersVisible: true,
+            importMemberErrorText: '',
+            importMemberSuccessText: [],
+            importMemberParsing: false,
+            membersToImport: []
+        })
+    }
+    onImportMemberFileChange = (files: FileList | null) => {
+        if (files && files.length > 0) {
+            this.setState({
+                ...this.state,
+                importMemberParsing: true,
+                membersToImport: []
+            })
+            this.helper?.parseMemberFile(files[0])
+                .then((parseObj: {members: TableDataLine[], messages: string[]}) => {
+                    const {members, messages} = parseObj
+                    this.setState({
+                        ...this.state,
+                        importMemberSuccessText: messages,
+                        importMemberParsing: false,
+                        membersToImport: members
+                    })
+                })
+                .catch((err) => {
+                    this.setState({
+                        ...this.state,
+                        importMemberParsing: false,
+                        importMemberErrorText: err.toString(),
+                        membersToImport: []
+                    })
+                })
+        }
+    }
+    onImportMembersOk = () => {
+        this.setState({
+            ...this.state,
+            importMembersVisible: false,
+            memberImportInProgress: true
+        })
+        this.helper?.importMembers(this.state.membersToImport)
+            .then(() => {
+                this.setState({
+                    ...this.state,
+                    memberImportInProgress: false
+                })
+            })
+            .catch(() => {
+                this.setState({
+                    ...this.state,
+                    memberImportInProgress: false
+                })
+            })
+    }
+    onImportMembersCancel = () => {
+        this.setState({
+            ...this.state,
+            importMembersVisible: false
+        })
+    }
     onMemberSelect = (member: TableDataLine) => {
         this.setState({
             ...this.state,
@@ -233,6 +310,24 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             onChange={e => this.onClubFormOpenChange(e)}
                                             checkedChildren="open"
                                             unCheckedChildren="closed"></AntSwitch>
+                                    </div>
+                                    <div className="memberDashboardGlobalConfigOptionsContainer">
+                                        <Button loading={this.state.memberImportInProgress} onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
+                                        <Modal
+                                            title='Import Members'
+                                            visible={this.state.importMembersVisible}
+                                            okText='Begin Import'
+                                            okButtonProps={{ disabled: !!this.state.importMemberErrorText || !this.state.membersToImport.length }}
+                                            onOk={this.onImportMembersOk}
+                                            onCancel={this.onImportMembersCancel}>
+                                            <input onChange={e => this.onImportMemberFileChange(e.target.files)} ref={this.importMemberInput} type='file' accept='.csv,.CSV,'/>
+                                            {this.state.importMemberParsing ? <Spin/> : ''}
+                                                {this.state.importMemberErrorText ?
+                                                <Alert type='error' message={this.state.importMemberErrorText}></Alert> : ''}
+                                                {this.state.importMemberSuccessText.map((line, idx) => {
+                                                    return <Alert key={idx} message={line}></Alert>
+                                                })}
+                                        </Modal>
                                     </div>
                                     <Link to='/admin/members/add'>
                                         <Button className='memberDashboardHeaderButton' type='primary' shape='round' size='large'>
