@@ -45,6 +45,9 @@
     max-height: calc(100% - 30px);
     overflow-y: auto;
 }
+.tableNameLink {
+    cursor: pointer;
+}
 .memberDashboardSelectElement {
     width: calc(100% - 50px);
 }

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component,ReactText} from 'react'
 import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Spin, Table, notification, Button, Select, Switch as AntSwitch, Radio } from 'antd'
 import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons'
@@ -18,6 +18,7 @@ interface MemberDashboardState {
     tableDataSource: TableDataLine[]
     tableColumns: TableColumn[]
     selectedMember: TableDataLine | null
+    selectedRowKeys: ReactText[]
     memberInDropdown: TableDataLine | null
     dbListenerId: string
     currentClubFormOpen: boolean
@@ -38,6 +39,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             loadingMembers: false,
             tableDataSource: [],
             tableColumns: [],
+            selectedRowKeys: [],
             selectedMember: null,
             memberInDropdown: null,
             dbListenerId: '',
@@ -178,6 +180,14 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
     sortLines = (a: TableDataLine, b: TableDataLine) => {
         return a.tableName < b.tableName ? -1 : 1
     }
+    onRowSelectChange = (selectedRowKeys: ReactText[], selectedRows: TableDataLine[]) => {
+        this.setState({
+            ...this.state,
+            selectedRowKeys
+        })
+        this.helper?.onRowSelectChange(selectedRows)
+    };
+
     exitSelectedMember = () => {
         this.setState({
             ...this.state,
@@ -258,7 +268,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                 dataSource={this.state.tableDataSource}
                                 columns={this.state.tableColumns.filter(c => this.longTable ? c : this.shortTableColumns.indexOf(c.title) > -1)}
                                 bordered
-                                onRow={this.helper.onRow}
+                                rowSelection={{selectedRowKeys: this.state.selectedRowKeys, onChange: this.onRowSelectChange}}
                                 onChange={this.helper.onTableChange}
                                 footer={this.helper.getFooter}
                                 pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}

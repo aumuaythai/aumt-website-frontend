@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, ReactText} from 'react'
 import Highlighter from 'react-highlight-words';
 import { Input, Button, Tooltip, notification } from 'antd'
 import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
@@ -19,6 +19,7 @@ interface TableHelperState {
     searchedColumn: string
     searchText: string
     currentData: TableDataLine[]
+    currentSelectedRows: TableDataLine[]
     currentFilters: Record<string, React.ReactText[] | null>
     totalMembers: number
 }
@@ -30,6 +31,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             searchText: '',
             searchedColumn: '',
             currentData: [],
+            currentSelectedRows: [],
             currentFilters: {},
             totalMembers: 0
         }
@@ -64,6 +66,14 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             ) : (
                 text
             )
+    }
+
+    private getSelectedRows = (): TableDataLine[] => {
+        if (this.state.currentSelectedRows.length) {
+            return this.state.currentSelectedRows
+        } else {
+            return this.state.currentData
+        }
     }
 
     private sortTableKeys = (a: string, b: string) => {
@@ -121,13 +131,13 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             setTimeout(() => this.searchInput?.select())
           }
         },
-      });
+    });
 
     public downloadCsvData = () => {
         let csvStr = ''
         let header = ''
         let fileName = 'AumtMembers'
-        this.state.currentData.forEach((dataLine) => {
+        this.getSelectedRows().forEach((dataLine) => {
             if (!header) {
                 header = Object.keys(dataLine).sort(this.sortTableKeys).join(',')
                 csvStr += header + '\n'
@@ -158,6 +168,11 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         document.body.removeChild(a);
     }
 
+    private copyCurrentEmails = () => {
+        const emails = this.getSelectedRows().map((row: TableDataLine) => row.email).join('\n')
+        this.copyText(emails)
+    }
+
     public onTableChange = (pagination: any, filter: Record<keyof TableDataLine, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>) => {
         this.setState({
             ...this.state,
@@ -165,20 +180,21 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             currentData: dataSource.currentDataSource
         })
     }
+
+    public onRowSelectChange = (rowsSelected: TableDataLine[]) => {
+        this.setState({
+            ...this.state,
+            currentSelectedRows: rowsSelected
+        })
+    }
     
     public getFooter = (currentDisplay: TableDataLine[]) => {
         return <div>
-            {`Members: ${this.state.currentData.length}/${this.state.totalMembers}`}
+            {`Members: ${this.state.currentSelectedRows.length || this.state.currentData.length}/${this.state.totalMembers}`}
             <Button onClick={this.downloadCsvData} type='link'>Download .csv</Button>
+            <Button onClick={this.copyCurrentEmails} type='link'>Copy Emails</Button>
+            <Button disabled={!this.state.currentSelectedRows.length} type='link'>Bulk options...</Button>
         </div>
-    }
-
-    public onRow = (record: TableDataLine) => {
-        return {
-            onClick: () => {
-                this.props.onMemberSelect(record)
-            }
-        }
     }
 
     public updatePaid = (line: TableDataLine, newPaid: 'Yes' | 'No') => {
@@ -219,7 +235,11 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 dataIndex: 'tableName',
                 defaultSortOrder: 'ascend',
                 sorter: (a: TableDataLine, b: TableDataLine) => a.tableName.localeCompare(b.tableName),
-                render: (t: string) => this.renderHighlightedText(t, 'tableName'),
+                render: (t: string, line: TableDataLine) => {
+                    return (<span className='tableNameLink' onClick={e => this.props.onMemberSelect(line)}>
+                        {this.renderHighlightedText(t, 'tableName')}
+                        </span>)
+                },
                 ...this.getColumnSearchProps('tableName')
             },
             {
