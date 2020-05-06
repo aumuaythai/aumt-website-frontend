@@ -193,6 +193,28 @@ class DB {
             .set(memberData)
     }
 
+    public addMultipleMembers = (members: Record<string, AumtMember>): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        const batch = this.db.batch()
+        const memberCollection = this.db.collection('members')
+        Object.keys(members).forEach((key: string) => {
+            const docRef = memberCollection.doc(key)
+            batch.set(docRef, members[key])
+        })
+        return batch.commit()
+    }
+
+    public removeMultipleMembers = (memberIds: string[]): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        const batch = this.db.batch()
+        memberIds.forEach((id) => {
+            const doc = this.db!.collection('members')
+                .doc(id)
+            batch.delete(doc)
+        })
+        return batch.commit()
+    }
+
     public removeMember = (memberId: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('members')

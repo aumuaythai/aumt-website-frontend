@@ -1,6 +1,6 @@
 import React, {Component, ReactText} from 'react'
 import Highlighter from 'react-highlight-words';
-import { Input, Button, Tooltip, notification } from 'antd'
+import { Input, Button, Tooltip, notification, Popconfirm, message } from 'antd'
 import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
 import PapaParse from 'papaparse'
 import './TableHelper.css'
@@ -23,6 +23,7 @@ interface TableHelperState {
     currentSelectedRows: TableDataLine[]
     currentFilters: Record<string, React.ReactText[] | null>
     totalMembers: number
+    deletingSelectedMembers: boolean
 }
 
 export class TableHelper extends Component<TableHelperProps, TableHelperState> {
@@ -34,7 +35,8 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             currentData: [],
             currentSelectedRows: [],
             currentFilters: {},
-            totalMembers: 0
+            totalMembers: 0,
+            deletingSelectedMembers: false
         }
     }
 
@@ -134,11 +136,9 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         },
     });
 
-    private objToTableDataLine = (obj: any): TableDataLine | null => {
+    private objToAumtMember = (obj: any): AumtMember | null => {
         const yn = ['Yes', 'No']
-        // console.log(obj)
-        if (!obj.key ||
-            !obj.firstName ||
+        if (!obj.firstName ||
             !obj.lastName ||
             !obj.email ||
             yn.indexOf(obj.isReturningMember) < 0 ||
@@ -150,39 +150,59 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 return null
             } 
         else {
-            return {...obj}
+            return {
+                firstName: obj.firstName,
+                lastName: obj.lastName,
+                preferredName: obj.preferredName,
+                upi: obj.upi,
+                email: obj.email,
+                emailVerified: obj.emailVerified,
+                isReturningMember: obj.isReturningMember,
+                isUoAStudent: obj.isUoAStudent,
+                membership: obj.membership,
+                initialExperience: obj.initialExperience,
+                instagramHandle: obj.instagramHandle,
+                paymentType: obj.paymentType,
+                paid: obj.paid,
+                EmergencyContactName: obj.EmergencyContactName,
+                EmergencyContactNumber: obj.EmergencyContactNumber,
+                EmergencyContactRelationship: obj.EmergencyContactRelationship
+            }
         }
     }
 
-    public importMembers = (members: TableDataLine[]): Promise<void> => {
-        return new Promise((resolve, reject) => {
-            setTimeout(resolve, 4000)
-        })
+    public importMembers = (members: Record<string, AumtMember>): Promise<void> => {
+        return db.addMultipleMembers(members)
     }
 
-    public parseMemberFile = (file: File): Promise<{members: TableDataLine[], messages: string[]}> => {
+    public parseMemberFile = (file: File): Promise<{members: Record<string, AumtMember>, messages: string[]}> => {
         return new Promise((resolve, reject) => {
             const messages: string[] = []
             PapaParse.parse(file, {
                 header: true,
                 complete: (papaData) => {
                     const {data, errors} = papaData
-                    const memberData = data.map((line: any, idx) => {
+                    const members: Record<string, AumtMember> = data.reduce((memberObj: Record<string, AumtMember>, line: any, idx) => {
                         const error = errors.find(e => e.row === idx)
                         if (error) {
                             messages.push(`ERROR - Removed member ${idx + 1} - ${error.message}`)
-                            return null
+                            return memberObj
                         }
-                        const dataLine = this.objToTableDataLine(line)
-                        if (!dataLine) {
+                        if (!line.key) {
+                            messages.push(`ERROR - Removed member with no key, member number ${idx + 1}`)
+                            return memberObj
+                        }
+                        const aumtMember = this.objToAumtMember(line)
+                        if (!aumtMember) {
                             messages.push(`ERROR - Removed member with invalid data values at member number ${idx + 1}`)
+                            return memberObj
                         }
-                        return dataLine
-                    })
-                    const members = memberData.filter(l => l) as TableDataLine[]
+                        memberObj[line.key] = aumtMember
+                        return memberObj
+                    }, {})
                     return resolve({
                         members,
-                        messages: messages.concat([`Able to import ${members.length} members`])
+                        messages: messages.concat([`Able to import ${Object.keys(members).length} members`])
                     })
                 },
                 error: (err) => {
@@ -232,6 +252,32 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         this.copyText(emails)
     }
 
+    private removeSelectedLines = () => {
+        if (this.state.currentSelectedRows.length) {
+            this.setState({
+                ...this.state,
+                deletingSelectedMembers: false
+            })
+            const uids = this.state.currentSelectedRows.map(r => r.key)
+            db.removeMultipleMembers(uids)
+                .then(() => {
+                    notification.success({message: `Successfully removed ${uids.length} members`})
+                    this.setState({
+                        ...this.state,
+                        deletingSelectedMembers: false,
+                        currentSelectedRows: []
+                    })
+                })
+                .catch((err) => {
+                    this.setState({
+                        ...this.state,
+                        deletingSelectedMembers: false
+                    })
+                    notification.error({message: err.toString()})
+                })
+        }
+    }
+
     public onTableChange = (pagination: any, filter: Record<keyof TableDataLine, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>) => {
         this.setState({
             ...this.state,
@@ -252,7 +298,13 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {`Members: ${this.getSelectedRows().length}/${this.state.totalMembers}`}
             <Button onClick={this.downloadCsvData} type='link'>Download .csv</Button>
             <Button onClick={this.copyCurrentEmails} type='link'>Copy Emails</Button>
-            <Button disabled={!this.state.currentSelectedRows.length} type='link'>Remove Selected</Button>
+            <Popconfirm
+                title={`Delete ${this.state.currentSelectedRows.length} members?`}
+                onConfirm={this.removeSelectedLines}
+                
+                >
+                <Button loading={this.state.deletingSelectedMembers} disabled={!this.state.currentSelectedRows.length} type='link'>Remove Selected</Button>
+            </Popconfirm>
         </div>
     }
 

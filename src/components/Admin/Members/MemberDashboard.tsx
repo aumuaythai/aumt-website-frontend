@@ -1,12 +1,12 @@
 import React, {Component,ReactText} from 'react'
 import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import { Modal, Spin, Table, notification, Button, Select, Switch as AntSwitch, Radio, Alert } from 'antd'
+import { Modal, Spin, Table, notification, Button, Select, Switch as AntSwitch, Radio, Alert, message } from 'antd'
 import { PlusOutlined, UploadOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import './MemberDashboard.css'
 import {TableColumn, TableDataLine} from './TableHelper'
 import MemberDetails from './MemberDetails'
 import { JoinForm } from '../../Content/join/JoinForm'
-import { AumtMembersObj } from '../../../types'
+import { AumtMembersObj, AumtMember } from '../../../types'
 import db from '../../../services/db'
 import { TableHelper } from './TableHelper'
 
@@ -29,8 +29,7 @@ interface MemberDashboardState {
     importMemberErrorText: string
     importMemberSuccessText: string[]
     importMemberParsing: boolean
-    membersToImport: TableDataLine[]
-    memberImportInProgress: boolean
+    membersToImport: Record<string, AumtMember>
 }
 
 class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardState> {
@@ -59,8 +58,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             importMemberErrorText: '',
             importMemberSuccessText: [],
             importMemberParsing: false,
-            membersToImport: [],
-            memberImportInProgress: false
+            membersToImport: {}
         }
     }
     componentDidMount = () => {
@@ -177,7 +175,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             importMemberErrorText: '',
             importMemberSuccessText: [],
             importMemberParsing: false,
-            membersToImport: []
+            membersToImport: {}
         })
     }
     onImportMemberFileChange = (files: FileList | null) => {
@@ -185,10 +183,10 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             this.setState({
                 ...this.state,
                 importMemberParsing: true,
-                membersToImport: []
+                membersToImport: {}
             })
             this.helper?.parseMemberFile(files[0])
-                .then((parseObj: {members: TableDataLine[], messages: string[]}) => {
+                .then((parseObj: {members: Record<string, AumtMember>, messages: string[]}) => {
                     const {members, messages} = parseObj
                     this.setState({
                         ...this.state,
@@ -202,29 +200,30 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                         ...this.state,
                         importMemberParsing: false,
                         importMemberErrorText: err.toString(),
-                        membersToImport: []
+                        membersToImport: {}
                     })
                 })
         }
     }
     onImportMembersOk = () => {
+        if (Object.keys(this.state.membersToImport).length === 0) {
+            return this.setState({
+                ...this.state,
+                importMemberErrorText: 'No members to import'
+            })
+        }
         this.setState({
             ...this.state,
-            importMembersVisible: false,
-            memberImportInProgress: true
+            importMembersVisible: false
         })
+        const key = 'importMemberMessage'
+        message.loading({content: 'Adding to Database', key})
         this.helper?.importMembers(this.state.membersToImport)
             .then(() => {
-                this.setState({
-                    ...this.state,
-                    memberImportInProgress: false
-                })
+                message.success({content: 'Members Added', key, duration: 2})
             })
-            .catch(() => {
-                this.setState({
-                    ...this.state,
-                    memberImportInProgress: false
-                })
+            .catch((err) => {
+                message.error({content: err.toString(), key, duration: 3})
             })
     }
     onImportMembersCancel = () => {
@@ -312,12 +311,11 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             unCheckedChildren="closed"></AntSwitch>
                                     </div>
                                     <div className="memberDashboardGlobalConfigOptionsContainer">
-                                        <Button loading={this.state.memberImportInProgress} onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
+                                        <Button onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
                                         <Modal
                                             title='Import Members'
                                             visible={this.state.importMembersVisible}
                                             okText='Begin Import'
-                                            okButtonProps={{ disabled: !!this.state.importMemberErrorText || !this.state.membersToImport.length }}
                                             onOk={this.onImportMembersOk}
                                             onCancel={this.onImportMembersCancel}>
                                             <input onChange={e => this.onImportMemberFileChange(e.target.files)} ref={this.importMemberInput} type='file' accept='.csv,.CSV,'/>
