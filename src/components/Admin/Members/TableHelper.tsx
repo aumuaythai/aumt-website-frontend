@@ -298,6 +298,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {`Members: ${this.getSelectedRows().length}/${this.state.totalMembers}`}
             <Button onClick={this.downloadCsvData} type='link'>Download .csv</Button>
             <Button onClick={this.copyCurrentEmails} type='link'>Copy Emails</Button>
+            {this.state.currentSelectedRows.length ? 
             <Popconfirm
                 title={`Delete ${this.state.currentSelectedRows.length} members?`}
                 onConfirm={this.removeSelectedLines}
@@ -305,6 +306,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 >
                 <Button loading={this.state.deletingSelectedMembers} disabled={!this.state.currentSelectedRows.length} type='link'>Remove Selected</Button>
             </Popconfirm>
+            : ''}
         </div>
     }
 

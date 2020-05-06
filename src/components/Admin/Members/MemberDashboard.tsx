@@ -30,6 +30,7 @@ interface MemberDashboardState {
     importMemberSuccessText: string[]
     importMemberParsing: boolean
     membersToImport: Record<string, AumtMember>
+    rowSelectionEnabled: boolean
 }
 
 class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardState> {
@@ -58,7 +59,8 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             importMemberErrorText: '',
             importMemberSuccessText: [],
             importMemberParsing: false,
-            membersToImport: {}
+            membersToImport: {},
+            rowSelectionEnabled: false
         }
     }
     componentDidMount = () => {
@@ -311,7 +313,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             unCheckedChildren="closed"></AntSwitch>
                                     </div>
                                     <div className="memberDashboardGlobalConfigOptionsContainer">
-                                        <Button onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
+                                        <Button className='importMembersButton' onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
                                         <Modal
                                             title='Import Members'
                                             visible={this.state.importMembersVisible}
@@ -361,7 +363,9 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                 dataSource={this.state.tableDataSource}
                                 columns={this.state.tableColumns.filter(c => this.longTable ? c : this.shortTableColumns.indexOf(c.title) > -1)}
                                 bordered
-                                rowSelection={{selectedRowKeys: this.state.selectedRowKeys, onChange: this.onRowSelectChange}}
+                                rowSelection={this.state.rowSelectionEnabled ?
+                                    {selectedRowKeys: this.state.selectedRowKeys, onChange: this.onRowSelectChange} :
+                                    undefined}
                                 onChange={this.helper.onTableChange}
                                 footer={this.helper.getFooter}
                                 pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
