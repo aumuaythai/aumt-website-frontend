@@ -7,6 +7,7 @@ import './TableHelper.css'
 import { AumtMember, AumtMembersObj } from '../../../types'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
 import db from '../../../services/db';
+import Validator from '../../../services/validator';
 
 import DataFormatterUtil from '../../../services/data.util'
 export type TableDataLine = AumtMember & {key: string, tableName: string}
@@ -192,9 +193,10 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                             errorsFound.push(`ERROR - Removed member with no key, member number ${idx + 1}`)
                             return memberObj
                         }
-                        const aumtMember = this.objToAumtMember(line)
-                        if (!aumtMember) {
-                            errorsFound.push(`ERROR - Removed member with invalid data values at member number ${idx + 1}`)
+                        
+                        const aumtMember = Validator.createAumtMember(line)
+                        if (typeof(aumtMember) == 'string') {
+                            errorsFound.push(`ERROR - Removed member with invalid data values at member number ${idx + 1}. Reason: ${aumtMember}`)
                             return memberObj
                         }
                         memberObj[line.key] = aumtMember

@@ -1,6 +1,7 @@
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig } from '../types';
+import validator from './validator';
 
 type MockMember = {
     [uid: string]: {
@@ -83,7 +84,11 @@ class DB {
                 const members: AumtMembersObj = {}
                 querySnapshot.forEach((doc) => {
                     const data = doc.data()
-                    members[doc.id] = this.docToMember(data)
+                    try {
+                        members[doc.id] = this.docToMember(data)
+                    } catch (e) {
+                        console.warn(e)
+                    }
                 })
                 return members
             })
@@ -420,7 +425,11 @@ class DB {
                 const members: AumtMembersObj = {}
                 querySnapshot.forEach((doc) => {
                     const data = doc.data()
-                    members[doc.id] = this.docToMember(data)
+                    try {
+                        members[doc.id] = this.docToMember(data)
+                    } catch (e) {
+                        console.warn(e)
+                    }
                 })
                 callback(members)
             })
@@ -468,23 +477,9 @@ class DB {
     }
 
     private docToMember = (docData: any): AumtMember => {
-        const member: AumtMember = {
-            EmergencyContactName: docData.EmergencyContactName,
-            EmergencyContactNumber: docData.EmergencyContactNumber,
-            EmergencyContactRelationship: docData.EmergencyContactRelationship,
-            upi: docData.upi,
-            email: docData.email,
-            emailVerified: docData.emailVerified,
-            firstName: docData.firstName,
-            instagramHandle: docData.instagramHandle || '',
-            paymentType: docData.paymentType || 'Cash',
-            isReturningMember: docData.isReturningMember,
-            isUoAStudent: docData.isUoAStudent,
-            paid: docData.paid,
-            initialExperience: docData.initialExperience || '',
-            lastName: docData.lastName,
-            membership: docData.membership,
-            preferredName: docData.preferredName,
+        const member = validator.createAumtMember(docData)
+        if (typeof(member) === 'string') {
+            throw new Error(`Could not read member. Reason: ${member}`)
         }
         return member
     }

@@ -7,6 +7,7 @@ import DataFormatterUtil from '../../../services/data.util'
 import { AumtMember } from '../../../types';
 import FirebaseUtil from '../../../services/firebase.util';
 import db from '../../../services/db';
+import validator from '../../../services/validator';
 
 interface JoinFormProps {
     isAdmin: boolean
@@ -43,41 +44,45 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
     }
     private onSubmit = (values: any) => {
         const {
-            UoaStudent,
-            ReturningMember,
-            FirstName,
-            LastName,
-            PreferredName,
-            Experience,
+            UoaStudent: isUoAStudent,
+            ReturningMember: isReturningMember,
+            FirstName: firstName,
+            LastName: lastName,
+            PreferredName: preferredName,
+            Experience: initialExperience,
             EmergencyContactName,
             EmergencyContactNumber,
             EmergencyContactRelationship,
-            Insta,
-            Paid,
-            Membership,
+            Insta: instagramHandle,
+            Paid: paid = 'No',
+            Membership: membership = 'S2',
             upi,
             email,
             password,
             uid,
-            Payment
+            Payment: paymentType
         } = values
             const member: AumtMember = {
-                firstName: FirstName,
-                lastName: LastName,
-                preferredName: PreferredName || '',
-                email: email,
-                isUoAStudent: UoaStudent,
-                upi: upi || '0',
-                membership: Membership ? Membership : 'S2',
-                initialExperience: Experience,
-                instagramHandle: Insta || '',
-                paymentType: Payment,
-                paid: Paid || 'No',
-                isReturningMember: ReturningMember,
+                firstName,
+                lastName,
+                preferredName,
+                email,
+                isUoAStudent,
+                upi,
+                membership,
+                initialExperience,
+                instagramHandle,
+                paymentType,
+                paid: paid,
+                isReturningMember,
                 EmergencyContactName,
                 EmergencyContactNumber,
                 EmergencyContactRelationship,
                 emailVerified: false,
+            }
+            const errorStr = validator.createAumtMember(member)
+            if (typeof(errorStr) === 'string') {
+                return message.error({content: `Error creating member: ${errorStr}`})
             }
             this.setState({
                 ...this.state,

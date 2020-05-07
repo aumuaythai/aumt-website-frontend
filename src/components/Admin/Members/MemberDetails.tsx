@@ -9,6 +9,7 @@ import { notification } from 'antd'
 import { AumtMember } from '../../../types'
 import db from '../../../services/db'
 import DataFormatterUtil from '../../../services/data.util'
+import Validator from '../../../services/validator'
 
 interface MemberDetailsProps extends RouteComponentProps {
     member: TableDataLine
@@ -157,14 +158,9 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             emailVerified: false,
             paymentType: this.state.currentPaymentType
         }
-        if (!member.firstName || !member.lastName) {
-            return notification.error({message: 'First and Last Name Required'})
-        } else if (!member.email) {
-            return notification.error({message: 'Email Required'})
-        } else if (!member.isUoAStudent || !member.isReturningMember) {
-            return notification.error({message: 'Is UoA Student and Is Returning must be specified'})
-        } else if (!member.EmergencyContactName || !member.EmergencyContactNumber || !member.EmergencyContactRelationship) {
-            return notification.error({message: 'All Emergency Contact Details are Required'})
+        const errorStr = Validator.createAumtMember(member)
+        if (typeof(errorStr) === 'string') {
+            return notification.error({message: errorStr})
         }
         if (this.props.member.email !== this.state.currentEmail) {
             notification.open({message: 'Reminder: If you change the email here, also change it in the Firebase Admin Console under the Authentication tab'})
