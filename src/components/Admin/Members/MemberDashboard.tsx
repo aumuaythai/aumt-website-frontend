@@ -26,8 +26,8 @@ interface MemberDashboardState {
     clubSignupSem: '' | 'S1' | 'S2'
     loadingSignupSem: boolean
     importMembersVisible: boolean
-    importMemberErrorText: string
-    importMemberSuccessText: string[]
+    importMemberErrors: string[]
+    importMemberSuccessText: string
     importMemberParsing: boolean
     membersToImport: Record<string, AumtMember>
     rowSelectionEnabled: boolean
@@ -56,8 +56,8 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             clubSignupSem: '',
             importMembersVisible: false,
             loadingSignupSem: true,
-            importMemberErrorText: '',
-            importMemberSuccessText: [],
+            importMemberErrors: [],
+            importMemberSuccessText: '',
             importMemberParsing: false,
             membersToImport: {},
             rowSelectionEnabled: false
@@ -174,8 +174,8 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
         this.setState({
             ...this.state,
             importMembersVisible: true,
-            importMemberErrorText: '',
-            importMemberSuccessText: [],
+            importMemberErrors: [],
+            importMemberSuccessText: '',
             importMemberParsing: false,
             membersToImport: {}
         })
@@ -188,11 +188,12 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                 membersToImport: {}
             })
             this.helper?.parseMemberFile(files[0])
-                .then((parseObj: {members: Record<string, AumtMember>, messages: string[]}) => {
-                    const {members, messages} = parseObj
+                .then((parseObj: {members: Record<string, AumtMember>, text: string, errors: string[]}) => {
+                    const {members, errors, text} = parseObj
                     this.setState({
                         ...this.state,
-                        importMemberSuccessText: messages,
+                        importMemberSuccessText: text,
+                        importMemberErrors: errors,
                         importMemberParsing: false,
                         membersToImport: members
                     })
@@ -201,7 +202,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                     this.setState({
                         ...this.state,
                         importMemberParsing: false,
-                        importMemberErrorText: err.toString(),
+                        importMemberErrors: [err.toString()],
                         membersToImport: {}
                     })
                 })
@@ -211,7 +212,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
         if (Object.keys(this.state.membersToImport).length === 0) {
             return this.setState({
                 ...this.state,
-                importMemberErrorText: 'No members to import'
+                importMemberErrors: ['No members to import']
             })
         }
         this.setState({
@@ -325,11 +326,14 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             <p>A file with more than 500 members will throw a bunch of errors so... don't</p>
                                             <input onChange={e => this.onImportMemberFileChange(e.target.files)} ref={this.importMemberInput} type='file' accept='.csv,.CSV,'/>
                                             {this.state.importMemberParsing ? <Spin/> : ''}
-                                                {this.state.importMemberErrorText ?
-                                                <Alert type='error' message={this.state.importMemberErrorText}></Alert> : ''}
-                                                {this.state.importMemberSuccessText.map((line, idx) => {
-                                                    return <Alert key={idx} message={line}></Alert>
+                                            {this.state.importMemberSuccessText ?
+                                                <Alert message={this.state.importMemberSuccessText}></Alert>
+                                                : ''}
+                                            <div className="importMemberMessagesContainer">
+                                                {this.state.importMemberErrors.map((line, idx) => {
+                                                    return <Alert key={idx} type='error' message={line}></Alert>
                                                 })}
+                                            </div>
                                         </Modal>
                                     </div>
                                     <Link to='/admin/members/add'>

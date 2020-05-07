@@ -67,6 +67,10 @@
 .loadingSignupSemSpin {
     position: absolute;
 }
+.importMemberMessagesContainer {
+    overflow-y: auto;
+    max-height: 300px;
+}
 @media(max-width: 1180px) {
     .memberDisplaySectionNarrow {
         width: 100%;

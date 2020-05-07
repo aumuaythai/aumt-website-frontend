@@ -175,9 +175,9 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         return db.addMultipleMembers(members)
     }
 
-    public parseMemberFile = (file: File): Promise<{members: Record<string, AumtMember>, messages: string[]}> => {
+    public parseMemberFile = (file: File): Promise<{members: Record<string, AumtMember>, errors: string[], text: string}> => {
         return new Promise((resolve, reject) => {
-            const messages: string[] = []
+            const errorsFound: string[] = []
             PapaParse.parse(file, {
                 header: true,
                 complete: (papaData) => {
@@ -185,16 +185,16 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                     const members: Record<string, AumtMember> = data.reduce((memberObj: Record<string, AumtMember>, line: any, idx) => {
                         const error = errors.find(e => e.row === idx)
                         if (error) {
-                            messages.push(`ERROR - Removed member ${idx + 1} - ${error.message}`)
+                            errorsFound.push(`ERROR - Removed member ${idx + 1} - ${error.message}`)
                             return memberObj
                         }
                         if (!line.key) {
-                            messages.push(`ERROR - Removed member with no key, member number ${idx + 1}`)
+                            errorsFound.push(`ERROR - Removed member with no key, member number ${idx + 1}`)
                             return memberObj
                         }
                         const aumtMember = this.objToAumtMember(line)
                         if (!aumtMember) {
-                            messages.push(`ERROR - Removed member with invalid data values at member number ${idx + 1}`)
+                            errorsFound.push(`ERROR - Removed member with invalid data values at member number ${idx + 1}`)
                             return memberObj
                         }
                         memberObj[line.key] = aumtMember
@@ -202,7 +202,8 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                     }, {})
                     return resolve({
                         members,
-                        messages: messages.concat([`Able to import ${Object.keys(members).length} members`])
+                        errors: errorsFound,
+                        text: `Able to import ${Object.keys(members).length} members`
                     })
                 },
                 error: (err) => {
