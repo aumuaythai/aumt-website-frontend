@@ -97,7 +97,7 @@ Note: A member's email can be changed this way but their login email can't be ch
 
 1. Go to the Members tab of the Admin section
 2. Find the member in the table by filtering or searching the columns at their title
-3. Click on the line of the table somewhere
+3. Click on the member's name
 4. Edit the desired fields on the right and click Save to save. Changes should reflect immediately in the table.
 5. Cancel the edit by clicking the close button at the top right of the form.
 
@@ -105,16 +105,30 @@ Note: A member's email can be changed this way but their login email can't be ch
 
 1. Navigate to the member as done in the previous section
 2. Click Remove Member and confirm
-3. Delete member from the firebase console (see Deleting a User)
+3. Delete member login from the firebase console (see Deleting a User)
+
+### Backups
+
+Regular backups are super duper important because a website hacked together by an unpaid committee member may not be as reliable as Google Sheets. Because firebase's free plan doesn't allow backups there is functionality to do it on the site. 
+
+To store data as a backup, just click Download .csv at the member table footer with no table filters active. All member information will be downloaded including login UIDs. In case anything with the website breaks all the information will be in the last csv downloaded and can be imported to google sheets or back to the website.
+
+To restore members from a .csv, click the Import Members button in the Member tab of the Admin section. Notes will be on the popup. It is strongly recommended to only import a .csv that was downloaded from the website. 
+
+**WARNING** - Importing members this way does not create logins, just entries in the member database.
+
+The Import Members button and the Download .csv button are meant to work together for backups.
 
 ### Other features
+* To select multiple members for download, email copy or to remove, turn on the Multi Select switch above the table.
 * Some table entries have an icon to their right. This is for quickly editing or copying the data. For example you can quickly switch a member's paid status without having to open and edit the member. Hover over the icon and a tooltip will appear telling you what clicking it will do. 
 * One can filter the table by clicking the filter or search icon next to a column's header. Some have categorical filters and in some you can search for text (a name, etc)
 * For ease of searching, a display name has been created for each member and is displayed in the table under Name. It is not stored in the database.
 * Download a .csv file by clicking Download .csv in the Table footer. It will create a CSV file of all filtered members displayed in the table. This can later be used as an excel file or an import to Google Sheets
-* Member attendance is displayed if you click on a member's line in the table. It will show all training sessions, which ones they have signed up for and the session they selected. One can edit their signup by clicking the edit icon to the right.
+* Click on a member's name in the table to edit their details or view attendance. It will show all training sessions, which ones they have signed up for and the session they selected. One can edit their signup by clicking the edit icon to the right.
 * Join Form is a switch that toggles whether people can sign up to the club or not. If set to closed, the Join tab of the website will say that signups for the semester have closed. If set to open, the Join tab will display the join form.
 * Signup Sem is a choice that only changes the text on the Join form. If set to Sem1, the Join form will have options for Semester One and Full Year, with payment instructions for both. If set to Sem2, the Join form will sign members up to Semester 2 and only display payment instructions for Sem 2.
+
 
 ## Feedback
 

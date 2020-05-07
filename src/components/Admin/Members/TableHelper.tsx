@@ -352,9 +352,13 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 defaultSortOrder: 'ascend',
                 sorter: (a: TableDataLine, b: TableDataLine) => a.tableName.localeCompare(b.tableName),
                 render: (t: string, line: TableDataLine) => {
-                    return (<span className='tableNameLink' onClick={e => this.props.onMemberSelect(line)}>
-                        {this.renderHighlightedText(t, 'tableName')}
-                        </span>)
+                    return (
+                        <Tooltip placement='left' title='View Details'>
+                            <span className='tableNameLink' onClick={e => this.props.onMemberSelect(line)}>
+                                {this.renderHighlightedText(t, 'tableName')}
+                            </span>
+                        </Tooltip>
+                        )
                 },
                 ...this.getColumnSearchProps('tableName')
             },

@@ -291,6 +291,12 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <div className="memberDashboardHeader">
                                 <h2 className='memberDashboardTitle'>AUMT Members</h2>
                                 <div className="memberDashboardHeaderButtons">
+                                    <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
+                                        Multi Select <AntSwitch
+                                        checked={this.state.rowSelectionEnabled}
+                                        onChange={e => this.setState({...this.state, rowSelectionEnabled: e})}
+                                        ></AntSwitch>
+                                    </div>
                                     <div className="memberDashboardGlobalConfigOptionsContainer">
                                         Signup Sem:
                                         <div className="signupSemChangeContainer">
@@ -314,7 +320,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             unCheckedChildren="closed"></AntSwitch>
                                     </div>
                                     <div className="memberDashboardGlobalConfigOptionsContainer">
-                                        <Button className='importMembersButton' onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
+                                        <Button className='memberDashboardHideSmallScreen' onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
                                         <Modal
                                             title='Import Members'
                                             visible={this.state.importMembersVisible}

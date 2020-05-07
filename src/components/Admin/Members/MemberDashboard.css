@@ -88,7 +88,7 @@
     .joinFormAdminContainer {
         max-height: unset
     }
-    .importMembersButton {
+    .memberDashboardHideSmallScreen {
         display: none;
     }
 }
