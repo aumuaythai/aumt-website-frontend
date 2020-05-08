@@ -31,7 +31,7 @@ export class UserInfo extends Component<UserInfoProps, object> {
 
     render() {
         return (
-            <Dropdown overlay={this.menu} placement="bottomRight">
+            <Dropdown overlay={this.menu} placement="bottomRight" trigger={['click', 'hover']}>
                 <Button type='link' className="ant-dropdown-link userInfoLink" onClick={e => e.preventDefault()}>
                     <DownOutlined />{this.props.authedUser.preferredName || this.props.authedUser.firstName}
                 </Button>
