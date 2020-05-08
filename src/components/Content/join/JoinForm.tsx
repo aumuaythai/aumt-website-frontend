@@ -224,7 +224,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             <Input className='joinFormInput'/>
                         </Form.Item>
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='EmergencyContactNumber' label='Phone Number'>
-                            <Input className='joinFormInput'/>
+                            <Input className='joinFormInput' type='tel'/>
                         </Form.Item>
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='EmergencyContactRelationship' label='Relationship'>
                             <Input className='joinFormInput'/>
@@ -249,7 +249,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 : ''}
                         </div>
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='email' label='Email'>
-                            <Input className='joinFormInput'/>
+                            <Input className='joinFormInput' type='email'/>
                         </Form.Item>
                         {!this.props.isAdmin ?
                         <Form.Item {...this.alignInputLayout} rules={[{ required: true }]} name='password' label='Password'>

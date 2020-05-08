@@ -1,6 +1,6 @@
 import React, {Component, ReactText} from 'react'
 import Highlighter from 'react-highlight-words';
-import { Input, Button, Tooltip, notification, Popconfirm, message } from 'antd'
+import { Input, Button, Tooltip, notification, Popconfirm } from 'antd'
 import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
 import PapaParse from 'papaparse'
 import './TableHelper.css'
