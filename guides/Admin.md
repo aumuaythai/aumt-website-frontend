@@ -9,7 +9,7 @@ This guide will go over how to use the admin section of aumt.co.nz, tab by tab.
 * Title - will appear as the heading on the signup form
 * Opens - the date and time at which the training will appear for member signups
 * Closes - the date and time at which the training will disappear from the signup tab.
-* Open To Public - whether or not non-members can sign up to the training. 
+* Open To Non-Members - whether or not non-members can sign up to the training (useful for trials, womens' training, etc). 
     * If No, the website will require a member to sign in and have paid to view the training.
     * If Yes, the form will be open to anyone and the "Feedback" input on the form will be replaced with a "Name" field so admin has an idea who signs up
         * If Yes, the name will displayed as (nonmember) \<Name> in the Edit Members section of the Training Dashboard
