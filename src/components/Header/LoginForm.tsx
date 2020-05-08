@@ -89,7 +89,7 @@ export class LoginForm extends Component<LoginProps, LoginState> {
                         <LoginErrorMessage errorCode={this.state.errorCode}></LoginErrorMessage> :
                         ''
                 }
-                <Input className='loginInput' ref={(input) => { this.emailInput = input; }} placeholder="email" onChange={this.onUnChange} onPressEnter={this.onLoginClick} prefix={<UserOutlined />} />
+                <Input type='email' className='loginInput' ref={(input) => { this.emailInput = input; }} placeholder="email" onChange={this.onUnChange} onPressEnter={this.onLoginClick} prefix={<UserOutlined />} />
                 <br/>
                 <Input.Password className='loginInput' onChange={this.onPwChange} onPressEnter={this.onLoginClick} placeholder="password" />
                 <ResetPasswordLink></ResetPasswordLink>
