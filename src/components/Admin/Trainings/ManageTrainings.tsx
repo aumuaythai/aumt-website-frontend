@@ -114,10 +114,10 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
                                     {training.title}
                                 </h4>
                                 <div className='manageTrainingOptions'>
-                                    <Button onClick={e => this.onTrainingEditClick(training.trainingId)}>
+                                    <Button className='manageTrainingOptionButton' onClick={e => this.onTrainingEditClick(training.trainingId)}>
                                         {this.state.editingTraining[training.trainingId] ? 'Cancel Edit' : 'Edit'}
                                     </Button>
-                                    <Button
+                                    <Button className='manageTrainingOptionButton'
                                         loading={this.state.removingTraining[training.trainingId]}
                                         onClick={e => this.confirmDeleteTraiing(training.title, training.trainingId)}
                                         type='danger'

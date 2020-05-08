@@ -156,7 +156,8 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                     <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                     <p>Our sign-up sheets for training will be posted to aumt.co.nz/signups, so look out for it!</p>
                     <h3>DISCLAIMER:</h3>
-                    <p>I understand that by filling up and submitting this form, I am taking part in the club activities at my own risk and any injuries sustained to any person or any damage to any equipment during the ordinary course of training will not be the responsibility of the club. Any loss of equipment or personal belongings is under the sole responsibility of the member, and the club as well as the training facility will not be held responsible. </p>
+                    <p>I understand that by filling out and submitting this form, I am partaking in the club activities at my own risk and all injuries sustained to any person or any damage to equipment during the ordinary course of training will not be the responsibility of the club.
+                        Any loss of equipment or personal belongings is the sole responsibility of the member and is not the responsibility of the club or training facility. </p>
                 </div>
                 :
                 <div>
@@ -232,7 +233,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <p>Like our facebook page, Auckland University Muay Thai, for all important info and announcements.</p>
                         <Form.Item name='FacebookAccount' rules={[{ required: true }]} label='Do you have a Facebook account?'>
                             <Radio.Group name="HasFacebookRadio">
-                                <Radio value={'Yes'}>Yes - like our page</Radio>
+                                <Radio value={'Yes'}>Yes</Radio>
                                 <Radio value={'No'}>No</Radio>
                             </Radio.Group>
                         </Form.Item>

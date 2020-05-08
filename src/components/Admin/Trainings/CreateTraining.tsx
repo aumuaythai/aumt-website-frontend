@@ -233,7 +233,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                     <DatePicker value={moment(this.state.currentCloses)} showTime onChange={d => this.onClosesDateChange(d?.toDate())} />
                 </div>
                 <div>
-                    Open to Public:
+                    Open to Non-Members:
                     <Radio.Group value={this.state.currentOpenToPublic} onChange={e => this.onOpenToPublicChange(e.target.value)}>
                         <Radio.Button value={true}>Yes</Radio.Button>
                         <Radio.Button value={false}>No</Radio.Button>

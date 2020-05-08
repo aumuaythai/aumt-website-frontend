@@ -15,7 +15,7 @@ export class About extends Component {
                     <img src="./photos/content/group1.jpg" alt="group" className='absoluteResponsiveImg'/>
                 </div>
                 <div className="introContainer">
-                    <h3 className='aboutSectionHead'>AUMT aims to introduce the UoA community to Muay Thai.</h3>
+                    <h3 className='aboutSectionHead'>AUMT aims to introduce the UoA community to the art of Muay Thai.</h3>
                     <p className="introStr">
                      Run by a passionate group of Muay Thai enthusiasts, we organise sessions where members can learn more about the sport and pick up some self-defence skills in a safe, supportive environment.
                     </p>

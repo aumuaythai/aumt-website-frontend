@@ -7,6 +7,35 @@ export class Team extends Component {
         return (
             <div className='teamContainer'>
                 <div className="teamGroup">
+                    <h1>Committee</h1>
+                    <div className='imgRow mainRow'>
+                        <div></div>
+                        <div className='personContainer'>
+                            <p className="name">Tom Haliday - President</p>
+                            <img className='headshot' src="./photos/tom.jpg" alt="Tom Haliday"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Catherine Ma - Vice President</p>
+                            <img className='headshot' src="./photos/cat.jpg" alt="Catherine Ma"/>
+                        </div>
+                    </div>
+                    <div className='imgRow'>
+                        <div className='personContainer'>
+                            <p className="name">Karl Oberio - Secretary</p>
+                            <img className='headshot' src="./photos/karl.jpg" alt="Karl Oberio"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Alex Walker - Treasurer</p>
+                            <img className='headshot' src="./photos/alex.jpg" alt="Alex Walker"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Annie Milsom - Public Relations</p>
+                            <img className='headshot' src="./photos/annie2.jpg" alt="Annie Milsom"/>
+                        </div>
+                    </div>
+                </div>
+                <Divider></Divider>
+                <div className="teamGroup">
                     <h1>Trainers</h1>
                     <div className='imgRow mainRow'>
                         <div className='personContainer'>
@@ -47,35 +76,6 @@ export class Team extends Component {
                         <div className='personContainer'>
                             <p className="name">Kevin Ku</p>
                             <img className='headshot' src="./photos/kevin.jpg" alt="Kevin Ku"/>
-                        </div>
-                    </div>
-                </div>
-                <Divider></Divider>
-                <div className="teamGroup">
-                    <h1>Committee</h1>
-                    <div className='imgRow mainRow'>
-                        <div></div>
-                        <div className='personContainer'>
-                            <p className="name">Tom Haliday - President</p>
-                            <img className='headshot' src="./photos/tom.jpg" alt="Tom Haliday"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Catherine Ma - Vice President</p>
-                            <img className='headshot' src="./photos/cat.jpg" alt="Catherine Ma"/>
-                        </div>
-                    </div>
-                    <div className='imgRow'>
-                        <div className='personContainer'>
-                            <p className="name">Karl Oberio - Secretary</p>
-                            <img className='headshot' src="./photos/karl.jpg" alt="Karl Oberio"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Alex Walker - Treasurer</p>
-                            <img className='headshot' src="./photos/alex.jpg" alt="Alex Walker"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Annie Milsom - Public Relations</p>
-                            <img className='headshot' src="./photos/annie2.jpg" alt="Annie Milsom"/>
                         </div>
                     </div>
                 </div>

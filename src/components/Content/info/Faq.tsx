@@ -30,7 +30,7 @@ export class Faq extends Component {
                         Q: How much is a membership?
                     </p>
                     <p className="answer">
-                        A: Membership is $50 for one semester or $90 for the full year
+                        A: Memberships are $50 for one semester or $90 for the full year
                     </p>
                     <Divider/>
                 </div>

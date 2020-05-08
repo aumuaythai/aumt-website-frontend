@@ -13,3 +13,6 @@
 .manageTrainingTitle {
     cursor: pointer;
 }
+.manageTrainingOptionButton {
+    margin-left: 10px;
+}

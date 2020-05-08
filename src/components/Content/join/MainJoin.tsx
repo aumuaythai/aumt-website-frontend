@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Link } from 'react-router-dom'
 import { Result, Button, notification, Spin } from 'antd'
 import { JoinForm } from './JoinForm'
 import './MainJoin.css'
@@ -35,8 +36,14 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
                     extra={
                         this.props.clubSignupStatus === 'open' ?
                         [
-                        <p key='1'><Button type='link' className='joinResultSignOut' onClick={this.onSignOutClick}>
-                            Sign Out</Button> to go back to the Join form
+                        <p key='1'>
+                            <Button type='link' className='joinResultSignOut' onClick={this.onSignOutClick}>
+                                Log out 
+                            </Button>
+                            and return to the signup page, or 
+                            <Link to='/'>
+                                <Button className='joinResultSignOut' type='link'>visit home page</Button>
+                            </Link>
                             </p>
                         ] : []}
                 ></Result>

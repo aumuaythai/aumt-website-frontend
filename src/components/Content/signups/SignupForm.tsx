@@ -192,7 +192,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 {this.props.authedUserId ? 
                 <div className="feedbackInputContainer">
                     <p>Thoughts on last training/feedback?</p>
-                    <Input placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
+                    <Input.TextArea autoSize={{ maxRows: 6 }} placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
                 </div>
                 :
                 <div className="feedbackInputContainer">

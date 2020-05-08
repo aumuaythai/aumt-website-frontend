@@ -297,7 +297,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                         onChange={e => this.setState({...this.state, rowSelectionEnabled: e})}
                                         ></AntSwitch>
                                     </div>
-                                    <div className="memberDashboardGlobalConfigOptionsContainer">
+                                    <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
                                         Signup Sem:
                                         <div className="signupSemChangeContainer">
                                             {this.state.loadingSignupSem ? 
@@ -310,7 +310,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             }
                                         </div>
                                     </div>
-                                    <div className="memberDashboardGlobalConfigOptionsContainer">
+                                    <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
                                         Join Form: <AntSwitch
                                             className='memberDashboardClubOpenSwitch'
                                             checked={this.state.currentClubFormOpen}
