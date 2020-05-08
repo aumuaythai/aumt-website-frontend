@@ -2,6 +2,10 @@
     text-align: center;
     margin-top: 30px;
 }
+.narrowRetrievingMembersText {
+    width: 50%;
+    display: inline-block;
+}
 .memberDashboardContainer {
     height: 100%;
 }

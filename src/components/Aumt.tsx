@@ -142,7 +142,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         {
                           this.state.userIsAdmin ?
                             <MainAdmin></MainAdmin> :
-                            <Redirect to='/'/>
+                            <div>
+                              You are not authorised to access this page.
+                            </div>
                         }
                       </Route>
                       <Route path="/">

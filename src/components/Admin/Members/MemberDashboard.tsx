@@ -103,7 +103,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             .finally(() => {
                 this.setState({...this.state, loadingMembers: false})
             })
-    }
+    } 
     onDbChange = (memberObj: AumtMembersObj) => {
         if (!this.firstListen) {
             this.setTableData(memberObj)
@@ -168,6 +168,23 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                 tableDataSource: lines,
                 tableColumns: columns
             })
+            const windowPath = window.location.pathname.split('/')
+            if (!this.state.selectedMember && windowPath.length > 2 && windowPath[3]) {
+                const memberId = windowPath[3]
+                if (memberId === 'add') {
+                    return
+                }
+                const selectedMember = lines.find(l => l.key === memberId)
+                console.log('found selected', selectedMember)
+                if (selectedMember) {
+                    this.setState({
+                        ...this.state,
+                        selectedMember: selectedMember
+                    })
+                } else {
+                    this.exitSelectedMember()
+                }
+            }
         }
     }
     showImportMembers = () => {
@@ -285,7 +302,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             <div className='memberDashboardContainer'>
                 <TableHelper onMemberSelect={this.onMemberSelect} ref={this.tableHelperChange}></TableHelper>
                 {this.state.loadingMembers ? 
-                    <div className='retrievingMembersText'>Retrieving Members <Spin/></div> :
+                    <div className={`retrievingMembersText ${this.longTable ? '' : 'narrowRetrievingMembersText'}`}>Retrieving Members <Spin/></div> :
                     this.helper ? (
                         <div className={`memberDisplaySection ${this.longTable ? '' : 'memberDisplaySectionNarrow'}`}>
                             <div className="memberDashboardHeader">
@@ -297,6 +314,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                         onChange={e => this.setState({...this.state, rowSelectionEnabled: e})}
                                         ></AntSwitch>
                                     </div>
+                                    {this.longTable ?
                                     <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
                                         Signup Sem:
                                         <div className="signupSemChangeContainer">
@@ -310,6 +328,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             }
                                         </div>
                                     </div>
+                                    :''}
                                     <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
                                         Join Form: <AntSwitch
                                             className='memberDashboardClubOpenSwitch'
@@ -405,10 +424,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <div className="clearBoth"></div>
                             <MemberDetails member={this.state.selectedMember}></MemberDetails>
                         </div>
-                        : () => {
-                            this.exitSelectedMember()
-                            return 'no selected member :((('
-                        }}
+                        : ''}
                     </Route>
                 </Switch>
             </div>
