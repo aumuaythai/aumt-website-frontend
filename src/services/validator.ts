@@ -22,7 +22,7 @@ class Validator {
             isReturningMember: obj.isReturningMember,
             isUoAStudent: obj.isUoAStudent,
             membership: obj.membership,
-            initialExperience: obj.initialExperience,
+            initialExperience: obj.initialExperience || '',
             instagramHandle: obj.instagramHandle || '',
             paymentType: obj.paymentType || 'Cash',
             paid: obj.paid,

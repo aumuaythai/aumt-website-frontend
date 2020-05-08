@@ -48,12 +48,12 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             ReturningMember: isReturningMember,
             FirstName: firstName,
             LastName: lastName,
-            PreferredName: preferredName,
+            PreferredName: preferredName = '',
             Experience: initialExperience,
             EmergencyContactName,
             EmergencyContactNumber,
             EmergencyContactRelationship,
-            Insta: instagramHandle,
+            Insta: instagramHandle = '',
             Paid: paid = 'No',
             Membership: membership = 'S2',
             upi,
@@ -62,7 +62,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             uid,
             Payment: paymentType
         } = values
-            const member: AumtMember = {
+            const member: string | AumtMember = validator.createAumtMember({
                 firstName,
                 lastName,
                 preferredName,
@@ -79,10 +79,9 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 EmergencyContactNumber,
                 EmergencyContactRelationship,
                 emailVerified: false,
-            }
-            const errorStr = validator.createAumtMember(member)
-            if (typeof(errorStr) === 'string') {
-                return message.error({content: `Error creating member: ${errorStr}`})
+            })
+            if (typeof(member) === 'string') {
+                return message.error({content: `Error creating member: ${member}`})
             }
             this.setState({
                 ...this.state,
