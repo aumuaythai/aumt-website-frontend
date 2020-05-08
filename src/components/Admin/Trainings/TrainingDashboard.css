@@ -42,4 +42,8 @@
     .manageTrainingsWrapper, .editMembersContainer {
         height: unset;
     }
+    .trainingDashboardCreateButton, .trainingDashboardFormSelector {
+        float: none;
+        margin: 10px 20px;
+    }
 }

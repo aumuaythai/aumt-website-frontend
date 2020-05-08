@@ -405,7 +405,10 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <div className="clearBoth"></div>
                             <MemberDetails member={this.state.selectedMember}></MemberDetails>
                         </div>
-                        : 'no selected member :((('}
+                        : () => {
+                            this.exitSelectedMember()
+                            return 'no selected member :((('
+                        }}
                     </Route>
                 </Switch>
             </div>

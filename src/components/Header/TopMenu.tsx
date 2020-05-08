@@ -57,7 +57,46 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
     });
   };
 
-  render() {
+  mobileMenu = () => {
+    return (
+      <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode='horizontal'>
+        <Menu.SubMenu title={
+            <>
+            Menu <DownOutlined className='menuDownIcon' />
+            </>
+          }>
+            <Menu.SubMenu title='About'>
+              <Menu.Item key="About">
+                <Link to='/'>Club Info</Link>
+              </Menu.Item>
+              <Menu.Item key="Team">
+                <Link to='/team'>Our Team</Link>
+              </Menu.Item>
+              <Menu.Item key="FAQ">
+                <Link to='/faq'>FAQ</Link>
+              </Menu.Item>
+            </Menu.SubMenu>
+            {this.props.isAdmin ?
+          (
+            <Menu.Item key="Admin">
+              <Link to='/admin'>Admin</Link>
+            </Menu.Item>
+          ) : ''}
+          <Menu.Item key="Signups">
+            <Link to='/signups'>Sign-ups</Link>
+          </Menu.Item>
+          <Menu.Item key="Events">
+            <Link to='/events'>Events</Link>
+          </Menu.Item>
+          <Menu.Item key="Join">
+            <Link to='/join'>Join</Link>
+          </Menu.Item>
+        </Menu.SubMenu>
+      </Menu>
+    )
+  }
+
+  desktopMenu = () => {
     return (
       <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
         <Menu.SubMenu title={
@@ -92,6 +131,13 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
           ) : ''}
       </Menu>
     );
+  }
+  render() {
+    if (window.innerWidth < 600) {
+      return this.mobileMenu()
+    } else {
+      return this.desktopMenu()
+    }
   }
 }
 

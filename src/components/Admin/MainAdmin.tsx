@@ -20,16 +20,52 @@ interface MainAdminState {
     editingTrainingData: AumtWeeklyTraining | null
     editingEventData: AumtEvent | null
     menuOpen: boolean
+    currentSelectedAdmin: string
 }
 
 class MainAdmin extends Component<MainAdminProps, MainAdminState> {
+    private unlisten: null | Function = null;
     constructor(props: MainAdminProps) {
         super(props)
         this.state = {
             editingTrainingData: null,
             editingEventData: null,
-            menuOpen: false
+            menuOpen: false,
+            currentSelectedAdmin: 'trainings'
         }
+        this.unlisten = null
+    }
+
+    componentDidMount = () => {
+        this.unlisten = this.props.history.listen(this.onRouteChange);
+        this.setStateFromPathChange(window.location.pathname)
+    }
+
+    componentWillUnmount = () => {
+      if (this.unlisten) {
+        this.unlisten()
+      }
+    }
+
+    onRouteChange = (location: any, action: string) => {
+        this.setStateFromPathChange(location.pathname)
+    }
+
+    setStateFromPathChange = (windowPath: string) => {
+        const pathname = windowPath.split('/')
+        if (pathname.length > 2) {
+            const pathSection = pathname[2]
+            const menuPages = ['Trainings', 'Events', 'Members', 'Feedback']
+            for (const page of menuPages) {
+                if (page.toLowerCase() === pathSection.toLowerCase()) {
+                    this.setState({
+                        currentSelectedAdmin: page.toLowerCase()
+                    })
+                    return
+                }
+            }
+        }
+        this.setState({currentSelectedAdmin: 'trainings'})
     }
 
     onEditTrainingRequest = (data: AumtWeeklyTraining) => {
@@ -55,10 +91,16 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         this.setState({...this.state, menuOpen: open})
     }
 
+    handleMenuClick = (e: {key: string}) => {
+        this.setState({
+          currentSelectedAdmin: e.key,
+        });
+      };
+
     getMenu = () => {
         return (
-            <Menu className='adminMenu'
-                defaultSelectedKeys={['trainings']}
+            <Menu className='adminMenu' onClick={this.handleMenuClick}
+                selectedKeys={[this.state.currentSelectedAdmin]}
                 >
                 <Menu.Item key="trainings">
                     <Link to='/admin'>Trainings</Link>
@@ -81,7 +123,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             <div className='adminContainer'>
                 {window.innerWidth < 1180 ? 
                 <div className="openMenuButton">
-                    <Button onClick={e => this.setMenuOpen(true)}><MenuOutlined />Menu</Button>
+                    <Button onClick={e => this.setMenuOpen(true)}><MenuOutlined />Admin</Button>
                     <Drawer placement='left' visible={this.state.menuOpen} onClose={e => this.setMenuOpen(false)}>
                         {this.getMenu()}
                     </Drawer>

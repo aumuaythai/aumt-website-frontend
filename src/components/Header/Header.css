@@ -17,15 +17,25 @@
     width: 155px;
     float: left;
 }
-.socialIcon {
+.socialIconContainer {
+    display: inline;
     font-size: 18px;
     cursor: pointer;
     color: maroon;
     line-height: 50px;
+}
+.socialIcon {
     margin-left: 11px;
 }
 .clearBoth {
     clear: both;
+}
+.headerNameSpan {
+    max-width: 90px;
+    overflow-x: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    margin-bottom: 8px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -34,14 +44,18 @@
     }
     .topMenuContainer {
         float: left;
-        max-width: calc(100% - 155px);
-        width: 100%;
+        width: 113px;
+        padding-left: 10px;
     }
     .socialsContainer {
+        width: calc(100% - 113px);
         float: right;
     }
     .headerContainer {
         height: 60px;
+    }
+    .headerNameSpan {
+        max-width: 160px;
     }
 
   }

@@ -36,11 +36,16 @@ export class Header extends Component<HeaderProps, HeaderState> {
                 <div className="socialsContainer">
                     {
                         this.props.authedUser ?
-                            <UserInfo authedUser={this.props.authedUser}></UserInfo> :
+                            <span className='headerNameSpan'>
+                                <UserInfo authedUser={this.props.authedUser}>
+                                </UserInfo>
+                            </span> :
                             <Button><Link to='/login'>Sign In</Link></Button>
                     }
-                    <span className="socialIcon" onClick={this.fbClick}><FacebookFilled/></span>
-                    <span className="socialIcon" onClick={this.igClick}><InstagramFilled/></span>
+                    <div className="socialIconContainer">
+                        <span className="socialIcon" onClick={this.fbClick}><FacebookFilled/></span>
+                        <span className="socialIcon" onClick={this.igClick}><InstagramFilled/></span>
+                    </div>
                 </div>
                 <div className="clearBoth"></div>
             </div>
