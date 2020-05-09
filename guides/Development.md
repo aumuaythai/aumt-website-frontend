@@ -34,7 +34,13 @@ REACT_APP_FB_MESSAGING_SENDER_ID=<id>
 
 REACT_APP_FB_APP_ID=<id>
 ```
-5. Run `npm install` to install dependencies
+
+5. Append the following line to the `.env.production` file.
+
+```
+GENERATE_SOURCEMAP=false
+```
+6. Run `npm install` to install dependencies
 
 # Develop
 

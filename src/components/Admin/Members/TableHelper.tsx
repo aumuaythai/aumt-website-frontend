@@ -281,7 +281,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         }
     }
 
-    public onTableChange = (pagination: any, filter: Record<keyof TableDataLine, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>) => {
+    public onTableChange = (pagination: any, filter: Record<keyof TableDataLine, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>, ...extra: any) => {
         this.setState({
             ...this.state,
             currentFilters: filter,

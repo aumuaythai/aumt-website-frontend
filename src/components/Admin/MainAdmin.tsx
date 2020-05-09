@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
+import { Switch, Route, Link, withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 import { Menu, Button, Drawer } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined, MenuOutlined } from '@ant-design/icons'
 import CreateTraining from './Trainings/CreateTraining'
@@ -52,20 +52,19 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     }
 
     setStateFromPathChange = (windowPath: string) => {
-        const pathname = windowPath.split('/')
-        if (pathname.length > 2) {
-            const pathSection = pathname[2]
-            const menuPages = ['Trainings', 'Events', 'Members', 'Feedback']
-            for (const page of menuPages) {
-                if (page.toLowerCase() === pathSection.toLowerCase()) {
-                    this.setState({
-                        currentSelectedAdmin: page.toLowerCase()
-                    })
-                    return
-                }
-            }
+        const pathname = windowPath
+        let currentSelectedAdmin = 'trainings'
+        if (pathname.indexOf('/admin/events') > -1 || pathname.indexOf('/admin/createevent') > -1) {
+            currentSelectedAdmin = 'events'
+        } else if (pathname.indexOf('/admin/members') > -1) {
+            currentSelectedAdmin = 'members'
+        } else if (pathname.indexOf('/admin/feedback') > -1) {
+            currentSelectedAdmin = 'feedback'
         }
-        this.setState({currentSelectedAdmin: 'trainings'})
+        this.setState({
+            ...this.state,
+            currentSelectedAdmin
+        })
     }
 
     onEditTrainingRequest = (data: AumtWeeklyTraining) => {
@@ -185,7 +184,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                         defaultValues={this.state.editingTrainingData}
                                         onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining>
                                 </div>:
-                                        ''}
+                                        <Redirect to='/admin/trainings/'/>}
                             </div>
                         </Route>
                         <Route path='/admin/editevent/:eventId'>
@@ -201,7 +200,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                         defaultValues={this.state.editingEventData}
                                         onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent>
                                 </div>:
-                                        ''}
+                                        <Redirect to='/admin/events/'/>}
                             </div>
                         </Route>
                         <Route path='/admin'>

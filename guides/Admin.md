@@ -42,7 +42,7 @@ The numbers to the left are the (number of signups) / (session limit) for the pa
 ### Other Training Dashboard Functionality 
 
 * The graphs are just for fun
-    * Week stats shows when people sign up in the week.
+    * Week stats shows what time and day people sign up in the week. Its colors are random so they might be super ugly sometimes.
     * Year stats shows how many people total signed up for each form.
 * Click on a point in the Year stats graph, a training title in the Manage Trainings section or select from the top right dropdown to view stats for the desired training.
 

@@ -370,7 +370,7 @@ class DB {
                     uids.push({
                         [doc.id]: {
                             name: data.firstName + (data.preferredName ? ` "${data.preferredName}" ` : ' ') + data.lastName,
-                            timeAdded: this.getRandomDate(new Date(2020, 3, 29), new Date())
+                            timeAdded: this.getRandomDate(new Date(2020, 4, 10), new Date(2020, 4, 14))
                         }
                     })
                 })
@@ -379,7 +379,7 @@ class DB {
             .then((uids: MockMember[]) => {
                 return this.getAllForms()
                     .then((forms: AumtWeeklyTraining[]) => {
-                        const form = forms.find(f => f.title.indexOf('Week 10') > -1)
+                        const form = forms.find(f => f.title.indexOf('Week 11') > -1)
                         if (!form) throw new Error('NO FORM')
                         form.sessions = form.sessions.map((session) => {
                             const randLimit = Math.floor(Math.random() * 15 + 16)

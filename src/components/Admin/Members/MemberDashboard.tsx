@@ -175,7 +175,6 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                     return
                 }
                 const selectedMember = lines.find(l => l.key === memberId)
-                console.log('found selected', selectedMember)
                 if (selectedMember) {
                     this.setState({
                         ...this.state,
@@ -329,6 +328,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                         </div>
                                     </div>
                                     :''}
+                                    {this.longTable ?
                                     <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
                                         Join Form: <AntSwitch
                                             className='memberDashboardClubOpenSwitch'
@@ -338,6 +338,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             checkedChildren="open"
                                             unCheckedChildren="closed"></AntSwitch>
                                     </div>
+                                    :''}
                                     <div className="memberDashboardGlobalConfigOptionsContainer">
                                         <Button className='memberDashboardHideSmallScreen' onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
                                         <Modal
