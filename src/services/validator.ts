@@ -18,7 +18,7 @@ class Validator {
             preferredName: obj.preferredName || '',
             upi: obj.upi || '0',
             email: obj.email,
-            emailVerified: obj.emailVerified || false,
+            emailVerified: typeof obj.emailVerified === 'string' ? obj.emailVerified === 'true' : false,
             isReturningMember: obj.isReturningMember,
             isUoAStudent: obj.isUoAStudent,
             membership: obj.membership,

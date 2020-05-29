@@ -17,6 +17,10 @@ export interface AumtMember {
     EmergencyContactRelationship: string
 }
 
+// TODO
+// Add paymentType option for BOTH
+// Add membership option for NONE
+
 export interface AumtMembersObj {
     [uid: string]: AumtMember
 }
