@@ -63,4 +63,7 @@ The build is minified and the filenames include the hashes. You are now ready to
 
 # Deploy
 
+Install the [firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli) and authenticate.
+
+
 Deploy by running `npm run deploy`. It will deploy whatever is in the build folder to firebase.

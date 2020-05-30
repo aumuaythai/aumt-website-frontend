@@ -446,7 +446,8 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 dataIndex: 'paymentType',
                 title: 'Payment Type',
                 filters: [{ text: 'Bank Transfer', value: 'Bank Transfer' },
-                    { text: 'Cash', value: 'Cash' }],
+                    { text: 'Cash', value: 'Cash' },
+                    { text: 'Other', value: 'Other'}],
                 onFilter: (value: string, record: TableDataLine) => {
                     return record.paymentType === value
                 },

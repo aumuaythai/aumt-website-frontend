@@ -10,16 +10,12 @@ export interface AumtMember {
     membership: 'S1' | 'S2' | 'FY'
     initialExperience: string
     instagramHandle: string
-    paymentType: 'Cash' | 'Bank Transfer'
+    paymentType: 'Cash' | 'Bank Transfer' | 'Other'
     paid: 'Yes' | 'No'
     EmergencyContactName: string
     EmergencyContactNumber: string
     EmergencyContactRelationship: string
 }
-
-// TODO
-// Add paymentType option for BOTH
-// Add membership option for NONE
 
 export interface AumtMembersObj {
     [uid: string]: AumtMember

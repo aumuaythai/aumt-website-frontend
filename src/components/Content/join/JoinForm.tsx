@@ -276,6 +276,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             <Radio.Group buttonStyle="solid" name="PaymentRadio">
                                 <Radio.Button value={'Bank Transfer'}>Bank Transfer</Radio.Button>
                                 <Radio.Button value={'Cash'}>Cash</Radio.Button>
+                                <Radio.Button value={'Other'}>Other</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
                         {this.props.isAdmin ?

@@ -25,7 +25,7 @@ interface MemberDetailsState {
     currentUpi: string
     currentMembership: 'S1' | 'FY' | 'S2'
     currentPaid: 'Yes' | 'No',
-    currentPaymentType: 'Bank Transfer' | 'Cash'
+    currentPaymentType: 'Bank Transfer' | 'Cash' | 'Other'
     currentIsReturningMember: 'Yes' | 'No'
     currentInitialExperience: string
     currentECName: string
@@ -108,7 +108,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     onPaidChange = (paid: 'Yes' | 'No') => {
         this.setState({...this.state, currentPaid: paid})
     }
-    onPaymentTypeChange = (payment: 'Bank Transfer' | 'Cash') => {
+    onPaymentTypeChange = (payment: 'Bank Transfer' | 'Cash' | 'Other') => {
         this.setState({...this.state, currentPaymentType: payment})
     }
     onIsReturningChange = (isReturning: 'Yes' | 'No') => {
@@ -237,6 +237,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                             <Radio.Group className='memberDetailsPaymentTypeRadio' value={this.state.currentPaymentType} onChange={e => this.onPaymentTypeChange(e.target.value)}>
                                 <Radio.Button value="Cash">Cash</Radio.Button>
                                 <Radio.Button value="Bank Transfer">Transfer</Radio.Button>
+                                <Radio.Button value="Other">Other</Radio.Button>
                             </Radio.Group>
                         </div>
                         <div className='memberDescriptionLine'>

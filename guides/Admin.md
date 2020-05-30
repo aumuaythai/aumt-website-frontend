@@ -76,7 +76,7 @@ These are all in the Admin section under the Events tab.
 * Returning Member - whether a member was a member in the past (Yes or No)
 * UoA Student - whether or not a member is enrolled at UoA (Yes or No)
 * Paid - whether or not the member has paid for their membership (Yes or No)
-* Payment Type - a member's intended payment type (Cash or Bank Transfer)
+* Payment Type - a member's intended payment type (Cash or Bank Transfer or Other)
 * Instagram handle - the member's instagram handle, will be blank for most
 * Emergency Contact Details - details of a member's contact in case of an emergency
     * Name
