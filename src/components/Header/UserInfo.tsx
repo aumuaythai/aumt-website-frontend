@@ -19,7 +19,7 @@ export class UserInfo extends Component<UserInfoProps, object> {
     }
 
     private menu = (
-        <Menu>
+        <Menu> 
             <Menu.Item onClick={this.onSignOutClick}>
                 <Button type='link' className='signOutLink'>Sign Out</Button>
             </Menu.Item>
@@ -30,11 +30,17 @@ export class UserInfo extends Component<UserInfoProps, object> {
       );
 
     render() {
+        const nameText = this.props.authedUser.preferredName || this.props.authedUser.firstName
         return (
             <Dropdown overlay={this.menu} placement="bottomRight" trigger={['click', 'hover']}>
-                <Button type='link' className="ant-dropdown-link userInfoLink" onClick={e => e.preventDefault()}>
-                    <DownOutlined />{this.props.authedUser.preferredName || this.props.authedUser.firstName}
-                </Button>
+                <div className="nameAndCaretContainer">
+                    <div className="marqueeContainer">
+                        <span className="marqueeWrapper">
+                            <span className={`marqueeText ${nameText.length < 7 ? 'noMarqueeScroll': ''}`}>{nameText}</span>
+                        </span>
+                    </div>
+                    <DownOutlined className='topMenuDownOutlined'/>
+                </div>
             </Dropdown>
         )
     }
