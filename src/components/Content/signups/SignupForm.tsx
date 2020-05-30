@@ -43,6 +43,11 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     componentDidMount() {
         this.checkSignedUp()
     }
+    componentDidUpdate(prevProps: SignupFormProps, prevState: SignupFormState) {
+        if (prevProps.authedUserId === '' && this.props.authedUserId) {
+            this.checkSignedUp()
+        }
+    }
     checkSignedUp = () => {
         if (this.props.authedUserId) {
             db.isMemberSignedUpToForm(this.props.authedUserId, this.props.id)
@@ -169,7 +174,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     ''
                 }
                 <div className="optionsContainer">
-                    <Radio.Group className="Group" onChange={this.onOptionChange} value={this.state.currentSessionId}>
+                    <Radio.Group className="trainingSignupRadioGroup" onChange={this.onOptionChange} value={this.state.currentSessionId}>
                         {this.props.sessions.map((session) => {
                             const isFull = session.limit <= Object.keys(session.members).length
                             const spotsLeft = Math.max(0, session.limit - Object.keys(session.members).length)
@@ -196,7 +201,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 </div>
                 :
                 <div className="feedbackInputContainer">
-                    <p>Enter your Name</p>
+                    <p>Enter your Full Name</p>
                     <Input onChange={e => this.onDisplayNameChange(e.target.value)}/>
                 </div>
                 }
@@ -204,6 +209,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
                 </div>
                 <Button
+                    block
                     className='signupFormButton'
                     type='primary'
                     size='large'

@@ -22,10 +22,6 @@
     max-width: 400px;
     margin: 30px auto;
 }
-.signupFormButton {
-    margin: 0 10px;
-    width: 300px;
-}
 .signupFormRemove {
     display: block;
     margin-top: 20px;
