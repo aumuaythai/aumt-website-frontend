@@ -3,7 +3,8 @@
     margin: 0 auto;
 }
 .formContainer {
-    max-width: 400px;
+    max-width: 430px;
+    padding: 0 15px;
     margin: 0 auto 30px auto;
 }
 .trainingNotesContainer {
@@ -11,7 +12,6 @@
     margin: 20px auto;
     max-width: 500px;
     text-align: left;
-    padding: 0 20px;
 }
 .spotsLeftText {
     color: rgba(255, 0, 0, 0.7);
