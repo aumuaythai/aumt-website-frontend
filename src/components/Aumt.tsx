@@ -122,6 +122,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                       <Route path="/faq">
                         <Faq></Faq>
                       </Route>
+                      <Route path="/signup">
+                        <Redirect to="/signups"/>
+                      </Route>
                       <Route path="/signups">
                         <Signups paid={this.state.authedUser?.paid === 'Yes'} authedUserId={this.state.authedUserId} authedUser={this.state.authedUser}></Signups>
                       </Route>
