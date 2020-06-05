@@ -215,9 +215,11 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     size='large'
                     loading={this.state.submittingState}
                     onClick={this.onSubmitClick}>Submit</Button>
+                {this.props.authedUserId ?
                 <Button disabled={!this.state.signedUpOption} type='link' className='signupFormRemove' onClick={this.onRemoveClick} block>
                     {this.state.removingState ? <span><Spin className='signupFormRemoveLoadingIcon'/> </span>: ''} Remove Signup
-                </Button>
+                </Button> : ''
+                }
             </div>
         )
     }
