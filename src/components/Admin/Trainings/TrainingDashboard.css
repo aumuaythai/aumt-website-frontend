@@ -29,6 +29,9 @@
 .trainingDashboardContentContainer {
     height: calc(100% - 70px);
 }
+.manageTrainingsAddButton {
+    margin: 0 10px;
+}
 @media (max-width: 1195px) {
     .trainingDashboardSection {
         width: 100%;

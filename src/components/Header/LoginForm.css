@@ -1,6 +1,7 @@
 .loginContainer {
     margin: 0 auto;
-    max-width: 300px
+    max-width: 320px;
+    padding: 0 10px;
 }
 .logo {
     max-width: 150px;
@@ -10,4 +11,7 @@
 }
 .loginInput {
     margin-bottom: 10px;
+}
+.clearBoth {
+    clear: both;
 }

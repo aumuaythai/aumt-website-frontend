@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import {Button, Input} from 'antd'
+import {Button, Input, Divider} from 'antd'
 import UserOutlined from '@ant-design/icons/UserOutlined'
 import {ResetPasswordLink} from './ResetLink'
 import './LoginForm.css'
 import { Redirect, Link } from 'react-router-dom'
 import { LoginErrorMessage } from './LoginErrorMessage'
 import FirebaseUtil from '../../services/firebase.util'
+import {FirstTimeLogin} from './FirstTimeLogin'
 
 export interface LoginProps {
 
@@ -37,16 +38,16 @@ export class LoginForm extends Component<LoginProps, LoginState> {
             this.emailInput.focus()
         }
     }
-    onUnChange = (e: any) => {
+    onUnChange = (username: string) => {
         this.setState({
             ...this.state,
-            username: e.target.value
+            username
         })
     }
-    onPwChange = (e: any) => {
+    onPwChange = (password: string) => {
         this.setState({
             ...this.state,
-            password: e.target.value
+            password
         })
     }
     onLoginClick = () => {
@@ -81,20 +82,31 @@ export class LoginForm extends Component<LoginProps, LoginState> {
             return <Redirect to='/'></Redirect>
         }
         return (
-            <div className="loginContainer">
-                <Link to='/'><img src={logoUrl} className='logo' alt="aumt logo"/></Link>
-                <h3>Sign In</h3>
-                {
-                    this.state.errorCode ?
-                        <LoginErrorMessage errorCode={this.state.errorCode}></LoginErrorMessage> :
-                        ''
-                }
-                <Input type='email' className='loginInput' ref={(input) => { this.emailInput = input; }} placeholder="email" onChange={this.onUnChange} onPressEnter={this.onLoginClick} prefix={<UserOutlined />} />
-                <br/>
-                <Input.Password className='loginInput' onChange={this.onPwChange} onPressEnter={this.onLoginClick} placeholder="password" />
-                <ResetPasswordLink></ResetPasswordLink>
-                <Button className="loginButton" onClick={this.onLoginClick} loading={this.state.authing}>Log in</Button>
-                {/* <Button className="loginButton"><Link to='/'>Cancel</Link></Button> */}
+            <div className="loginPageContainer">
+                <div className="loginContainer">
+                    <Link to='/'><img src={logoUrl} className='logo' alt="aumt logo"/></Link>
+                    <h3>Sign In</h3>
+                    {
+                        this.state.errorCode ?
+                            <LoginErrorMessage errorCode={this.state.errorCode}></LoginErrorMessage> :
+                            ''
+                    }
+                    <Input
+                        type='email'
+                        className='loginInput'
+                        ref={(input) => { this.emailInput = input; }}
+                        placeholder="email"
+                        onChange={e => this.onUnChange(e.target.value)}
+                        onPressEnter={this.onLoginClick}
+                        prefix={<UserOutlined />} />
+                    <br/>
+                    <Input.Password className='loginInput' onChange={e => this.onPwChange(e.target.value)} onPressEnter={this.onLoginClick} placeholder="password" />
+                    <ResetPasswordLink></ResetPasswordLink>
+                    <Button className="loginButton" onClick={this.onLoginClick} loading={this.state.authing}>Log in</Button>
+                    <div className="clearBoth"></div>
+                </div>
+                <Divider/>
+                <FirstTimeLogin></FirstTimeLogin>
             </div>
         )
     }

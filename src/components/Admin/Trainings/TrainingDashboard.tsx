@@ -161,7 +161,11 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                     </div>
                     <div className="clearBoth"></div>
                     <div className="manageTrainingsWrapper trainingDashboardSection">
-                        <h2 className="sectionHeader">Manage Trainings</h2>
+                        <h2 className="sectionHeader">Manage Trainings
+                            <Link to='/admin/createtraining'>
+                                <Button className='manageTrainingsAddButton' shape='round' ><PlusOutlined/></Button>
+                            </Link>
+                        </h2>
                         <div className="manageTrainingsComponentWrapper">
                             <ManageTrainings
                                 trainings={this.state.allForms}

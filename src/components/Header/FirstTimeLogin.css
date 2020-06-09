@@ -1,0 +1,22 @@
+.firstTimeLoginContainer {
+    margin: 0 auto;
+    max-width: 320px;
+    padding: 0 10px;
+    text-align: left;
+}
+.firstTimeLoginHeader {
+    text-align: center;
+}
+.clearBoth {
+    clear: both;
+}
+.joinedMemberText {
+    text-align: left;
+}
+.joinedEmailError {
+    margin: 10px 0;
+    text-align: left;
+}
+.joinedLoginButton {
+    text-align: left;
+}
