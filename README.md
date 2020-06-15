@@ -4,3 +4,4 @@ Docs can be found in the guides folder:
 
 [Development](guides/Development.md)
 
+[Firebase User Management](guides/FirebaseUserManagement.md)

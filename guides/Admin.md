@@ -147,8 +147,13 @@ Member feedback left anonymously can be seen in the Feedback tab. The title of t
 2. select the Authentication tab at the left
 3. Add a user then copy the new user's UID for later use
 
+To import many users at a time see the Importing Users section of the Firebase guide.
+
 ## Deleting a User
 
 1. Go to the firebase console (see above section) then select the Authentication tab at the left.
 2. Find the user by searching their email
 3. On the far right of the user's entry in the table, click on the stoplight menu and delete the user.
+
+To delete many users at a time see the Deleting Users section of the Firebase guide.
+
