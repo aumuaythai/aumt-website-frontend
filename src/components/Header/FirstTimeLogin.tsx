@@ -1,35 +1,73 @@
 import React, { Component } from 'react'
-import {Button, Input, Alert} from 'antd'
-import UserOutlined from '@ant-design/icons/UserOutlined'
+import {Button, Popover, Alert, Select} from 'antd'
 import './FirstTimeLogin.css'
 import FirebaseUtil from '../../services/firebase.util'
+import { AumtMember, AumtMembersObj } from '../../types'
+import db from '../../services/db'
 
 export interface FirstTimeLoginProps {
 
 }
 export interface FirstTimeLoginState {
-    username: string
+    selectedMember: AumtMember | null
     authing: boolean
     errorMessage: string
     successMessage: string
+    signedMembers: AumtMembersObj
 }
 
 
 export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLoginState> {
+    private notOnListInfo = (
+        <div className='notOnListPopover'>
+            <p>
+                Only members with active Semester 2 or Full Year memberships have accounts.
+                This includes Semester One members who chose to defer their memberships.
+            </p>
+            <p>
+                If you should be on the list or if you have any questions, message the committee!
+            </p>
+        </div>
+    )
     constructor(props: FirstTimeLoginProps) {
         super(props)
         this.state = {
-            username: '',
+            selectedMember: null,
             authing: false,
             errorMessage: '',
-            successMessage: ''
+            successMessage: '',
+            signedMembers: {}
         }
     }
-    onJoinedUsernameChange = (username: string) => {
-        this.setState({
-            ...this.state,
-            username
-        })
+    componentDidMount = () => {
+        db.getS22020Members()
+            .then((members) => {
+                this.setState({
+                    ...this.state,
+                    signedMembers: members
+                })
+            })
+    }
+    memberSort = (uidA: string, uidB: string): number => {
+        const nameA = this.getMemberDisplayName(this.state.signedMembers[uidA])
+        const nameB = this.getMemberDisplayName(this.state.signedMembers[uidB])
+        return nameA > nameB ? 1 : -1
+    }
+    onNameSelected = (name: string, oProps: any) => {
+        console.log('select', name, oProps.key)
+        const {key} = oProps
+        const selectedMember = this.state.signedMembers[key]
+        if (selectedMember) {
+            this.setState({
+                ...this.state,
+                selectedMember
+            })
+        } else {
+            console.error('no member for key', key, name)
+        }
+    }
+    getMemberDisplayName = (member: AumtMember) => {
+        return `${member.preferredName || member.firstName} ${member.lastName}`
     }
     verifyJoinedEmail = () => {
         this.setState({
@@ -38,61 +76,25 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
             errorMessage: '',
             successMessage: ''
         })
-        FirebaseUtil.signIn(this.state.username, 'woeiefnsodfnlswenf')
-            .catch((err) => {
-                const {code, message} = err
-                console.log(code, message)
-                if (code === 'auth/wrong-password') {
-                    return FirebaseUtil.sendPasswordResetEmail(this.state.username)
-                } else {
-                    if (code === 'auth/user-not-found') {
-                        this.setState({
-                            ...this.state,
-                            errorMessage: 'That email isn\'t in our records 😔. We have emails of all paid members with either Full Year or Sem One deferred memberships. Please contact the committee.',
-                            authing: false
-                        })
-                    } else if (code === 'auth/invalid-email') {
-                        this.setState({
-                            ...this.state,
-                            errorMessage: 'Invalid Email',
-                            authing: false
-                        })
-                    } else if (code === 'auth/network-request-failed') {
-                        this.setState({
-                            ...this.state,
-                            errorMessage: 'Could not connect to firebase. Try again later or contact the committee.',
-                            authing: false
-                        })
-                    } else {
-                        this.setState({
-                            ...this.state,
-                            errorMessage: `Error code: ${code}. Contact the Committee`,
-                            authing: false,
-                        })
-                    }
-                    document.getElementById('errorElementContainer')?.scrollIntoView()
-                    return Promise.reject('Unable to send reset email')
-                }
-            })
+        if (!this.state.selectedMember) {
+            return
+        }
+        const {email} = this.state.selectedMember
+        FirebaseUtil.sendPasswordResetEmail(email)
             .then(() => {
                 this.setState({
                     ...this.state,
                     authing: false,
                     errorMessage: '',
-                    successMessage: 'Email sent. Follow the link in the email to confirm your account - then you can sign in!'
+                    successMessage: `Email sent to ${email}. Follow the link in the email to confirm your account - then you can sign in!`
                 })
                 document.getElementById('errorElementContainer')?.scrollIntoView()
             })
             .catch((err) => {
-                if (err === 'Unable to send reset email') {
-                    // error from above already handled
-                } else {
-                    // error sending reset email
-                    this.setState({
-                        ...this.state,
-                        errorMessage: `Unable to send reset email. Contact the committee.`
-                    })
-                }
+                this.setState({
+                    ...this.state,
+                    errorMessage: `Unable to send reset email. Contact the committee.`
+                })
                 document.getElementById('errorElementContainer')?.scrollIntoView()
                 console.log(err)
             })
@@ -103,18 +105,27 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
                 <h3 className='firstTimeLoginHeader'>Already joined in Sem 1?</h3>
                 <p className='joinedMemberText'>We created accounts for everyone who signed up in semester 1 2020.
                     All you need to do is choose a password to confirm your membership for Sem 2!</p>
-                <p className="joinedMemberText">Enter your email:</p>
-                    <Input
-                        type='email'
-                        className='loginInput'
-                        // ref={(input) => { this.emailInput = input; }}
-                        placeholder="email"
-                        onChange={e => this.onJoinedUsernameChange(e.target.value)}
-                        onPressEnter={this.verifyJoinedEmail}
-                        prefix={<UserOutlined />} />
+                    <Select
+                        showSearch
+                        className='firstTimeLoginSelect'
+                        placeholder='Select Your Name'
+                        onChange={this.onNameSelected}
+                    >
+                        {Object.keys(this.state.signedMembers).sort((a, b) => this.memberSort(a, b)).map((uid: string) => {
+                            const member = this.state.signedMembers[uid]
+                            const displayName = this.getMemberDisplayName(member)
+                            return <Select.Option key={uid} value={displayName}>
+                                {displayName}
+                            </Select.Option>
+                        })}
+                    </Select>
                 <Button
                     onClick={this.verifyJoinedEmail}
+                    disabled={!this.state.selectedMember}
                     loading={this.state.authing}>Create Password</Button>
+                <Popover placement='topRight' content={this.notOnListInfo} trigger='click'>
+                    <Button className='notOnListButton' type='link'>Not on the list?</Button>
+                </Popover>
                 <div className="clearBoth"></div>
                 <div id="errorElementContainer">
                 {this.state.errorMessage ? 

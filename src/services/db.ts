@@ -94,6 +94,26 @@ class DB {
             })
     }
 
+    public getS22020Members = (): Promise<AumtMembersObj> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('members')
+            .where('membership', 'in', ['FY', 'S2'])
+            .get()
+            .then((querySnapshot) => {
+                const members: AumtMembersObj = {}
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data()
+                    try {
+                        members[doc.id] = this.docToMember(data)
+                    } catch (e) {
+                        console.warn(e)
+                    }
+                })
+                return members
+            })
+
+    }
+
     public submitNewForm = (formData: AumtWeeklyTraining): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         if (!formData) {

@@ -20,3 +20,15 @@
 .joinedLoginButton {
     text-align: left;
 }
+.firstTimeLoginSelect {
+    width: 100%;
+    margin-bottom: 15px;
+}
+.notOnListButton {
+    float: right;
+    padding-right: 0
+}
+.notOnListPopover {
+    max-width: 300px;
+    font-size: 12px;
+}
