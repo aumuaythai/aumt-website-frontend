@@ -11,7 +11,7 @@
     clear: both;
 }
 .joinedMemberText {
-    text-align: left;
+    text-align: justify;
 }
 .joinedEmailError {
     margin: 10px 0;
