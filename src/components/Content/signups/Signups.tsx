@@ -94,7 +94,7 @@ export class Signups extends Component<SignupProps, SignupState> {
             return (
                 <div>
                     <h2>AUMT Training Signups happen here.</h2>
-                    <p>You must be signed in to view trainings.</p>
+                    <p>You must <Link to='/login'>sign in</Link> to view trainings.</p>
                     <p>Not a member?</p>
                     <p><Link to='/join'>Join the club!</Link> Club signups are open at the beginning of each semester.</p>
                 </div>
