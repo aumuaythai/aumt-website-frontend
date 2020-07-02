@@ -3,7 +3,7 @@ import {Spin, Radio, Button, Select, Alert, Tooltip, notification, Input, Tag } 
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
-import { AumtTrainingSession, AumtMembersObjWithCollated } from '../../../types'
+import { AumtTrainingSession, AumtMembersObjWithCollated, AumtMemberWithCollated } from '../../../types'
 import db from '../../../services/db';
 import dataUtil from '../../../services/data.util';
 
@@ -28,6 +28,8 @@ interface SignupFormState {
     errorMessage: string
     removingState: boolean
     interSemMembers: AumtMembersObjWithCollated
+    currentInterSemUid: string | null
+    interSemLoading: boolean
 }
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
@@ -41,18 +43,34 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             signedUpOption: '',
             submittingState: false,
             removingState: false,
-            interSemMembers: {}
+            interSemMembers: {},
+            currentInterSemUid: null,
+            interSemLoading: false
         }
     }
     componentDidMount() {
         this.checkSignedUp()
         if (this.props.useInterSem) {
-            db.getAllInterSemMembers()
-                .then(dataUtil.getCollatedMembersObj)
+            this.setState({
+                ...this.state,
+                interSemLoading: true
+            })
+            Promise.all([db.getTrainingData(this.props.id), db.getAllInterSemMembers()])
+                .then((outputs) => {
+                    const memberObj = Object.assign({}, outputs[1])
+                    const [trainingData] = outputs
+                    const signedUpMembers = trainingData.sessions.forEach((session) => {
+                        Object.keys(session.members).forEach((uid) => {
+                            delete memberObj[uid]
+                        })
+                    })
+                    return dataUtil.getCollatedMembersObj(memberObj)
+                })
                 .then((members) => {
                     this.setState({
                         ...this.state,
-                        interSemMembers: members
+                        interSemMembers: members,
+                        interSemLoading: false
                     })
                 })
         }
@@ -92,6 +110,25 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             currentSessionId: e.target.value,
             errorMessage: ''
         });
+    }
+    onNameSelected = (name: string, oProps: any) => {
+        const {key} = oProps
+        const selectedMember = this.state.interSemMembers[key]
+        if (selectedMember) {
+            this.setState({
+                ...this.state,
+                currentInterSemUid: key
+            })
+        } else {
+            console.error('no member for key', key, name)
+        }
+    }
+    getCurrentInterSemDisplayName = () => {
+        if (this.state.currentInterSemUid) {
+            const member = this.state.interSemMembers[this.state.currentInterSemUid]
+            return member.preferredName ? `${member.firstName} "${member.preferredName}" ${member.lastName}` : `${member.firstName} ${member.lastName}`
+        }
+        return 'ERROR instead of name'
     }
     onFeedbackChange = (feedback: string) => {
         this.setState({
@@ -144,7 +181,13 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 errorMessage: 'You must select a session'
             })
             return
-        } else if (!this.props.displayName && !this.state.currentDisplayName) {
+        } else if (this.props.useInterSem && !this.state.currentInterSemUid) {
+            this.setState({
+                ...this.state,
+                errorMessage: 'You must select your name'
+            })
+            return
+        } else if (!this.props.useInterSem && !this.props.displayName && !this.state.currentDisplayName) {
             this.setState({
                 ...this.state,
                 errorMessage: 'You must enter your name'
@@ -158,8 +201,10 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         })
 
         db.signUserUp(
-                this.props.authedUserId || this.generateMockUid(),
-                this.props.displayName || this.state.currentDisplayName,
+                this.props.useInterSem ?
+                    (this.state.currentInterSemUid || this.generateMockUid()) :
+                    (this.props.authedUserId || this.generateMockUid()),
+                this.props.useInterSem ? this.getCurrentInterSemDisplayName() : (this.props.displayName || this.state.currentDisplayName),
                 new Date(),
                 this.props.id,
                 optionSelected,
@@ -172,6 +217,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 })
                 if (this.props.onSignupChanged) {
                     this.props.onSignupChanged()
+                }
+                if (this.props.useInterSem) {
+                    notification.success({message: `Successfully signed up for ${this.props.sessions.find(s => s.sessionId === optionSelected)?.title}`})
                 }
             })
             .catch((err) => {
@@ -221,7 +269,12 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 :
                 this.props.useInterSem ?
                 <div className='feedbackInputContainer'>
-                    <Select className='interSemCollatedSelect' placeholder='Select your Name'>
+                    <Select
+                        showSearch
+                        loading={this.state.interSemLoading}
+                        className='interSemCollatedSelect'
+                        placeholder='Select your Name'
+                        onChange={this.onNameSelected}>
                         {Object.keys(this.state.interSemMembers).sort((a, b) => this.memberSort(a, b)).map((uid: string) => {
                             const member = this.state.interSemMembers[uid]
                             return <Select.Option key={uid} value={member.collated}>

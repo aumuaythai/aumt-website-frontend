@@ -72,11 +72,11 @@ class DataFormatUtil {
     getCollatedMembersObj = (members: AumtMembersObj): AumtMembersObjWithCollated => {
         return Object.keys(members).reduce((allMembers, uid) => {
             const member = members[uid]
-            let collated = `${member.preferredName || member.firstName} ${member.lastName.slice(0, 1)}`
+            let collated = `${member.firstName} ${member.lastName.slice(0, 1)}`
             Object.keys(allMembers).forEach((uid) => {
                 let charsInLastName = 2
                 while (allMembers[uid].collated === collated) {
-                    collated = `${member.preferredName || member.firstName} ${member.lastName.slice(0, charsInLastName)}`
+                    collated = `${member.firstName} ${member.lastName.slice(0, charsInLastName)}`
                     allMembers[uid].collated = `${allMembers[uid].preferredName || allMembers[uid].firstName} ${allMembers[uid].lastName.slice(0, charsInLastName)}`
                     charsInLastName += 1
                     if (charsInLastName > 10) {
@@ -85,6 +85,7 @@ class DataFormatUtil {
                     }
                 }
             })
+            collated = `${collated.slice(0,1).toUpperCase()}${collated.slice(1)}`
             allMembers[uid] = {
                 ...members[uid],
                 collated

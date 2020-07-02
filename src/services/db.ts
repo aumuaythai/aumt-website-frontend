@@ -273,7 +273,7 @@ class DB {
             .delete()
     }
 
-    public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<string> => {
+    public getTrainingData = (formId: string): Promise<AumtWeeklyTraining> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('weekly_trainings')
             .doc(formId)
@@ -281,10 +281,15 @@ class DB {
             .then((doc) => {
                 const docData = doc.data()
                 if (doc.exists && docData) {
-                    return docData as AumtWeeklyTraining
+                    return this.docToForm(docData)
                 }
                 throw new Error('Form does not exist')
             })
+    }
+
+    public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<string> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.getTrainingData(formId)
             .then((trainingForm: AumtWeeklyTraining) => {
                 if (trainingForm) {
                     const session = trainingForm.sessions.find(s => s.sessionId === sessionId)
@@ -320,16 +325,7 @@ class DB {
             if (!this.db) {
                 return Promise.reject('No db object')
             }
-            return this.db.collection('weekly_trainings')
-                .doc(formId)
-                .get()
-                .then((doc) => {
-                    const docData = doc.data()
-                    if (doc.exists && docData) {
-                        return docData as AumtWeeklyTraining
-                    }
-                    throw new Error('Form does not exist')
-                })
+            return this.getTrainingData(formId)
                 .then((trainingForm: AumtWeeklyTraining) => {
                     if (trainingForm) {
                         for (const session of trainingForm.sessions) {
@@ -350,22 +346,7 @@ class DB {
     public signUserUp = (userId: string, displayName: string, timeAdded: Date, formId: string, sessionId: string, feedback: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.isMemberSignedUpToForm(userId, formId, true)
-            .then(() => {
-                if (!this.db) {
-                    return Promise.reject('No db object')
-                }
-                return this.db.collection('weekly_trainings')
-                    .doc(formId)
-                    .get()
-            })
-            .then((doc) => {
-                const docData = doc.data()
-                if (doc.exists && docData) {
-                    return docData as AumtWeeklyTraining
-                } else {
-                    throw new Error('No form for specified form id')
-                }
-            })
+            .then(() => this.getTrainingData(formId))
             .then((trainingForm: AumtWeeklyTraining) => {
                 const session = trainingForm.sessions.find((s: AumtTrainingSession) => s.sessionId === sessionId)
                 if (session) {
