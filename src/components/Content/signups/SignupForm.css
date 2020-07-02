@@ -24,6 +24,7 @@
 }
 .spotsLeftTag {
     float: right;
+    margin-right: 0;
 }
 .trainingSignupRadioGroup {
     width: 100%;
