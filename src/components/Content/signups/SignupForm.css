@@ -22,6 +22,12 @@
     max-width: 400px;
     margin: 30px auto;
 }
+.spotsLeftTag {
+    float: right;
+}
+.trainingSignupRadioGroup {
+    width: 100%;
+}
 .signupFormRemove {
     display: block;
     margin-top: 20px;

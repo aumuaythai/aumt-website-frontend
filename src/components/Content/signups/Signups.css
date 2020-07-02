@@ -11,10 +11,7 @@
     white-space: pre-line;
     margin: 20px auto;
     max-width: 500px;
-    text-align: left;
-}
-.spotsLeftText {
-    color: rgba(255, 0, 0, 0.7);
+    text-align: justify;
 }
 .signupsNotPaidContainer {
     max-width: 400px;
