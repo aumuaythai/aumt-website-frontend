@@ -1,4 +1,4 @@
-import { AumtWeeklyTraining } from "../types"
+import { AumtWeeklyTraining, AumtMembersObj, AumtMembersObjWithCollated } from "../types"
 import { notification } from 'antd'
 
 export type MemberPoint = Record<string, number>
@@ -67,6 +67,30 @@ class DataFormatUtil {
             })
         })
         return attendance
+    }
+
+    getCollatedMembersObj = (members: AumtMembersObj): AumtMembersObjWithCollated => {
+        return Object.keys(members).reduce((allMembers, uid) => {
+            const member = members[uid]
+            let collated = `${member.preferredName || member.firstName} ${member.lastName.slice(0, 1)}`
+            Object.keys(allMembers).forEach((uid) => {
+                let charsInLastName = 2
+                while (allMembers[uid].collated === collated) {
+                    collated = `${member.preferredName || member.firstName} ${member.lastName.slice(0, charsInLastName)}`
+                    allMembers[uid].collated = `${allMembers[uid].preferredName || allMembers[uid].firstName} ${allMembers[uid].lastName.slice(0, charsInLastName)}`
+                    charsInLastName += 1
+                    if (charsInLastName > 10) {
+                        console.error('WARNING: TWO COLLATED NAMES THE SAME TO 10 DIGITS')
+                        break
+                    }
+                }
+            })
+            allMembers[uid] = {
+                ...members[uid],
+                collated
+            }
+            return allMembers
+        }, {} as AumtMembersObjWithCollated)
     }
 
     copyText = (text: string): void => {

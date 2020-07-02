@@ -2,15 +2,10 @@ import React, { Component } from 'react'
 import {Button, Popover, Alert, Select} from 'antd'
 import './FirstTimeLogin.css'
 import FirebaseUtil from '../../services/firebase.util'
-import { AumtMember, AumtMembersObj } from '../../types'
+import { AumtMember, AumtMembersObjWithCollated } from '../../types'
 import db from '../../services/db'
+import dataUtil from '../../services/data.util'
 
-interface AumtMemberWithCollated extends AumtMember {
-    collated: string
-}
-interface AumtMembersObjWithCollated {
-    [uid: string]: AumtMemberWithCollated
-}
 export interface FirstTimeLoginProps {
 
 }
@@ -48,29 +43,7 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
     
     componentDidMount = () => {
         db.getS22020UnverifiedMembers()
-            .then((members) => {
-                return Object.keys(members).reduce((allMembers, uid) => {
-                    const member = members[uid]
-                    let collated = `${member.preferredName || member.firstName} ${member.lastName.slice(0, 1)}`
-                    Object.keys(allMembers).forEach((uid) => {
-                        let charsInLastName = 2
-                        while (allMembers[uid].collated === collated) {
-                            collated = `${member.preferredName || member.firstName} ${member.lastName.slice(0, charsInLastName)}`
-                            allMembers[uid].collated = `${allMembers[uid].preferredName || allMembers[uid].firstName} ${allMembers[uid].lastName.slice(0, charsInLastName)}`
-                            charsInLastName += 1
-                            if (charsInLastName > 10) {
-                                console.error('WARNING: TWO COLLATED NAMES THE SAME TO 10 DIGITS')
-                                break
-                            }
-                        }
-                    })
-                    allMembers[uid] = {
-                        ...members[uid],
-                        collated
-                    }
-                    return allMembers
-                }, {} as AumtMembersObjWithCollated)
-            })
+            .then(dataUtil.getCollatedMembersObj)
             .then((members) => {
                 this.setState({
                     ...this.state,

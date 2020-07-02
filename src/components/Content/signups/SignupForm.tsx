@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
-import {Spin, Radio, Button, Alert, Tooltip, notification, Input, Tag } from 'antd'
+import {Spin, Radio, Button, Select, Alert, Tooltip, notification, Input, Tag } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
-import { AumtTrainingSession } from '../../../types'
+import { AumtTrainingSession, AumtMembersObjWithCollated } from '../../../types'
 import db from '../../../services/db';
+import dataUtil from '../../../services/data.util';
 
 export interface SignupFormProps {
     title: string
@@ -14,6 +15,7 @@ export interface SignupFormProps {
     displayName: string | null
     authedUserId: string | null
     notes: string
+    useInterSem: boolean
     onSignupChanged?: () => void
 }
 
@@ -25,6 +27,7 @@ interface SignupFormState {
     currentDisplayName: string
     errorMessage: string
     removingState: boolean
+    interSemMembers: AumtMembersObjWithCollated
 }
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
@@ -37,11 +40,22 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             errorMessage: '',
             signedUpOption: '',
             submittingState: false,
-            removingState: false
+            removingState: false,
+            interSemMembers: {}
         }
     }
     componentDidMount() {
         this.checkSignedUp()
+        if (this.props.useInterSem) {
+            db.getAllInterSemMembers()
+                .then(dataUtil.getCollatedMembersObj)
+                .then((members) => {
+                    this.setState({
+                        ...this.state,
+                        interSemMembers: members
+                    })
+                })
+        }
     }
     componentDidUpdate(prevProps: SignupFormProps, prevState: SignupFormState) {
         if (prevProps.authedUserId === '' && this.props.authedUserId) {
@@ -66,6 +80,11 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     })
                 })
         }
+    }
+    memberSort = (uidA: string, uidB: string): number => {
+        const nameA = this.state.interSemMembers[uidA].collated
+        const nameB = this.state.interSemMembers[uidB].collated
+        return nameA > nameB ? 1 : -1
     }
     onOptionChange = (e: RadioChangeEvent) => {
         this.setState({
@@ -198,6 +217,18 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 <div className="feedbackInputContainer">
                     <p>Thoughts on last training/feedback?</p>
                     <Input.TextArea autoSize={{ maxRows: 6 }} placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
+                </div>
+                :
+                this.props.useInterSem ?
+                <div className='feedbackInputContainer'>
+                    <Select className='interSemCollatedSelect' placeholder='Select your Name'>
+                        {Object.keys(this.state.interSemMembers).sort((a, b) => this.memberSort(a, b)).map((uid: string) => {
+                            const member = this.state.interSemMembers[uid]
+                            return <Select.Option key={uid} value={member.collated}>
+                                {member.collated}
+                            </Select.Option>
+                        })}
+                    </Select>
                 </div>
                 :
                 <div className="feedbackInputContainer">

@@ -27,3 +27,10 @@ export interface AumtAdmin {
     email: string
     position: string
 }
+
+export interface AumtMemberWithCollated extends AumtMember {
+    collated: string
+}
+export interface AumtMembersObjWithCollated {
+    [uid: string]: AumtMemberWithCollated
+}

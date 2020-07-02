@@ -20,6 +20,7 @@ interface CreateTrainingState {
     isSubmitting: boolean
     currentNotes: string
     currentOpenToPublic: boolean
+    currentUseInterSemMembers: boolean
     currentPopulateWeekValue: number
 }
 
@@ -36,6 +37,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentCloses: new Date(),
             currentSessions: [],
             currentOpenToPublic: false,
+            currentUseInterSemMembers: false,
             isSubmitting: false,
             currentNotes: '',
             currentPopulateWeekValue: 1
@@ -49,6 +51,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 currentSessions: this.props.defaultValues.sessions,
                 currentNotes: this.props.defaultValues.notes,
                 currentOpenToPublic: this.props.defaultValues.openToPublic,
+                currentUseInterSemMembers: this.props.defaultValues.useInterSemMembers
             }
         }
     }
@@ -110,6 +113,12 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         this.setState({
             ...this.state,
             currentOpenToPublic: open
+        })
+    }
+    onUseInterSemMembersChange = (use: boolean) => {
+        this.setState({
+            ...this.state,
+            currentUseInterSemMembers: use
         })
     }
     onTrainingTitleChange = (title: string) => {
@@ -194,6 +203,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             openToPublic: this.state.currentOpenToPublic,
+            useInterSemMembers: this.state.currentUseInterSemMembers,
             notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
             trainingId: this.props.defaultValues ?
                 this.props.defaultValues.trainingId :
@@ -235,6 +245,13 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 <div>
                     Open to Non-Members:
                     <Radio.Group value={this.state.currentOpenToPublic} onChange={e => this.onOpenToPublicChange(e.target.value)}>
+                        <Radio.Button value={true}>Yes</Radio.Button>
+                        <Radio.Button value={false}>No</Radio.Button>
+                    </Radio.Group>
+                </div>
+                <div>
+                    Use Inter Sem Members:
+                    <Radio.Group value={this.state.currentUseInterSemMembers} onChange={e => this.onUseInterSemMembersChange(e.target.value)}>
                         <Radio.Button value={true}>Yes</Radio.Button>
                         <Radio.Button value={false}>No</Radio.Button>
                     </Radio.Group>

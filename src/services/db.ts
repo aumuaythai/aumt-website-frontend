@@ -123,6 +123,23 @@ class DB {
 
     }
 
+    public getAllInterSemMembers = (): Promise<AumtMembersObj> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('inter-sem-members').get()
+            .then((querySnapshot) => {
+                const members: AumtMembersObj = {}
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data()
+                    try {
+                        members[doc.id] = this.docToMember(data)
+                    } catch (e) {
+                        console.warn(e)
+                    }
+                })
+                return members
+            })
+    }
+
     public submitNewForm = (formData: AumtWeeklyTraining): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         if (!formData) {
@@ -498,6 +515,7 @@ class DB {
             trainingId: docData.trainingId,
             sessions: docSessions,
             openToPublic: docData.openToPublic || false,
+            useInterSemMembers: docData.useInterSemMembers || false,
             opens: new Date(docData.opens.seconds * 1000),
             closes: new Date(docData.closes.seconds * 1000),
             notes: docData.notes.split('%%NEWLINE%%').join('\n')

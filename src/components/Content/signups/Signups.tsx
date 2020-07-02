@@ -126,6 +126,7 @@ export class Signups extends Component<SignupProps, SignupState> {
                                     displayName={this.getDisplayName()}
                                     authedUserId={this.props.authedUserId}
                                     notes={form.notes}
+                                    useInterSem={form.useInterSemMembers}
                                     ></SignupForm>
                             </div>
                         )
@@ -140,6 +141,7 @@ export class Signups extends Component<SignupProps, SignupState> {
                                     displayName={this.getDisplayName()}
                                     authedUserId={this.props.authedUserId}
                                     notes={form.notes}
+                                    useInterSem={form.useInterSemMembers}
                                     ></SignupForm>
                                 </div>
                             )
