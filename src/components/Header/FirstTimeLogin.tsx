@@ -5,6 +5,12 @@ import FirebaseUtil from '../../services/firebase.util'
 import { AumtMember, AumtMembersObj } from '../../types'
 import db from '../../services/db'
 
+interface AumtMemberWithCollated extends AumtMember {
+    collated: string
+}
+interface AumtMembersObjWithCollated {
+    [uid: string]: AumtMemberWithCollated
+}
 export interface FirstTimeLoginProps {
 
 }
@@ -13,7 +19,7 @@ export interface FirstTimeLoginState {
     authing: boolean
     errorMessage: string
     successMessage: string
-    signedMembers: AumtMembersObj
+    signedMembers: AumtMembersObjWithCollated
 }
 
 
@@ -39,8 +45,32 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
             signedMembers: {}
         }
     }
+    
     componentDidMount = () => {
-        db.getS22020Members()
+        db.getS22020UnverifiedMembers()
+            .then((members) => {
+                return Object.keys(members).reduce((allMembers, uid) => {
+                    const member = members[uid]
+                    let collated = `${member.preferredName || member.firstName} ${member.lastName.slice(0, 1)}`
+                    Object.keys(allMembers).forEach((uid) => {
+                        let charsInLastName = 2
+                        while (allMembers[uid].collated === collated) {
+                            collated = `${member.preferredName || member.firstName} ${member.lastName.slice(0, charsInLastName)}`
+                            allMembers[uid].collated = `${allMembers[uid].preferredName || allMembers[uid].firstName} ${allMembers[uid].lastName.slice(0, charsInLastName)}`
+                            charsInLastName += 1
+                            if (charsInLastName > 10) {
+                                console.error('WARNING: TWO COLLATED NAMES THE SAME TO 10 DIGITS')
+                                break
+                            }
+                        }
+                    })
+                    allMembers[uid] = {
+                        ...members[uid],
+                        collated
+                    }
+                    return allMembers
+                }, {} as AumtMembersObjWithCollated)
+            })
             .then((members) => {
                 this.setState({
                     ...this.state,
@@ -49,12 +79,11 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
             })
     }
     memberSort = (uidA: string, uidB: string): number => {
-        const nameA = this.getMemberDisplayName(this.state.signedMembers[uidA])
-        const nameB = this.getMemberDisplayName(this.state.signedMembers[uidB])
+        const nameA = this.state.signedMembers[uidA].collated
+        const nameB = this.state.signedMembers[uidB].collated
         return nameA > nameB ? 1 : -1
     }
     onNameSelected = (name: string, oProps: any) => {
-        console.log('select', name, oProps.key)
         const {key} = oProps
         const selectedMember = this.state.signedMembers[key]
         if (selectedMember) {
@@ -65,9 +94,6 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
         } else {
             console.error('no member for key', key, name)
         }
-    }
-    getMemberDisplayName = (member: AumtMember) => {
-        return `${member.preferredName || member.firstName} ${member.lastName}`
     }
     verifyJoinedEmail = () => {
         this.setState({
@@ -113,9 +139,8 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
                     >
                         {Object.keys(this.state.signedMembers).sort((a, b) => this.memberSort(a, b)).map((uid: string) => {
                             const member = this.state.signedMembers[uid]
-                            const displayName = this.getMemberDisplayName(member)
-                            return <Select.Option key={uid} value={displayName}>
-                                {displayName}
+                            return <Select.Option key={uid} value={member.collated}>
+                                {member.collated}
                             </Select.Option>
                         })}
                     </Select>

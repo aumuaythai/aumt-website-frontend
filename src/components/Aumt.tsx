@@ -71,6 +71,11 @@ export class Aumt extends Component<AumtProps, AumtState> {
             userIsAdmin: isAdmin
           })
         })
+        .then(() => {
+          if (this.state.authedUser && !this.state.authedUser.emailVerified) {
+            return DB.setEmailVerified(this.state.authedUserId, true)
+          }
+        })
         .catch((err) => {
           if (err === 'No User for uid') {
             notification.error({

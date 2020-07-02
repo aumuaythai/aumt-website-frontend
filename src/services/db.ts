@@ -42,6 +42,13 @@ class DB {
             })
     }
 
+    public setEmailVerified = (userId: string, emailVerified: boolean): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('members')
+            .doc(userId)
+            .update({emailVerified})
+    }
+
     public getClubConfig = (): Promise<ClubConfig> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db
@@ -94,17 +101,19 @@ class DB {
             })
     }
 
-    public getS22020Members = (): Promise<AumtMembersObj> => {
+    public getS22020UnverifiedMembers = (): Promise<AumtMembersObj> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('members')
             .where('membership', 'in', ['FY', 'S2'])
+            .where('emailVerified', '==', false)
             .get()
             .then((querySnapshot) => {
                 const members: AumtMembersObj = {}
                 querySnapshot.forEach((doc) => {
                     const data = doc.data()
                     try {
-                        members[doc.id] = this.docToMember(data)
+                        const member = this.docToMember(data)
+                        members[doc.id] = member
                     } catch (e) {
                         console.warn(e)
                     }
