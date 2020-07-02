@@ -137,41 +137,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         },
     });
 
-    private objToAumtMember = (obj: any): AumtMember | null => {
-        const yn = ['Yes', 'No']
-        if (!obj.firstName ||
-            !obj.lastName ||
-            !obj.email ||
-            yn.indexOf(obj.isReturningMember) < 0 ||
-            yn.indexOf(obj.paid) < 0 ||
-            yn.indexOf(obj.isUoAStudent) < 0 ||
-            ['S1', 'S2', 'FY'].indexOf(obj.membership) < 0 ||
-            !obj.EmergencyContactName ||
-            !obj.EmergencyContactNumber) {
-                return null
-            } 
-        else {
-            return {
-                firstName: obj.firstName,
-                lastName: obj.lastName,
-                preferredName: obj.preferredName,
-                upi: obj.upi,
-                email: obj.email,
-                emailVerified: obj.emailVerified,
-                isReturningMember: obj.isReturningMember,
-                isUoAStudent: obj.isUoAStudent,
-                membership: obj.membership,
-                initialExperience: obj.initialExperience,
-                instagramHandle: obj.instagramHandle,
-                paymentType: obj.paymentType,
-                paid: obj.paid,
-                EmergencyContactName: obj.EmergencyContactName,
-                EmergencyContactNumber: obj.EmergencyContactNumber,
-                EmergencyContactRelationship: obj.EmergencyContactRelationship
-            }
-        }
-    }
-
     public importMembers = (members: Record<string, AumtMember>): Promise<void> => {
         return db.addMultipleMembers(members)
     }

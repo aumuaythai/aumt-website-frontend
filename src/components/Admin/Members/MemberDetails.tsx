@@ -27,6 +27,7 @@ interface MemberDetailsState {
     currentPaid: 'Yes' | 'No',
     currentPaymentType: 'Bank Transfer' | 'Cash' | 'Other'
     currentIsReturningMember: 'Yes' | 'No'
+    currentEmailVerified: boolean
     currentInitialExperience: string
     currentECName: string
     currentECNumber: string
@@ -50,6 +51,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             currentPaid: props.member.paid,
             currentPaymentType: props.member.paymentType,
             currentIsReturningMember: props.member.isReturningMember,
+            currentEmailVerified: props.member.emailVerified,
             currentInitialExperience: props.member.initialExperience,
             currentECName: props.member.EmergencyContactName,
             currentECNumber: props.member.EmergencyContactNumber,
@@ -74,6 +76,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                 currentPaid: this.props.member.paid,
                 currentPaymentType: this.props.member.paymentType,
                 currentIsReturningMember: this.props.member.isReturningMember,
+                currentEmailVerified: this.props.member.emailVerified,
                 currentECName: this.props.member.EmergencyContactName,
                 currentECNumber: this.props.member.EmergencyContactNumber,
                 currentECRelationship: this.props.member.EmergencyContactRelationship
@@ -155,7 +158,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,
             EmergencyContactRelationship: this.state.currentECRelationship,
-            emailVerified: false,
+            emailVerified: this.state.currentEmailVerified,
             paymentType: this.state.currentPaymentType
         }
         const errorStr = Validator.createAumtMember(member)

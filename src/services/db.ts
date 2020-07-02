@@ -508,7 +508,7 @@ class DB {
     private docToMember = (docData: any): AumtMember => {
         const member = validator.createAumtMember(docData)
         if (typeof(member) === 'string') {
-            throw new Error(`Could not read member. Reason: ${member}`)
+            throw new Error(`Could not read member. Reason: ${member}, Data: ${JSON.stringify(docData)}`)
         }
         return member
     }
