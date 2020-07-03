@@ -3,7 +3,7 @@ import {Spin, Radio, Button, Select, Alert, Tooltip, notification, Input, Tag } 
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
-import { AumtTrainingSession, AumtMembersObjWithCollated, AumtMemberWithCollated } from '../../../types'
+import { AumtTrainingSession, AumtMembersObjWithCollated } from '../../../types'
 import db from '../../../services/db';
 import dataUtil from '../../../services/data.util';
 
@@ -59,7 +59,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 .then((outputs) => {
                     const memberObj = Object.assign({}, outputs[1])
                     const [trainingData] = outputs
-                    const signedUpMembers = trainingData.sessions.forEach((session) => {
+                    trainingData.sessions.forEach((session) => {
                         Object.keys(session.members).forEach((uid) => {
                             delete memberObj[uid]
                         })
@@ -251,11 +251,12 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                                         <Radio
                                             className='sessionOption'
                                             disabled={isFull}
-                                            value={session.sessionId}>{session.title}
+                                            value={session.sessionId}>
+                                                {session.title}
+                                            <Tag className='spotsLeftTag' color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>
+                                            {this.state.signedUpOption === session.sessionId ? <CheckSquareTwoTone className='signedUpOptionCheck' twoToneColor="#52c41a" /> : ''}
                                         </Radio> 
                                     </Tooltip>
-                                        <Tag className='spotsLeftTag' color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>
-                                        {this.state.signedUpOption === session.sessionId ? <CheckSquareTwoTone twoToneColor="#52c41a" /> : ''}
                                 </div>
                             )
                         })}
@@ -270,7 +271,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 this.props.useInterSem ?
                 <div className='feedbackInputContainer'>
                     <Select
-                        showSearch
+                        showSearch={window.innerWidth > 600}
                         loading={this.state.interSemLoading}
                         className='interSemCollatedSelect'
                         placeholder='Select your Name'

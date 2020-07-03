@@ -105,7 +105,7 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
                 <p className='joinedMemberText'>We created accounts for everyone who signed up in semester 1 2020 and still has an active membership.
                     All you need to do is choose a password to confirm your membership for Sem 2!</p>
                     <Select
-                        showSearch
+                        showSearch={window.innerWidth > 600}
                         className='firstTimeLoginSelect'
                         placeholder='Select Your Name'
                         onChange={this.onNameSelected}

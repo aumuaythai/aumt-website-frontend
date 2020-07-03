@@ -6,6 +6,7 @@
 }
 .sessionOption {
     font-weight: bold;
+    width: 100%;
 }
 .signedUpOptionText {
     color: #4bdd42;
@@ -38,6 +39,9 @@
 }
 .signupFormRemoveLoadingIcon {
     margin-right: 5px;
+}
+.signedUpOptionCheck {
+    margin-left: 10px;
 }
 .interSemCollatedSelect {
     width: 100%;
