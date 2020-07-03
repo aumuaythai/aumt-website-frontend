@@ -21,7 +21,7 @@ interface SignupState {
     dbListenerId: string
 }
 
-export class Signups extends Component<SignupProps, SignupState> {
+class Signups extends Component<SignupProps, SignupState> {
     private isFirstUpdate = true
     constructor(props: SignupProps) {
         super(props)
@@ -153,3 +153,5 @@ export class Signups extends Component<SignupProps, SignupState> {
         )
     }
 }
+
+export default Signups
