@@ -3,7 +3,7 @@
     min-height: 300px;
     width: 50%;
     float: left;
-    min-width: 500px;
+    /* min-width: 500px; */
     padding: 20px;
 }
 .manageTrainingsComponentWrapper {
