@@ -136,16 +136,16 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                     return (
                         <div key={session.sessionId} className="sessionSelectContainer">
                             <Row>
-                            <Col span={8} className="editSignupsTitleAndSelect">
+                            <Col span={7} className="editSignupsTitleAndSelect">
                                 <div className="weekStatsDisplayWrapper">
                                     <div key={session.sessionId} className="weekStatEachContainer">
                                         <Statistic title={session.title} value={Object.keys(session.members).length} suffix={`/ ${session.limit}`} />
                                     </div>
                                 </div>
                             </Col>
-                            <Col span={8}>
+                            <Col span={10}>
                                 <Select
-                                    showSearch
+                                    showSearch={window.innerWidth > 600}
                                     className='memberSelect'
                                     placeholder="Select a person"
                                     optionFilterProp="children"
@@ -158,7 +158,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                         })}
                                 </Select>
                             </Col>
-                            <Col span={8} className="editSignupsOptionButtons">
+                            <Col span={7} className="editSignupsOptionButtons">
                                 <Dropdown
                                     disabled={!this.state.selectedMembers[session.sessionId]}
                                     overlay={this.getMoveDropdown(session.sessionId)}

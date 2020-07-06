@@ -51,7 +51,11 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
         } else if (this.props.clubSignupStatus === 'closed') {
             return (
                 <div>
-                    Signups are closed until the next Semester starts.
+                    Signups are closed until the next semester starts. Follow us on
+                        <a href="https://www.instagram.com/aumuaythai/" target='_blank'> Instagram </a>
+                        or 
+                        <a href="https://www.facebook.com/aumuaythai/"> Facebook </a>
+                        for announcements.
                 </div>
             )
         }
