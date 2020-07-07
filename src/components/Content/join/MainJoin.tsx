@@ -11,7 +11,7 @@ interface MainJoinProps {
     authedUserId: string
     loadingAuthedUser: boolean
     clubSignupStatus: 'open' | 'closed' | 'loading'
-    clubSignupSem: 'S1' | 'S2'
+    clubSignupSem: 'S1' | 'S2' | 'loading'
 }
 
 interface MainJoinState {}
@@ -24,7 +24,7 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
             })
     }
     render() {
-        if (this.props.clubSignupStatus === 'loading' || this.props.loadingAuthedUser) {
+        if (this.props.clubSignupStatus === 'loading' || this.props.clubSignupSem === 'loading' || this.props.loadingAuthedUser) {
             return <Spin/>
         } else if (this.props.authedUser) {
             return (

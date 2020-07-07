@@ -2,7 +2,6 @@ import { AumtMember } from "../types"
 
 class Validator {
     public createAumtMember = (obj: any): AumtMember | string => {
-        console.log(obj.timeJoinedMs)
         const yn = ['Yes', 'No']
         if (!obj.firstName) return 'First Name Required'
         if (!obj.lastName) return 'Last Name Required'

@@ -375,7 +375,7 @@ class DB {
     formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
-        return this.db.collection('members')
+        return this.db.collection('inter-sem-members')
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {

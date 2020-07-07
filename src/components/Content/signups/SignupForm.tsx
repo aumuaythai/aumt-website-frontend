@@ -115,20 +115,17 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         const {key} = oProps
         const selectedMember = this.state.interSemMembers[key]
         if (selectedMember) {
+            const displayName = selectedMember.preferredName ? 
+                `${selectedMember.firstName} "${selectedMember.preferredName}" ${selectedMember.lastName}` :
+                `${selectedMember.firstName} ${selectedMember.lastName}`
             this.setState({
                 ...this.state,
-                currentInterSemUid: key
+                currentInterSemUid: key,
+                currentDisplayName: displayName
             })
         } else {
             console.error('no member for key', key, name)
         }
-    }
-    getCurrentInterSemDisplayName = () => {
-        if (this.state.currentInterSemUid) {
-            const member = this.state.interSemMembers[this.state.currentInterSemUid]
-            return member.preferredName ? `${member.firstName} "${member.preferredName}" ${member.lastName}` : `${member.firstName} ${member.lastName}`
-        }
-        return 'ERROR instead of name'
     }
     onFeedbackChange = (feedback: string) => {
         this.setState({
@@ -181,7 +178,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 errorMessage: 'You must select a session'
             })
             return
-        } else if (this.props.useInterSem && !this.state.currentInterSemUid) {
+        } else if (this.props.useInterSem && !this.state.currentInterSemUid && !this.props.authedUserId) {
             this.setState({
                 ...this.state,
                 errorMessage: 'You must select your name'
@@ -201,10 +198,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         })
 
         db.signUserUp(
-                this.props.useInterSem ?
-                    (this.state.currentInterSemUid || this.generateMockUid()) :
-                    (this.props.authedUserId || this.generateMockUid()),
-                this.props.useInterSem ? this.getCurrentInterSemDisplayName() : (this.props.displayName || this.state.currentDisplayName),
+                this.props.authedUserId || this.state.currentInterSemUid || this.generateMockUid(),
+                this.props.displayName || this.state.currentDisplayName,
                 new Date(),
                 this.props.id,
                 optionSelected,

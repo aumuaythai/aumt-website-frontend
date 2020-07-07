@@ -36,7 +36,7 @@ export interface AumtState {
     userIsAdmin: boolean
     authedUserId: string
     clubSignupStatus: 'open' | 'closed' | 'loading'
-    clubSignupSem: 'S1' | 'S2'
+    clubSignupSem: 'S1' | 'S2' | 'loading'
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {
@@ -49,7 +49,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
           userIsAdmin: false,
           authedUserId: '',
           clubSignupStatus: 'loading',
-          clubSignupSem: 'S1'
+          clubSignupSem: 'loading'
         }
         FirebaseUtil.initialize(this.authStateChange)
         DB.initialize()
@@ -145,6 +145,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                           <SignupsLazyWrapper
                             paid={this.state.authedUser?.paid === 'Yes'}
                             authedUserId={this.state.authedUserId}
+                            clubSignupSem={this.state.clubSignupSem}
                             authedUser={this.state.authedUser}></SignupsLazyWrapper>
                         </Route>
                         <Route path="/events">

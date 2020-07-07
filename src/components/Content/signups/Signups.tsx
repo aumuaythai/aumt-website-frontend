@@ -12,6 +12,7 @@ interface SignupProps {
     authedUser: AumtMember | null
     authedUserId: string | null
     paid: boolean
+    clubSignupSem: 'S1' | 'S2' | 'loading'
 }
 
 interface SignupState {
@@ -76,6 +77,16 @@ class Signups extends Component<SignupProps, SignupState> {
             return null
         }
     }
+    canViewForm = (form: AumtWeeklyTraining) => {
+        if (form.openToPublic) {
+            return true
+        }
+        if (this.props.authedUserId) {
+            const membership = this.props.authedUser?.membership
+            return this.props.paid && (membership === 'FY' || membership === this.props.clubSignupSem)
+        }
+        return false
+    }
     handleNewForms = (forms: AumtWeeklyTraining[]) => {
         this.setState({
             forms: forms,
@@ -87,7 +98,7 @@ class Signups extends Component<SignupProps, SignupState> {
     }
     render() {
         const areOpenForms = this.state.forms.find(f => f.openToPublic)
-        if (this.state.loadingForms) {
+        if (this.state.loadingForms || this.props.clubSignupSem === 'loading') {
             return (<div><Spin/></div>)
         }
         if (!this.props.authedUserId && !areOpenForms) {
@@ -114,23 +125,9 @@ class Signups extends Component<SignupProps, SignupState> {
         }
         return (
             <div className='signupsContainer'>
-                {this.state.forms.map((form) => {
-                    if (form.openToPublic) {
-                        return (
-                            <div key={form.trainingId} className='formContainer'>
-                                <SignupForm
-                                    title={form.title} 
-                                    id={form.trainingId} 
-                                    closes={form.closes} 
-                                    sessions={form.sessions} 
-                                    displayName={this.getDisplayName()}
-                                    authedUserId={this.props.authedUserId}
-                                    notes={form.notes}
-                                    useInterSem={form.useInterSemMembers}
-                                    ></SignupForm>
-                            </div>
-                        )
-                    } else if (this.props.authedUserId && this.props.paid) {
+                {this.state.forms
+                    .filter(this.canViewForm)
+                    .map((form) => {
                         return (
                             <div key={form.trainingId} className="formContainer">
                                 <SignupForm
@@ -145,9 +142,7 @@ class Signups extends Component<SignupProps, SignupState> {
                                     ></SignupForm>
                                 </div>
                             )
-                    } else {
-                        return ''
-                    }
+
                     })}
             </div>
         )
