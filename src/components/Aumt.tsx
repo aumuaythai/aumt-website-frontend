@@ -8,6 +8,7 @@ import {About} from './Content/info/About'
 import EventsWrapper from './Content/events/EventsWrapper'
 import {Faq} from './Content/info/Faq'
 import { MainJoin } from './Content/join/MainJoin'
+import { ErrorBoundary } from './Content/error/ErrorBoundary'
 import './Aumt.css'
 import {Team} from './Content/info/Team';
 import DB from '../services/db'
@@ -127,54 +128,56 @@ export class Aumt extends Component<AumtProps, AumtState> {
                   </Route>
                   <Route path="/*">
                     <Header authedUser={this.state.authedUser} isAdmin={this.state.userIsAdmin}></Header>
-                    <Suspense fallback={<div><Spin/></div>}>
-                      <Switch>
-                        <Route path="/about">
-                          <Redirect to='/'/>
-                        </Route>
-                        <Route path="/team">
-                          <Team></Team>
-                        </Route>
-                        <Route path="/faq">
-                          <Faq></Faq>
-                        </Route>
-                        <Route path="/signup">
-                          <Redirect to="/signups"/>
-                        </Route>
-                        <Route path="/signups">
-                          <SignupsLazyWrapper
-                            paid={this.state.authedUser?.paid === 'Yes'}
-                            authedUserId={this.state.authedUserId}
-                            clubSignupSem={this.state.clubSignupSem}
-                            authedUser={this.state.authedUser}></SignupsLazyWrapper>
-                        </Route>
-                        <Route path="/events">
-                        {this.state.authedUser ?
-                          <EventsWrapper></EventsWrapper>
-                          : <p>You must sign in to be able to view events!</p>}
-                        </Route>
-                        <Route path="/join">
-                          <MainJoin
-                            clubSignupSem={this.state.clubSignupSem}
-                            loadingAuthedUser={this.state.loadingAuthedUser}
-                            clubSignupStatus={this.state.clubSignupStatus}
-                            authedUser={this.state.authedUser}
-                            authedUserId={this.state.authedUserId}></MainJoin>
-                        </Route>
-                        <Route path="/admin">
-                          {
-                            this.state.userIsAdmin ?
-                              <MainAdminLazyWrapper></MainAdminLazyWrapper> :
-                              <div>
-                                You are not authorised to access this page.
-                              </div>
-                          }
-                        </Route>
-                        <Route path="/">
-                          <About></About>
-                        </Route>
-                      </Switch>
-                    </Suspense>
+                    <ErrorBoundary>
+                      <Suspense fallback={<div><Spin/></div>}>
+                        <Switch>
+                          <Route path="/about">
+                            <Redirect to='/'/>
+                          </Route>
+                          <Route path="/team">
+                            <Team></Team>
+                          </Route>
+                          <Route path="/faq">
+                            <Faq></Faq>
+                          </Route>
+                          <Route path="/signup">
+                            <Redirect to="/signups"/>
+                          </Route>
+                          <Route path="/signups">
+                            <SignupsLazyWrapper
+                              paid={this.state.authedUser?.paid === 'Yes'}
+                              authedUserId={this.state.authedUserId}
+                              clubSignupSem={this.state.clubSignupSem}
+                              authedUser={this.state.authedUser}></SignupsLazyWrapper>
+                          </Route>
+                          <Route path="/events">
+                          {this.state.authedUser ?
+                            <EventsWrapper></EventsWrapper>
+                            : <p>You must sign in to be able to view events!</p>}
+                          </Route>
+                          <Route path="/join">
+                            <MainJoin
+                              clubSignupSem={this.state.clubSignupSem}
+                              loadingAuthedUser={this.state.loadingAuthedUser}
+                              clubSignupStatus={this.state.clubSignupStatus}
+                              authedUser={this.state.authedUser}
+                              authedUserId={this.state.authedUserId}></MainJoin>
+                          </Route>
+                          <Route path="/admin">
+                            {
+                              this.state.userIsAdmin ?
+                                <MainAdminLazyWrapper></MainAdminLazyWrapper> :
+                                <div>
+                                  You are not authorised to access this page.
+                                </div>
+                            }
+                          </Route>
+                          <Route path="/">
+                            <About></About>
+                          </Route>
+                        </Switch>
+                      </Suspense>
+                    </ErrorBoundary>
                   </Route>
                 </Switch>
               </BrowserRouter>
