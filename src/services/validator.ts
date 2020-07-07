@@ -2,6 +2,7 @@ import { AumtMember } from "../types"
 
 class Validator {
     public createAumtMember = (obj: any): AumtMember | string => {
+        console.log(obj.timeJoinedMs)
         const yn = ['Yes', 'No']
         if (!obj.firstName) return 'First Name Required'
         if (!obj.lastName) return 'Last Name Required'
@@ -12,6 +13,8 @@ class Validator {
         if (['S1', 'S2', 'FY'].indexOf(obj.membership) < 0) return `"membership" field (${obj.membership}) invalid for firstName ${obj.firstName}`
         if (!obj.EmergencyContactName) return 'Emergency Contact Name Required'
         if (!obj.EmergencyContactNumber) return 'Emergency Contact Number Required'
+        if (!obj.timeJoinedMs) return 'Time Joined Required'
+        if (typeof obj.timeJoinedMs !== 'number') return `Invalid date ms ${JSON.stringify(obj.timeJoinedMs)} for firstName ${obj.firstName}`
         return {
             firstName: obj.firstName,
             lastName: obj.lastName,
@@ -26,6 +29,7 @@ class Validator {
             instagramHandle: obj.instagramHandle || '',
             paymentType: obj.paymentType || 'Cash',
             paid: obj.paid,
+            timeJoinedMs: Number(obj.timeJoinedMs),
             EmergencyContactName: obj.EmergencyContactName,
             EmergencyContactNumber: obj.EmergencyContactNumber,
             EmergencyContactRelationship: obj.EmergencyContactRelationship

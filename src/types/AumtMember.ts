@@ -12,6 +12,7 @@ export interface AumtMember {
     instagramHandle: string
     paymentType: 'Cash' | 'Bank Transfer' | 'Other'
     paid: 'Yes' | 'No'
+    timeJoinedMs: number
     EmergencyContactName: string
     EmergencyContactNumber: string
     EmergencyContactRelationship: string

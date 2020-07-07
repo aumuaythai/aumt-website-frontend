@@ -2,6 +2,7 @@ import React, {Component, ReactText} from 'react'
 import Highlighter from 'react-highlight-words';
 import { Input, Button, Tooltip, notification, Popconfirm } from 'antd'
 import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
+import moment from 'moment'
 import PapaParse from 'papaparse'
 import './TableHelper.css'
 import { AumtMember, AumtMembersObj } from '../../../types'
@@ -158,7 +159,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                             errorsFound.push(`ERROR - Removed member with no key, member number ${idx + 1}`)
                             return memberObj
                         }
-                        
                         const aumtMember = Validator.createAumtMember(line)
                         if (typeof(aumtMember) == 'string') {
                             errorsFound.push(`ERROR - Removed member with invalid data values at member number ${idx + 1}. Reason: ${aumtMember}`)
@@ -416,6 +416,14 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 onFilter: (value: string, record: TableDataLine) => {
                     return record.paymentType === value
                 },
+            },
+            {
+                dataIndex: 'timeJoinedMs',
+                title: 'Joined',
+                sorter: (a: TableDataLine, b: TableDataLine) => a.timeJoinedMs - b.timeJoinedMs,
+                render: (text: string) => {
+                    return moment(Number(text)).format('MMM DD')
+                }
             },
             {
                 dataIndex: 'instagramHandle',

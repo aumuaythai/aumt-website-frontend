@@ -158,6 +158,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,
             EmergencyContactRelationship: this.state.currentECRelationship,
+            timeJoinedMs: this.props.member.timeJoinedMs,
             emailVerified: this.state.currentEmailVerified,
             paymentType: this.state.currentPaymentType
         }

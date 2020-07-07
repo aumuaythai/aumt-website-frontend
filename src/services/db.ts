@@ -375,12 +375,13 @@ class DB {
     formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
-        return this.db.collection('weekly_trainings')
+        return this.db.collection('members')
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                     doc.ref.update({
-                        openToPublic: false
+                        timeJoinedMs: new Date(2020,2,2).getTime(),
+                        // timeJoined: firebase.firestore.FieldValue.delete()
                     })
                 })
             })
