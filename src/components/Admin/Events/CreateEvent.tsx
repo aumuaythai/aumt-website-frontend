@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
-import { Button, Input, DatePicker, notification } from 'antd'
+import { Button, Input, InputNumber, DatePicker, notification, Checkbox } from 'antd'
 import moment from 'moment'
 import './CreateEvent.css'
 import { AumtEvent } from '../../../types'
@@ -21,34 +21,33 @@ interface CreateEventState {
     currentLocation: string
     currentFbLink: string
     isSubmitting: boolean
+    showEditSignups: boolean
+    currentHasLimit: boolean
+    currentSignupLimit: number
+    currentSignupOpenDate: Date
+    currentNeedAdminConfirm: boolean
+    currentOpenToNonMembers: boolean
 }
 
 class CreateEvent extends Component<CreateEventProps, CreateEventState> {
     constructor(props: CreateEventProps) {
         super(props)
         this.state = {
-            currentId: this.generateEventId(10),
-            currentUrlPath: '',
-            currentTitle: '',
-            currentDescription: '',
-            currentPhotoPath: '',
-            currentDate: new Date(),
-            currentLocation: '',
-            currentFbLink: '',
-            isSubmitting: false
-        }
-        if (this.props.defaultValues) {
-            this.state = {
-                ...this.state,
-                currentId: this.props.defaultValues.id,
-                currentTitle: this.props.defaultValues.title,
-                currentDescription: this.props.defaultValues.description,
-                currentPhotoPath: this.props.defaultValues.photoPath,
-                currentDate: this.props.defaultValues.date,
-                currentFbLink: this.props.defaultValues.fbLink,
-                currentLocation: this.props.defaultValues.location,
-                currentUrlPath: this.props.defaultValues.urlPath
-            }
+            currentId: this.props.defaultValues?.id || this.generateEventId(10),
+            currentUrlPath: this.props.defaultValues?.urlPath || '',
+            currentTitle: this.props.defaultValues?.title || '',
+            currentDescription: this.props.defaultValues?.description || '',
+            currentPhotoPath: this.props.defaultValues?.photoPath || '',
+            currentDate: this.props.defaultValues?.date || new Date(),
+            currentLocation: this.props.defaultValues?.location || '',
+            currentFbLink: this.props.defaultValues?.fbLink || '',
+            currentSignupLimit: this.props.defaultValues?.signups?.limit || 30,
+            currentHasLimit: this.props.defaultValues?.signups?.limit === null ? false : true,
+            currentSignupOpenDate: this.props.defaultValues?.signups?.opens || new Date(),
+            currentNeedAdminConfirm: this.props.defaultValues?.signups?.needAdminConfirm || false,
+            currentOpenToNonMembers: this.props.defaultValues?.signups?.openToNonMembers || false,
+            isSubmitting: false,
+            showEditSignups: !!this.props.defaultValues?.signups
         }
     }
     generateEventId = (length: number) => {
@@ -112,6 +111,50 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
         })
     }
 
+    onEnableSignupsCheck = (checked: boolean) => {
+        this.setState({
+            ...this.state,
+            showEditSignups: checked
+        })
+    }
+    onHasLimitCheck = (checked: boolean) => {
+        this.setState({
+            ...this.state,
+            currentHasLimit: checked
+        })
+    }
+
+    onSignupLimitChange = (limit: number | undefined) => {
+        if (limit) {
+            this.setState({
+                ...this.state,
+                currentSignupLimit: limit
+            })
+        }
+    }
+    onSignupOpenDateChange = (d: Date | undefined) => {
+        if (d) {
+            this.setState({
+                ...this.state,
+                currentSignupOpenDate: d
+            })
+        }
+    }
+    onNeedAdminConfirmCheck = (checked: boolean) => {
+        this.setState({
+            ...this.state,
+            currentNeedAdminConfirm: checked
+        })
+    }
+
+    onOpenToNonMembersCheck = (checked: boolean) => {
+        this.setState({
+            ...this.state,
+            currentOpenToNonMembers: checked
+        })
+    }
+
+
     onSubmitEvent = () => {
         if (!this.state.currentTitle) {
             notification.error({
@@ -138,7 +181,15 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             description: this.state.currentDescription,
             fbLink: this.state.currentFbLink,
             photoPath: this.state.currentPhotoPath,
-            location: this.state.currentLocation
+            location: this.state.currentLocation,
+            signups: !this.state.showEditSignups ? null : {
+                opens: this.state.currentSignupOpenDate,
+                openToNonMembers: this.state.currentOpenToNonMembers,
+                limit: this.state.currentHasLimit ? this.state.currentSignupLimit : null,
+                needAdminConfirm: this.state.currentNeedAdminConfirm,
+                members: {},
+                waitlist: {}
+            }
         })
             .then(() => {
                 this.setState({
@@ -187,6 +238,29 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 <p>
                     Photo URL: <Input value={this.state.currentPhotoPath} placeholder='optional' className='shortInput' onChange={e=>this.onPhotoUrlChange(e.target.value)}/>
                 </p>
+                <h4 className="formSectionDetail">Signups</h4>
+                <Checkbox checked={this.state.showEditSignups} onChange={e => this.onEnableSignupsCheck(e.target.checked)}>Enable Signups</Checkbox>
+                {this.state.showEditSignups ?
+                    <div className='editEventSignupsContainer'>
+                        <div>
+                            Signups Open: 
+                            <DatePicker value={moment(this.state.currentSignupOpenDate)} onChange={e => this.onSignupOpenDateChange(e?.toDate())}/>
+                        </div>
+                        <div>
+                            <Checkbox checked={this.state.currentHasLimit} onChange={e => this.onHasLimitCheck(e.target.checked)}>
+                                Limit: 
+                            </Checkbox>
+                            <InputNumber disabled={!this.state.currentHasLimit} min={0} defaultValue={this.state.currentSignupLimit} onChange={this.onSignupLimitChange}/>
+                        </div>
+                        <div>
+                            <Checkbox checked={this.state.currentNeedAdminConfirm} onChange={e => this.onNeedAdminConfirmCheck(e.target.checked)}>Need Admin Confirmation?</Checkbox>
+                            (Confirm spot when paid, etc)
+                        </div>
+                        <div>
+                            <Checkbox checked={this.state.currentOpenToNonMembers} onChange={e => this.onOpenToNonMembersCheck(e.target.checked)}>Non Members can sign themselves up (admin can sign up anyone regardless)</Checkbox>
+                        </div>
+                    </div>
+                : ''}
                 <div className='submitEventContainer'>
                     <Button
                         className='createEventSubmitButton'

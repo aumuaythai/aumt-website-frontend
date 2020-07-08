@@ -1,3 +1,11 @@
+export interface AumtEventSignupData {
+    displayName: string
+    timeSignedUpMs: number
+    confirmed: boolean
+}
+
+export type AumtEventSignup = Record<string,AumtEventSignupData>
+
 export interface AumtEvent {
     urlPath: string
     title: string
@@ -7,12 +15,12 @@ export interface AumtEvent {
     date: Date
     location: string
     fbLink: string
-    // signups?: {
-    //     members: {
-    //         [uid: string]: string
-    //     },
-    //     waitlist: {
-    //         [uid: string]: string
-    //     }
-    // }
+    signups: {
+        limit: number | null
+        opens: Date
+        needAdminConfirm: boolean
+        openToNonMembers: boolean
+        members: AumtEventSignup
+        waitlist: AumtEventSignup
+    } | null
 }

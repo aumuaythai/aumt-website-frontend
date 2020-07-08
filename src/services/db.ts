@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
-import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignup } from '../types';
 import validator from './validator';
 
 type MockMember = {
@@ -165,10 +165,8 @@ class DB {
                 const events: AumtEvent[] = []
                 querySnapshot.forEach((doc) => {
                     const docData = doc.data()
-                    events.push({
-                        ...docData,
-                        date: new Date(docData.date.seconds * 1000)
-                    } as AumtEvent)
+                    const event = this.docToEvent(docData)
+                    events.push(event)
                 })
                 return events
             })
@@ -511,6 +509,18 @@ class DB {
             throw new Error(`Could not read member. Reason: ${member}, Data: ${JSON.stringify(docData)}`)
         }
         return member
+    }
+
+    private docToEvent = (docData: any): AumtEvent => {
+        const event: AumtEvent = {
+            ...docData,
+            date: new Date(docData.date.seconds * 1000),
+            signups: docData.signups ? {
+                ...docData.signups,
+                opens: new Date(docData.signups.opens.seconds * 1000)
+            } : null
+        }
+        return event
     }
 }
 
