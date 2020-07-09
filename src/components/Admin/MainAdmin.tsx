@@ -26,7 +26,7 @@ interface MainAdminState {
 }
 
 class MainAdmin extends Component<MainAdminProps, MainAdminState> {
-    private unlisten: null | Function = null;
+    private routeChangeListener: null | Function = null;
     constructor(props: MainAdminProps) {
         super(props)
         this.state = {
@@ -37,18 +37,19 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             forms: []
         }
         AdminStore.addListeners(this.handleNewForms)
-        this.unlisten = null
+        this.routeChangeListener = null
     }
 
     componentDidMount = () => {
-        this.unlisten = this.props.history.listen(this.onRouteChange);
+        this.routeChangeListener = this.props.history.listen(this.onRouteChange);
         this.setStateFromPathChange(window.location.pathname)
     }
 
     componentWillUnmount = () => {
-      if (this.unlisten) {
-        this.unlisten()
+      if (this.routeChangeListener) {
+        this.routeChangeListener()
       }
+      AdminStore.cleanup()
     }
 
     handleNewForms = (forms: AumtWeeklyTraining[]) => {

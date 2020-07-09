@@ -432,6 +432,7 @@ class DB {
     listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
+        console.log('ADDING LISTENER', this.listeners)
         this.listeners[listenerId] = this.db.collection('weekly_trainings')
             .onSnapshot((querySnapshot) => {
                 const newForms: AumtWeeklyTraining[] = []
@@ -463,6 +464,7 @@ class DB {
     }
 
     unlisten = (listenerId: string) => {
+        console.log('unlistening to', listenerId)
         if (this.listeners[listenerId]) {
             this.listeners[listenerId]()
             delete this.listeners[listenerId]

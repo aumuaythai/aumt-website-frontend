@@ -25,7 +25,7 @@ class AdminStore {
 
     requestTrainings = (): void | AumtWeeklyTraining[] => {
         if (!this.state.dbTrainingListenerId) {
-            db.listenToTrainings(this.onDbUpdateTrainings)
+            this.state.dbTrainingListenerId = db.listenToTrainings(this.onDbUpdateTrainings)
         }
     }
     
@@ -38,6 +38,8 @@ class AdminStore {
     cleanup = () => {
         this.state.members = {}
         this.state.trainings = []
+        db.unlisten(this.state.dbTrainingListenerId)
+        this.state.dbTrainingListenerId = ''
         this.state.events = []
     }
 }
