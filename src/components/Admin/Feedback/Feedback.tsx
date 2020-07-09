@@ -3,13 +3,15 @@ import { notification, List, Spin } from 'antd'
 import './Feedback.css'
 import { AumtWeeklyTraining } from '../../../types'
 import db from '../../../services/db'
+import AdminStore from '../AdminStore'
 
 
 interface FeedbackProps {
+    forms: AumtWeeklyTraining[]
 }
 
 interface FeedbackState {
-    forms: AumtWeeklyTraining[]
+    feedbackForms: AumtWeeklyTraining[]
     loadingForms: boolean
 }
 
@@ -17,34 +19,33 @@ export class Feedback extends Component<FeedbackProps, FeedbackState> {
     constructor(props: FeedbackProps) {
         super(props)
         this.state = {
-            forms: [],
+            feedbackForms: [],
             loadingForms: false
         }
     }
     componentDidMount() {
-        this.setState({
-            ...this.state,
-            loadingForms: true
+        if (!this.props.forms.length) {
+            this.setState({...this.state, loadingForms: true})
+            AdminStore.requestTrainings()
+        } else {
+            this.handleNewForms(this.props.forms)
+        }
+    }
+    componentDidUpdate = (prevProps: FeedbackProps, prevState: FeedbackState) => {
+        if (this.props.forms !== prevProps.forms) {
+            this.setState({...this.state, loadingForms: false}, () => {
+                this.handleNewForms(this.props.forms)
+            })
+        }
+    }
+    handleNewForms = (forms: AumtWeeklyTraining[]) => {
+        const newForms = forms.slice().sort((a, b) => {
+            return a.closes < b.closes ? 1 : -1
         })
-        db.getAllForms()
-            .then((forms) => {
-                forms.sort((a, b) => {
-                    return a.closes < b.closes ? 1 : -1
-                })
-                this.setState({
-                    ...this.state, 
-                    forms: forms,
-                    loadingForms: false
-                })
-            })
-            .catch((err) => {
-                this.setState({
-                    ...this.state,
-                    forms: [],
-                    loadingForms: false
-                })
-                notification.error({message: 'Error loading feedback: ' + err.toString()})
-            })
+        this.setState({
+            ...this.state, 
+            feedbackForms: newForms
+        })
     }
     render() {
         if (this.state.loadingForms) {
@@ -52,7 +53,7 @@ export class Feedback extends Component<FeedbackProps, FeedbackState> {
         }
         return (
             <div className='allFeedbackContainer'>
-                {this.state.forms.map((form) => {
+                {this.state.feedbackForms.map((form) => {
                     const feedback = form.feedback.reverse()
                     return (
                         <List

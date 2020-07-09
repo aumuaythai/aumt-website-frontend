@@ -160,7 +160,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                             <MemberDashboard></MemberDashboard>
                         </Route>
                         <Route path='/admin/feedback'>
-                            <Feedback></Feedback>
+                            <Feedback forms={this.state.forms}></Feedback>
                         </Route>
                         <Route path='/admin/createtraining'>
                             <div className="mainAdminCreateFormContainer">
