@@ -11,6 +11,7 @@ import { Feedback } from './Feedback/Feedback';
 import MemberDashboard from './Members/MemberDashboard'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import db from '../../services/db'
+import AdminStore from './AdminStore';
 
 
 interface MainAdminProps extends RouteComponentProps {
@@ -21,6 +22,7 @@ interface MainAdminState {
     editingEventData: AumtEvent | null
     menuOpen: boolean
     currentSelectedAdmin: string
+    forms: AumtWeeklyTraining[]
 }
 
 class MainAdmin extends Component<MainAdminProps, MainAdminState> {
@@ -31,8 +33,10 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             editingTrainingData: null,
             editingEventData: null,
             menuOpen: false,
-            currentSelectedAdmin: 'trainings'
+            currentSelectedAdmin: 'trainings',
+            forms: []
         }
+        AdminStore.addListeners(this.handleNewForms)
         this.unlisten = null
     }
 
@@ -45,6 +49,13 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
       if (this.unlisten) {
         this.unlisten()
       }
+    }
+
+    handleNewForms = (forms: AumtWeeklyTraining[]) => {
+        this.setState({
+            ...this.state,
+            forms
+        })
     }
 
     onRouteChange = (location: any, action: string) => {
@@ -204,7 +215,10 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                             </div>
                         </Route>
                         <Route path='/admin'>
-                            <TrainingDashboard onEditTrainingRequest={this.onEditTrainingRequest}></TrainingDashboard>
+                            <TrainingDashboard
+                                forms={this.state.forms}
+                                onEditTrainingRequest={this.onEditTrainingRequest}
+                                ></TrainingDashboard>
                         </Route>
                     </Switch>
                 </div>

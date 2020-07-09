@@ -9,17 +9,18 @@ import { ManageTrainings } from './ManageTrainings'
 import { AumtWeeklyTraining } from '../../../types'
 import { EditSignups } from './EditSignups'
 import db from '../../../services/db'
+import AdminStore from '../AdminStore'
 
 
 interface TrainingDashboardProps {
     onEditTrainingRequest: (training: AumtWeeklyTraining) => void
+    forms: AumtWeeklyTraining[]
 }
 
 interface TrainingDashboardState {
     currentForm: AumtWeeklyTraining | null
     loadingForms: boolean
     allForms: AumtWeeklyTraining[]
-    dbListenerId: string
 }
 
 export class TrainingDashboard extends Component<TrainingDashboardProps, TrainingDashboardState> {
@@ -30,8 +31,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         this.state = {
             currentForm: null,
             allForms: [],
-            loadingForms: false,
-            dbListenerId: ''
+            loadingForms: false
         }
     }
     signMockData = () => {
@@ -40,42 +40,25 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 console.log('DONE')
             })
     }
-    componentWillUnmount = () => {
-        db.unlisten(this.state.dbListenerId)
+    componentDidUpdate = (prevProps: TrainingDashboardProps, prevState: TrainingDashboardState) => {
+        if (this.props.forms !== prevProps.forms) {
+            this.setState({...this.state, loadingForms: false}, () => {
+                this.handleNewForms(this.props.forms)
+            })
+        }
     }
     componentDidMount = () => {
-        this.setState({...this.state, loadingForms: true})
-        db.getAllForms()
-            .then((forms: AumtWeeklyTraining[]) => {
-                if (forms.length) {
-                    this.handleNewForms(forms)
-                }
-                this.setState({
-                    ...this.state,
-                    loadingForms: false,
-                    dbListenerId: db.listenToTrainings(this.onDbChanges)
-                })
-
-            })
-            .catch((err) => {
-                notification.error({
-                    message: err.toString()
-                })
-                this.setState({
-                    ...this.state,
-                    currentForm: null
-                })
-                this.setState({...this.state, loadingForms: false})
-            })
+        if (!this.props.forms.length) {
+            this.setState({...this.state, loadingForms: true})
+            AdminStore.requestTrainings()
+        } else {
+            this.handleNewForms(this.props.forms)
+        }
     }
     handleNewForms = (forms: AumtWeeklyTraining[]) => {
         const sortedForms = forms.sort((a, b) => {
             return a.closes < b.closes ? 1 : -1
-        })
-        this.setState({
-            ...this.state,
-            allForms: sortedForms
-        })
+        }).slice()
         const currentTime = new Date()
         let currentForm = sortedForms[sortedForms.length - 1]
         for (let i = 0; i < sortedForms.length; i ++) {
@@ -84,18 +67,17 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 break
             }
         }
-        const currentFormInNewForms = forms.find(f => f.trainingId === this.state.currentForm?.trainingId)
-        if (!currentFormInNewForms) {
-            this.onFormSelect({key: currentForm.trainingId})
-        } else if (currentFormInNewForms) {
-            this.onFormSelect({key: currentFormInNewForms.trainingId})
-        }
-    }
-    onDbChanges = (forms: AumtWeeklyTraining[]) => {
-        if (!this.isFirstListen && forms && forms.length) {
-            this.handleNewForms(forms)
-        }
-        this.isFirstListen = false
+        this.setState({
+            ...this.state,
+            allForms: sortedForms
+        }, () => {
+            const currentFormInNewForms = forms.find(f => f.trainingId === this.state.currentForm?.trainingId)
+            if (!currentFormInNewForms) {
+                this.onFormSelect({key: currentForm.trainingId})
+            } else if (currentFormInNewForms) {
+                this.onFormSelect({key: currentFormInNewForms.trainingId})
+            }
+        })
     }
     onClickTraining = (trainingId: string) => {
         this.onFormSelect({key: trainingId})
