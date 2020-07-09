@@ -30,7 +30,6 @@ class AdminStore {
     }
     
     onDbUpdateTrainings = (forms: AumtWeeklyTraining[]) => {
-        console.log('updated', forms)
         this.state.trainings = forms
         this.state.pushTrainings(this.state.trainings)
     }
