@@ -59,11 +59,11 @@ class AdminStore {
     cleanup = () => {
         this.state.members = {}
         this.state.trainings = []
-        this.state.events = []
         db.unlisten(this.state.dbTrainingListenerId)
+        this.state.dbTrainingListenerId = ''
+        this.state.events = []
         db.unlisten(this.state.dbEventsListenerId)
         this.state.dbEventsListenerId = ''
-        this.state.dbTrainingListenerId = ''
     }
 }
 
