@@ -16,6 +16,7 @@ export interface SignupFormProps {
     authedUserId: string | null
     notes: string
     useInterSem: boolean
+    openToPublic: boolean
     onSignupChanged?: () => void
 }
 
@@ -178,16 +179,10 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 errorMessage: 'You must select a session'
             })
             return
-        } else if (this.props.useInterSem && !this.state.currentInterSemUid && !this.props.authedUserId) {
+        } else if (!this.props.authedUserId && !this.state.currentDisplayName) {
             this.setState({
                 ...this.state,
-                errorMessage: 'You must select your name'
-            })
-            return
-        } else if (!this.props.useInterSem && !this.props.displayName && !this.state.currentDisplayName) {
-            this.setState({
-                ...this.state,
-                errorMessage: 'You must enter your name'
+                errorMessage: 'You must provide your name'
             })
             return
         }
@@ -214,7 +209,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     this.props.onSignupChanged()
                 }
                 if (this.props.useInterSem) {
-                    notification.success({message: `Successfully signed up for ${this.props.sessions.find(s => s.sessionId === optionSelected)?.title}`})
+                    notification.success({message: `Successfully signed up ${!this.props.authedUserId ? this.state.currentDisplayName : ''} for ${this.props.sessions.find(s => s.sessionId === optionSelected)?.title}`})
                 }
             })
             .catch((err) => {
@@ -262,9 +257,12 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     <p>Thoughts on last training/feedback?</p>
                     <Input.TextArea autoSize={{ maxRows: 6 }} placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
                 </div>
-                :
+                :  
+                <div>
+                {
                 this.props.useInterSem ?
-                <div className='feedbackInputContainer'>
+                <div className={`feedbackInputContainer ${this.props.openToPublic ? 'topFeedbackInputContainer' : ''}`}>
+                    <h4>AUMT Members</h4>
                     <Select
                         showSearch={window.innerWidth > 600}
                         loading={this.state.interSemLoading}
@@ -279,10 +277,18 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                         })}
                     </Select>
                 </div>
-                :
+                : ''}
+                {this.props.openToPublic ?
                 <div className="feedbackInputContainer">
-                    <p>Enter your Full Name</p>
-                    <Input onChange={e => this.onDisplayNameChange(e.target.value)}/>
+                    {this.props.useInterSem ? 
+                        <div>
+                            <h4 className='orTextForNonMembersSignupForm'>OR</h4>
+                            <h4>Non-Members</h4> 
+                        </div>:
+                        <p>Enter your Full Name</p>}
+                    <Input placeholder={this.props.useInterSem ? 'Enter your Full Name' : ''} onChange={e => this.onDisplayNameChange(e.target.value)}/>
+                </div>
+                : '' }
                 </div>
                 }
                 <div className="messageContainer">

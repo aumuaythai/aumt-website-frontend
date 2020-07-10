@@ -78,7 +78,7 @@ class Signups extends Component<SignupProps, SignupState> {
         }
     }
     canViewForm = (form: AumtWeeklyTraining) => {
-        if (form.openToPublic) {
+        if (form.openToPublic || form.useInterSemMembers) {
             return true
         }
         if (this.props.authedUserId) {
@@ -97,7 +97,7 @@ class Signups extends Component<SignupProps, SignupState> {
         db.unlisten(this.state.dbListenerId)
     }
     render() {
-        const areOpenForms = this.state.forms.find(f => f.openToPublic)
+        const areOpenForms = this.state.forms.find(f => f.openToPublic || f.useInterSemMembers)
         if (this.state.loadingForms || this.props.clubSignupSem === 'loading') {
             return (<div><Spin/></div>)
         }
@@ -138,6 +138,7 @@ class Signups extends Component<SignupProps, SignupState> {
                                     displayName={this.getDisplayName()}
                                     authedUserId={this.props.authedUserId}
                                     notes={form.notes}
+                                    openToPublic={form.openToPublic}
                                     useInterSem={form.useInterSemMembers}
                                     ></SignupForm>
                                 </div>
