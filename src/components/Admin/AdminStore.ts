@@ -3,14 +3,19 @@ import db from '../../services/db'
 
 interface AdminState {
     members: AumtMembersObj
-    events: AumtEvent[]
+    
     trainings: AumtWeeklyTraining[]
     pushTrainings: (trainings: AumtWeeklyTraining[]) => void
     dbTrainingListenerId: string
+    
+    events: AumtEvent[]
     pushEvents: (events: AumtEvent[]) => void
     dbEventsListenerId: string
 }
 class AdminStore {
+    // TODO: explain what's going on here
+
+
     private state: AdminState = {
         members: {},
         events: [],
