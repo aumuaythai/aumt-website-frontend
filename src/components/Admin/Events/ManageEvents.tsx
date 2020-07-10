@@ -3,15 +3,16 @@ import { Spin, Popconfirm, Alert, Button, notification, Divider } from 'antd'
 import './ManageEvents.css'
 import { AumtEvent } from '../../../types'
 import db from '../../../services/db'
+import AdminStore from '../AdminStore'
 
 
 interface ManageEventsProps {
     onEditEventRequest: (data: AumtEvent) => void
+    events: AumtEvent[]
 }
 
 interface ManageEventsState {
     loadingEvents: boolean
-    errorText: string
     events: AumtEvent[]
     removingEvent: {
         [eventId: string]: boolean
@@ -23,39 +24,34 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
         super(props)
         this.state = {
             loadingEvents: false,
-            errorText: '',
             events: [],
             removingEvent: {}
         }
     }
 
     componentDidMount() {
-        this.getAllEvents()
+        if (!this.props.events.length) {
+            this.setState({...this.state, loadingEvents: true})
+            AdminStore.requestEvents()
+        } else {
+            this.handleNewEvents(this.props.events)
+        }
+
     }
 
-    getAllEvents = () => {
+    componentDidUpdate = (prevProps: ManageEventsProps, prevState: ManageEventsState) => {
+        if (this.props.events !== prevProps.events) {
+            this.setState({...this.state, loadingEvents: false}, () => {
+                this.handleNewEvents(this.props.events)
+            })
+        }
+    }
+
+    handleNewEvents = (events: AumtEvent[]) => {
         this.setState({
             ...this.state,
-            loadingEvents: true,
-            events: [],
-            errorText: ''
+            events: events.slice()
         })
-        db.getAllEvents()
-            .then((events: AumtEvent[]) => {
-                this.setState({
-                    ...this.state,
-                    loadingEvents: false,
-                    events,
-                    errorText: ''
-                })
-            })
-            .catch((err) => {
-                this.setState({
-                    ...this.state,
-                    loadingEvents: false,
-                    errorText: err.toString()
-                })
-            })
     }
 
     onEventEditClick = (eventId: string) => {
@@ -84,8 +80,6 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
                         [eventId]: false
                     })
                 })
-                this.getAllEvents()
-
             })
             .catch((err) => {
                 notification.open({
@@ -101,9 +95,7 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
     }
 
     render() {
-        if (this.state.errorText) {
-            return (<Alert type='error' message={this.state.errorText}></Alert>)
-        } else if (this.state.loadingEvents) {
+        if (this.state.loadingEvents) {
             return (<div>Loading Events <Spin/></div>)
         } else if (!this.state.events.length) {
             return (<p>No Events in DB</p>)

@@ -8,6 +8,7 @@ interface AdminState {
     pushTrainings: (trainings: AumtWeeklyTraining[]) => void
     dbTrainingListenerId: string
     pushEvents: (events: AumtEvent[]) => void
+    dbEventsListenerId: string
 }
 class AdminStore {
     private state: AdminState = {
@@ -15,17 +16,28 @@ class AdminStore {
         events: [],
         trainings: [],
         dbTrainingListenerId: '',
+        dbEventsListenerId: '',
         pushTrainings: () => {},
         pushEvents: () => {}
     }
 
-    addListeners = (pushTrainings: (trainings: AumtWeeklyTraining[]) => void) => {
+    addListeners = (
+        pushTrainings: (trainings: AumtWeeklyTraining[]) => void,
+        pushEvents: (events: AumtEvent[]) => void,
+        ) => {
         this.state.pushTrainings = pushTrainings
+        this.state.pushEvents = pushEvents
     }
 
-    requestTrainings = (): void | AumtWeeklyTraining[] => {
+    requestTrainings = (): void => {
         if (!this.state.dbTrainingListenerId) {
             this.state.dbTrainingListenerId = db.listenToTrainings(this.onDbUpdateTrainings)
+        }
+    }
+
+    requestEvents = (): void => {
+        if (!this.state.dbEventsListenerId) {
+            this.state.dbEventsListenerId = db.listenToEvents(this.onDbUpdateEvents)
         }
     }
     
@@ -34,12 +46,19 @@ class AdminStore {
         this.state.pushTrainings(this.state.trainings)
     }
 
+    onDbUpdateEvents = (events: AumtEvent[]) => {
+        this.state.events = events
+        this.state.pushEvents(this.state.events)
+    }
+
     cleanup = () => {
         this.state.members = {}
         this.state.trainings = []
-        db.unlisten(this.state.dbTrainingListenerId)
-        this.state.dbTrainingListenerId = ''
         this.state.events = []
+        db.unlisten(this.state.dbTrainingListenerId)
+        db.unlisten(this.state.dbEventsListenerId)
+        this.state.dbEventsListenerId = ''
+        this.state.dbTrainingListenerId = ''
     }
 }
 

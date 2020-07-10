@@ -443,6 +443,20 @@ class DB {
         return listenerId
     }
 
+    listenToEvents = (callback: (events: AumtEvent[]) => void): string => {
+        if (!this.db) throw new Error('no db')
+        const listenerId = this.getListenerId()
+        this.listeners[listenerId] = this.db.collection('events')
+            .onSnapshot((querySnapshot) => {
+                const newEvents: AumtEvent[] = []
+                querySnapshot.docs.forEach((doc) => {
+                    newEvents.push(this.docToEvent(doc.data()))
+                })
+                callback(newEvents)
+            })
+        return listenerId
+    }
+
     listenToMembers = (callback: (members: AumtMembersObj) => void): string => {
         if (!this.db) throw new Error('No db')
         const listenerId = this.getListenerId()

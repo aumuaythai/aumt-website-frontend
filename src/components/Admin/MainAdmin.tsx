@@ -23,6 +23,7 @@ interface MainAdminState {
     menuOpen: boolean
     currentSelectedAdmin: string
     forms: AumtWeeklyTraining[]
+    events: AumtEvent[]
 }
 
 class MainAdmin extends Component<MainAdminProps, MainAdminState> {
@@ -34,9 +35,10 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             editingEventData: null,
             menuOpen: false,
             currentSelectedAdmin: 'trainings',
-            forms: []
+            forms: [],
+            events: []
         }
-        AdminStore.addListeners(this.handleNewForms)
+        AdminStore.addListeners(this.handleNewForms, this.handleNewEvents)
         this.routeChangeListener = null
     }
 
@@ -53,10 +55,11 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     }
 
     handleNewForms = (forms: AumtWeeklyTraining[]) => {
-        this.setState({
-            ...this.state,
-            forms
-        })
+        this.setState({ ...this.state, forms })
+    }
+
+    handleNewEvents = (events: AumtEvent[]) => {
+        this.setState({...this.state, events})
     }
 
     onRouteChange = (location: any, action: string) => {
@@ -154,7 +157,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                     </Link>
                                     <div className="clearBoth"></div>
                                 </div>
-                                <ManageEvents onEditEventRequest={this.onEditEventRequest}></ManageEvents>
+                                <ManageEvents events={this.state.events} onEditEventRequest={this.onEditEventRequest}></ManageEvents>
                             </div>
                         </Route>
                         <Route path='/admin/members'>
