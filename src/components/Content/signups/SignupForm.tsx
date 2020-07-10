@@ -209,7 +209,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     this.props.onSignupChanged()
                 }
                 if (this.props.useInterSem) {
-                    notification.success({message: `Successfully signed up ${!this.props.authedUserId ? this.state.currentDisplayName : ''} for ${this.props.sessions.find(s => s.sessionId === optionSelected)?.title}`})
+                    notification.success({message: `Successfully signed up for ${this.props.sessions.find(s => s.sessionId === optionSelected)?.title}`})
                 }
             })
             .catch((err) => {
