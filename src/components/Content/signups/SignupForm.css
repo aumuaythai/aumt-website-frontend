@@ -23,6 +23,12 @@
     max-width: 400px;
     margin: 30px auto;
 }
+.topFeedbackInputContainer {
+    margin-bottom: 0;
+}
+.orTextForNonMembersSignupForm {
+    margin-bottom: 20px;
+}
 .spotsLeftTag {
     float: right;
     margin-right: 0;
