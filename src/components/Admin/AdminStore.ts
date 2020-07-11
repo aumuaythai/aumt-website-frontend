@@ -45,6 +45,16 @@ class AdminStore {
             this.state.dbEventsListenerId = db.listenToEvents(this.onDbUpdateEvents)
         }
     }
+
+    getEventById = (id: string): Promise<AumtEvent | null> => {
+        if (this.state.events.length) {
+            const foundEvent = this.state.events.find(e => e.id === id)
+            if (foundEvent) {
+                return Promise.resolve(foundEvent)
+            }
+        } 
+        return db.getEventById(id)
+    }
     
     onDbUpdateTrainings = (forms: AumtWeeklyTraining[]) => {
         this.state.trainings = forms

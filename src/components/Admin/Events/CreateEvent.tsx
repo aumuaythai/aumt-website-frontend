@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
-import { Button, Input, InputNumber, DatePicker, notification, Checkbox } from 'antd'
+import { Button, Input, InputNumber, DatePicker, notification, Checkbox, Spin } from 'antd'
 import moment from 'moment'
 import './CreateEvent.css'
 import { AumtEvent } from '../../../types'
+import AdminStore from '../AdminStore'
 
 
 interface CreateEventProps extends RouteComponentProps {
@@ -27,27 +28,74 @@ interface CreateEventState {
     currentSignupOpenDate: Date
     currentNeedAdminConfirm: boolean
     currentOpenToNonMembers: boolean
+    loadingEvent: boolean
 }
 
 class CreateEvent extends Component<CreateEventProps, CreateEventState> {
     constructor(props: CreateEventProps) {
         super(props)
         this.state = {
-            currentId: this.props.defaultValues?.id || this.generateEventId(10),
-            currentUrlPath: this.props.defaultValues?.urlPath || '',
-            currentTitle: this.props.defaultValues?.title || '',
-            currentDescription: this.props.defaultValues?.description || '',
-            currentPhotoPath: this.props.defaultValues?.photoPath || '',
-            currentDate: this.props.defaultValues?.date || new Date(),
-            currentLocation: this.props.defaultValues?.location || '',
-            currentFbLink: this.props.defaultValues?.fbLink || '',
-            currentSignupLimit: this.props.defaultValues?.signups?.limit || 30,
-            currentHasLimit: this.props.defaultValues?.signups?.limit === null ? false : true,
-            currentSignupOpenDate: this.props.defaultValues?.signups?.opens || new Date(),
-            currentNeedAdminConfirm: this.props.defaultValues?.signups?.needAdminConfirm || false,
-            currentOpenToNonMembers: this.props.defaultValues?.signups?.openToNonMembers || false,
+            currentId:  this.generateEventId(10),
+            currentUrlPath:  '',
+            currentTitle:  '',
+            currentDescription:  '',
+            currentPhotoPath:  '',
+            currentDate:  new Date(),
+            currentLocation:  '',
+            currentFbLink:  '',
+            currentSignupLimit: 30,
+            currentHasLimit: true,
+            currentSignupOpenDate: new Date(),
+            currentNeedAdminConfirm: false,
+            currentOpenToNonMembers: false,
             isSubmitting: false,
-            showEditSignups: !!this.props.defaultValues?.signups
+            loadingEvent: false,
+            showEditSignups: false
+        }
+    }
+    componentDidMount = () => {
+        const paths = window.location.pathname.split('/')
+        const editEventIdx = paths.indexOf('editevent')
+        if (editEventIdx > -1) {
+            const eventId = paths[editEventIdx + 1]
+            this.setState({
+                ...this.state,
+                loadingEvent: true
+            })
+            AdminStore.getEventById(eventId)
+            .then((loadedEvent) => {
+                if (!loadedEvent) {
+                    notification.error({message: 'No event found for id ' + eventId})
+                } else {
+                    console.log(loadedEvent)
+                    this.setState({
+                        ...this.state,
+                        currentId: loadedEvent.id,
+                        currentUrlPath: loadedEvent.urlPath,
+                        currentTitle: loadedEvent.title,
+                        currentDescription: loadedEvent.description,
+                        currentPhotoPath: loadedEvent.photoPath,
+                        currentDate: loadedEvent.date,
+                        currentLocation: loadedEvent.location,
+                        currentFbLink: loadedEvent.fbLink,
+                        currentSignupLimit: loadedEvent.signups?.limit || 30,
+                        currentHasLimit: loadedEvent.signups?.limit === null ? false : true,
+                        currentSignupOpenDate: loadedEvent.signups?.opens || new Date(),
+                        currentNeedAdminConfirm: loadedEvent.signups?.needAdminConfirm || false,
+                        currentOpenToNonMembers: loadedEvent.signups?.openToNonMembers || false
+                    })
+                }
+            })
+            .catch((err) => {
+                notification.error({message: 'Error retrieving event for id ' + eventId})
+            })
+            .finally(() => {
+                this.setState({
+                    ...this.state,
+                    loadingEvent: false
+                })
+            })
+            
         }
     }
     generateEventId = (length: number) => {
@@ -210,6 +258,9 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             })
     }
     render() {
+        if (this.state.loadingEvent) {
+            return <div><Spin/></div>
+        }
         return (
             <div className='createTrainingContainer'>
                 <h4 className='formSectionTitle'>Event</h4>
