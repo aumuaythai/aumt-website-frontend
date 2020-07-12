@@ -187,18 +187,14 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                         </Route>
                         <Route path='/admin/edittraining/:trainingid'>
                             <div className="mainAdminCreateFormContainer">
-                                {this.state.editingTrainingData ?
                                 <div>
                                     <h2 className='createTrainingTitle'>
                                         <Link className='mainAdminCreateBack' to='/admin'>
                                             <ArrowLeftOutlined />
                                         </Link>
-                                        Edit {this.state.editingTrainingData.title} </h2>
-                                    <CreateTraining
-                                        defaultValues={this.state.editingTrainingData}
-                                        onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining>
-                                </div>:
-                                        <Redirect to='/admin/trainings/'/>}
+                                        Edit</h2>
+                                    <CreateTraining onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining>
+                                </div>
                             </div>
                         </Route>
                         <Route path='/admin/editevent/:eventId'>

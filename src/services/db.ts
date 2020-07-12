@@ -172,13 +172,16 @@ class DB {
             })
     }
 
-    public getEventById = (id: string): Promise<AumtEvent | null> => {
+    public getEventById = (id: string): Promise<AumtEvent> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('events')
             .doc(id)
             .get()
             .then((doc) => {
-                return doc.exists ? this.docToEvent(doc.data()) : null
+                if (!doc.exists) {
+                    return Promise.reject('No event found')
+                }
+                return this.docToEvent(doc.data())
             })
     }
 

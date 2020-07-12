@@ -63,11 +63,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 loadingEvent: true
             })
             AdminStore.getEventById(eventId)
-            .then((loadedEvent) => {
-                if (!loadedEvent) {
-                    notification.error({message: 'No event found for id ' + eventId})
-                } else {
-                    console.log(loadedEvent)
+                .then((loadedEvent) => {
                     this.setState({
                         ...this.state,
                         currentId: loadedEvent.id,
@@ -85,17 +81,17 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                         currentNeedAdminConfirm: loadedEvent.signups?.needAdminConfirm || false,
                         currentOpenToNonMembers: loadedEvent.signups?.openToNonMembers || false
                     })
-                }
-            })
-            .catch((err) => {
-                notification.error({message: 'Error retrieving event for id ' + eventId})
-            })
-            .finally(() => {
-                this.setState({
-                    ...this.state,
-                    loadingEvent: false
                 })
-            })
+                .catch((err) => {
+                    notification.error({message: 'Error retrieving event for id ' + eventId + ', redirecting to dashboard'})
+                    this.props.history.push('/admin/events')
+                })
+                .finally(() => {
+                    this.setState({
+                        ...this.state,
+                        loadingEvent: false
+                    })
+                })
             
         }
     }

@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
-import { Button, Input, InputNumber, DatePicker, notification, Radio } from 'antd'
+import { Button, Input, InputNumber, DatePicker, notification, Radio, Spin } from 'antd'
 import moment from 'moment'
 import { MinusCircleOutlined} from '@ant-design/icons'
 import './CreateTraining.css'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
+import AdminStore from '../AdminStore'
 
 
 interface CreateTrainingProps extends RouteComponentProps {
@@ -22,6 +23,7 @@ interface CreateTrainingState {
     currentOpenToPublic: boolean
     currentUseInterSemMembers: boolean
     currentPopulateWeekValue: number
+    loadingTraining: boolean
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
@@ -40,19 +42,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentUseInterSemMembers: false,
             isSubmitting: false,
             currentNotes: '',
-            currentPopulateWeekValue: 1
-        }
-        if (this.props.defaultValues) {
-            this.state = {
-                ...this.state,
-                currentTitle: this.props.defaultValues.title,
-                currentOpens: this.props.defaultValues.opens,
-                currentCloses: this.props.defaultValues.closes,
-                currentSessions: this.props.defaultValues.sessions,
-                currentNotes: this.props.defaultValues.notes,
-                currentOpenToPublic: this.props.defaultValues.openToPublic,
-                currentUseInterSemMembers: this.props.defaultValues.useInterSemMembers
-            }
+            currentPopulateWeekValue: 1,
+            loadingTraining: false
         }
     }
     populateWeeklyDefaults = () => {
@@ -78,7 +69,37 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         })
     }
     componentDidMount = () => {
-        if (!this.props.defaultValues) {
+        const paths = window.location.pathname.split('/')
+        const editTrainingIdx = paths.indexOf('edittraining')
+        if (editTrainingIdx > -1) {
+            this.setState({
+                ...this.state,
+                loadingTraining: true
+            })
+            AdminStore.getTrainingById(paths[editTrainingIdx + 1])
+                .then((training: AumtWeeklyTraining) => {
+                    this.setState({
+                        ...this.state,
+                        currentTitle: training.title,
+                        currentOpens: training.opens,
+                        currentCloses: training.closes,
+                        currentSessions: training.sessions,
+                        currentNotes: training.notes,
+                        currentOpenToPublic: training.openToPublic,
+                        currentUseInterSemMembers: training.useInterSemMembers,
+                        loadingTraining: false
+                    })
+                })
+                .catch((err) => {
+                    notification.error({message: 'Error getting training by id: ' + paths[editTrainingIdx + 1] + ', redirecting to dashboard'})
+                    this.setState({
+                        ...this.state,
+                        loadingTraining: false
+                    })
+                    this.props.history.push('/admin')
+                })
+        } else {
+            // empty form
             this.onAddSessionClick()
         }
     }
@@ -229,6 +250,9 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         })
     }
     render() {
+        if (this.state.loadingTraining) {
+            return <Spin/>
+        }
         return (
             <div className='createTrainingContainer'>
                 <span>Use weekly training template for week: </span><InputNumber onChange={this.onPopulateWeekChange} className='populateInput' defaultValue={1} min={1}/><Button onClick={this.populateWeeklyDefaults}>Populate</Button>

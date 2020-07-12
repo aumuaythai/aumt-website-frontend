@@ -46,7 +46,7 @@ class AdminStore {
         }
     }
 
-    getEventById = (id: string): Promise<AumtEvent | null> => {
+    getEventById = (id: string): Promise<AumtEvent> => {
         if (this.state.events.length) {
             const foundEvent = this.state.events.find(e => e.id === id)
             if (foundEvent) {
@@ -54,6 +54,16 @@ class AdminStore {
             }
         } 
         return db.getEventById(id)
+    }
+
+    getTrainingById = (id: string): Promise<AumtWeeklyTraining> => {
+        if (this.state.trainings.length) {
+            const foundTraining = this.state.trainings.find(t => t.trainingId === id)
+            if (foundTraining) {
+                return Promise.resolve(foundTraining)
+            }
+        }
+        return db.getTrainingData(id)
     }
     
     onDbUpdateTrainings = (forms: AumtWeeklyTraining[]) => {
