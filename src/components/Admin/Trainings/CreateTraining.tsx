@@ -6,12 +6,10 @@ import { MinusCircleOutlined} from '@ant-design/icons'
 import './CreateTraining.css'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
+import db from '../../../services/db'
 
 
-interface CreateTrainingProps extends RouteComponentProps {
-    onCreateSubmit: (trainingData: AumtWeeklyTraining) => Promise<void>
-    defaultValues?: AumtWeeklyTraining
-}
+interface CreateTrainingProps extends RouteComponentProps {}
 
 interface CreateTrainingState {
     currentTitle: string
@@ -20,9 +18,11 @@ interface CreateTrainingState {
     currentSessions: AumtTrainingSession[]
     isSubmitting: boolean
     currentNotes: string
+    currentFeedback: string[]
     currentOpenToPublic: boolean
     currentUseInterSemMembers: boolean
     currentPopulateWeekValue: number
+    currentTrainingId: string
     loadingTraining: boolean
 }
 
@@ -42,7 +42,9 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentUseInterSemMembers: false,
             isSubmitting: false,
             currentNotes: '',
+            currentFeedback: [],
             currentPopulateWeekValue: 1,
+            currentTrainingId: '',
             loadingTraining: false
         }
     }
@@ -87,6 +89,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                         currentNotes: training.notes,
                         currentOpenToPublic: training.openToPublic,
                         currentUseInterSemMembers: training.useInterSemMembers,
+                        currentFeedback: training.feedback,
+                        currentTrainingId: training.trainingId,
                         loadingTraining: false
                     })
                 })
@@ -218,7 +222,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             ...this.state,
             isSubmitting: true,
         })
-        this.props.onCreateSubmit({
+        db.submitNewForm({
             title: this.state.currentTitle,
             sessions: this.state.currentSessions,
             opens: this.state.currentOpens,
@@ -226,10 +230,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             openToPublic: this.state.currentOpenToPublic,
             useInterSemMembers: this.state.currentUseInterSemMembers,
             notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
-            trainingId: this.props.defaultValues ?
-                this.props.defaultValues.trainingId :
-                this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
-            feedback: this.props.defaultValues ? this.props.defaultValues.feedback : []
+            trainingId: this.state.currentTrainingId || this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
+            feedback: this.state.currentFeedback
         })
         .then(() => {
             this.setState({

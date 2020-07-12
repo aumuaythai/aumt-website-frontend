@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Link } from 'react-router-dom'
 import { Spin, Popconfirm, Alert, Button, notification, Divider } from 'antd'
 import './ManageEvents.css'
 import { AumtEvent } from '../../../types'
@@ -7,7 +8,6 @@ import AdminStore from '../AdminStore'
 
 
 interface ManageEventsProps {
-    onEditEventRequest: (data: AumtEvent) => void
     events: AumtEvent[]
 }
 
@@ -52,17 +52,6 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
             ...this.state,
             events: events.slice()
         })
-    }
-
-    onEventEditClick = (eventId: string) => {
-        const event = this.state.events.find(e => e.id === eventId)
-        if (event) {
-            this.props.onEditEventRequest(event)
-        } else {
-            notification.open({
-                message: 'No event found for id ' + eventId
-            })
-        }
     }
 
     removeEvent = (eventId: string) => {
@@ -110,9 +99,9 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
                                     {event.title}
                                 </h4>
                                 <div className='manageEventOptions'>
-                                    <Button className='manageEventOptionButton' onClick={e => this.onEventEditClick(event.id)}>
-                                        Edit
-                                    </Button>
+                                    <Link to={`/admin/editevent/${event.id}`}>
+                                        <Button className='manageEventOptionButton'>Edit</Button>
+                                    </Link>
                                     <Popconfirm title='Confirm Delete Event?' onConfirm={e => this.removeEvent(event.id)}>
                                         <Button className='manageEventOptionButton' loading={this.state.removingEvent[event.id]} type='danger'>Remove</Button>
                                     </Popconfirm>

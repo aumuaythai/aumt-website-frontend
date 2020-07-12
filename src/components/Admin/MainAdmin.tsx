@@ -18,8 +18,6 @@ interface MainAdminProps extends RouteComponentProps {
 }
 
 interface MainAdminState {
-    editingTrainingData: AumtWeeklyTraining | null
-    editingEventData: AumtEvent | null
     menuOpen: boolean
     currentSelectedAdmin: string
     forms: AumtWeeklyTraining[]
@@ -31,8 +29,6 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     constructor(props: MainAdminProps) {
         super(props)
         this.state = {
-            editingTrainingData: null,
-            editingEventData: null,
             menuOpen: false,
             currentSelectedAdmin: 'trainings',
             forms: [],
@@ -83,21 +79,6 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             ...this.state,
             currentSelectedAdmin
         })
-    }
-
-    onEditTrainingRequest = (data: AumtWeeklyTraining) => {
-        this.setState({...this.state, editingTrainingData: data}, () => {
-            this.props.history.push(`/admin/edittraining/${data.trainingId}`)
-        })
-    }
-    onEditEventRequest = (data: AumtEvent) => {
-        this.setState({...this.state, editingEventData: data}, () => {
-            this.props.history.push(`/admin/editevent/${data.id}`)
-        })
-    }
-
-    onCreateTrainingSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {
-        return db.submitNewForm(trainingData)
     }
 
     setMenuOpen = (open: boolean) => {
@@ -156,7 +137,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                     </Link>
                                     <div className="clearBoth"></div>
                                 </div>
-                                <ManageEvents events={this.state.events} onEditEventRequest={this.onEditEventRequest}></ManageEvents>
+                                <ManageEvents events={this.state.events}></ManageEvents>
                             </div>
                         </Route>
                         <Route path='/admin/members'>
@@ -172,7 +153,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                         <ArrowLeftOutlined />
                                     </Link>
                                     Create Training</h2>
-                                <CreateTraining onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining>
+                                <CreateTraining></CreateTraining>
                             </div>
                         </Route>
                         <Route path='/admin/createevent'>
@@ -193,7 +174,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                             <ArrowLeftOutlined />
                                         </Link>
                                         Edit</h2>
-                                    <CreateTraining onCreateSubmit={this.onCreateTrainingSubmit}></CreateTraining>
+                                    <CreateTraining></CreateTraining>
                                 </div>
                             </div>
                         </Route>
@@ -212,7 +193,6 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                         <Route path='/admin'>
                             <TrainingDashboard
                                 forms={this.state.forms}
-                                onEditTrainingRequest={this.onEditTrainingRequest}
                                 ></TrainingDashboard>
                         </Route>
                     </Switch>

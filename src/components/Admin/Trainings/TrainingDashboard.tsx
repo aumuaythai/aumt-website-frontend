@@ -13,7 +13,6 @@ import AdminStore from '../AdminStore'
 
 
 interface TrainingDashboardProps {
-    onEditTrainingRequest: (training: AumtWeeklyTraining) => void
     forms: AumtWeeklyTraining[]
 }
 
@@ -153,7 +152,6 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                                 trainings={this.state.allForms}
                                 loadingTrainings={this.state.loadingForms}
                                 onTrainingClick={this.onClickTraining}
-                                onEditTrainingRequest={this.props.onEditTrainingRequest}
                                 ></ManageTrainings>
                         </div>
                     </div>

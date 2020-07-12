@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Link } from 'react-router-dom'
 import { Spin, Modal, Alert, Button, notification, Divider } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import './ManageTrainings.css'
@@ -9,16 +10,12 @@ import db from '../../../services/db'
 
 interface ManageTrainingsProps {
     onTrainingClick: (trainingId: string) => void
-    onEditTrainingRequest: (training: AumtWeeklyTraining) => void
     trainings: AumtWeeklyTraining[]
     loadingTrainings: boolean
 }
 
 interface ManageTrainingsState {
     errorText: string
-    editingTraining: {
-        [trainingId: string]: boolean
-    },
     removingTraining: {
         [trainingId: string]: boolean
     }
@@ -29,7 +26,6 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
         super(props)
         this.state = {
             errorText: '',
-            editingTraining: {},
             removingTraining: {}
         }
     }
@@ -41,20 +37,7 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
             })
         }
     }
-    onTrainingEditClick = (trainingId: string) => {
-        const training = this.props.trainings.find(t => t.trainingId === trainingId)
-        if (training) {
-            this.props.onEditTrainingRequest(training)
-        } else {
-            notification.error({
-                message: 'No training found for id ' + trainingId
-            })
-        }
-    }
 
-    onCreateTrainingSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {
-        return db.submitNewForm(trainingData)
-    }
     confirmDeleteTraiing = (title: string, trainingId: string) => {
         Modal.confirm({
           title: `Delete ${title}?`,
@@ -114,9 +97,9 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
                                     {training.title}
                                 </h4>
                                 <div className='manageTrainingOptions'>
-                                    <Button className='manageTrainingOptionButton' onClick={e => this.onTrainingEditClick(training.trainingId)}>
-                                        {this.state.editingTraining[training.trainingId] ? 'Cancel Edit' : 'Edit'}
-                                    </Button>
+                                    <Link to={`/admin/edittraining/${training.trainingId}`}>
+                                        <Button className='manageTrainingOptionButton'>Edit</Button>
+                                    </Link>
                                     <Button className='manageTrainingOptionButton'
                                         loading={this.state.removingTraining[training.trainingId]}
                                         onClick={e => this.confirmDeleteTraiing(training.title, training.trainingId)}
@@ -125,16 +108,6 @@ export class ManageTrainings extends Component<ManageTrainingsProps, ManageTrain
                                 </div>
                                 <div className="clearBoth"></div>
                             </div>
-                            {this.state.editingTraining[training.trainingId] ?
-                                (
-                                    <div className="trainingEditManage">
-                                        <CreateTraining
-                                            onCreateSubmit={this.onCreateTrainingSubmit}
-                                            defaultValues={training}
-                                            ></CreateTraining>
-                                    </div>
-                                ) :
-                                ''}
                             <Divider/>
                         </div>
                     )
