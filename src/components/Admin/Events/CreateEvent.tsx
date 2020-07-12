@@ -5,10 +5,10 @@ import moment from 'moment'
 import './CreateEvent.css'
 import { AumtEvent } from '../../../types'
 import AdminStore from '../AdminStore'
+import db from '../../../services/db'
 
 
 interface CreateEventProps extends RouteComponentProps {
-    onCreateEventSubmit: (eventData: AumtEvent) => Promise<void>
     defaultValues?: AumtEvent
 }
 
@@ -78,6 +78,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                         currentDate: loadedEvent.date,
                         currentLocation: loadedEvent.location,
                         currentFbLink: loadedEvent.fbLink,
+                        showEditSignups: !!loadedEvent.signups,
                         currentSignupLimit: loadedEvent.signups?.limit || 30,
                         currentHasLimit: loadedEvent.signups?.limit === null ? false : true,
                         currentSignupOpenDate: loadedEvent.signups?.opens || new Date(),
@@ -221,7 +222,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             ...this.state,
             isSubmitting: true
         })
-        this.props.onCreateEventSubmit({
+        db.submitEvent({
             id: this.state.currentId,
             urlPath: this.state.currentUrlPath,
             title: this.state.currentTitle,

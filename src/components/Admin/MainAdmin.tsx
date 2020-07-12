@@ -69,7 +69,10 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
     setStateFromPathChange = (windowPath: string) => {
         const pathname = windowPath
         let currentSelectedAdmin = 'trainings'
-        if (pathname.indexOf('/admin/events') > -1 || pathname.indexOf('/admin/createevent') > -1) {
+        if (pathname.indexOf('/admin/events') > -1
+            || pathname.indexOf('/admin/createevent') > -1
+            || pathname.indexOf('/admin/editevent') > -1
+            ) {
             currentSelectedAdmin = 'events'
         } else if (pathname.indexOf('/admin/members') > -1) {
             currentSelectedAdmin = 'members'
@@ -95,10 +98,6 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
 
     onCreateTrainingSubmit = (trainingData: AumtWeeklyTraining): Promise<void> => {
         return db.submitNewForm(trainingData)
-    }
-
-    onCreateEventSubmit = (eventData: AumtEvent): Promise<void> => {
-        return db.submitEvent(eventData)
     }
 
     setMenuOpen = (open: boolean) => {
@@ -183,7 +182,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                         <ArrowLeftOutlined />
                                     </Link>
                                     Create Event</h2>
-                                <CreateEvent onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent>
+                                <CreateEvent></CreateEvent>
                             </div>
                         </Route>
                         <Route path='/admin/edittraining/:trainingid'>
@@ -210,8 +209,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                             <ArrowLeftOutlined />
                                         </Link>
                                     Edit Event</h2>
-                                    <CreateEvent
-                                        onCreateEventSubmit={this.onCreateEventSubmit}></CreateEvent>
+                                    <CreateEvent></CreateEvent>
                                 </div>
                             </div>
                         </Route>
