@@ -418,14 +418,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 },
             },
             {
-                dataIndex: 'timeJoinedMs',
-                title: 'Joined',
-                sorter: (a: TableDataLine, b: TableDataLine) => a.timeJoinedMs - b.timeJoinedMs,
-                render: (text: string) => {
-                    return moment(Number(text)).format('MMM DD')
-                }
-            },
-            {
                 dataIndex: 'instagramHandle',
                 title: 'Insta',
                 ...this.getColumnSearchProps('instagramHandle'),
@@ -434,34 +426,54 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 }
             },
             {
-                title: 'Emergency Contact',
-                children: [
-                    {
-                        dataIndex: 'EmergencyContactName',
-                        title: 'Name',
-                        render: (t: string) => this.renderHighlightedText(t, 'EmergencyContactName'),
-                        ...this.getColumnSearchProps('EmergencyContactName')
-                    },
-                    {
-                        dataIndex: 'EmergencyContactNumber',
-                        title: 'Number',
-                        render: (text: string) => {
-                            return <span>{this.renderHighlightedText(text, 'EmergencyContactNumber')} <Tooltip title='Copy'>
-                                <span className='noLinkA rightTableText' onClick={e => e.stopPropagation()}><
-                                    CopyOutlined onClick={e => this.copyText(text)}/>
-                                </span>
-                                </Tooltip></span>
-                        },
-                        ...this.getColumnSearchProps('EmergencyContactNumber')
-                    },
-                    {
-                        dataIndex: 'EmergencyContactRelationship',
-                        title: 'Relation',
-                        render: (t: string) => this.renderHighlightedText(t, 'EmergencyContactRelationship'),
-                        ...this.getColumnSearchProps('EmergencyContactRelationship')
-                    }
-                ]                
+                dataIndex: 'timeJoinedMs',
+                title: 'Joined',
+                sorter: (a: TableDataLine, b: TableDataLine) => a.timeJoinedMs - b.timeJoinedMs,
+                render: (text: string) => {
+                    return moment(Number(text)).format('MMM DD')
+                }
+            },
+            {
+                dataIndex: 'emailVerified',
+                title: 'Logged In?',
+                filters: [{ text: 'Yes', value: true },
+                { text: 'No', value: false }],
+                onFilter: (value: boolean, record: TableDataLine) => {
+                    return record.emailVerified === value
+                },
+                render: (verified: boolean) => {
+                    return verified ? 'Yes' : 'No'
+                }
             }
+            // {
+            //     title: 'Emergency Contact',
+            //     children: [
+            //         {
+            //             dataIndex: 'EmergencyContactName',
+            //             title: 'Name',
+            //             render: (t: string) => this.renderHighlightedText(t, 'EmergencyContactName'),
+            //             ...this.getColumnSearchProps('EmergencyContactName')
+            //         },
+            //         {
+            //             dataIndex: 'EmergencyContactNumber',
+            //             title: 'Number',
+            //             render: (text: string) => {
+            //                 return <span>{this.renderHighlightedText(text, 'EmergencyContactNumber')} <Tooltip title='Copy'>
+            //                     <span className='noLinkA rightTableText' onClick={e => e.stopPropagation()}><
+            //                         CopyOutlined onClick={e => this.copyText(text)}/>
+            //                     </span>
+            //                     </Tooltip></span>
+            //             },
+            //             ...this.getColumnSearchProps('EmergencyContactNumber')
+            //         },
+            //         {
+            //             dataIndex: 'EmergencyContactRelationship',
+            //             title: 'Relation',
+            //             render: (t: string) => this.renderHighlightedText(t, 'EmergencyContactRelationship'),
+            //             ...this.getColumnSearchProps('EmergencyContactRelationship')
+            //         }
+            //     ]                
+            // }
         ]
         this.setState({...this.state, currentData: lines, totalMembers: lines.length})
         return {lines, columns}
