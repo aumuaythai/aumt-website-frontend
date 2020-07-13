@@ -40,6 +40,11 @@ class FirebaseUtil {
         return firebase.auth().currentUser
     }
 
+    public getCurrentUid = (): string | null => {
+        const currentUser = this.getCurrentUser()
+        return currentUser ? currentUser.uid : null
+    }
+
     public createUser = (email: string, password: string) => {
         return firebase.auth().createUserWithEmailAndPassword(email, password)
     }

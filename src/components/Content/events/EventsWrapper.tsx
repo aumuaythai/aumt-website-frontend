@@ -4,11 +4,11 @@ import { Spin, Alert } from 'antd';
 import EventsList from './EventsList'
 import {Event} from './Event'
 import './EventsWrapper.css'
-import { AumtEvent } from '../../../types'
+import { AumtEvent, AumtMember } from '../../../types'
 import db from '../../../services/db';
 
 interface EventWrapperProps extends RouteComponentProps {
-    
+    authedUser: AumtMember | null
 }
 
 interface EventWrapperState {
@@ -61,16 +61,7 @@ class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapp
         }
         const foundEvent = this.state.upcomingEvents.concat(this.state.pastEvents).find((a) => a.urlPath === eventId)
         if (foundEvent) {
-            return (<Event
-                    photoPath={foundEvent.photoPath}
-                    urlPath={foundEvent.urlPath}
-                    description={foundEvent.description}
-                    date={foundEvent.date}
-                    fbLink={foundEvent.fbLink}
-                    eventLocation={foundEvent.location}
-                    title={foundEvent.title}
-                    id={foundEvent.id}
-                ></Event>)
+            return (<Event authedUser={this.props.authedUser} event={foundEvent}></Event>)
         }
         return (<p>Error displaying event - <Link to='/events'>Go Back to events page</Link></p>)        
     }

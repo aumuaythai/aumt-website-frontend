@@ -153,7 +153,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                           </Route>
                           <Route path="/events">
                           {this.state.authedUser ?
-                            <EventsWrapper></EventsWrapper>
+                            <EventsWrapper authedUser={this.state.authedUser}></EventsWrapper>
                             : <p>You must sign in to be able to view events!</p>}
                           </Route>
                           <Route path="/join">
