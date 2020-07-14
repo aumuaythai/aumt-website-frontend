@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
-import { Button, Result, Divider, notification} from 'antd'
+import { Button, Result, Divider, notification, Input} from 'antd'
 import moment from 'moment'
 import './Event.css'
 import { AumtEvent, AumtMember } from '../../../types'
@@ -20,6 +20,7 @@ interface EventState {
     confirmedSignUp: boolean
     reservingSpot: boolean
     withdrawingSpot: boolean
+    currentDisplayName: string
 }
 
 export class Event extends Component<EventProps, EventState> {
@@ -36,7 +37,8 @@ export class Event extends Component<EventProps, EventState> {
             signedUp: !!signupInfo,
             confirmedSignUp: !!signupInfo && signupInfo.confirmed,
             reservingSpot: false,
-            withdrawingSpot: false
+            withdrawingSpot: false,
+            currentDisplayName: ''
         }
     }
     generateMockUid = () => {
@@ -54,9 +56,18 @@ export class Event extends Component<EventProps, EventState> {
         }
         return null
     }
+    onDisplayNameChange = (name: string) => {
+        this.setState({
+            ...this.state,
+            currentDisplayName: name
+        })
+    }
     onReserveClicked = () => {
-        console.log(this.props.event)
-        const displayName = this.props.authedUser ? `${this.props.authedUser?.firstName} ${this.props.authedUser?.lastName}` : 'ted ted ted'
+        const displayName = this.state.currentDisplayName || (this.props.authedUser ? `${this.props.authedUser?.firstName} ${this.props.authedUser?.lastName}` : '')
+        if (!displayName) {
+            notification.error({message: 'Name required'})
+            return
+        }
         this.setState({
             ...this.state,
             reservingSpot: true
@@ -154,6 +165,7 @@ export class Event extends Component<EventProps, EventState> {
                                 <div>Signups will open {moment(signups.opens).format('MMMM Do')}</div>
                                 : 
                                 <div>
+                                    {this.props.authedUser ? '' : <Input placeholder='Enter your Full Name' onChange={e => this.onDisplayNameChange(e.target.value)}/>}
                                     <Button
                                         loading={this.state.reservingSpot}
                                         type='primary'
