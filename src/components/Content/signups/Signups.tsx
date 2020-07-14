@@ -136,6 +136,7 @@ class Signups extends Component<SignupProps, SignupState> {
                                     closes={form.closes} 
                                     sessions={form.sessions} 
                                     displayName={this.getDisplayName()}
+                                    preferredName={this.props.authedUser?.preferredName || this.props.authedUser?.firstName}
                                     authedUserId={this.props.authedUserId}
                                     notes={form.notes}
                                     openToPublic={form.openToPublic}
