@@ -12,7 +12,7 @@ import { ErrorBoundary } from './Content/error/ErrorBoundary'
 import './Aumt.css'
 import {Team} from './Content/info/Team';
 import DB from '../services/db'
-import FirebaseUtil, {AnalyticEvents} from '../services/firebase.util'
+import FirebaseUtil from '../services/firebase.util'
 import { AumtMember } from '../types';
 
 const MainAdminLazyWrapper = (
@@ -84,7 +84,6 @@ export class Aumt extends Component<AumtProps, AumtState> {
         })
         .then(() => {
           if (this.state.authedUser && !this.state.authedUser.emailVerified) {
-            FirebaseUtil.sendAnalytics(AnalyticEvents.FIREBASE_FIRST_TIME_LOGIN)
             return DB.setEmailVerified(this.state.authedUserId, true)
           }
         })

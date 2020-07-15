@@ -13,8 +13,7 @@ const firebaseConfig = {
   projectId: "<id>",
   storageBucket: "<bucket>",
   messagingSenderId: "<id>",
-  appId: "<id>",
-  measurementId: "<id>"
+  appId: "<id>"
 };
 ```
 3. Create two files called `.env.development` and `.env.production ` in the project root directory
@@ -34,8 +33,6 @@ REACT_APP_FB_STORAGE_BUCKET=<bucket>
 REACT_APP_FB_MESSAGING_SENDER_ID=<id>
 
 REACT_APP_FB_APP_ID=<id>
-
-REACT_APP_FB_MEASUREMENT_ID=<id>
 ```
 
 5. Append the following line to the `.env.production` file.
