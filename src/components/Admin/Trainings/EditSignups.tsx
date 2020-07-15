@@ -143,7 +143,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                     </div>
                                 </div>
                             </Col>
-                            <Col span={10}>
+                            <Col span={17}>
                                 <Select
                                     showSearch={window.innerWidth > 600}
                                     className='memberSelect'
@@ -157,21 +157,21 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                                 )
                                         })}
                                 </Select>
-                            </Col>
-                            <Col span={7} className="editSignupsOptionButtons">
-                                <Dropdown
-                                    disabled={!this.state.selectedMembers[session.sessionId]}
-                                    overlay={this.getMoveDropdown(session.sessionId)}
-                                    trigger={['click']}>
-                                    <Button loading={this.state.movingInProcess[session.sessionId]}
-                                        >Move...</Button>
-                                </Dropdown>
-                                <Button
-                                    loading={this.state.removingInProcess[session.sessionId]}
-                                    disabled={!this.state.selectedMembers[session.sessionId]}
-                                    type='danger'
-                                    onClick={e => this.onRemoveClick(session.sessionId)}
-                                    >Remove</Button>
+                                <div className="editSignupsOptionButtons">
+                                    <Dropdown
+                                        disabled={!this.state.selectedMembers[session.sessionId]}
+                                        overlay={this.getMoveDropdown(session.sessionId)}
+                                        trigger={['click']}>
+                                        <Button loading={this.state.movingInProcess[session.sessionId]}
+                                            >Move...</Button>
+                                    </Dropdown>
+                                    <Button
+                                        loading={this.state.removingInProcess[session.sessionId]}
+                                        disabled={!this.state.selectedMembers[session.sessionId]}
+                                        type='danger'
+                                        onClick={e => this.onRemoveClick(session.sessionId)}
+                                        >Remove</Button>
+                                </div>
                             </Col>
                             </Row>
                         </div>

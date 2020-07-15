@@ -1,16 +1,8 @@
 import 'firebase/auth';
 import 'firebase/database'
-import 'firebase/analytics'
 
 import * as firebase from "firebase/app";
 import { User } from 'firebase/app'
-
-export class AnalyticEvents {
-    public static FIREBASE_JOIN_PAGE_VISITED = 'firebase_join_page_visited'
-    public static FIREBASE_EVENTS_PAGE_VISITED = 'firebase_events_page_visited'
-    public static FIREBASE_FIRST_TIME_LOGIN = 'firebase_first_time_login'
-    public static FIREBASE_SEM_2_CONFIRMATION = 'firebase_sem_2_confirmation'
-}
 
 
 class FirebaseUtil {
@@ -21,14 +13,12 @@ class FirebaseUtil {
         projectId: process.env.REACT_APP_FB_PROJECT_ID,
         storageBucket: process.env.REACT_APP_FB_STORAGE_BUCKET,
         messagingSenderId: process.env.REACT_APP_FB_MESSAGING_SENDER_ID,
-        appId: process.env.REACT_APP_FB_APP_ID,
-        measurementId: process.env.REACT_APP_FB_MEASUREMENT_ID
+        appId: process.env.REACT_APP_FB_APP_ID
     }
     public initialize = (authStateChange: (a: User | null) => void) => {
         if (!firebase.apps.length) {
             firebase.initializeApp(this.firebaseConfig);
             firebase.auth().onAuthStateChanged(authStateChange)
-            firebase.analytics()
         }
     }
 
@@ -63,14 +53,6 @@ class FirebaseUtil {
 
     public sendPasswordResetEmail = (email: string) => {
         return firebase.auth().sendPasswordResetEmail(email)
-    }
-
-    public sendAnalytics = (type: string) => {
-        try {
-            firebase.analytics().logEvent(type)
-        } catch (err) {
-            console.error(err)
-        }
     }
 }
 export default new FirebaseUtil()

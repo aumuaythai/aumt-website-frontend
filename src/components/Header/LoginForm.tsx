@@ -38,6 +38,13 @@ export class LoginForm extends Component<LoginProps, LoginState> {
             this.emailInput.focus()
         }
     }
+    getRedirectPath = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('from') === 'signups') {
+            return '/signups'
+        }
+        return '/'
+    }
     onUnChange = (username: string) => {
         this.setState({
             ...this.state,
@@ -79,7 +86,7 @@ export class LoginForm extends Component<LoginProps, LoginState> {
     }
     render() {
         if (this.state.isAuthed) {
-            return <Redirect to='/'></Redirect>
+            return <Redirect to={this.getRedirectPath()}></Redirect>
         }
         return (
             <div className="loginPageContainer">

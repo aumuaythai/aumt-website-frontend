@@ -4,7 +4,7 @@ import { Result, Button, notification, Spin } from 'antd'
 import { JoinForm } from './JoinForm'
 import './MainJoin.css'
 import { AumtMember } from '../../../types'
-import FirebaseUtil, { AnalyticEvents } from '../../../services/firebase.util'
+import FirebaseUtil from '../../../services/firebase.util'
 
 interface MainJoinProps {
     authedUser: AumtMember | null
@@ -17,9 +17,6 @@ interface MainJoinProps {
 interface MainJoinState {}
 
 export class MainJoin extends Component<MainJoinProps, MainJoinState> {
-    componentDidMount = () => {
-        FirebaseUtil.sendAnalytics(AnalyticEvents.FIREBASE_JOIN_PAGE_VISITED)
-    }
     onSignOutClick = () => {
         FirebaseUtil.signOut()
             .catch((err) => {

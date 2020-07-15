@@ -435,11 +435,11 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             },
             {
                 dataIndex: 'emailVerified',
-                title: 'Logged In?',
-                filters: [{ text: 'Yes', value: true },
-                { text: 'No', value: false }],
+                title: 'Logged In',
+                filters: [{text: 'Yes', value: true}, 
+                {text: 'No', value: false}],
                 onFilter: (value: boolean, record: TableDataLine) => {
-                    return record.emailVerified === value
+                    return value === record.emailVerified
                 },
                 render: (verified: boolean) => {
                     return verified ? 'Yes' : 'No'

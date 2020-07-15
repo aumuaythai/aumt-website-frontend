@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import {Spin, notification, Button } from 'antd'
+import {Spin, notification, Button, Divider } from 'antd'
 import './Signups.css'
 import { SignupForm } from './SignupForm'
 import { AumtWeeklyTraining, AumtMember } from '../../../types'
@@ -77,16 +77,6 @@ class Signups extends Component<SignupProps, SignupState> {
             return null
         }
     }
-    canViewForm = (form: AumtWeeklyTraining) => {
-        if (form.openToPublic || form.useInterSemMembers) {
-            return true
-        }
-        if (this.props.authedUserId) {
-            const membership = this.props.authedUser?.membership
-            return this.props.paid && (membership === 'FY' || membership === this.props.clubSignupSem)
-        }
-        return false
-    }
     handleNewForms = (forms: AumtWeeklyTraining[]) => {
         this.setState({
             forms: forms,
@@ -101,33 +91,33 @@ class Signups extends Component<SignupProps, SignupState> {
         if (this.state.loadingForms || this.props.clubSignupSem === 'loading') {
             return (<div><Spin/></div>)
         }
-        if (!this.props.authedUserId && !areOpenForms) {
-            return (
-                <div>
-                    <h2>AUMT Training Signups happen here.</h2>
-                    <p>You must <Link to='/login'>sign in</Link> to view trainings.</p>
-                    <p>Not a member?</p>
-                    <p><Link to='/join'>Join the club!</Link> Club signups are open at the beginning of each semester.</p>
-                </div>
-            )
-        }
-        if (!areOpenForms && this.props.authedUserId && !this.props.paid) {
-            return (
-                <div className='signupsNotPaidContainer'>
-                    <h4>Our records show you have not paid the membership fee - once you do you can sign up to trainings!</h4>
-                    <p>Membership is $50 for the semester or $90 for the year and can be paid by cash to a committee member or transfer to the bank account below (with your NAME in the reference).</p>
-                    <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
-                </div>
-            )
-        }
         if (!this.state.forms.length) {
             return (<p>{this.state.noFormText}</p>)
         }
         return (
             <div className='signupsContainer'>
                 {this.state.forms
-                    .filter(this.canViewForm)
                     .map((form) => {
+                        if (!form.openToPublic) {
+                            if (!this.props.authedUserId) {
+                                return <div key={form.trainingId}>
+                                    <h2>{form.title}</h2>
+                                    <p>You must <Link to='/login?from=signups'> log in </Link> to view and sign up!</p>
+                                    <h4>Not a member?</h4>
+                                    <p><Link to='/join'>Join the club!</Link> Club signups are open at the beginning of each semester.</p>
+                                    <Divider/>
+                                </div>
+                            } else if (this.props.authedUser && this.props.authedUser.paid === 'No') {
+                                return <div key={form.trainingId} className='signupsNotPaidContainer'>
+                                    <h2>{form.title}</h2>
+                                    <p>Our records show you have not paid the membership fee - once you do you can sign up to trainings!</p>
+                                    <p>Membership is $50 for the semester or $90 for the year and can be paid by cash to a committee member or transfer to the bank account below (with your NAME in the reference).</p>
+                                    <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                                    <Divider/>
+                                </div>
+                            }
+                        }
+                        // Can view form
                         return (
                             <div key={form.trainingId} className="formContainer">
                                 <SignupForm
@@ -136,6 +126,9 @@ class Signups extends Component<SignupProps, SignupState> {
                                     closes={form.closes} 
                                     sessions={form.sessions} 
                                     displayName={this.getDisplayName()}
+                                    submittingAsName={this.props.authedUser ?
+                                        `${this.props.authedUser.preferredName || this.props.authedUser.firstName} ${this.props.authedUser.lastName}`
+                                        : ''}
                                     authedUserId={this.props.authedUserId}
                                     notes={form.notes}
                                     openToPublic={form.openToPublic}
@@ -143,7 +136,6 @@ class Signups extends Component<SignupProps, SignupState> {
                                     ></SignupForm>
                                 </div>
                             )
-
                     })}
             </div>
         )
