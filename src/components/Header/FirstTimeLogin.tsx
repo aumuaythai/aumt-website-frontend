@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Button, Popover, Alert, Select} from 'antd'
 import './FirstTimeLogin.css'
-import FirebaseUtil, { AnalyticEvents } from '../../services/firebase.util'
+import FirebaseUtil from '../../services/firebase.util'
 import { AumtMember, AumtMembersObjWithCollated } from '../../types'
 import db from '../../services/db'
 import dataUtil from '../../services/data.util'
@@ -87,7 +87,6 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
                     errorMessage: '',
                     successMessage: `Email sent to ${email}. Follow the link in the email to confirm your account - then you can sign in!`
                 })
-                FirebaseUtil.sendAnalytics(AnalyticEvents.FIREBASE_SEM_2_CONFIRMATION)
                 document.getElementById('errorElementContainer')?.scrollIntoView()
             })
             .catch((err) => {

@@ -232,8 +232,8 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 openToNonMembers: this.state.currentOpenToNonMembers,
                 limit: this.state.currentHasLimit ? this.state.currentSignupLimit : null,
                 needAdminConfirm: this.state.currentNeedAdminConfirm,
-                members: {},
-                waitlist: {}
+                members: this.props.defaultValues?.signups?.members || {},
+                waitlist: this.props.defaultValues?.signups?.waitlist || {}
             }
         })
             .then(() => {

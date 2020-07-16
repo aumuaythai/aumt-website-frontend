@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
-import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignup } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignup, AumtEventSignupData } from '../types';
 import validator from './validator';
 
 type MockMember = {
@@ -155,6 +155,39 @@ class DB {
         return this.db.collection('events')
             .doc(eventData.id)
             .set(eventData)
+    }
+
+    public signUpToEvent = (eventId: string, uid: string, signupData: AumtEventSignupData) => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('events')
+            .doc(eventId)
+            .set({
+                signups: {
+                    members: {
+                        [uid]: signupData
+                    }
+                }
+            }, {merge: true})
+    }
+
+    public removeMemberFromEvent = (uid: string, eventId: string) => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('events')
+            .doc(eventId)
+            .get()
+            .then((doc) => {
+                if (!doc.exists) throw new Error('No document found for id')
+                return this.docToEvent(doc.data())
+            })
+            .then((event) => {
+                if (event.signups) {
+                    delete event.signups.members[uid]
+                }
+                return this.db?.collection('events')
+                    .doc(eventId)
+                    .set(event)
+            })
+            
     }
 
     public getAllEvents = (): Promise<AumtEvent[]> => {

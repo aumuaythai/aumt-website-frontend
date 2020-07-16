@@ -13,6 +13,7 @@ export interface SignupFormProps {
     closes: Date
     sessions: AumtTrainingSession[]
     displayName: string | null
+    submittingAsName?: string
     authedUserId: string | null
     notes: string
     useInterSem: boolean
@@ -294,6 +295,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 <div className="messageContainer">
                     {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
                 </div>
+                {this.props.submittingAsName ? 
+                    <div className="aboveSubmitSignupFormText">Submitting as {`${this.props.submittingAsName}`}</div>
+                : ''}
                 <Button
                     block
                     className='signupFormButton'
