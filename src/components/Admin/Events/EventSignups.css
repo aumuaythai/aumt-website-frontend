@@ -22,6 +22,10 @@
 .clearBoth {
     clear: both;
 }
+.eventSignupsAddMemberInput {
+    max-width: calc(100% - 150px);
+    margin-right: 10px;
+}
 
 @media only screen and (max-width: 1180px) {
     .eventSignupsMemberDisplaySection {

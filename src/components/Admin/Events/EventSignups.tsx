@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
-import { Spin, Button, notification } from 'antd'
+import { Spin, Button, notification, Input } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import './EventSignups.css'
 import { AumtEvent } from '../../../types'
 import AdminStore from '../AdminStore'
 import { EventSignupTable } from './EventSignupTable'
+import db from '../../../services/db'
 
 
 interface EventSignupsProps extends RouteComponentProps {
@@ -15,15 +16,33 @@ interface EventSignupsProps extends RouteComponentProps {
 interface EventSignupsState {
     event: AumtEvent | null
     loadingEvents: boolean
+    addingMember: boolean
+    signupMemberName: string
+    addingWaitlistMember: boolean
+    waitlistMemberName: string
 }
 
 class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
+    private signupNameInput: Input | null = null
     constructor(props: EventSignupsProps) {
         super(props)
         this.state = {
             event: null,
-            loadingEvents: false
+            loadingEvents: false,
+            addingMember: false,
+            signupMemberName: '',
+            addingWaitlistMember: false,
+            waitlistMemberName: ''
         }
+    }
+
+    generateMockUid = () => {
+        let alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
+        let uid = 'NONMEMBER'
+        for (let i = 0; i < 10; i++) {
+            uid += alphabet[Math.floor(Math.random() * alphabet.length)]
+        }
+        return uid
     }
 
     componentDidMount = () => {
@@ -61,6 +80,75 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
         }
     }
 
+    addMemberClick = () => {
+        this.setState({...this.state, addingMember: true})
+        if (this.signupNameInput) {
+            this.signupNameInput.focus()
+        }
+    }
+
+    onCancelAddMember = () => {
+        this.setState({...this.state, addingMember: false})
+    }
+
+    signupNameChange = (name: string) => {
+        this.setState({...this.state, signupMemberName: name})
+    }
+
+    addWaitlistMemberClick = () => {
+        this.setState({...this.state, addingWaitlistMember: true})
+    }
+
+    onCancelAddWaitlistMember = () => {
+        this.setState({...this.state, addingWaitlistMember: false})
+    }
+
+    waitlistNameChange = (name: string) => {
+        this.setState({...this.state, waitlistMemberName: name})
+    }
+
+    signUpNewMember = () => {
+        if (!this.state.signupMemberName) {
+            return notification.error({message: 'Name required'})
+        }
+        if (!this.state.event) {
+            return
+        }
+        db.signUpToEvent(this.state.event?.id, this.generateMockUid(), {
+            confirmed: false,
+            timeSignedUpMs: new Date().getTime(),
+            displayName: this.state.signupMemberName
+        }, false)
+            .then(() => {
+                notification.success({message: `Successfully signed up ${this.state.signupMemberName}`})
+            })
+            .catch((err) => {
+                notification.error({message: `Error signing up to event: ${err.toString()}`})
+            })
+    }
+
+    waitlistNewMember = () => {
+        if (!this.state.waitlistMemberName) {
+            return notification.error({message: 'Name required'})
+        }
+        if (!this.state.event) {
+            return
+        }
+        db.signUpToEvent(this.state.event.id, this.generateMockUid(), {
+            confirmed: false,
+            timeSignedUpMs: new Date().getTime(),
+            displayName: this.state.waitlistMemberName
+        }, true)
+            .then(() => {
+                notification.success({message: `Successfully added ${this.state.waitlistMemberName} to waitlist`})
+            })
+            .catch((err) => {
+                notification.error({message: `Error signing up to event: ${err.toString()}`})
+            })
+    }
+
+    
+
     render() {
         if (this.state.loadingEvents) {
             return <div className='eventSignupsSpinContainer'><Spin/></div>
@@ -78,9 +166,20 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                 <div className="eventSignupsMemberDisplaySection">
                     <div className="eventSignupMemberDisplayHeader">
                         <h3 className='eventSignupMemberDisplayTitle'>Signups</h3>
-                        <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round'><PlusOutlined/>Add Member</Button>
+                        <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round' onClick={this.addMemberClick}><PlusOutlined/>Add Member</Button>
                         <div className="clearBoth"></div>
-                        <EventSignupTable eventId={this.state.event.id} signupData={this.state.event.signups.members}></EventSignupTable>
+                        {this.state.addingMember ? 
+                            <div className="eventSignupsAddMemberContainer">
+                                <Input
+                                    placeholder={'Name'}
+                                    ref={(input) => { this.signupNameInput = input; }}
+                                    onChange={e => this.signupNameChange(e.target.value)}
+                                    className='eventSignupsAddMemberInput'/>
+                                <Button onClick={this.signUpNewMember}>Add</Button>
+                                <Button onClick={this.onCancelAddMember} type='link'>Cancel</Button>
+                            </div>
+                        : ''}
+                        <EventSignupTable isWaitlist={false} eventId={this.state.event.id} signupData={this.state.event.signups.members}></EventSignupTable>
                         <div className="eventSignupsTableFooter">
                             Total: {Object.keys(this.state.event.signups.members).length} Limit: {this.state.event.signups.limit || 'None'}
                         </div>
@@ -89,9 +188,20 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                 <div className="eventSignupsMemberDisplaySection">
                     <div className="eventSignupMemberDisplayHeader">
                         <h3 className='eventSignupMemberDisplayTitle'>Waitlist</h3>
-                        <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round'><PlusOutlined/>Add Member</Button>
+                        <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round' onClick={this.addWaitlistMemberClick}><PlusOutlined/>Add Member</Button>
                         <div className="clearBoth"></div>
-                        <EventSignupTable eventId={this.state.event.id} signupData={this.state.event.signups.waitlist}></EventSignupTable>
+                        {this.state.addingWaitlistMember ? 
+                            <div className="eventSignupsAddMemberContainer">
+                                <Input
+                                    placeholder={'Name'}
+                                    // ref={(input) => { this.signupNameInput = input; }}
+                                    onChange={e => this.waitlistNameChange(e.target.value)}
+                                    className='eventSignupsAddMemberInput'/>
+                                <Button onClick={this.waitlistNewMember}>Add</Button>
+                                <Button onClick={this.onCancelAddWaitlistMember} type='link'>Cancel</Button>
+                            </div>
+                        : ''}
+                        <EventSignupTable isWaitlist={true} eventId={this.state.event.id} signupData={this.state.event.signups.waitlist}></EventSignupTable>
                     </div>
                 </div>
             </div>

@@ -79,7 +79,7 @@ export class Event extends Component<EventProps, EventState> {
                 displayName,
                 timeSignedUpMs: new Date().getTime(),
                 confirmed
-            })
+            }, false)
             .then(() => {
                 this.setState({
                     ...this.state,

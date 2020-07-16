@@ -157,26 +157,26 @@ class DB {
             .set(eventData)
     }
 
-    public signUpToEvent = (eventId: string, uid: string, signupData: AumtEventSignupData) => {
+    public signUpToEvent = (eventId: string, uid: string, signupData: AumtEventSignupData, waitlist?: boolean) => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('events')
             .doc(eventId)
             .set({
                 signups: {
-                    members: {
+                    [waitlist ? 'waitlist' : 'members']: {
                         [uid]: signupData
                     }
                 }
             }, {merge: true})
     }
 
-    public confirmMemberEventSignup = (eventId: string, uid: string, confirmed: boolean) => {
+    public confirmMemberEventSignup = (eventId: string, uid: string, confirmed: boolean, waitlist?: boolean) => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('events')
             .doc(eventId)
             .set({
                 signups: {
-                    members: {
+                    [waitlist ? 'waitlist' : 'members']: {
                         [uid]: {
                             confirmed
                         }

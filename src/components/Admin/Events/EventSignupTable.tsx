@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Table, Tooltip, notification } from 'antd'
+import { Table, Tooltip, notification, Button } from 'antd'
 import { FormOutlined } from '@ant-design/icons'
 import './EventSignupTable.css'
 import { AumtEventSignupData, AumtEventSignup } from '../../../types'
@@ -13,6 +13,7 @@ type TableRow = AumtEventSignupData & {key: string, displayTime: string}
 interface EventSignupTableProps {
     signupData: AumtEventSignup
     eventId: string
+    isWaitlist: boolean
 }
 
 interface EventSignupTableState {
@@ -43,7 +44,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     }
 
     updateConfirmed = (row: TableRow, newConfirmed: boolean) => {
-        db.confirmMemberEventSignup(this.props.eventId, row.key, newConfirmed)
+        db.confirmMemberEventSignup(this.props.eventId, row.key, newConfirmed, true)
             .then(() => {
                 notification.success({message: `Updated confirmed for ${row.displayName} to ${newConfirmed ? 'Yes' : 'No'}`})
             })
@@ -85,7 +86,8 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     const text = val ? 'Yes' : 'No'
                     const newConfirmed = text === 'Yes'  ? 'No' : 'Yes'
                     return <span>
-                        {text} <Tooltip title={`Change to ${newConfirmed}`}>
+                        {text}
+                         <Tooltip title={`Change to ${newConfirmed}`}>
                             <span className="noLinkA rightTableText" onClick={e => e.stopPropagation()}>
                                 <FormOutlined onClick={e => this.updateConfirmed(record, newConfirmed === 'Yes')}/>
                             </span>
