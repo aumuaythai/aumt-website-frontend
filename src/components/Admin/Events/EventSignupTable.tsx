@@ -1,21 +1,23 @@
 import React, {Component} from 'react'
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
-import { Spin, Button, notification, Table } from 'antd'
-import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { Table, Tooltip, notification } from 'antd'
+import { FormOutlined } from '@ant-design/icons'
 import './EventSignupTable.css'
-import { AumtEvent, AumtEventSignupData, AumtEventSignupObject, AumtEventSignup } from '../../../types'
-import db from '../../../services/db'
-import AdminStore from '../AdminStore'
+import { AumtEventSignupData, AumtEventSignup } from '../../../types'
 import moment from 'moment'
+import { ColumnsType } from 'antd/lib/table'
+import db from '../../../services/db'
 
+
+type TableRow = AumtEventSignupData & {key: string, displayTime: string}
 
 interface EventSignupTableProps {
     signupData: AumtEventSignup
+    eventId: string
 }
 
 interface EventSignupTableState {
-    rows: (AumtEventSignupData & {key: string, displayTime: string}) []
-    columns: {title: string, dataIndex: string}[]
+    rows: TableRow[]
+    columns: ColumnsType<TableRow>
 }
 
 export class EventSignupTable extends Component<EventSignupTableProps, EventSignupTableState> {
@@ -39,6 +41,16 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             this.handleNewData(Object.assign({}, this.props.signupData))
         }
     }
+
+    updateConfirmed = (row: TableRow, newConfirmed: boolean) => {
+        db.confirmMemberEventSignup(this.props.eventId, row.key, newConfirmed)
+            .then(() => {
+                notification.success({message: `Updated confirmed for ${row.displayName} to ${newConfirmed ? 'Yes' : 'No'}`})
+            })
+            .catch((err) => {
+                notification.error({message: `Error confirming signup: ${err.toString()}`})
+            })
+    }
     handleNewData = (signupData: AumtEventSignup) => {
         const rows = Object.keys(signupData)
             .map((uid: string) => {
@@ -46,27 +58,46 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 return Object.assign(signup,
                     {
                         key: uid,
-                        displayTime: moment(new Date(signup.timeSignedUpMs)).format('dd MMM hh:mm')
+                        displayTime: moment(new Date(signup.timeSignedUpMs)).format('MMM DD HH:mm')
                     })
             })
         this.setState({
             ...this.state,
-            rows
+            rows,
+            columns: this.getColumns()
         })
     }
     getColumns = () => {
-        const columns = [
+        const columns: ColumnsType<TableRow> = [
             {
                 title: 'Name',
                 dataIndex: 'displayName',
             },
             {
                 title: 'Confirmed',
-                dataIndex: 'confirmed'
+                dataIndex: 'confirmed',
+                filters: [{text: 'Yes', value: true}, 
+                    {text: 'No', value: false}],
+                onFilter: (value: string | number | boolean, record: TableRow) => {
+                    return value === record.confirmed
+                },
+                render: (val: boolean, record: TableRow) => {
+                    const text = val ? 'Yes' : 'No'
+                    const newConfirmed = text === 'Yes'  ? 'No' : 'Yes'
+                    return <span>
+                        {text} <Tooltip title={`Change to ${newConfirmed}`}>
+                            <span className="noLinkA rightTableText" onClick={e => e.stopPropagation()}>
+                                <FormOutlined onClick={e => this.updateConfirmed(record, newConfirmed === 'Yes')}/>
+                            </span>
+                        </Tooltip>
+                    </span>
+                }
             },
             {
                 title: 'Time',
-                dataIndex: 'displayTime'
+                dataIndex: 'displayTime',
+                defaultSortOrder: 'ascend',
+                sorter: (a: TableRow, b: TableRow) => a.timeSignedUpMs - b.timeSignedUpMs,
             }
         ]
         return columns
@@ -77,7 +108,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 size='small'
                 pagination={false}
                 bordered
-                columns={this.state.columns}
+                columns={this.getColumns()}
                 dataSource={this.state.rows}
             ></Table>
         </div>

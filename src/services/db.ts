@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
-import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignup, AumtEventSignupData } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignupData } from '../types';
 import validator from './validator';
 
 type MockMember = {
@@ -165,6 +165,21 @@ class DB {
                 signups: {
                     members: {
                         [uid]: signupData
+                    }
+                }
+            }, {merge: true})
+    }
+
+    public confirmMemberEventSignup = (eventId: string, uid: string, confirmed: boolean) => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('events')
+            .doc(eventId)
+            .set({
+                signups: {
+                    members: {
+                        [uid]: {
+                            confirmed
+                        }
                     }
                 }
             }, {merge: true})

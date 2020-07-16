@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Switch, Route, Link, withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
+import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Menu, Button, Drawer } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined, MenuOutlined } from '@ant-design/icons'
 import CreateTraining from './Trainings/CreateTraining'

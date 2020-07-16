@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
-import { notification, List, Spin } from 'antd'
+import { List, Spin } from 'antd'
 import './Feedback.css'
 import { AumtWeeklyTraining } from '../../../types'
-import db from '../../../services/db'
 import AdminStore from '../AdminStore'
 
 

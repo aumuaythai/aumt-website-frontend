@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Spin, Modal, Alert, Button, notification, Divider } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import './ManageTrainings.css'
-import CreateTraining from './CreateTraining'
 import { AumtWeeklyTraining } from '../../../types'
 import db from '../../../services/db'
 

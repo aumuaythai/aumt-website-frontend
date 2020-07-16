@@ -3,7 +3,7 @@ import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
 import { Button, Input, InputNumber, DatePicker, notification, Checkbox, Spin } from 'antd'
 import moment from 'moment'
 import './CreateEvent.css'
-import { AumtEvent } from '../../../types'
+import { AumtEvent, AumtEventSignup } from '../../../types'
 import AdminStore from '../AdminStore'
 import db from '../../../services/db'
 
@@ -28,6 +28,8 @@ interface CreateEventState {
     currentSignupOpenDate: Date
     currentNeedAdminConfirm: boolean
     currentOpenToNonMembers: boolean
+    currentMembers: AumtEventSignup,
+    currentWaitlist: AumtEventSignup,
     loadingEvent: boolean
 }
 
@@ -50,6 +52,8 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             currentOpenToNonMembers: false,
             isSubmitting: false,
             loadingEvent: false,
+            currentMembers: {},
+            currentWaitlist: {},
             showEditSignups: false
         }
     }
@@ -79,7 +83,9 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                         currentHasLimit: loadedEvent.signups?.limit === null ? false : true,
                         currentSignupOpenDate: loadedEvent.signups?.opens || new Date(),
                         currentNeedAdminConfirm: loadedEvent.signups?.needAdminConfirm || false,
-                        currentOpenToNonMembers: loadedEvent.signups?.openToNonMembers || false
+                        currentOpenToNonMembers: loadedEvent.signups?.openToNonMembers || false,
+                        currentMembers: loadedEvent.signups?.members || {},
+                        currentWaitlist: loadedEvent.signups?.waitlist || {},
                     })
                 })
                 .catch((err) => {
@@ -232,8 +238,8 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 openToNonMembers: this.state.currentOpenToNonMembers,
                 limit: this.state.currentHasLimit ? this.state.currentSignupLimit : null,
                 needAdminConfirm: this.state.currentNeedAdminConfirm,
-                members: this.props.defaultValues?.signups?.members || {},
-                waitlist: this.props.defaultValues?.signups?.waitlist || {}
+                members: this.state.currentMembers || {},
+                waitlist: this.state.currentWaitlist || {}
             }
         })
             .then(() => {

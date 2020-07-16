@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import { Spin, Popconfirm, Alert, Button, notification, Divider } from 'antd'
+import { Spin, Popconfirm, Button, notification, Divider } from 'antd'
 import './ManageEvents.css'
 import { AumtEvent } from '../../../types'
 import db from '../../../services/db'

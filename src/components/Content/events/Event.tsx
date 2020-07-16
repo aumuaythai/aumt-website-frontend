@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
-import { Button, Result, Divider, notification, Input} from 'antd'
+import { Button, Result, Divider, notification} from 'antd'
 import moment from 'moment'
 import './Event.css'
 import { AumtEvent, AumtMember } from '../../../types'

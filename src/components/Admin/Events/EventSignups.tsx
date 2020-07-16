@@ -4,7 +4,6 @@ import { Spin, Button, notification } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import './EventSignups.css'
 import { AumtEvent } from '../../../types'
-import db from '../../../services/db'
 import AdminStore from '../AdminStore'
 import { EventSignupTable } from './EventSignupTable'
 
@@ -81,7 +80,10 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                         <h3 className='eventSignupMemberDisplayTitle'>Signups</h3>
                         <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round'><PlusOutlined/>Add Member</Button>
                         <div className="clearBoth"></div>
-                        <EventSignupTable signupData={this.state.event.signups.members}></EventSignupTable>
+                        <EventSignupTable eventId={this.state.event.id} signupData={this.state.event.signups.members}></EventSignupTable>
+                        <div className="eventSignupsTableFooter">
+                            Total: {Object.keys(this.state.event.signups.members).length} Limit: {this.state.event.signups.limit || 'None'}
+                        </div>
                     </div>
                 </div>
                 <div className="eventSignupsMemberDisplaySection">
@@ -89,7 +91,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                         <h3 className='eventSignupMemberDisplayTitle'>Waitlist</h3>
                         <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round'><PlusOutlined/>Add Member</Button>
                         <div className="clearBoth"></div>
-                        <EventSignupTable signupData={this.state.event.signups.waitlist}></EventSignupTable>
+                        <EventSignupTable eventId={this.state.event.id} signupData={this.state.event.signups.waitlist}></EventSignupTable>
                     </div>
                 </div>
             </div>

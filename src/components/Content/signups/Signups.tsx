@@ -87,7 +87,6 @@ class Signups extends Component<SignupProps, SignupState> {
         db.unlisten(this.state.dbListenerId)
     }
     render() {
-        const areOpenForms = this.state.forms.find(f => f.openToPublic || f.useInterSemMembers)
         if (this.state.loadingForms || this.props.clubSignupSem === 'loading') {
             return (<div><Spin/></div>)
         }
