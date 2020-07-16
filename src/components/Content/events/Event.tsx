@@ -165,7 +165,7 @@ export class Event extends Component<EventProps, EventState> {
                                 <div>Signups will open {moment(signups.opens).format('MMMM Do')}</div>
                                 : 
                                 <div>
-                                    {this.props.authedUser ? '' : <Input placeholder='Enter your Full Name' onChange={e => this.onDisplayNameChange(e.target.value)}/>}
+                                    {/* {this.props.authedUser ? '' : <Input placeholder='Enter your Full Name' onChange={e => this.onDisplayNameChange(e.target.value)}/>} */}
                                     <Button
                                         loading={this.state.reservingSpot}
                                         type='primary'
