@@ -10,8 +10,8 @@ import { TrainingDashboard } from './Trainings/TrainingDashboard'
 import { Feedback } from './Feedback/Feedback';
 import MemberDashboard from './Members/MemberDashboard'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
-import db from '../../services/db'
 import AdminStore from './AdminStore';
+import EventSignups from './Events/EventSignups';
 
 
 interface MainAdminProps extends RouteComponentProps {
@@ -128,6 +128,9 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                 </div>}
                 <div className="adminContent">
                     <Switch>
+                        <Route path='/admin/events/:id'>
+                            <EventSignups events={this.state.events}></EventSignups>
+                        </Route>
                         <Route path='/admin/events'>
                             <div className="manageEventsContainer">
                                 <div className="mainAdminEventsHeader">

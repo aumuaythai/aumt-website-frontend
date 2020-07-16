@@ -1,0 +1,30 @@
+.eventSignupsSpinContainer {
+    text-align: center;
+    width: 100%;
+    margin-top: 50px;
+}
+.eventSignupsHeader {
+    text-align: center;
+    margin-top: 50px;
+}
+.eventSignupsMemberDisplaySection {
+    width: 50%;
+    float: left;
+    padding: 20px;
+}
+.eventSignupMemberDisplayTitle {
+    float: left;
+}
+.eventSignupMemberDisplayAddButton {
+    float: left;
+    margin: 0 20px;
+}
+.clearBoth {
+    clear: both;
+}
+
+@media only screen and (max-width: 1180px) {
+    .eventSignupsMemberDisplaySection {
+        width: 100%;
+    }
+}

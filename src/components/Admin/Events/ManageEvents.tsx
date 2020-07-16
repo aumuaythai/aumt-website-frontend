@@ -99,6 +99,11 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
                                     {event.title}
                                 </h4>
                                 <div className='manageEventOptions'>
+                                    {!!event.signups ? 
+                                    <Link to={`/admin/events/${event.id}`}>
+                                        <Button className='manageEventOptionButton'>View Signups</Button>
+                                    </Link>
+                                    : ''}
                                     <Link to={`/admin/editevent/${event.id}`}>
                                         <Button className='manageEventOptionButton'>Edit</Button>
                                     </Link>
