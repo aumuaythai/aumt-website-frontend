@@ -1,0 +1,16 @@
+.eventSignupSelect {
+    width: 100%;
+}
+.eventSignupSelectName {
+    float: left;
+}
+.eventSignupSelectTime {
+    float: right;
+}
+.eventSignupSelectPaidTag {
+    float: right;
+    margin-right: 10px;
+}
+.eventSignupMemberInfo {
+    margin: 20px 0;
+}

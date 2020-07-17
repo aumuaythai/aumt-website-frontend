@@ -235,6 +235,9 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                             </div>
                         : ''}
                         <EventSignupTable isWaitlist={true} eventId={this.state.event.id} signupData={this.state.event.signups.waitlist}></EventSignupTable>
+                        <div className="eventSignupsTableFooter">
+                            Total: {Object.keys(this.state.event.signups.waitlist).length}
+                        </div>
                     </div>
                 </div>
             </div>

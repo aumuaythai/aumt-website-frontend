@@ -31,4 +31,7 @@
     .eventSignupsMemberDisplaySection {
         width: 100%;
     }
+    .eventSignupsHeader {
+        margin-top: 0;
+    }
 }
