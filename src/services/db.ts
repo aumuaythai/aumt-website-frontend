@@ -185,24 +185,17 @@ class DB {
             }, {merge: true})
     }
 
-    public removeMemberFromEvent = (uid: string, eventId: string) => {
+    public removeMemberFromEvent = (uid: string, eventId: string, waitlist?: boolean) => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('events')
             .doc(eventId)
-            .get()
-            .then((doc) => {
-                if (!doc.exists) throw new Error('No document found for id')
-                return this.docToEvent(doc.data())
-            })
-            .then((event) => {
-                if (event.signups) {
-                    delete event.signups.members[uid]
+            .set({
+                signups: {
+                    [waitlist ? 'waitlist' : 'members']: {
+                        [uid]: firebase.firestore.FieldValue.delete()
+                    }
                 }
-                return this.db?.collection('events')
-                    .doc(eventId)
-                    .set(event)
-            })
-            
+            }, {merge: true})
     }
 
     public getAllEvents = (): Promise<AumtEvent[]> => {
@@ -504,14 +497,21 @@ class DB {
         return listenerId
     }
 
-    listenToEvents = (callback: (events: AumtEvent[]) => void): string => {
+    listenToEvents = (callback: (events: AumtEvent[]) => void, errorCallback: (message: string) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('events')
             .onSnapshot((querySnapshot) => {
                 const newEvents: AumtEvent[] = []
                 querySnapshot.docs.forEach((doc) => {
-                    newEvents.push(this.docToEvent(doc.data()))
+                    try {
+                        const event = this.docToEvent(doc.data())
+                        newEvents.push(event)
+                    } catch (err) {
+                        if (errorCallback ) {
+                            errorCallback(`Excluding event because ${err.toString()}`)
+                        }
+                    }
                 })
                 callback(newEvents)
             })
@@ -587,6 +587,9 @@ class DB {
     }
 
     private docToEvent = (docData: any): AumtEvent => {
+        if (!docData.date) {
+            throw new Error('No date on event: ' + JSON.stringify(docData))
+        }
         const event: AumtEvent = {
             ...docData,
             date: new Date(docData.date.seconds * 1000),

@@ -1,5 +1,6 @@
 export interface AumtEventSignupData {
     displayName: string
+    email: string
     timeSignedUpMs: number
     confirmed: boolean
 }

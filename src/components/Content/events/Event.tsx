@@ -78,7 +78,8 @@ export class Event extends Component<EventProps, EventState> {
             {
                 displayName,
                 timeSignedUpMs: new Date().getTime(),
-                confirmed
+                confirmed,
+                email: this.props.authedUser?.email || 'NO EMAIL'
             }, false)
             .then(() => {
                 this.setState({

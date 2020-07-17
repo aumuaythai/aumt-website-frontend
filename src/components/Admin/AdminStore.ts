@@ -1,5 +1,6 @@
 import { AumtMembersObj, AumtEvent, AumtWeeklyTraining } from '../../types'
 import db from '../../services/db'
+import { notification } from 'antd'
 
 interface AdminState {
     members: AumtMembersObj
@@ -42,7 +43,7 @@ class AdminStore {
 
     requestEvents = (): void => {
         if (!this.state.dbEventsListenerId) {
-            this.state.dbEventsListenerId = db.listenToEvents(this.onDbUpdateEvents)
+            this.state.dbEventsListenerId = db.listenToEvents(this.onDbUpdateEvents, this.onDbEventListenerError)
         }
     }
 
@@ -74,6 +75,10 @@ class AdminStore {
     onDbUpdateEvents = (events: AumtEvent[]) => {
         this.state.events = events
         this.state.pushEvents(this.state.events)
+    }
+
+    onDbEventListenerError = (message: string) => {
+        notification.error({message})
     }
 
     cleanup = () => {

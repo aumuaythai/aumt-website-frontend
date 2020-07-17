@@ -18,8 +18,10 @@ interface EventSignupsState {
     loadingEvents: boolean
     addingMember: boolean
     signupMemberName: string
+    signupMemberEmail: string
     addingWaitlistMember: boolean
     waitlistMemberName: string
+    waitlistMemberEmail: string
 }
 
 class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
@@ -31,8 +33,10 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
             loadingEvents: false,
             addingMember: false,
             signupMemberName: '',
+            signupMemberEmail: '',
             addingWaitlistMember: false,
-            waitlistMemberName: ''
+            waitlistMemberName: '',
+            waitlistMemberEmail: ''
         }
     }
 
@@ -95,6 +99,10 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
         this.setState({...this.state, signupMemberName: name})
     }
 
+    signupEmailChange = (email: string) => {
+        this.setState({...this.state, signupMemberEmail: email})
+    }
+
     addWaitlistMemberClick = () => {
         this.setState({...this.state, addingWaitlistMember: true})
     }
@@ -107,9 +115,16 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
         this.setState({...this.state, waitlistMemberName: name})
     }
 
+    waitlistEmailChange = (email: string) => {
+        this.setState({...this.state, waitlistMemberEmail: email})
+    }
+
     signUpNewMember = () => {
         if (!this.state.signupMemberName) {
             return notification.error({message: 'Name required'})
+        }
+        if (!this.state.signupMemberEmail) {
+            return notification.error({message: 'Email required'})
         }
         if (!this.state.event) {
             return
@@ -117,7 +132,8 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
         db.signUpToEvent(this.state.event?.id, this.generateMockUid(), {
             confirmed: false,
             timeSignedUpMs: new Date().getTime(),
-            displayName: this.state.signupMemberName
+            displayName: this.state.signupMemberName,
+            email: this.state.signupMemberEmail
         }, false)
             .then(() => {
                 notification.success({message: `Successfully signed up ${this.state.signupMemberName}`})
@@ -131,13 +147,17 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
         if (!this.state.waitlistMemberName) {
             return notification.error({message: 'Name required'})
         }
+        if (!this.state.waitlistMemberEmail) {
+            return notification.error({message: 'Email required'})
+        }
         if (!this.state.event) {
             return
         }
         db.signUpToEvent(this.state.event.id, this.generateMockUid(), {
             confirmed: false,
             timeSignedUpMs: new Date().getTime(),
-            displayName: this.state.waitlistMemberName
+            displayName: this.state.waitlistMemberName,
+            email: this.state.waitlistMemberEmail
         }, true)
             .then(() => {
                 notification.success({message: `Successfully added ${this.state.waitlistMemberName} to waitlist`})
@@ -175,6 +195,11 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                                     ref={(input) => { this.signupNameInput = input; }}
                                     onChange={e => this.signupNameChange(e.target.value)}
                                     className='eventSignupsAddMemberInput'/>
+                                <Input
+                                    placeholder={'Email'}
+                                    // ref={(input) => { this.signupNameInput = input; }}
+                                    onChange={e => this.signupEmailChange(e.target.value)}
+                                    className='eventSignupsAddMemberInput'/>
                                 <Button onClick={this.signUpNewMember}>Add</Button>
                                 <Button onClick={this.onCancelAddMember} type='link'>Cancel</Button>
                             </div>
@@ -196,6 +221,11 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                                     placeholder={'Name'}
                                     // ref={(input) => { this.signupNameInput = input; }}
                                     onChange={e => this.waitlistNameChange(e.target.value)}
+                                    className='eventSignupsAddMemberInput'/>
+                                <Input
+                                    placeholder={'Email'}
+                                    // ref={(input) => { this.signupNameInput = input; }}
+                                    onChange={e => this.waitlistEmailChange(e.target.value)}
                                     className='eventSignupsAddMemberInput'/>
                                 <Button onClick={this.waitlistNewMember}>Add</Button>
                                 <Button onClick={this.onCancelAddWaitlistMember} type='link'>Cancel</Button>
