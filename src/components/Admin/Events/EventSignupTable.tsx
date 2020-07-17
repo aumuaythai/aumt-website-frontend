@@ -13,8 +13,10 @@ type TableRow = AumtEventSignupData & {key: string, displayTime: string}
 
 interface EventSignupTableProps {
     signupData: AumtEventSignup
+    urlPath: string
     eventId: string
     isWaitlist: boolean
+    limit: number | null
 }
 
 interface EventSignupTableState {
@@ -25,6 +27,14 @@ interface EventSignupTableState {
 }
 
 export class EventSignupTable extends Component<EventSignupTableProps, EventSignupTableState> {
+    private keyNameMap: Record<keyof TableRow, string> = {
+        confirmed: 'Paid?',
+        displayName: 'Name',
+        key: 'Firebase UID',
+        timeSignedUpMs: 'Time Signed Up (ms)',
+        displayTime: 'Time Signed Up',
+        email: 'Email'
+    }
     constructor(props: EventSignupTableProps) {
         super(props)
         this.state = {
@@ -166,11 +176,56 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         ]
         return columns
     }
+    getFooter = () => {
+        return <div>
+            Total: {this.state.rows.length} Limit: {this.props.limit || 'None'}
+            <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.downloadCsv}>Download .csv</Button>
+        </div>
+    }
     copyText = (text: string | undefined) => {
         if (text) dataUtil.copyText(text)
     }
     onMemberSelect = (member: TableRow) => {
         this.setState({...this.state, selectedSignup: member})
+    }
+    sortTableKeys = (a: keyof TableRow, b: keyof TableRow) => {
+        const keyMap: Record<keyof TableRow, number> = {
+            displayName: 100,
+            email: 90,
+            confirmed: 80,
+            timeSignedUpMs: 10,
+            displayTime: 50,
+            key: 5
+        }
+        return keyMap[a] > keyMap[b] ? -1 : 1
+    }
+    
+    downloadCsv = () => {
+        let header = false
+        let csvStr = ''
+        const fileName = `${this.props.urlPath}_${this.props.isWaitlist ? 'waitlist' : 'signups'}.csv`
+        this.state.rows
+            .sort((a, b) => a.timeSignedUpMs - b.timeSignedUpMs)
+            .forEach((row) => {
+                if (!header) {
+                    header = true
+                    csvStr  += (Object.keys(row) as (keyof TableRow)[])
+                        .sort(this.sortTableKeys)
+                        .map(k => this.keyNameMap[k])
+                        .join(',') + '\n'
+                }
+                csvStr += (Object.keys(row) as (keyof TableRow)[])
+                    .sort(this.sortTableKeys)
+                    .map((key) => row[key])
+                    .join(',') + '\n'
+            })
+        const blob = new Blob([csvStr])
+        const a = document.createElement("a")
+        a.href = URL.createObjectURL(blob)
+        a.download = fileName
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
     }
     render() {
         if (window.innerWidth < 600) {
@@ -219,6 +274,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 loading={this.state.tableLoading}
                 columns={this.getColumns()}
                 dataSource={this.state.rows}
+                footer={this.getFooter}
             ></Table>
         </div>
     }

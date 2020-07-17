@@ -3,9 +3,14 @@
     width: 100%;
     margin-top: 50px;
 }
+.eventSignupsHeaderContainer {
+    margin-top: 30px;
+}
 .eventSignupsHeader {
-    text-align: center;
-    margin-top: 50px;
+    float: left;
+}
+.eventSignupsHeaderButtons {
+    float: right;
 }
 .eventSignupsMemberDisplaySection {
     width: 50%;

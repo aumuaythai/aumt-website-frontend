@@ -178,11 +178,19 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
         }
         return (
             <div className='eventSignupsContainer'>
-                <h1 className='eventSignupsHeader'>
+                <div className="eventSignupsHeaderContainer">
+                    <h1 className='eventSignupsHeader'>
                         <Link className='mainAdminCreateBack' to='/admin/events'>
                         <ArrowLeftOutlined />
                     </Link>
-                    {this.state.event?.title}</h1>
+                    {this.state.event.title}</h1>
+                    <div className="eventSignupsHeaderButtons">
+                        <Link to={`/admin/editevent/${this.state.event.id}`}>
+                            <Button>Edit Event</Button>
+                        </Link>
+                    </div>
+                </div>
+                <div className="clearBoth"></div>
                 <div className="eventSignupsMemberDisplaySection">
                     <div className="eventSignupMemberDisplayHeader">
                         <h3 className='eventSignupMemberDisplayTitle'>Signups</h3>
@@ -205,10 +213,12 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                                 <Button onClick={this.onCancelAddMember} type='link'>Cancel</Button>
                             </div>
                         : ''}
-                        <EventSignupTable isWaitlist={false} eventId={this.state.event.id} signupData={this.state.event.signups.members}></EventSignupTable>
-                        <div className="eventSignupsTableFooter">
-                            Total: {Object.keys(this.state.event.signups.members).length} Limit: {this.state.event.signups.limit || 'None'}
-                        </div>
+                        <EventSignupTable
+                            urlPath={this.state.event.urlPath}
+                            isWaitlist={false}
+                            eventId={this.state.event.id}
+                            signupData={this.state.event.signups.members}
+                            limit={this.state.event.signups.limit}></EventSignupTable>
                     </div>
                 </div>
                 <div className="eventSignupsMemberDisplaySection">
@@ -234,10 +244,12 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                                 <Button onClick={this.onCancelAddWaitlistMember} type='link'>Cancel</Button>
                             </div>
                         : ''}
-                        <EventSignupTable isWaitlist={true} eventId={this.state.event.id} signupData={this.state.event.signups.waitlist}></EventSignupTable>
-                        <div className="eventSignupsTableFooter">
-                            Total: {Object.keys(this.state.event.signups.waitlist).length}
-                        </div>
+                        <EventSignupTable
+                            urlPath={this.state.event.urlPath}
+                            isWaitlist={true}
+                            eventId={this.state.event.id}
+                            signupData={this.state.event.signups.waitlist}
+                            limit={null}></EventSignupTable>
                     </div>
                 </div>
             </div>
