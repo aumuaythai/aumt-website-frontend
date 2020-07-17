@@ -199,7 +199,8 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                                     placeholder={'Email'}
                                     // ref={(input) => { this.signupNameInput = input; }}
                                     onChange={e => this.signupEmailChange(e.target.value)}
-                                    className='eventSignupsAddMemberInput'/>
+                                    className='eventSignupsAddMemberInput'
+                                    onPressEnter={this.signUpNewMember}/>
                                 <Button onClick={this.signUpNewMember}>Add</Button>
                                 <Button onClick={this.onCancelAddMember} type='link'>Cancel</Button>
                             </div>
@@ -226,7 +227,9 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                                     placeholder={'Email'}
                                     // ref={(input) => { this.signupNameInput = input; }}
                                     onChange={e => this.waitlistEmailChange(e.target.value)}
-                                    className='eventSignupsAddMemberInput'/>
+                                    className='eventSignupsAddMemberInput'
+                                    onPressEnter={this.waitlistNewMember}
+                                    />
                                 <Button onClick={this.waitlistNewMember}>Add</Button>
                                 <Button onClick={this.onCancelAddWaitlistMember} type='link'>Cancel</Button>
                             </div>
