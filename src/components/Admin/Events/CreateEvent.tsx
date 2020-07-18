@@ -310,9 +310,9 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                             <Checkbox checked={this.state.currentNeedAdminConfirm} onChange={e => this.onNeedAdminConfirmCheck(e.target.checked)}>Need Admin Confirmation?</Checkbox>
                             (Confirm spot when paid, etc)
                         </div>
-                        <div>
+                        {/* <div>
                             <Checkbox checked={this.state.currentOpenToNonMembers} onChange={e => this.onOpenToNonMembersCheck(e.target.checked)}>Non Members can sign themselves up (admin can sign up anyone regardless)</Checkbox>
-                        </div>
+                        </div> */}
                     </div>
                 : ''}
                 <div className='submitEventContainer'>
