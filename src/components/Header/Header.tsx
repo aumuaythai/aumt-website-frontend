@@ -24,6 +24,10 @@ export class Header extends Component<HeaderProps, HeaderState> {
     igClick = () => {
         Links.openAumtInsta()
     }
+    getPathForLogin = () => {
+        const path = window.location.pathname
+        return path
+    }
     render() {
         return (
             <div className="headerContainer">
@@ -40,7 +44,7 @@ export class Header extends Component<HeaderProps, HeaderState> {
                                 <UserInfo authedUser={this.props.authedUser}>
                                 </UserInfo>
                             </span> :
-                            <Button><Link to='/login'>Sign In</Link></Button>
+                            <Button><Link to={`/login?from=${this.getPathForLogin()}`}>Sign In</Link></Button>
                     }
                     <div className="socialIconContainer">
                         <span className="socialIcon" onClick={this.fbClick}><FacebookFilled/></span>

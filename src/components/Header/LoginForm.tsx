@@ -39,11 +39,8 @@ export class LoginForm extends Component<LoginProps, LoginState> {
         }
     }
     getRedirectPath = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('from') === 'signups') {
-            return '/signups'
-        }
-        return '/'
+        const urlParams = new URLSearchParams(window.location.search)
+        return urlParams.get('from') || '/'
     }
     onUnChange = (username: string) => {
         this.setState({

@@ -155,7 +155,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                             <EventsWrapper authedUser={this.state.authedUser}></EventsWrapper>
                             : 
                             <div>
-                              You must <Link to='/login'> log in </Link> to view events.
+                              You must <Link to='/login?from=/events'> log in </Link> to view events.
                             </div>
                             }
                           </Route>

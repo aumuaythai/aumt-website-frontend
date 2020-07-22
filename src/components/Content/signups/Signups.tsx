@@ -101,7 +101,7 @@ class Signups extends Component<SignupProps, SignupState> {
                             if (!this.props.authedUserId) {
                                 return <div key={form.trainingId}>
                                     <h2>{form.title}</h2>
-                                    <p>You must <Link to='/login?from=signups'> log in </Link> to view and sign up!</p>
+                                    <p>You must <Link to='/login?from=/signups'> log in </Link> to view and sign up!</p>
                                     <h4>Not a member?</h4>
                                     <p><Link to='/join'>Join the club!</Link> Club signups are open at the beginning of each semester.</p>
                                     <Divider/>

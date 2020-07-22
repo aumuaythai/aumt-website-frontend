@@ -217,7 +217,7 @@ export class Event extends Component<EventProps, EventState> {
                                 : 
                                 !this.props.authedUser ? 
                                 <div>
-                                    <p>You must <Link to='/login'> log in </Link> to reserve your place.</p>
+                                    <p>You must <Link to={`/login?from=/events/${this.props.event.urlPath}`}> log in </Link> to reserve your place.</p>
                                     <h4>Not a member?</h4>
                                     <p>Message the AUMT committee, they can save you a spot!</p>
                                 </div>
