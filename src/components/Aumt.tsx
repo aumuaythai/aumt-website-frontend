@@ -2,7 +2,7 @@ import React, { lazy, Component, Suspense } from 'react'
 import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import {notification, Spin} from 'antd'
 import { User } from 'firebase/app'
-import { Header } from './Header/Header'
+import Header from './Header/Header'
 import {LoginForm} from './Header/LoginForm'
 import {About} from './Content/info/About'
 import EventsWrapper from './Content/events/EventsWrapper'

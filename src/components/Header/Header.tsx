@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import {Button} from 'antd'
@@ -9,7 +9,7 @@ import { Links } from '../../services/links'
 import './Header.css'
 import { AumtMember } from '../../types'
 
-export interface HeaderProps {
+export interface HeaderProps extends RouteComponentProps {
     authedUser: AumtMember | null
     isAdmin: boolean
 }
@@ -17,16 +17,20 @@ export interface HeaderProps {
 export interface HeaderState {
 }
 
-export class Header extends Component<HeaderProps, HeaderState> {
+class Header extends Component<HeaderProps, HeaderState> {
+    private routeChangeListener: null | Function = null
+    private currentPathname: string = window.location.pathname
+    componentDidMount = () => {
+        this.routeChangeListener = this.props.history.listen(this.onRouteChange);
+    }
+    onRouteChange = (location: any, action: string) => {
+        this.currentPathname = location.pathname || '/' 
+    }
     fbClick = () => {
         Links.openAumtFb()
     }
     igClick = () => {
         Links.openAumtInsta()
-    }
-    getPathForLogin = () => {
-        const path = window.location.pathname
-        return path
     }
     render() {
         return (
@@ -44,7 +48,7 @@ export class Header extends Component<HeaderProps, HeaderState> {
                                 <UserInfo authedUser={this.props.authedUser}>
                                 </UserInfo>
                             </span> :
-                            <Button><Link to={`/login?from=${this.getPathForLogin()}`}>Sign In</Link></Button>
+                            <Button><Link to={`/login?from=${this.currentPathname}`}>Sign In</Link></Button>
                     }
                     <div className="socialIconContainer">
                         <span className="socialIcon" onClick={this.fbClick}><FacebookFilled/></span>
@@ -56,3 +60,4 @@ export class Header extends Component<HeaderProps, HeaderState> {
           );
     }
 }
+export default withRouter(Header)
