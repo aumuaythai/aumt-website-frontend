@@ -4,3 +4,10 @@
 .retrievingEventsText {
     margin-top: 30px;
 }
+.eventsWrapper {
+    height: calc(100% - 97px);
+}
+.eventsListWrapper {
+    height: 100%;
+    overflow-y: scroll;
+}

@@ -74,21 +74,23 @@ class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapp
         }
 
         return (
-        <div>
+        <div className='eventsWrapper'>
             <Switch>
                 <Route path={`${path}/:eventId`} render={routerProps => this.renderEvent(routerProps)}/>
                 <Route path={path}>
-                    <div className="eventsListContainer upcomingEventsContainer">
-                        <h2>Upcoming Events</h2>
-                        {this.state.upcomingEvents.length ?
-                        <EventsList events={this.state.upcomingEvents}></EventsList> :
-                        <p>There are no upcoming club events at this time. Please check our Facebook page.</p>}
-                    </div>
-                    <div className="eventsListContainer">
-                        <h2>Past Events</h2>
-                        {this.state.pastEvents.length ?
-                        <EventsList events={this.state.pastEvents}></EventsList> :
-                        <p>There are no past club events up now</p>}
+                    <div className="eventsListWrapper">
+                        <div className="eventsListContainer upcomingEventsContainer">
+                            <h2>Upcoming Events</h2>
+                            {this.state.upcomingEvents.length ?
+                            <EventsList events={this.state.upcomingEvents}></EventsList> :
+                            <p>There are no upcoming club events at this time. Please check our Facebook page.</p>}
+                        </div>
+                        <div className="eventsListContainer">
+                            <h2>Past Events</h2>
+                            {this.state.pastEvents.length ?
+                            <EventsList events={this.state.pastEvents}></EventsList> :
+                            <p>There are no past club events up now</p>}
+                        </div>
                     </div>
                 </Route>
             </Switch>

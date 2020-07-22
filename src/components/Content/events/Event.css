@@ -2,7 +2,7 @@
     max-width: 500px;
     text-align: center;
     margin: 0 auto;
-    padding-top: 30px;
+    padding: 30px;
 }
 .backToEventsLink, .backToEventsLink:hover {
     color: black;
