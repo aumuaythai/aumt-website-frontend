@@ -24,6 +24,7 @@ export interface AumtEvent {
     photoPath: string
     date: Date
     location: string
+    locationLink: string
     fbLink: string
     signups: AumtEventSignupObject | null
 }

@@ -170,7 +170,11 @@ export class Event extends Component<EventProps, EventState> {
                         <ClockCircleOutlined /> {this.state.displayTime}
                     </div>
                     <div className="detail locationDetail">
-                        <HomeOutlined/> {this.props.event.location}
+                        <HomeOutlined/> {this.props.event.locationLink ?
+                        <a href={this.props.event.locationLink} target='_blank' rel='noopener noreferrer'>
+                            {this.props.event.location}
+                        </a>
+                        : this.props.event.location}
                     </div>
                     {this.props.event.fbLink ? 
                         <div className="detail fbLinkDetail">

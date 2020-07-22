@@ -50,7 +50,7 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
     handleNewEvents = (events: AumtEvent[]) => {
         this.setState({
             ...this.state,
-            events: events.slice()
+            events: events.slice().sort((a, b) => a.date > b.date ? -1 : 1)
         })
     }
 

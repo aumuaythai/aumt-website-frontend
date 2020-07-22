@@ -20,6 +20,7 @@ interface CreateEventState {
     currentPhotoPath: string
     currentDate: Date
     currentLocation: string
+    currentLocationLink: string
     currentFbLink: string
     isSubmitting: boolean
     showEditSignups: boolean
@@ -44,6 +45,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             currentPhotoPath:  '',
             currentDate:  new Date(),
             currentLocation:  '',
+            currentLocationLink: '',
             currentFbLink:  '',
             currentSignupLimit: 30,
             currentHasLimit: true,
@@ -77,6 +79,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                         currentPhotoPath: loadedEvent.photoPath,
                         currentDate: loadedEvent.date,
                         currentLocation: loadedEvent.location,
+                        currentLocationLink: loadedEvent.locationLink,
                         currentFbLink: loadedEvent.fbLink,
                         showEditSignups: !!loadedEvent.signups,
                         currentSignupLimit: loadedEvent.signups?.limit || 30,
@@ -145,6 +148,13 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
         this.setState({
             ...this.state,
             currentLocation: location,
+        })
+    }
+
+    onLocationLinkChange = (link: string) => {
+        this.setState({
+            ...this.state,
+            currentLocationLink: link,
         })
     }
 
@@ -233,6 +243,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             fbLink: this.state.currentFbLink,
             photoPath: this.state.currentPhotoPath,
             location: this.state.currentLocation,
+            locationLink: this.state.currentLocationLink,
             signups: !this.state.showEditSignups ? null : {
                 opens: this.state.currentSignupOpenDate,
                 openToNonMembers: this.state.currentOpenToNonMembers,
@@ -285,6 +296,9 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 </div>
                 <p>
                     Location: <Input value={this.state.currentLocation} className='shortInput' onChange={e => this.onLocationChange(e.target.value)}/>
+                </p>
+                <p>
+                    Maps Link: <Input placeholder='optional' value={this.state.currentLocationLink} className='shortInput' onChange={e => this.onLocationLinkChange(e.target.value)}/>
                 </p>
                 <p>
                     FB Link: <Input value={this.state.currentFbLink} placeholder='optional' className='shortInput' onChange={e=>this.onFbLinkChange(e.target.value)}/>
