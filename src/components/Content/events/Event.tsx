@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
-import { Button, Result, Divider, notification} from 'antd'
+import { Button, Result, Input, Divider, Radio, notification, InputNumber} from 'antd'
 import moment from 'moment'
 import './Event.css'
 import { AumtEvent, AumtMember } from '../../../types'
@@ -23,6 +23,10 @@ interface EventState {
     waitlistingMember: boolean
     withdrawingSpot: boolean
     currentDisplayName: string
+    currentOwnsCar: boolean | undefined
+    currentSeats: number | undefined
+    currentLicenseClass: 'Full 2+ years' | 'Full < 2 years' | 'Restricted' | ''
+    currentDietaryRequirements: string
 }
 
 export class Event extends Component<EventProps, EventState> {
@@ -40,6 +44,10 @@ export class Event extends Component<EventProps, EventState> {
             signedUp: !!signupInfo,
             waitlisted: !!waitlistedInfo,
             confirmedSignUp: !!signupInfo && signupInfo.confirmed,
+            currentOwnsCar: !!signupInfo && !!signupInfo.seatsInCar || undefined,
+            currentSeats: signupInfo && signupInfo.seatsInCar || undefined,
+            currentDietaryRequirements: signupInfo && signupInfo.dietaryRequirements || '',
+            currentLicenseClass: signupInfo && signupInfo.driverLicenseClass || '',
             reservingSpot: false,
             withdrawingSpot: false,
             waitlistingMember: false,
@@ -74,11 +82,31 @@ export class Event extends Component<EventProps, EventState> {
             currentDisplayName: name
         })
     }
+    onDietaryRequirementsChange = (diet: string) => {
+        this.setState({...this.state, currentDietaryRequirements: diet})
+    }
+    onSeatsChange = (seats: number | undefined) => {
+        if (seats) {
+            this.setState({...this.state, currentSeats: seats})
+        }
+    }
+    onLicenseSelect = (license: 'Full 2+ years' | 'Full < 2 years' | 'Restricted') => {
+        this.setState({...this.state, currentLicenseClass: license})
+    }
+    onOwnsCarChange = (ownsCar: boolean) => {
+        this.setState({...this.state, currentOwnsCar: ownsCar})
+    }
     onReserveClicked = (waitlist: boolean) => {
         const displayName = this.state.currentDisplayName || (this.props.authedUser ? `${this.props.authedUser?.firstName} ${this.props.authedUser?.lastName}` : '')
         if (!displayName) {
             notification.error({message: 'Name required'})
             return
+        }
+        if (this.props.event.signups?.isCamp) {
+            if (this.state.currentOwnsCar && !this.state.currentSeats) {
+                notification.error({message: 'Number of Seats Required'})
+                return 
+            }
         }
         if (!waitlist) {
             this.setState({...this.state, reservingSpot: true })
@@ -88,12 +116,18 @@ export class Event extends Component<EventProps, EventState> {
         const confirmed = this.props.event.signups?.needAdminConfirm ? false : true
         db.signUpToEvent(this.props.event.id,
             firebaseUtil.getCurrentUid() || this.generateMockUid(),
-            {
+            Object.assign({
                 displayName,
                 timeSignedUpMs: new Date().getTime(),
                 confirmed,
                 email: this.props.authedUser?.email || 'NO EMAIL'
-            }, waitlist)
+            }, this.state.currentDietaryRequirements ? {
+                dietaryRequirements: this.state.currentDietaryRequirements
+            } : {}, this.state.currentLicenseClass ? {
+                driverLicnseClass: this.state.currentLicenseClass,
+                seatsInCar: this.state.currentSeats || -1
+            } : {})
+            , waitlist)
             .then(() => {
                 if (waitlist) {
                     this.setState({...this.state, waitlisted: true})
@@ -212,7 +246,7 @@ export class Event extends Component<EventProps, EventState> {
                             </div>
                         }
                         return <div>
-                            {signups.opens > new Date() ?
+                            {signups.opens > new Date(20000000000000) ?
                                 <div>Signups will open {moment(signups.opens).format('MMMM Do')}</div>
                                 : 
                                 !this.props.authedUser ? 
@@ -231,11 +265,38 @@ export class Event extends Component<EventProps, EventState> {
                                 </div>
                                 :
                                 <div>
-                                    {/* {this.props.authedUser ? '' : <Input placeholder='Enter your Full Name' onChange={e => this.onDisplayNameChange(e.target.value)}/>} */}
+                                    <h2>Signups</h2>
+                                    {this.props.event.signups.isCamp ? 
+                                        <div className="eventSignupForm">
+                                            <h4>Dietary Requirements (optional)</h4>
+                                            <Input onChange={e => this.onDietaryRequirementsChange(e.target.value)}/>
+                                            <h4>Driving (optional)</h4>
+                                            <p>If selected as a driver, you'll receive a $20 discount and fuel reimbursement.</p>
+                                            <div>License class: 
+                                                <Radio.Group value={this.state.currentLicenseClass} onChange={e => this.onLicenseSelect(e.target.value)}>
+                                                    <Radio.Button value={'Full > 2 years'}>Full &gt; 2 years</Radio.Button>
+                                                    <Radio.Button value={'Full < 2 years'}>Full &lt; 2 years</Radio.Button>
+                                                    <Radio.Button value={'Restricted'}>Restricted</Radio.Button>
+                                                </Radio.Group>
+                                            </div>
+                                            {this.state.currentLicenseClass ? 
+                                                <div>Do you own a car you would be willing to drive down?
+                                                    <Radio.Group value={this.state.currentOwnsCar} onChange={e => this.onOwnsCarChange(e.target.value)}>
+                                                        <Radio.Button value={true}>Yes</Radio.Button>
+                                                        <Radio.Button value={false}>No</Radio.Button>
+                                                    </Radio.Group>
+                                                    {this.state.currentOwnsCar ? 
+                                                        <div>How many seats? <InputNumber min={1} value={this.state.currentSeats} onChange={this.onSeatsChange}/></div>
+                                                    : ''}
+                                                </div>
+                                            : ''}
+                                        </div>
+                                    : ''}
                                     <Button
                                         loading={this.state.reservingSpot}
                                         type='primary'
                                         onClick={e => this.onReserveClicked(false)}>Reserve a Spot</Button>
+                                    {/* {this.props.authedUser ? '' : <Input placeholder='Enter your Full Name' onChange={e => this.onDisplayNameChange(e.target.value)}/>} */}
                                 </div>
                                 }
                         </div>

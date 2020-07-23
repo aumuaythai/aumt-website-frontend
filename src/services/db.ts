@@ -431,10 +431,15 @@ class DB {
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                    doc.ref.update({
-                        locationLink: '',
-                        // timeJoined: firebase.firestore.FieldValue.delete()
-                    })
+                    if (doc.data().signups) {
+                        console.log(doc.data())
+                        doc.ref.set({
+                            signups: {
+                                isCamp: false
+                            }
+                            // timeJoined: firebase.firestore.FieldValue.delete()
+                        }, {merge: true})
+                    }
                 })
             })
     }

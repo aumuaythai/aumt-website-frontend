@@ -33,7 +33,10 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         key: 'Firebase UID',
         timeSignedUpMs: 'Time Signed Up (ms)',
         displayTime: 'Time Signed Up',
-        email: 'Email'
+        email: 'Email',
+        dietaryRequirements: 'Dietary',
+        driverLicenseClass: 'License',
+        seatsInCar: 'Seats'
     }
     constructor(props: EventSignupTableProps) {
         super(props)
@@ -193,8 +196,11 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             displayName: 100,
             email: 90,
             confirmed: 80,
-            timeSignedUpMs: 10,
             displayTime: 50,
+            dietaryRequirements: 40,
+            driverLicenseClass: 30,
+            seatsInCar: 20,
+            timeSignedUpMs: 10,
             key: 5
         }
         return keyMap[a] > keyMap[b] ? -1 : 1
