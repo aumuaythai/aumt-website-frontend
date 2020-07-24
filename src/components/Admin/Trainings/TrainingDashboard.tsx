@@ -94,6 +94,9 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
             })
         }
     }
+    onExportClick = () => {
+        console.log(this.props.forms)
+    }
     getFormsDropdown = () => {
         return (
             <Menu onClick={this.onFormSelect}>
@@ -124,6 +127,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                             overlay={this.getFormsDropdown}>
                             <Button size='large'>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
                         </Dropdown>
+                        <Button className='exportAllButton' type='link' onClick={this.onExportClick}>Export All</Button>
                         <div className="clearBoth"></div>
                     </div>
                 <div className="trainingDashboardContentContainer">
