@@ -176,6 +176,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                                 </div>
                             }
                           </Route>
+                          <Route path="/penis">
+                            <img className='headshotheadshot' src="./photos/tom.jpg" alt="Tom Haliday"/>
+                          </Route>
                           <Route path="/">
                             <About></About>
                           </Route>
