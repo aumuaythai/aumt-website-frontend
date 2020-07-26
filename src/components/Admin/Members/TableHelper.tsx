@@ -429,6 +429,10 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 dataIndex: 'timeJoinedMs',
                 title: 'Joined',
                 sorter: (a: TableDataLine, b: TableDataLine) => a.timeJoinedMs - b.timeJoinedMs,
+                filters: [{text: 'After March', value: true}],
+                onFilter: (value: boolean, record: TableDataLine) => {
+                    return value ? record.timeJoinedMs > 1583060400000 : true
+                },
                 render: (text: string) => {
                     return moment(Number(text)).format('MMM DD')
                 }
