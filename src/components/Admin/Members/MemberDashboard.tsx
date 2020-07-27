@@ -418,8 +418,20 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                     {selectedRowKeys: this.state.selectedRowKeys, onChange: this.onRowSelectChange} :
                                     undefined}
                                 onChange={this.helper.onTableChange}
-                                footer={this.helper.getFooter}
-                                pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50', '100', '200']}}
+                                // footer={this.helper.getFooter}
+                                pagination={{
+                                    defaultPageSize: 50,
+                                    showSizeChanger: true,
+                                    pageSizeOptions: ['20', '50', '100', '200'],
+                                    showTotal: (total, range) => {
+                                        return <div>
+                                            {this.helper?.getFooterTextFromLines(total)}
+                                            <Button onClick={this.helper?.downloadCsvData} type='link'>Download .csv</Button>
+                                            <Button onClick={this.helper?.copyCurrentEmails} type='link'>Copy Emails</Button>
+                                            {this.helper?.getRemoveSelectedLink()}
+                                        </div>
+                                    }
+                                }}
                                 scroll={{ y: 625 }}></Table>
                             }
                         </div>

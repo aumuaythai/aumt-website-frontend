@@ -23,10 +23,10 @@ interface TableHelperState {
     searchText: string
     currentData: TableDataLine[]
     currentSelectedRows: TableDataLine[]
-    filteredData: TableDataLine[]
     currentFilters: Record<string, React.ReactText[] | null>
     totalMembers: number
     deletingSelectedMembers: boolean
+    currentTableLines: number
 }
 
 export class TableHelper extends Component<TableHelperProps, TableHelperState> {
@@ -37,10 +37,10 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             searchedColumn: '',
             currentData: [],
             currentSelectedRows: [],
-            filteredData: [],
             currentFilters: {},
             totalMembers: 0,
-            deletingSelectedMembers: false
+            deletingSelectedMembers: false,
+            currentTableLines: 0
         }
     }
 
@@ -78,8 +78,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     private getSelectedRows = (): TableDataLine[] => {
         if (this.state.currentSelectedRows.length) {
             return this.state.currentSelectedRows
-        } else if (this.state.filteredData.length) {
-            return this.state.filteredData
         } else {
             return this.state.currentData
         }
@@ -219,7 +217,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         document.body.removeChild(a);
     }
 
-    private copyCurrentEmails = () => {
+    public copyCurrentEmails = () => {
         const emails = this.getSelectedRows().map(row => row.email).join('\n')
         this.copyText(emails)
     }
@@ -250,12 +248,18 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         }
     }
 
+    public setTotalFromPage = (total: number) => {
+        this.setState({
+            ...this.state,
+            currentTableLines: total
+        })
+    }
+
     public onTableChange = (pagination: any, filter: Record<keyof TableDataLine, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>, ...extra: any) => {
         this.setState({
             ...this.state,
             currentFilters: filter,
             currentData: dataSource.currentDataSource,
-            filteredData: dataSource.currentDataSource
         })
     }
 
@@ -265,22 +269,17 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             currentSelectedRows: rowsSelected
         })
     }
+
+    public getFooterTextFromLines = (numberOfLines: number) => {
+        return `Members: ${this.state.currentSelectedRows.length || numberOfLines}/${this.state.totalMembers}`
+    }
     
-    public getFooter = (currentDisplay: TableDataLine[]) => {
-        return <div>
-            {`Members: ${this.getSelectedRows().length}/${this.state.totalMembers}`}
-            <Button onClick={this.downloadCsvData} type='link'>Download .csv</Button>
-            <Button onClick={this.copyCurrentEmails} type='link'>Copy Emails</Button>
-            {this.state.currentSelectedRows.length ? 
-            <Popconfirm
+    public getRemoveSelectedLink = () => {
+        return this.state.currentSelectedRows.length ? <Popconfirm
                 title={`Delete ${this.state.currentSelectedRows.length} members?`}
-                onConfirm={this.removeSelectedLines}
-                
-                >
+                onConfirm={this.removeSelectedLines}>
                 <Button loading={this.state.deletingSelectedMembers} disabled={!this.state.currentSelectedRows.length} type='link'>Remove Selected</Button>
-            </Popconfirm>
-            : ''}
-        </div>
+            </Popconfirm> : ''
     }
 
     public updatePaid = (line: TableDataLine, newPaid: 'Yes' | 'No') => {
@@ -433,7 +432,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {
                 dataIndex: 'timeJoinedMs',
                 title: 'Joined',
-                sorter: (a: TableDataLine, b: TableDataLine) => a.timeJoinedMs - b.timeJoinedMs,
+                sorter: (a: TableDataLine, b: TableDataLine) => b.timeJoinedMs - a.timeJoinedMs,
                 filters: [{text: 'Jul 24-27', value: '24'}, {text: 'Jul 28', value: '28'}],
                 onFilter: (value: string, record: TableDataLine) => {
                     if (value === '28') {
