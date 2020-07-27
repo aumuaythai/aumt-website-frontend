@@ -385,11 +385,17 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             </div>
                             {window.innerWidth < 1180 ?
                             <div className="memberDashboardSelect">
+                                <div className="mobileSortBySelectContainer">
                                 Sort by: 
-                                <Select value={this.state.mobileMemberSort} className='memberDashboardMobileSortBy' onChange={this.onMobileSortByChange}>
-                                    <Select.Option value='name'>Name (A -&gt; Z)</Select.Option>
-                                    <Select.Option value='joined'>Joined (New -&gt; Old)</Select.Option>
-                                </Select>
+                                    <Select value={this.state.mobileMemberSort} className='memberDashboardMobileSortBy' onChange={this.onMobileSortByChange}>
+                                        <Select.Option value='name'>Name (A -&gt; Z)</Select.Option>
+                                        <Select.Option value='joined'>Joined (New -&gt; Old)</Select.Option>
+                                    </Select>
+                                </div>
+                                <div className="mobileTotalMembersContainer">
+                                    Total: {this.state.tableDataSource.length}
+                                </div>
+                                <div className="clearBoth"></div>
                             <Select
                                 showSearch
                                 className='memberDashboardSelectElement'

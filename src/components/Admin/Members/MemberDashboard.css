@@ -78,6 +78,12 @@
 .memberDashboardMobileSortBy {
     width: 150px;
 }
+.mobileTotalMembersContainer {
+    float: right;
+}
+.mobileSortBySelectContainer {
+    float: left;
+}
 @media(max-width: 1180px) {
     .memberDisplaySectionNarrow {
         width: 100%;
