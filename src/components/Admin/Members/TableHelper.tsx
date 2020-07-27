@@ -23,6 +23,7 @@ interface TableHelperState {
     searchText: string
     currentData: TableDataLine[]
     currentSelectedRows: TableDataLine[]
+    filteredData: TableDataLine[]
     currentFilters: Record<string, React.ReactText[] | null>
     totalMembers: number
     deletingSelectedMembers: boolean
@@ -36,6 +37,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             searchedColumn: '',
             currentData: [],
             currentSelectedRows: [],
+            filteredData: [],
             currentFilters: {},
             totalMembers: 0,
             deletingSelectedMembers: false
@@ -76,6 +78,8 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     private getSelectedRows = (): TableDataLine[] => {
         if (this.state.currentSelectedRows.length) {
             return this.state.currentSelectedRows
+        } else if (this.state.filteredData.length) {
+            return this.state.filteredData
         } else {
             return this.state.currentData
         }
@@ -250,7 +254,8 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         this.setState({
             ...this.state,
             currentFilters: filter,
-            currentData: dataSource.currentDataSource
+            currentData: dataSource.currentDataSource,
+            filteredData: dataSource.currentDataSource
         })
     }
 
@@ -429,9 +434,14 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 dataIndex: 'timeJoinedMs',
                 title: 'Joined',
                 sorter: (a: TableDataLine, b: TableDataLine) => a.timeJoinedMs - b.timeJoinedMs,
-                filters: [{text: 'After March', value: true}],
-                onFilter: (value: boolean, record: TableDataLine) => {
-                    return value ? record.timeJoinedMs > 1583060400000 : true
+                filters: [{text: 'Jul 24-27', value: '24'}, {text: 'Jul 28', value: '28'}],
+                onFilter: (value: string, record: TableDataLine) => {
+                    if (value === '28') {
+                        return 1595851200000 < record.timeJoinedMs && 1595937600000 > record.timeJoinedMs
+                    } else if (value === '24') {
+                        return 1595505600000 < record.timeJoinedMs && 1595851200000 > record.timeJoinedMs
+                    }
+                    return true
                 },
                 render: (text: string) => {
                     return moment(Number(text)).format('MMM DD')
