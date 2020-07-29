@@ -28,16 +28,16 @@ admin.initializeApp({
 // DELETE MULTIPLE USERS
 // ============
 
-const uidArray = ['<uid1>', '<uid2>', '<uid3>']
-admin.auth().deleteUsers(uidArray)
-    .then(function(deleteUsersResult) {
-      console.log('Successfully deleted ' + deleteUsersResult.successCount + ' users');
-      console.log('Failed to delete ' +  deleteUsersResult.failureCount + ' users');
-      deleteUsersResult.errors.forEach(function(err) {
-        console.log(err.error.toJSON());
-      });
-    })
-    .catch(function(error) {
-      console.log('Error deleting users:', error);
-    });
+// const uidArray = ['<uid1>', '<uid2>', '<uid3>']
+// admin.auth().deleteUsers(uidArray)
+//     .then(function(deleteUsersResult) {
+//       console.log('Successfully deleted ' + deleteUsersResult.successCount + ' users');
+//       console.log('Failed to delete ' +  deleteUsersResult.failureCount + ' users');
+//       deleteUsersResult.errors.forEach(function(err) {
+//         console.log(err.error.toJSON());
+//       });
+//     })
+//     .catch(function(error) {
+//       console.log('Error deleting users:', error);
+//     });
   
