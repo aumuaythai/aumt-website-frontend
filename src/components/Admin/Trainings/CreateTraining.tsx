@@ -30,6 +30,14 @@ const DEFAULT_TRAINING_LIMIT = 30
 const TRAINING_0_OPENS_DATE = new Date(2020, 6, 19, 1, 0, 0)
 const TRAINING_0_CLOSES_DATE = new Date(2020, 6, 24, 20, 30, 0)
 
+const TRAINING_DEFAULT_NOTES = `Rules/Etiquette
+1.    Keep the training area free until your session starts.
+2.    Remove shoes and socks before entering the gym floor.
+3.   Let your trainer know if you need to leave early or take a rest due to injury/medical reasons/overtraining.
+4.   Wipe inside and outside of gloves and shins pads using provided wipes at the end of class and with a large towel and place equipment back in the blue bags.
+5.  Dispose of all rubbish in the bins after class
+6.   Put ALL training pads back after use.`
+
 class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {
         super(props)
@@ -67,6 +75,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentOpens: newOpens,
             currentCloses: newCloses,
             currentTitle: `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrThu}-${dateStrFri}`,
+            currentNotes: TRAINING_DEFAULT_NOTES,
             currentSessions
         })
     }

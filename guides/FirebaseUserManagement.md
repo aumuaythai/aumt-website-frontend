@@ -63,52 +63,34 @@ write.table(import.df, sep=',', 'firebase-import.csv', row.names=F, col.names = 
 firebase auth:import firebase-import.csv --hash-algo=MD5 --rounds=4
 ```
 
+OR
 
-## Deleting Users
+https://firebase.google.com/docs/auth/admin/manage-users#create_a_user
+
+
+## Deleting Users in Firebase
 
 To delete one at a time, see the Deleting a User section of the Admin guide.
 
-As of now firebase doesn't have a good way to delete a bunch of users but there is a hacky way to do it in the console. The script below is a modified version of the answer from  https://stackoverflow.com/a/42467103.
 
-- The script loops through and deletes the users whose emails are specified in the `deleteEmails` array.
+To delete many users, see the guide below. You must [initialise the firebase admin sdk](https://firebase.google.com/docs/admin/setup#initialize-sdk) in the repo's root directory. The package is already installed as a dev dependency of the aumt repo. Uncomment the section of  `admin-scripts.js` corresponding to deleting users and replace the array of dummy uids with the desired ones.
 
-- It can be modified to delete all users *except* a specified few or delete all users in general.
-
-- Because the script only sees users displayed on the page, increase the Rows per Page value at the bottom to its max to include all users.
+run the script `node admin-scripts.js`
 
 
-```javascript
-var intervalId;
-var deleteEmails = [
-  'hcho812@aucklanduni.ac.nz',
-  'liamcreed@live.com',
-  'sbkoh220@gmail.com',
-  'cibo816@aucklanduni.ac.nz',
-  'elliotsangsongkhram@gmail.com',
-  'sflo674@aucklanduni.ac.nz',
-  'kodo094@aucklanduni.ac.nz',
-  'ugna304@aucklanduni.ac.nz',
-]
-var clearFunction = function() {
-  var size = $('[aria-label="Delete account"]').size()
-  for (let i = size - 1; i >= 0; i --) {
-    var tableRowElement = $('[aria-label="Delete account"]')[i].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
-    var userEmail = $(tableRowElement).find('.a12n-user-email-content').text().trim()
-    if (deleteEmails.indexOf(userEmail) >= 0) {
-        $('[aria-label="Delete account"]')[i].click();
-        setTimeout(function () {
-           $(".md-raised:contains(Delete)").click()
-        }, 800);
-        console.log('trying to delete', userEmail)
-        return
-    } else {
-      // console.log('skipping nodelete', userEmail)
-    }
-  }
-  console.log('deleted all emails, stopping')
-  clearInterval(intervalId)
-};
+Documentation can be found here:
 
-intervalId = setInterval(clearFunction, 1000) 
+https://firebase.google.com/docs/auth/admin/manage-users#delete_multiple_users
 
-```
+
+## Changing a member's email in Firebase
+
+To change a member's email you must change it in both on the AUMT website aumt.co.nz/admin/members and via the firebase admin sdk.
+
+See notes for using the admin sdk above, and use the commented out section of admin-scripts.js corresponding to changing emails.
+
+run the script `node admin-scripts.js`
+
+Documentation can be found here:
+
+https://firebase.google.com/docs/auth/admin/manage-users#update_a_user0

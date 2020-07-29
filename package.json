@@ -54,6 +54,7 @@
     "@types/papaparse": "^5.0.3",
     "@types/react-highlight-words": "^0.16.1",
     "@types/recharts": "^1.8.9",
+    "firebase-admin": "^9.0.0",
     "less": "^3.11.1",
     "source-map-explorer": "^2.3.1"
   }

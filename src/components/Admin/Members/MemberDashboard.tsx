@@ -31,6 +31,7 @@ interface MemberDashboardState {
     importMemberParsing: boolean
     membersToImport: Record<string, AumtMember>
     rowSelectionEnabled: boolean
+    mobileMemberSort: 'name' | 'joined'
 }
 
 class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardState> {
@@ -60,7 +61,8 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             importMemberSuccessText: '',
             importMemberParsing: false,
             membersToImport: {},
-            rowSelectionEnabled: false
+            rowSelectionEnabled: false,
+            mobileMemberSort: 'name'
         }
     }
     componentDidMount = () => {
@@ -245,6 +247,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                 message.error({content: err.toString(), key, duration: 3})
             })
     }
+    
     onImportMembersCancel = () => {
         this.setState({
             ...this.state,
@@ -267,13 +270,23 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
             })
         }
     }
+    onMobileSortByChange = (sortType: 'name' | 'joined') => {
+        this.setState({
+            ...this.state,
+            mobileMemberSort: sortType
+        })
+    }
     goToSelectedMember = () => {
         if (this.state.memberInDropdown) {
             this.onMemberSelect(this.state.memberInDropdown)
         }
     }
     sortLines = (a: TableDataLine, b: TableDataLine) => {
-        return a.tableName < b.tableName ? -1 : 1
+        if (this.state.mobileMemberSort === 'name') {
+            return a.tableName < b.tableName ? -1 : 1
+        } else {
+            return a.timeJoinedMs < b.timeJoinedMs ? 1 : -1
+        }
     }
     onRowSelectChange = (selectedRowKeys: ReactText[], selectedRows: TableDataLine[]) => {
         this.setState({
@@ -372,6 +385,17 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             </div>
                             {window.innerWidth < 1180 ?
                             <div className="memberDashboardSelect">
+                                <div className="mobileSortBySelectContainer">
+                                Sort by: 
+                                    <Select value={this.state.mobileMemberSort} className='memberDashboardMobileSortBy' onChange={this.onMobileSortByChange}>
+                                        <Select.Option value='name'>Name (A -&gt; Z)</Select.Option>
+                                        <Select.Option value='joined'>Joined (New -&gt; Old)</Select.Option>
+                                    </Select>
+                                </div>
+                                <div className="mobileTotalMembersContainer">
+                                    Total: {this.state.tableDataSource.length}
+                                </div>
+                                <div className="clearBoth"></div>
                             <Select
                                 showSearch
                                 className='memberDashboardSelectElement'
@@ -400,8 +424,20 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                     {selectedRowKeys: this.state.selectedRowKeys, onChange: this.onRowSelectChange} :
                                     undefined}
                                 onChange={this.helper.onTableChange}
-                                footer={this.helper.getFooter}
-                                pagination={{defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['20', '50','200']}}
+                                // footer={this.helper.getFooter}
+                                pagination={{
+                                    defaultPageSize: 50,
+                                    showSizeChanger: true,
+                                    pageSizeOptions: ['20', '50', '100', '200'],
+                                    showTotal: (total, range) => {
+                                        return <div>
+                                            {this.helper?.getFooterTextFromLines(total)}
+                                            <Button onClick={this.helper?.downloadCsvData} type='link'>Download .csv</Button>
+                                            <Button onClick={this.helper?.copyCurrentEmails} type='link'>Copy Emails</Button>
+                                            {this.helper?.getRemoveSelectedLink()}
+                                        </div>
+                                    }
+                                }}
                                 scroll={{ y: 625 }}></Table>
                             }
                         </div>
