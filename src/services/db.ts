@@ -425,7 +425,7 @@ class DB {
             })
     }
 
-    formatMembers = () => {
+    public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
         return this.db.collection('events')
@@ -440,7 +440,7 @@ class DB {
             })
     }
 
-    signMockData = () => {
+    public signMockData = () => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('members')
             .get()
@@ -484,7 +484,7 @@ class DB {
             })
     }
 
-    listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
+    public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('weekly_trainings')
@@ -495,7 +495,7 @@ class DB {
         return listenerId
     }
 
-    listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
+    public listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('weekly_trainings')
@@ -509,7 +509,7 @@ class DB {
         return listenerId
     }
 
-    listenToEvents = (callback: (events: AumtEvent[]) => void, errorCallback: (message: string) => void): string => {
+    public listenToEvents = (callback: (events: AumtEvent[]) => void, errorCallback: (message: string) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('events')
@@ -530,7 +530,7 @@ class DB {
         return listenerId
     }
 
-    listenToMembers = (callback: (members: AumtMembersObj) => void): string => {
+    public listenToMembers = (callback: (members: AumtMembersObj) => void): string => {
         if (!this.db) throw new Error('No db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('members')
@@ -549,7 +549,7 @@ class DB {
         return listenerId
     }
 
-    unlisten = (listenerId: string) => {
+    public unlisten = (listenerId: string) => {
         if (this.listeners[listenerId]) {
             this.listeners[listenerId]()
             delete this.listeners[listenerId]
