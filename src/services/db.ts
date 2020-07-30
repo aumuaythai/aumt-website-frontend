@@ -273,14 +273,15 @@ class DB {
             if (!this.db) return Promise.reject('No db object')
             const currentDate = new Date()
             return this.db.collection('weekly_trainings')
-                .where('opens', '<=', currentDate)
+                .where('closes', '>=', currentDate)
                 .get()
                 .then((querySnapshot) => {
                     const trainings: AumtWeeklyTraining[] = []
                     querySnapshot.forEach((doc) => {
+                        console.log(doc.data())
                         const data = doc.data()
-                        // can't do where('closes', '>', currentDate) in firestore db so have to here
-                        if (data.closes.seconds * 1000 >= currentDate.getTime()) {
+                        // can't do where('opens', '<', currentDate) in firestore db so have to here
+                        if (data.opens.seconds * 1000 <= currentDate.getTime()) {
                             const weeklyTraining = this.docToForm(data)
                             trainings.push(weeklyTraining)
                         }
@@ -481,6 +482,17 @@ class DB {
                         this.submitNewForm(form)
                     })
             })
+    }
+
+    listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
+        if (!this.db) throw new Error('no db')
+        const listenerId = this.getListenerId()
+        this.listeners[listenerId] = this.db.collection('weekly_trainings')
+            .doc(formId)
+            .onSnapshot((doc: firebase.firestore.DocumentSnapshot) => {
+                callback(formId, this.docToForm(doc.data()))
+            })
+        return listenerId
     }
 
     listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
