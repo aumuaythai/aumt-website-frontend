@@ -19,5 +19,6 @@
     text-align: left;
 }
 .signupsContainer {
-    margin-bottom: 50px;
+    overflow-y: auto;
+    height: calc(100% - 97px);
 }

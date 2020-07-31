@@ -278,14 +278,13 @@ class DB {
                 .then((querySnapshot) => {
                     const trainings: AumtWeeklyTraining[] = []
                     querySnapshot.forEach((doc) => {
-                        console.log(doc.data())
                         const data = doc.data()
                         // can't do where('opens', '<', currentDate) in firestore db so have to here
                         if (data.opens.seconds * 1000 <= currentDate.getTime()) {
                             const weeklyTraining = this.docToForm(data)
                             trainings.push(weeklyTraining)
                         }
-                    });
+                    })
                     return trainings
                 })
     }
