@@ -27,7 +27,12 @@ class DB {
             .then((doc) => {
                 const docData = doc.data()
                 if (doc.exists && docData) {
-                    return docData as AumtMember
+                    try {
+                        const member = this.docToMember(docData)
+                        return member
+                    } catch (e) {
+                        throw e
+                    }
                 } else {
                     throw new Error('No AUMT member exists for this acccount ' + fbUser.uid)
                 }
