@@ -429,17 +429,28 @@ class DB {
             })
     }
 
+    private weeklyTrainingToDb = (form: AumtWeeklyTraining) => {
+        const {sessions} = form
+        const sessionsObj: {[sessionId: string]: AumtTrainingSession & {idx: number}} = {}
+        sessions.forEach((session, idx) => {
+            sessionsObj[session.sessionId] = {...session, idx}
+        })
+        return {
+            ...form,
+            sessions: sessionsObj
+        }
+    }
+
     public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
-        return this.db.collection('events')
+        return this.db.collection('weekly_trainings')
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                    doc.ref.update({
-                        locationLink: '',
-                        // timeJoined: firebase.firestore.FieldValue.delete()
-                    })
+                    const form = this.docToForm(doc.data())
+                    console.log(this.weeklyTrainingToDb(form))
+                    // doc.ref.set(this.weeklyTrainingToDb(form))
                 })
             })
     }
@@ -580,11 +591,15 @@ class DB {
             })
             return session
         })
+        const docSessionsObj = docSessions.reduce((obj, session: AumtTrainingSession, idx: string) => {
+            obj[session.sessionId] = {...session, position: idx}
+            return obj
+        }, {})
         const weeklyTraining: AumtWeeklyTraining = {
             title: docData.title,
             feedback: docData.feedback,
             trainingId: docData.trainingId,
-            sessions: docSessions,
+            sessions: docSessionsObj,
             openToPublic: docData.openToPublic || false,
             useInterSemMembers: docData.useInterSemMembers || false,
             opens: new Date(docData.opens.seconds * 1000),

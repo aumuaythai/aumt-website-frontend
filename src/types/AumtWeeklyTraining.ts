@@ -5,6 +5,7 @@ export interface AumtTrainingSession {
     title: string
     sessionId: string
     trainers: string[]
+    position: number
     members: {
         [uid: string]: {
             name: string,
@@ -19,7 +20,7 @@ export interface AumtTrainingSession {
     }
 }
 export interface AumtWeeklyTraining {
-    sessions: AumtTrainingSession[]
+    sessions: Record<string, AumtTrainingSession>
     feedback: string[]
     trainingId: string
     title: string
