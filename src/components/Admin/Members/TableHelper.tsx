@@ -433,10 +433,10 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 dataIndex: 'timeJoinedMs',
                 title: 'Joined',
                 sorter: (a: TableDataLine, b: TableDataLine) => b.timeJoinedMs - a.timeJoinedMs,
-                filters: [{text: 'Jul 24-27', value: '24'}, {text: 'Jul 28', value: '28'}],
+                filters: [{text: 'Jul 24-27', value: '24'}, {text: 'Jul 28 +', value: '28'}],
                 onFilter: (value: string, record: TableDataLine) => {
                     if (value === '28') {
-                        return 1595851200000 < record.timeJoinedMs && 1595937600000 > record.timeJoinedMs
+                        return 1595851200000 < record.timeJoinedMs
                     } else if (value === '24') {
                         return 1595505600000 < record.timeJoinedMs && 1595851200000 > record.timeJoinedMs
                     }

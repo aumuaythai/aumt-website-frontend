@@ -5,6 +5,7 @@ import { JoinForm } from './JoinForm'
 import './MainJoin.css'
 import { AumtMember } from '../../../types'
 import FirebaseUtil from '../../../services/firebase.util'
+import dataUtil from '../../../services/data.util'
 
 interface MainJoinProps {
     authedUser: AumtMember | null
@@ -23,8 +24,17 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
                 notification.error({message: 'Error signing out: ' + err.toString()})
             })
     }
+    copyText = (text: string) => {
+        dataUtil.copyText(text)
+    }
     getExtraResultContent = () => {
         const lines: JSX.Element[] = []
+        if (this.props.authedUser?.paid === 'No') {
+            lines.push(
+                <p className='joinAccountLine'>The membership fee is $50 and should be paid with your full name as the reference to: 06-0158-0932609-00
+                    <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+            )
+        }
         if (this.props.clubSignupStatus === 'open') {
             lines.push(
                 <p key='1'>
