@@ -70,8 +70,8 @@ export class Team extends Component {
                             <img className='headshot' src="./photos/christian.jpg" alt="Christian Lux"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Anthony Wei</p>
-                            <img className='headshot' src="./photos/anthony.jpg" alt="Anthony Wei"/>
+                            <p className="name">Hasnaen Hossain</p>
+                            <img className='headshot' src="./photos/hasnaen.jpg" alt="Hasnaen Hossain"/>
                         </div>
                         <div className='personContainer'>
                             <p className="name">Kevin Ku</p>
