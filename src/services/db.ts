@@ -147,6 +147,19 @@ class DB {
             .set(app)
     }
 
+    public getCommitteeApplications = (): Promise<AumtCommitteeApp[]> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('committee-apps')
+            .get()
+            .then((querySnapshot) => {
+                const apps: AumtCommitteeApp[] = []
+                querySnapshot.forEach((doc) => {
+                    apps.push(doc.data() as AumtCommitteeApp)
+                })
+                return apps.sort((a, b) => a.timestampMs - b.timestampMs)
+            })
+    }
+
     public submitNewForm = (formData: AumtWeeklyTraining): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         if (!formData) {

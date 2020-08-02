@@ -43,7 +43,8 @@ export class CommitteeApplications extends Component<CommitteeApplicationsProps,
             email: vals.email,
             fullName: vals.fullName,
             phone: vals.phone || '',
-            skills: vals.skills
+            skills: vals.skills,
+            timestampMs: new Date().getTime()
         }
         this.setState({...this.state, submitting: true})
         localStorage.setItem(LOCAL_STORAGE_KEY, 'yes')

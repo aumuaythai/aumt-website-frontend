@@ -3,4 +3,5 @@ export interface AumtCommitteeApp {
     fullName: string
     phone: string
     skills: string
+    timestampMs: number
 }
