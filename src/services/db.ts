@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
-import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignupData } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignupData, AumtCommitteeApp } from '../types';
 import validator from './validator';
 
 type MockMember = {
@@ -142,6 +142,26 @@ class DB {
                     }
                 })
                 return members
+            })
+    }
+
+    public submitCommitteeApplication = (app: AumtCommitteeApp): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('committee-apps')
+            .doc(this.getListenerId())
+            .set(app)
+    }
+
+    public getCommitteeApplications = (): Promise<AumtCommitteeApp[]> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('committee-apps')
+            .get()
+            .then((querySnapshot) => {
+                const apps: AumtCommitteeApp[] = []
+                querySnapshot.forEach((doc) => {
+                    apps.push(doc.data() as AumtCommitteeApp)
+                })
+                return apps.sort((a, b) => a.timestampMs - b.timestampMs)
             })
     }
 

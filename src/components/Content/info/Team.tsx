@@ -1,11 +1,15 @@
 import React, {Component} from 'react'
 import {Divider} from 'antd'
 import './Team.css'
+import { CommitteeApplications } from './CommitteeApplications'
 
 export class Team extends Component {
     render() {
         return (
             <div className='teamContainer'>
+                {Date.now() < 1596974400000 ? 
+                    <CommitteeApplications></CommitteeApplications>
+                : ''}
                 <div className="teamGroup">
                     <h1>Committee</h1>
                     <div className='imgRow mainRow'>
@@ -70,8 +74,8 @@ export class Team extends Component {
                             <img className='headshot' src="./photos/christian.jpg" alt="Christian Lux"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Anthony Wei</p>
-                            <img className='headshot' src="./photos/anthony.jpg" alt="Anthony Wei"/>
+                            <p className="name">Hasnaen Hossain</p>
+                            <img className='headshot' src="./photos/hasnaen.jpg" alt="Hasnaen Hossain"/>
                         </div>
                         <div className='personContainer'>
                             <p className="name">Kevin Ku</p>
