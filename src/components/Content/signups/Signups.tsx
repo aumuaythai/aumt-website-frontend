@@ -119,7 +119,7 @@ class Signups extends Component<SignupProps, SignupState> {
                                     <Divider/>
 
                                     
-                                    <p>Membership is $50 for the semester or $90 for the year and can be paid by cash to a committee member or transfer to the bank account below (with your NAME in the reference).</p>
+                                    <p>Membership is $50 for the semester and can be paid by cash to a committee member or transfer to the bank account below (with your NAME in the reference).</p>
                                     <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                                     <Divider/>
                                 </div>
