@@ -3,7 +3,7 @@ import {Divider} from 'antd'
 import './Team.css'
 import { CommitteeApplications } from './CommitteeApplications'
 
-export class Team extends Component {
+class Team extends Component {
     render() {
         return (
             <div className='teamContainer'>
@@ -87,3 +87,5 @@ export class Team extends Component {
         )
     }
 }
+
+export default Team

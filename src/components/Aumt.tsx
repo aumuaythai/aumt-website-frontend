@@ -10,7 +10,6 @@ import {Faq} from './Content/info/Faq'
 import { MainJoin } from './Content/join/MainJoin'
 import { ErrorBoundary } from './Content/error/ErrorBoundary'
 import './Aumt.css'
-import {Team} from './Content/info/Team';
 import DB from '../services/db'
 import FirebaseUtil from '../services/firebase.util'
 import { AumtMember } from '../types';
@@ -18,6 +17,12 @@ import { AumtMember } from '../types';
 const MainAdminLazyWrapper = (
   lazy(() => (
     import('./Admin/MainAdmin')
+  ))
+)
+
+const TeamLazyWrapper = (
+  lazy(() => (
+    import ('./Content/info/Team')
   ))
 )
 
@@ -135,7 +140,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                             <Redirect to='/'/>
                           </Route>
                           <Route path="/team">
-                            <Team></Team>
+                            <TeamLazyWrapper></TeamLazyWrapper>
                           </Route>
                           <Route path="/faq">
                             <Faq></Faq>
