@@ -112,7 +112,13 @@ class Signups extends Component<SignupProps, SignupState> {
                             } else if (this.props.authedUser && this.props.authedUser.paid === 'No') {
                                 return <div key={form.trainingId} className='signupsNotPaidContainer'>
                                     <h2>{form.title}</h2>
-                                    <p>Our records show you have not paid the membership fee - once you do you can sign up to trainings!</p>
+                                    <p>Our records show you have not paid the membership fee - once you do, you can sign up to trainings!</p>
+
+                                    <h3>This Week Only</h3>
+                                    If you would like to pay at the training, message the AUMT Facebook page - we will sign you up for the session of your choice.
+                                    <Divider/>
+
+                                    
                                     <p>Membership is $50 for the semester or $90 for the year and can be paid by cash to a committee member or transfer to the bank account below (with your NAME in the reference).</p>
                                     <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                                     <Divider/>

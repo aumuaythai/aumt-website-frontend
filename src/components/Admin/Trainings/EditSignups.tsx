@@ -158,6 +158,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                         })}
                                 </Select>
                                 <div className="editSignupsOptionButtons">
+                                    
                                     <Dropdown
                                         disabled={!this.state.selectedMembers[session.sessionId]}
                                         overlay={this.getMoveDropdown(session.sessionId)}
