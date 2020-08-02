@@ -267,13 +267,15 @@ class DB {
 
     public getAllForms = (): Promise<AumtWeeklyTraining[]> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('weekly_trainings')
+        return this.db.collection('weekly_trainings_dup')
+        // return this.db.collection('weekly_trainings')
             .get()
             .then((querySnapshot) => {
                 const allForms: AumtWeeklyTraining[] = []
                 querySnapshot.forEach((doc) => {
                     const data = doc.data()
-                    const form = this.docToForm(data)
+                    // const form = this.docToForm(data)
+                    const form = this.docToForm2(data)
                     allForms.push(form)
                 });
                 return allForms
@@ -364,6 +366,21 @@ class DB {
             })
     }
 
+    public removeMemberFromForm2 = (userId: string, formId: string, sessionId: string): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('weekly_trainings_dup')
+            .doc(formId)
+            .set({
+                sessions: {
+                    [sessionId]: {
+                        members: {
+                            [userId]: firebase.firestore.FieldValue.delete()
+                        }
+                    }
+                }
+            }, {merge: true})
+    }
+
     public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<string> => {
         if (!this.db) return Promise.reject('No db object')
         return this.getTrainingData(formId)
@@ -392,7 +409,7 @@ class DB {
 
     public moveMember = (userId: string, displayName: string, timeAdded: Date,formId: string, fromSessionId: string, toSessionId: string): Promise<string> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.signUserUp(userId, displayName, timeAdded, formId, toSessionId, '')
+        return this.signUserUp(userId, displayName, timeAdded, formId, toSessionId, '', fromSessionId)
             .then(() => {
                 return this.removeMemberFromForm(userId,formId,fromSessionId)
             })
@@ -420,7 +437,39 @@ class DB {
                     }
                 })
     }
-    public signUserUp = (userId: string, displayName: string, timeAdded: Date, formId: string, sessionId: string, feedback: string): Promise<void> => {
+    public signUserUp2 = (userId: string,
+        displayName: string,
+        timeAdded: Date,
+        formId: string,
+        sessionId: string,
+        feedback: string,
+        prevSessionId: string): Promise<void> => {
+            if (!this.db) return Promise.reject('No db object')
+            const mergeObj = {
+                sessions: {
+                    [sessionId]: {
+                        members: {
+                            [userId]: {
+                                name: displayName,
+                                timeAdded
+                            }
+                        }
+                    }
+                }
+            }
+            if (prevSessionId && prevSessionId !== sessionId) {
+                (mergeObj as any)['sessions'][prevSessionId] = {
+                    members: {
+                        [userId]: firebase.firestore.FieldValue.delete()
+                    }
+                }
+            }
+            console.log(mergeObj)
+            return this.db.collection('weekly_trainings_dup')
+                .doc(formId)
+                .set(mergeObj, {merge: true})
+    }
+    public signUserUp = (userId: string, displayName: string, timeAdded: Date, formId: string, sessionId: string, feedback: string, prevSessionId: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.isMemberSignedUpToForm(userId, formId, true)
             .then(() => this.getTrainingData(formId))
@@ -452,25 +501,32 @@ class DB {
     public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
-        return this.db.collection('events')
+        const batch = this.db.batch()
+        return this.db.collection('weekly_trainings')
             .get()
             .then((querySnapshot) => {
+                const training_collection = this.db?.collection('weekly_trainings_dup')
                 querySnapshot.forEach((doc) => {
-                    doc.ref.update({
-                        locationLink: '',
-                        // timeJoined: firebase.firestore.FieldValue.delete()
-                    })
+                    const form = this.docToForm(doc.data())
+                    // const docRef = training_collection?.doc(form.trainingId)
+                    // if (docRef) {
+                    //     batch.set(docRef, form)
+                    // }
+                    doc.ref.set(form)
+                    
                 })
+                // return batch.commit()
             })
     }
 
     public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
-        this.listeners[listenerId] = this.db.collection('weekly_trainings')
+        this.listeners[listenerId] = this.db.collection('weekly_trainings_dup')
             .doc(formId)
             .onSnapshot((doc: firebase.firestore.DocumentSnapshot) => {
-                callback(formId, this.docToForm(doc.data()))
+                // callback(formId, this.docToForm(doc.data()))
+                callback(formId, this.docToForm2(doc.data()))
             })
         return listenerId
     }
@@ -478,11 +534,12 @@ class DB {
     public listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
-        this.listeners[listenerId] = this.db.collection('weekly_trainings')
+        this.listeners[listenerId] = this.db.collection('weekly_trainings_dup')
             .onSnapshot((querySnapshot) => {
                 const newForms: AumtWeeklyTraining[] = []
                 querySnapshot.docs.forEach((doc) => {
-                    newForms.push(this.docToForm(doc.data()))
+                    newForms.push(this.docToForm2(doc.data()))
+                    // newForms.push(this.docToForm(doc.data()))
                 })
                 callback(newForms)
             })
@@ -571,10 +628,32 @@ class DB {
         return weeklyTraining
     }
 
+    private docToForm2 = (docData: any): AumtWeeklyTraining => {
+        const sessionsObj: Record<string, AumtTrainingSession> = {}
+        Object.keys(docData.sessions).forEach((sessionId: string) => {
+            const session = docData.sessions[sessionId]
+            Object.keys(session.members).forEach((i) => {
+                session.members[i].timeAdded = new Date(session.members[i].timeAdded.seconds * 1000)
+            })
+        })
+        const weeklyTraining: AumtWeeklyTraining = {
+            title: docData.title,
+            feedback: docData.feedback,
+            trainingId: docData.trainingId,
+            sessions: docData.sessions,
+            openToPublic: docData.openToPublic || false,
+            useInterSemMembers: docData.useInterSemMembers || false,
+            opens: new Date(docData.opens.seconds * 1000),
+            closes: new Date(docData.closes.seconds * 1000),
+            notes: docData.notes.split('%%NEWLINE%%').join('\n')
+        }
+        return weeklyTraining
+    }
+
     private formToDoc = (form: AumtWeeklyTraining) => {
         const sessions: AumtTrainingSession[] =  []
-        Object.keys(form.sessions).forEach((sessionId: string) => {
-            sessions.push(form.sessions[sessionId])
+        Object.values(form.sessions).forEach((session: AumtTrainingSession) => {
+            sessions.push(session)
         })
         return {
             ...form,

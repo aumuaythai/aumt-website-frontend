@@ -5,7 +5,6 @@ import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession, AumtMembersObjWithCollated } from '../../../types'
 import db from '../../../services/db';
-import dataUtil from '../../../services/data.util';
 
 export interface SignupFormProps {
     title: string
@@ -125,8 +124,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 ...this.state,
                 removingState: true
             })
-            db.removeMemberFromForm(this.props.authedUserId, this.props.id, this.state.signedUpOption)
-                .then((sessionId: string) => {
+            db.removeMemberFromForm2(this.props.authedUserId, this.props.id, this.state.signedUpOption)
+                .then(() => {
                     this.setState({
                         ...this.state,
                         signedUpOption: '',
@@ -163,14 +162,15 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             submittingState: true
         })
 
-        db.signUserUp(
+        db.signUserUp2(
                 this.props.authedUserId || this.state.currentInterSemUid || this.generateMockUid(),
                 this.props.displayName || this.state.currentDisplayName,
                 new Date(),
                 this.props.id,
                 optionSelected,
-                this.state.currentFeedback)
-            .then((res) => {
+                this.state.currentFeedback,
+                this.state.signedUpOption)
+            .then(() => {
                 this.setState({
                     ...this.state,
                     signedUpOption: optionSelected,
