@@ -37,7 +37,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                 .map((form) => {
                     return {
                         week: form.trainingId,
-                        total: form.sessions.reduce((sum, cur) => {
+                        total: Object.values(form.sessions).reduce((sum, cur) => {
                             return sum + Object.keys(cur.members).length
                         }, 0)
                     }
@@ -56,7 +56,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
         if (!currentForm) {
             return (<div></div>)
         }
-        const tooltipValues = currentForm.sessions.reduce((vals, session) => {
+        const tooltipValues = Object.values(currentForm.sessions).reduce((vals, session) => {
             const members = Object.keys(session.members).length
             vals[session.sessionId] = members
             vals['total'] += members
@@ -76,7 +76,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                     </div>
                     <div className="clearBoth"></div>
                 </div>
-                {currentForm.sessions.map((session) => {
+                {Object.values(currentForm.sessions).sort((a, b) => a.position - b.position).map((session) => {
                     return (
                         <div key={session.sessionId} className="yearStatsTooltipRow">
                             <div className="yearStatsTooltipName">

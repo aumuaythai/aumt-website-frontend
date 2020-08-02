@@ -5,11 +5,11 @@ export type MemberPoint = Record<string, number>
 
 class DataFormatUtil {
     getDataFromForm = (form: AumtWeeklyTraining): MemberPoint[] => {
-        let sessionNames = form.sessions.reduce((sessionObj, session) => {
+        let sessionNames = Object.values(form.sessions).reduce((sessionObj, session) => {
             sessionObj[session.sessionId] = 0
             return sessionObj
         }, {} as Record<string, number>)
-        const points = form.sessions.reduce((arr, session) => {
+        const points = Object.values(form.sessions).reduce((arr, session) => {
             const memberUids = Object.keys(session.members)
             for (let uid of memberUids) {
                 let inserted = false
@@ -55,7 +55,7 @@ class DataFormatUtil {
         const attendance: {formTitle: string, formId: string, sessionTitle: string}[] = []
         forms.forEach((form) => {
             let foundSession = ''
-            form.sessions.forEach((session) => {
+            Object.values(form.sessions).forEach((session) => {
                 if (session.members[memberId]) {
                     foundSession = session.title
                 }

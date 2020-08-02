@@ -11,7 +11,7 @@ export interface SignupFormProps {
     title: string
     id: string
     closes: Date
-    sessions: AumtTrainingSession[]
+    sessions: Record<string, AumtTrainingSession>
     displayName: string | null
     submittingAsName?: string
     authedUserId: string | null
@@ -52,30 +52,6 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     }
     componentDidMount() {
         this.checkSignedUp()
-        if (this.props.useInterSem) {
-            this.setState({
-                ...this.state,
-                interSemLoading: true
-            })
-            Promise.all([db.getTrainingData(this.props.id), db.getAllInterSemMembers()])
-                .then((outputs) => {
-                    const memberObj = Object.assign({}, outputs[1])
-                    const [trainingData] = outputs
-                    trainingData.sessions.forEach((session) => {
-                        Object.keys(session.members).forEach((uid) => {
-                            delete memberObj[uid]
-                        })
-                    })
-                    return dataUtil.getCollatedMembersObj(memberObj)
-                })
-                .then((members) => {
-                    this.setState({
-                        ...this.state,
-                        interSemMembers: members,
-                        interSemLoading: false
-                    })
-                })
-        }
     }
     componentDidUpdate(prevProps: SignupFormProps, prevState: SignupFormState) {
         if (prevProps.authedUserId === '' && this.props.authedUserId) {
@@ -84,21 +60,15 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     }
     checkSignedUp = () => {
         if (this.props.authedUserId) {
-            db.isMemberSignedUpToForm(this.props.authedUserId, this.props.id)
-                .then((sessionId: string) => {
-                    if (sessionId) {
-                        this.setState({
-                            ...this.state,
-                            signedUpOption: sessionId,
-                            currentSessionId: sessionId
-                        })
-                    }
-                })
-                .catch((err) => {
-                    notification.error({
-                        message: 'Error retrieving if already signed up: ' + err
+            Object.values(this.props.sessions).forEach((session) => {
+                if (this.props.authedUserId && session.members[this.props.authedUserId]) {
+                    this.setState({
+                        ...this.state,
+                        signedUpOption: session.sessionId,
+                        currentSessionId: session.sessionId
                     })
-                })
+                }
+            })
         }
     }
     memberSort = (uidA: string, uidB: string): number => {
@@ -210,7 +180,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     this.props.onSignupChanged()
                 }
                 if (this.props.useInterSem) {
-                    notification.success({message: `Successfully signed up for ${this.props.sessions.find(s => s.sessionId === optionSelected)?.title}`})
+                    notification.success({message: `Successfully signed up for ${this.props.sessions[optionSelected]?.title}`})
                 }
             })
             .catch((err) => {
@@ -233,7 +203,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 }
                 <div className="optionsContainer">
                     <Radio.Group className="trainingSignupRadioGroup" onChange={this.onOptionChange} value={this.state.currentSessionId}>
-                        {this.props.sessions.map((session) => {
+                        {Object.values(this.props.sessions)
+                        .sort((a, b) => a.position - b.position)
+                        .map((session) => {
                             const isFull = session.limit <= Object.keys(session.members).length
                             const spotsLeft = Math.max(0, session.limit - Object.keys(session.members).length)
                             return (

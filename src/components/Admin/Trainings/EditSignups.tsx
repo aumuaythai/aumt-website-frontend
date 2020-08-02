@@ -110,7 +110,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
     onMoveClick = (clickParam: ClickParam, fromSession: string) => {
         const {key} = clickParam
         const currentUserIdSelected = this.state.selectedMembers[fromSession]
-        const session = this.props.form.sessions.find(s => s.sessionId === fromSession)
+        const session = this.props.form.sessions[fromSession]
         const displayName = session &&
             session.members[currentUserIdSelected] &&
             session.members[currentUserIdSelected].name
@@ -147,13 +147,15 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
             })
     }
     getMoveDropdown = (sessionId: string) => {
-        const availableMove = this.props.form.sessions.map((session: AumtTrainingSession) => {
-            return {
-                isSpaceLeft: session.limit >= 0 && Object.keys(session.members).length < session.limit,
-                sessionId: session.sessionId,
-                title: session.title,
-                isCurrentDropdown: session.sessionId === sessionId
-            }
+        const availableMove = Object.values(this.props.form.sessions)
+            .sort((a, b) => a.position - b.position)
+            .map((session) => {
+                return {
+                    isSpaceLeft: session.limit >= 0 && Object.keys(session.members).length < session.limit,
+                    sessionId: session.sessionId,
+                    title: session.title,
+                    isCurrentDropdown: session.sessionId === sessionId
+                }
         })
         return (
             <Menu onClick={e => this.onMoveClick(e, sessionId)}>
@@ -171,7 +173,9 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
     render() {
         return (
             <div className='editSignedUpMembersContainer'>
-                {this.props.form.sessions.map((session) => {
+                {Object.values(this.props.form.sessions)
+                    .sort((a, b) => a.position - b.position)
+                    .map((session) => {
                     return (
                         <div key={session.sessionId} className="sessionSelectContainer">
                             <Row>

@@ -42,10 +42,13 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
         if (this.props !== prevProps && this.props.form) {
             const data = DataFormatUtil.getDataFromForm(this.props.form)
             const currentSessionMap: GraphSessionMap  = {}
-            this.props.form.sessions.forEach((session) => {
-                currentSessionMap[session.sessionId] = {
-                    title: session.title,
-                    color: this.getRandomHex()
+            Object.keys(this.props.form.sessions).forEach((sessionId) => {
+                const session = this.props.form?.sessions[sessionId]
+                if (session) {
+                    currentSessionMap[session.sessionId] = {
+                        title: session.title,
+                        color: this.getRandomHex()
+                    }
                 }
             })
             this.setState({
@@ -95,7 +98,11 @@ export class WeekStats extends Component<WeekStatsProps, WeekStatsState> {
                             <Tooltip content={this.CustomTooltip}/>
                             <YAxis/>
                         {
-                            this.props.form.sessions.slice().reverse().map((session) => {
+                            Object.values(this.props.form.sessions)
+                                .sort((a, b) => a.position - b.position)
+                                .slice()
+                                .reverse()
+                                .map((session) => {
                                 const sessionObj = this.state.currentSessionMap[session.sessionId]
                                 if (!sessionObj) {
                                     return <div key={session.sessionId}></div>

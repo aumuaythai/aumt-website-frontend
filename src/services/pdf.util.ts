@@ -38,7 +38,7 @@ class PdfUtil {
         ]
         content.push({text: `${data.length} Trainings`, style: 'subHeader', alignment: 'left'})
         const summaryBody = data.reduce((body, training) => {
-            const [total, limit] = training.sessions.reduce((arr, session) => {
+            const [total, limit] = Object.values(training.sessions).sort((a, b) => a.position - b.position).reduce((arr, session) => {
                 arr[0] += Object.keys(session.members).length
                 arr[1] += session.limit
                 return arr
@@ -58,7 +58,7 @@ class PdfUtil {
         } as any)
         data.forEach((training) => {
             content.push({text: training.title, style: 'subHeader', alignment: 'left'})
-            const {widths, flatSessions} = training.sessions.reduce((obj, session) => {
+            const {widths, flatSessions} = Object.values(training.sessions).sort((a, b) => a.position - b.position).reduce((obj, session) => {
                 obj.widths.push('*')
                 const names = Object.keys(session.members)
                     .sort((uidA, uidB) => {

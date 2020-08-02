@@ -172,7 +172,7 @@ class DB {
         }
         return this.db.collection('weekly_trainings')
             .doc(formData.trainingId)
-            .set(formData)
+            .set(this.formToDoc(formData))
     }
 
     public submitEvent = (eventData: AumtEvent): Promise<void> => {
@@ -369,7 +369,7 @@ class DB {
         return this.getTrainingData(formId)
             .then((trainingForm: AumtWeeklyTraining) => {
                 if (trainingForm) {
-                    const session = trainingForm.sessions.find(s => s.sessionId === sessionId)
+                    const session = trainingForm.sessions[sessionId]
                     if (session) {
                         delete session.members[userId]
                         if (!this.db) {
@@ -377,7 +377,7 @@ class DB {
                         }
                         return this.db.collection('weekly_trainings')
                             .doc(formId)
-                            .set(trainingForm)
+                            .set(this.formToDoc(trainingForm))
                             .then(() => {
                                 return session.sessionId
                             })
@@ -405,7 +405,7 @@ class DB {
             return this.getTrainingData(formId)
                 .then((trainingForm: AumtWeeklyTraining) => {
                     if (trainingForm) {
-                        for (const session of trainingForm.sessions) {
+                        Object.values(trainingForm.sessions).forEach((session) => {
                             if (userId in session.members) {
                                 if (!removeSignup) {
                                     return session.sessionId
@@ -413,7 +413,7 @@ class DB {
                                     return this.removeMemberFromForm(userId, formId, session.sessionId)
                                 }
                             }
-                        }
+                        })
                         return ''
                     } else {
                         throw new Error('Form does not exist')
@@ -425,7 +425,7 @@ class DB {
         return this.isMemberSignedUpToForm(userId, formId, true)
             .then(() => this.getTrainingData(formId))
             .then((trainingForm: AumtWeeklyTraining) => {
-                const session = trainingForm.sessions.find((s: AumtTrainingSession) => s.sessionId === sessionId)
+                const session = trainingForm.sessions[sessionId]
                 if (session) {
                     session.members[userId] = {
                         name: displayName,
@@ -433,7 +433,7 @@ class DB {
                     }
                     return this.db?.collection('weekly_trainings')
                         .doc(formId)
-                        .set(trainingForm)
+                        .set(this.formToDoc(trainingForm))
                 } else {
                     throw new Error('No session found for session id')
                 }
@@ -461,50 +461,6 @@ class DB {
                         // timeJoined: firebase.firestore.FieldValue.delete()
                     })
                 })
-            })
-    }
-
-    public signMockData = () => {
-        if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('members')
-            .get()
-            .then((querySnapshot) => {
-                const uids: MockMember[] = []
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data()
-                    uids.push({
-                        [doc.id]: {
-                            name: data.firstName + (data.preferredName ? ` "${data.preferredName}" ` : ' ') + data.lastName,
-                            timeAdded: this.getRandomDate(new Date(2020, 4, 10), new Date(2020, 4, 14))
-                        }
-                    })
-                })
-                return uids
-            })
-            .then((uids: MockMember[]) => {
-                return this.getAllForms()
-                    .then((forms: AumtWeeklyTraining[]) => {
-                        const form = forms.find(f => f.title.indexOf('Week 11') > -1)
-                        if (!form) throw new Error('NO FORM')
-                        form.sessions = form.sessions.map((session) => {
-                            const randLimit = Math.floor(Math.random() * 15 + 16)
-                            for (let i = 0; i < randLimit; i ++) {
-                                if (!uids.length || Object.keys(session.members).length >= session.limit) {
-                                    break
-                                }
-                                const randIndex = Math.floor(Math.random() * uids.length)
-                                const memberI = uids[randIndex]
-                                uids.splice(randIndex, 1)
-                                const uid = Object.keys(memberI)[0]
-                                session.members[uid] = Object.assign({}, memberI[uid])
-                            }
-                            return session
-                        })
-                        return form
-                    })
-                    .then((form: AumtWeeklyTraining) => {
-                        this.submitNewForm(form)
-                    })
             })
     }
 
@@ -594,17 +550,18 @@ class DB {
     }
 
     private docToForm = (docData: any): AumtWeeklyTraining => {
-        const docSessions = docData.sessions.map((session: any) => {
+        const sessionsObj: Record<string, AumtTrainingSession> = {}
+        docData.sessions.forEach((session: any, idx: number) => {
             Object.keys(session.members).forEach((i) => {
                 session.members[i].timeAdded = new Date(session.members[i].timeAdded.seconds * 1000)
             })
-            return session
+            sessionsObj[session.sessionId] = {...session, position: idx}
         })
         const weeklyTraining: AumtWeeklyTraining = {
             title: docData.title,
             feedback: docData.feedback,
             trainingId: docData.trainingId,
-            sessions: docSessions,
+            sessions: sessionsObj,
             openToPublic: docData.openToPublic || false,
             useInterSemMembers: docData.useInterSemMembers || false,
             opens: new Date(docData.opens.seconds * 1000),
@@ -612,6 +569,17 @@ class DB {
             notes: docData.notes.split('%%NEWLINE%%').join('\n')
         }
         return weeklyTraining
+    }
+
+    private formToDoc = (form: AumtWeeklyTraining) => {
+        const sessions: AumtTrainingSession[] =  []
+        Object.keys(form.sessions).forEach((sessionId: string) => {
+            sessions.push(form.sessions[sessionId])
+        })
+        return {
+            ...form,
+            sessions: sessions.sort((a, b) => a.position - b.position)
+        }
     }
 
     private docToMember = (docData: any): AumtMember => {

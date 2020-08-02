@@ -89,12 +89,16 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             })
             AdminStore.getTrainingById(paths[editTrainingIdx + 1])
                 .then((training: AumtWeeklyTraining) => {
+                    const sessions: AumtTrainingSession[] = []
+                    Object.keys(training.sessions).forEach((sessionId) => {
+                        sessions.push(training.sessions[sessionId])
+                    })
                     this.setState({
                         ...this.state,
                         currentTitle: training.title,
                         currentOpens: training.opens,
                         currentCloses: training.closes,
-                        currentSessions: training.sessions,
+                        currentSessions: sessions.sort((a, b) => a.position - b.position),
                         currentNotes: training.notes,
                         currentOpenToPublic: training.openToPublic,
                         currentUseInterSemMembers: training.useInterSemMembers,
@@ -200,6 +204,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             limit: DEFAULT_TRAINING_LIMIT,
             sessionId: this.generateSessionId(10),
             title: sessionTitle,
+            position: this.state.currentSessions.length,
             trainers: [],
             members: {},
             waitlist: {}
@@ -231,9 +236,13 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             ...this.state,
             isSubmitting: true,
         })
+        const sessions: Record<string, AumtTrainingSession> = {}
+        this.state.currentSessions.forEach((session) => {
+            sessions[session.sessionId] = session
+        })
         db.submitNewForm({
             title: this.state.currentTitle,
-            sessions: this.state.currentSessions,
+            sessions,
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             openToPublic: this.state.currentOpenToPublic,
