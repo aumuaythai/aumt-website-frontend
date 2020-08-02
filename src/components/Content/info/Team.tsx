@@ -54,12 +54,12 @@ class Team extends Component {
                     </div>
                     <div className='imgRow'>
                         <div className='personContainer'>
-                            <p className="name">Tom Woodd</p>
-                            <img className='headshot' src="./photos/tomwoodd.jpg" alt="Tom Woodd"/>
+                            <p className="name">Sunny Thangavelu</p>
+                            <img className='headshot' src="./photos/sunny.jpg" alt="Sundaresh Thangavelu"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Kurt Russel</p>
-                            <img className='headshot' src="./photos/kurt.jpg" alt="Kurt Russel"/>
+                            <p className="name">Johnson Lo</p>
+                            <img className='headshot' src="./photos/johnson.jpg" alt="Johnson Lo"/>
                         </div>
                         <div className='personContainer'>
                             <p className="name">Huch</p>
