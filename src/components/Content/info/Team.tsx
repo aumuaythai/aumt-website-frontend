@@ -77,9 +77,13 @@ class Team extends Component {
                             <p className="name">Hasnaen Hossain</p>
                             <img className='headshot' src="./photos/hasnaen.jpg" alt="Hasnaen Hossain"/>
                         </div>
-                        <div className='personContainer'>
+                        {/* <div className='personContainer'>
                             <p className="name">Kevin Ku</p>
                             <img className='headshot' src="./photos/kevin.jpg" alt="Kevin Ku"/>
+                        </div> */}
+                        <div className='personContainer'>
+                            <p className="name">Josh Webb</p>
+                            <img className='headshot' src="./photos/josh.jpeg" alt="Josh Webb"/>
                         </div>
                     </div>
                 </div>
