@@ -5,15 +5,29 @@ import './ResetLink.css'
 import FirebaseUtil from '../../services/firebase.util'
 
 
+interface ResetPasswordLinkState {
+  visible: boolean
+  confirmLoading: boolean
+  currentEmail: string
+  buttonText: string
+  errorText: string
+}
 
-export class ResetPasswordLink extends Component {
-  state = {
-    visible: false,
-    confirmLoading: false,
-    currentEmail: '',
-    buttonText: 'Send Reset Email',
-    errorText: ''
-  };
+interface ResetPasswordLinkProps {
+  text?: string
+}
+
+export class ResetPasswordLink extends Component<ResetPasswordLinkProps, ResetPasswordLinkState> {
+  constructor(props: ResetPasswordLinkProps) {
+    super(props)
+    this.state = {
+      visible: false,
+      confirmLoading: false,
+      currentEmail: '',
+      buttonText: 'Send Reset Email',
+      errorText: ''
+    };
+  }
 
   onEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
       this.setState({
@@ -68,7 +82,7 @@ export class ResetPasswordLink extends Component {
     const { visible, confirmLoading } = this.state;
     return (
       <div className="resetContainer">
-        <Button type='link' className="mockLink" onClick={this.showModal}>Reset Password</Button>
+        <Button type='link' className="mockLink" onClick={this.showModal}>{this.props.text || 'Reset Password'}</Button>
         <Modal
           title="Reset Password"
           visible={visible}

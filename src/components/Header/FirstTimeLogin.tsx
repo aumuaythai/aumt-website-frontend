@@ -4,6 +4,7 @@ import './FirstTimeLogin.css'
 import FirebaseUtil from '../../services/firebase.util'
 import { AumtMember, AumtMembersObjWithCollated } from '../../types'
 import db from '../../services/db'
+import { ResetPasswordLink } from '../Header/ResetLink'
 import dataUtil from '../../services/data.util'
 
 export interface FirstTimeLoginProps {
@@ -42,14 +43,14 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
     }
     
     componentDidMount = () => {
-        db.getS22020UnverifiedMembers()
-            .then(dataUtil.getCollatedMembersObj)
-            .then((members) => {
-                this.setState({
-                    ...this.state,
-                    signedMembers: members
-                })
-            })
+        // db.getS22020UnverifiedMembers()
+        //     .then(dataUtil.getCollatedMembersObj)
+        //     .then((members) => {
+        //         this.setState({
+        //             ...this.state,
+        //             signedMembers: members
+        //         })
+        //     })
     }
     memberSort = (uidA: string, uidB: string): number => {
         const nameA = this.state.signedMembers[uidA].collated
@@ -103,8 +104,8 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
             <div className="firstTimeLoginContainer">
                 <h3 className='firstTimeLoginHeader'>Already joined in Sem 1?</h3>
                 <p className='joinedMemberText'>We've created accounts for everyone who signed up in Sem 1 2020 and still has an active membership.
-                    All you need to do is choose a password to confirm your membership for Sem 2!</p>
-                    <Select
+                    All you need to do is <ResetPasswordLink text=' reset your password '></ResetPasswordLink> to confirm your membership for Sem 2!</p>
+                    {/* <Select
                         showSearch={window.innerWidth > 600}
                         className='firstTimeLoginSelect'
                         placeholder='Select Your Name'
@@ -132,7 +133,7 @@ export class FirstTimeLogin extends Component<FirstTimeLoginProps, FirstTimeLogi
                 this.state.successMessage ? 
                     <Alert className='joinedEmailError' type='success' message={this.state.successMessage}></Alert>
                 : ''}
-                </div>
+                </div> */}
             </div>
         )
     }

@@ -105,7 +105,9 @@ export class LoginForm extends Component<LoginProps, LoginState> {
                         prefix={<UserOutlined />} />
                     <br/>
                     <Input.Password className='loginInput' onChange={e => this.onPwChange(e.target.value)} onPressEnter={this.onLoginClick} placeholder="password" />
-                    <ResetPasswordLink></ResetPasswordLink>
+                    <div>
+                        <ResetPasswordLink></ResetPasswordLink>
+                    </div>
                     <Button className="loginButton" onClick={this.onLoginClick} loading={this.state.authing}>Log in</Button>
                     <div className="clearBoth"></div>
                 </div>
