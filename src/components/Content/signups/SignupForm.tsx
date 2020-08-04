@@ -124,7 +124,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 ...this.state,
                 removingState: true
             })
-            db.removeMemberFromForm2(this.props.authedUserId, this.props.id, this.state.signedUpOption)
+            db.removeMemberFromForm(this.props.authedUserId, this.props.id, this.state.signedUpOption)
                 .then(() => {
                     this.setState({
                         ...this.state,
@@ -162,7 +162,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             submittingState: true
         })
 
-        db.signUserUp2(
+        db.signUserUp(
                 this.props.authedUserId || this.state.currentInterSemUid || this.generateMockUid(),
                 this.props.displayName || this.state.currentDisplayName,
                 new Date(),

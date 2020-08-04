@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import {Button, Popover, Alert, Select} from 'antd'
+// import {Button, Popover, Alert, Select} from 'antd'
 import './FirstTimeLogin.css'
 import FirebaseUtil from '../../services/firebase.util'
 import { AumtMember, AumtMembersObjWithCollated } from '../../types'
-import db from '../../services/db'
+// import db from '../../services/db'
 import { ResetPasswordLink } from '../Header/ResetLink'
-import dataUtil from '../../services/data.util'
+// import dataUtil from '../../services/data.util'
 
 export interface FirstTimeLoginProps {
 

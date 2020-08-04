@@ -170,9 +170,9 @@ class DB {
         if (!formData) {
             return Promise.reject('No form data submitted')
         }
-        return this.db.collection('weekly_trainings')
+        return this.db.collection('weekly_trainings_dup')
             .doc(formData.trainingId)
-            .set(this.formToDoc(formData))
+            .set(formData)
     }
 
     public submitEvent = (eventData: AumtEvent): Promise<void> => {
@@ -260,7 +260,7 @@ class DB {
 
     public removeTraining = (trainingId: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('weekly_trainings')
+        return this.db.collection('weekly_trainings_dup')
             .doc(trainingId)
             .delete()
     }
@@ -268,14 +268,12 @@ class DB {
     public getAllForms = (): Promise<AumtWeeklyTraining[]> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('weekly_trainings_dup')
-        // return this.db.collection('weekly_trainings')
             .get()
             .then((querySnapshot) => {
                 const allForms: AumtWeeklyTraining[] = []
                 querySnapshot.forEach((doc) => {
                     const data = doc.data()
-                    // const form = this.docToForm(data)
-                    const form = this.docToForm2(data)
+                    const form = this.docToForm(data)
                     allForms.push(form)
                 });
                 return allForms
@@ -299,7 +297,7 @@ class DB {
     public getOpenForms = (): Promise<AumtWeeklyTraining[]> => {
             if (!this.db) return Promise.reject('No db object')
             const currentDate = new Date()
-            return this.db.collection('weekly_trainings')
+            return this.db.collection('weekly_trainings_dup')
                 .where('closes', '>=', currentDate)
                 .get()
                 .then((querySnapshot) => {
@@ -354,7 +352,7 @@ class DB {
 
     public getTrainingData = (formId: string): Promise<AumtWeeklyTraining> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('weekly_trainings')
+        return this.db.collection('weekly_trainings_dup')
             .doc(formId)
             .get()
             .then((doc) => {
@@ -366,7 +364,7 @@ class DB {
             })
     }
 
-    public removeMemberFromForm2 = (userId: string, formId: string, sessionId: string): Promise<void> => {
+    public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('weekly_trainings_dup')
             .doc(formId)
@@ -381,63 +379,63 @@ class DB {
             }, {merge: true})
     }
 
-    public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<string> => {
-        if (!this.db) return Promise.reject('No db object')
-        return this.getTrainingData(formId)
-            .then((trainingForm: AumtWeeklyTraining) => {
-                if (trainingForm) {
-                    const session = trainingForm.sessions[sessionId]
-                    if (session) {
-                        delete session.members[userId]
-                        if (!this.db) {
-                            throw new Error('No db object')
-                        }
-                        return this.db.collection('weekly_trainings')
-                            .doc(formId)
-                            .set(this.formToDoc(trainingForm))
-                            .then(() => {
-                                return session.sessionId
-                            })
-                    } else {
-                        throw new Error('No session id on form, aborting')
-                    }
-                } else {
-                    throw new Error('No training form for formid found, aborting')
-                }
-            })
-    }
+    // public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<string> => {
+    //     if (!this.db) return Promise.reject('No db object')
+    //     return this.getTrainingData(formId)
+    //         .then((trainingForm: AumtWeeklyTraining) => {
+    //             if (trainingForm) {
+    //                 const session = trainingForm.sessions[sessionId]
+    //                 if (session) {
+    //                     delete session.members[userId]
+    //                     if (!this.db) {
+    //                         throw new Error('No db object')
+    //                     }
+    //                     return this.db.collection('weekly_trainings')
+    //                         .doc(formId)
+    //                         .set(this.formToDoc(trainingForm))
+    //                         .then(() => {
+    //                             return session.sessionId
+    //                         })
+    //                 } else {
+    //                     throw new Error('No session id on form, aborting')
+    //                 }
+    //             } else {
+    //                 throw new Error('No training form for formid found, aborting')
+    //             }
+    //         })
+    // }
 
-    public moveMember = (userId: string, displayName: string, timeAdded: Date,formId: string, fromSessionId: string, toSessionId: string): Promise<string> => {
-        if (!this.db) return Promise.reject('No db object')
-        return this.signUserUp(userId, displayName, timeAdded, formId, toSessionId, '', fromSessionId)
-            .then(() => {
-                return this.removeMemberFromForm(userId,formId,fromSessionId)
-            })
-    }
+    // public moveMember = (userId: string, displayName: string, timeAdded: Date,formId: string, fromSessionId: string, toSessionId: string): Promise<string> => {
+    //     if (!this.db) return Promise.reject('No db object')
+    //     return this.signUserUp(userId, displayName, timeAdded, formId, toSessionId, '', fromSessionId)
+    //         .then(() => {
+    //             return this.removeMemberFromForm(userId,formId,fromSessionId)
+    //         })
+    // }
 
-    public isMemberSignedUpToForm = (userId: string, formId: string, removeSignup?: boolean): Promise<string> => {
-            if (!this.db) {
-                return Promise.reject('No db object')
-            }
-            return this.getTrainingData(formId)
-                .then((trainingForm: AumtWeeklyTraining) => {
-                    if (trainingForm) {
-                        Object.values(trainingForm.sessions).forEach((session) => {
-                            if (userId in session.members) {
-                                if (!removeSignup) {
-                                    return session.sessionId
-                                } else {
-                                    return this.removeMemberFromForm(userId, formId, session.sessionId)
-                                }
-                            }
-                        })
-                        return ''
-                    } else {
-                        throw new Error('Form does not exist')
-                    }
-                })
-    }
-    public signUserUp2 = (userId: string,
+    // public isMemberSignedUpToForm = (userId: string, formId: string, removeSignup?: boolean): Promise<string> => {
+    //         if (!this.db) {
+    //             return Promise.reject('No db object')
+    //         }
+    //         return this.getTrainingData(formId)
+    //             .then((trainingForm: AumtWeeklyTraining) => {
+    //                 if (trainingForm) {
+    //                     Object.values(trainingForm.sessions).forEach((session) => {
+    //                         if (userId in session.members) {
+    //                             if (!removeSignup) {
+    //                                 return session.sessionId
+    //                             } else {
+    //                                 return this.removeMemberFromForm(userId, formId, session.sessionId)
+    //                             }
+    //                         }
+    //                     })
+    //                     return ''
+    //                 } else {
+    //                     throw new Error('Form does not exist')
+    //                 }
+    //             })
+    // }
+    public signUserUp = (userId: string,
         displayName: string,
         timeAdded: Date,
         formId: string,
@@ -445,7 +443,7 @@ class DB {
         feedback: string,
         prevSessionId: string): Promise<void> => {
             if (!this.db) return Promise.reject('No db object')
-            const mergeObj = {
+            let mergeObj = {
                 sessions: {
                     [sessionId]: {
                         members: {
@@ -464,39 +462,44 @@ class DB {
                     }
                 }
             }
-            console.log(mergeObj)
+            if (feedback) {
+                (mergeObj as any) = {
+                    ...mergeObj,
+                    feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
+                }
+            }
             return this.db.collection('weekly_trainings_dup')
                 .doc(formId)
                 .set(mergeObj, {merge: true})
     }
-    public signUserUp = (userId: string, displayName: string, timeAdded: Date, formId: string, sessionId: string, feedback: string, prevSessionId: string): Promise<void> => {
-        if (!this.db) return Promise.reject('No db object')
-        return this.isMemberSignedUpToForm(userId, formId, true)
-            .then(() => this.getTrainingData(formId))
-            .then((trainingForm: AumtWeeklyTraining) => {
-                const session = trainingForm.sessions[sessionId]
-                if (session) {
-                    session.members[userId] = {
-                        name: displayName,
-                        timeAdded: timeAdded
-                    }
-                    return this.db?.collection('weekly_trainings')
-                        .doc(formId)
-                        .set(this.formToDoc(trainingForm))
-                } else {
-                    throw new Error('No session found for session id')
-                }
-            })
-            .then(() => {
-                if (feedback) {
-                    return this.db?.collection('weekly_trainings')
-                        .doc(formId)
-                        .update({
-                            feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
-                        })
-                }
-            })
-    }
+    // public signUserUp = (userId: string, displayName: string, timeAdded: Date, formId: string, sessionId: string, feedback: string, prevSessionId: string): Promise<void> => {
+    //     if (!this.db) return Promise.reject('No db object')
+    //     return this.isMemberSignedUpToForm(userId, formId, true)
+    //         .then(() => this.getTrainingData(formId))
+    //         .then((trainingForm: AumtWeeklyTraining) => {
+    //             const session = trainingForm.sessions[sessionId]
+    //             if (session) {
+    //                 session.members[userId] = {
+    //                     name: displayName,
+    //                     timeAdded: timeAdded
+    //                 }
+    //                 return this.db?.collection('weekly_trainings')
+    //                     .doc(formId)
+    //                     .set(this.formToDoc(trainingForm))
+    //             } else {
+    //                 throw new Error('No session found for session id')
+    //             }
+    //         })
+    //         .then(() => {
+    //             if (feedback) {
+    //                 return this.db?.collection('weekly_trainings')
+    //                     .doc(formId)
+    //                     .update({
+    //                         feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
+    //                     })
+    //             }
+    //         })
+    // }
 
     public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
@@ -507,15 +510,13 @@ class DB {
             .then((querySnapshot) => {
                 const training_collection = this.db?.collection('weekly_trainings_dup')
                 querySnapshot.forEach((doc) => {
-                    const form = this.docToForm(doc.data())
-                    // const docRef = training_collection?.doc(form.trainingId)
-                    // if (docRef) {
-                    //     batch.set(docRef, form)
-                    // }
-                    doc.ref.set(form)
-                    
+                    const form = this.oldDocToForm(doc.data())
+                    const docRef = training_collection?.doc(form.trainingId)
+                    if (docRef) {
+                        batch.set(docRef, form)
+                    }
                 })
-                // return batch.commit()
+                return batch.commit()
             })
     }
 
@@ -525,8 +526,7 @@ class DB {
         this.listeners[listenerId] = this.db.collection('weekly_trainings_dup')
             .doc(formId)
             .onSnapshot((doc: firebase.firestore.DocumentSnapshot) => {
-                // callback(formId, this.docToForm(doc.data()))
-                callback(formId, this.docToForm2(doc.data()))
+                callback(formId, this.docToForm(doc.data()))
             })
         return listenerId
     }
@@ -538,8 +538,7 @@ class DB {
             .onSnapshot((querySnapshot) => {
                 const newForms: AumtWeeklyTraining[] = []
                 querySnapshot.docs.forEach((doc) => {
-                    newForms.push(this.docToForm2(doc.data()))
-                    // newForms.push(this.docToForm(doc.data()))
+                    newForms.push(this.docToForm(doc.data()))
                 })
                 callback(newForms)
             })
@@ -606,7 +605,7 @@ class DB {
         return id
     }
 
-    private docToForm = (docData: any): AumtWeeklyTraining => {
+    private oldDocToForm = (docData: any): AumtWeeklyTraining => {
         const sessionsObj: Record<string, AumtTrainingSession> = {}
         docData.sessions.forEach((session: any, idx: number) => {
             Object.keys(session.members).forEach((i) => {
@@ -628,8 +627,7 @@ class DB {
         return weeklyTraining
     }
 
-    private docToForm2 = (docData: any): AumtWeeklyTraining => {
-        const sessionsObj: Record<string, AumtTrainingSession> = {}
+    private docToForm = (docData: any): AumtWeeklyTraining => {
         Object.keys(docData.sessions).forEach((sessionId: string) => {
             const session = docData.sessions[sessionId]
             Object.keys(session.members).forEach((i) => {

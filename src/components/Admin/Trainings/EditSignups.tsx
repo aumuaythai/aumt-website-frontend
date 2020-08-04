@@ -66,7 +66,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                 ...this.state,
                 removingInProcess: Object.assign(this.state.removingInProcess, {[sessionId]: true})
             })
-            db.removeMemberFromForm2(uidToRemove, this.props.form.trainingId, sessionId)
+            db.removeMemberFromForm(uidToRemove, this.props.form.trainingId, sessionId)
                 .then(() => {
                     delete this.state.selectedMembers[sessionId]
                     this.setState({
@@ -95,7 +95,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         const name = this.state.addedMember[sessionId]
         if (name) {
             this.setState({...this.state, addingInProcess: {...this.state.addingInProcess, [sessionId]: true}})
-            db.signUserUp2(this.generateMockUid(), name, new Date(), this.props.form.trainingId, sessionId, '', '')
+            db.signUserUp(this.generateMockUid(), name, new Date(), this.props.form.trainingId, sessionId, '', '')
                 .then(() => {
                     notification.success({message: 'Successfully signed up ' + name})
                 })
@@ -128,7 +128,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                 [fromSession]: true
             })
         })
-        db.moveMember(currentUserIdSelected, displayName, timeAdded, this.props.form.trainingId, fromSession, key)
+        db.signUserUp(currentUserIdSelected, displayName, timeAdded, this.props.form.trainingId, key, '', fromSession)
             .then(() => {
                 delete this.state.selectedMembers[fromSession]
                 this.setState({
