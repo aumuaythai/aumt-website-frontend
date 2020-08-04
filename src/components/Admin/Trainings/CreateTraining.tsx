@@ -32,11 +32,10 @@ const TRAINING_0_CLOSES_DATE = new Date(2020, 6, 24, 20, 30, 0)
 
 const TRAINING_DEFAULT_NOTES = `Rules/Etiquette
 1.    Keep the training area free until your session starts.
-2.    Remove shoes and socks before entering the gym floor.
+2.    Remove shoes and socks before entering the gym mats.
 3.   Let your trainer know if you need to leave early or take a rest due to injury/medical reasons/overtraining.
-4.   Wipe inside and outside of gloves and shins pads using provided wipes at the end of class and with a large towel and place equipment back in the blue bags.
-5.  Dispose of all rubbish in the bins after class
-6.   Put ALL training pads back after use.`
+4.   Wipe inside and outside of gloves and shins pads using provided wipes at the end of class
+5.   Put ALL training pads back after use.`
 
 class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {
@@ -65,9 +64,9 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
         const currentSessions = [
             this.createSession(`Thursday 6:30 (Beginners)`),
-            this.createSession(`Thursday 7:30 (Beginners)`),
+            this.createSession(`Thursday 7:30 (Advanced)`),
             this.createSession(`Friday 6:30 (Beginners)`),
-            this.createSession(`Friday 7:30 (Advanced)`),
+            this.createSession(`Friday 7:30 (Beginners)`),
 
         ]
         this.setState({

@@ -594,6 +594,9 @@ class DB {
     }
 
     private docToForm = (docData: any): AumtWeeklyTraining => {
+        if (!Array.isArray(docData.sessions)) {
+            throw new Error('Outdated website, refresh page please')
+        }
         const docSessions = docData.sessions.map((session: any) => {
             Object.keys(session.members).forEach((i) => {
                 session.members[i].timeAdded = new Date(session.members[i].timeAdded.seconds * 1000)

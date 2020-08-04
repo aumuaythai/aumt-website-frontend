@@ -10,4 +10,5 @@
 .committeeAppSkillsContainer {
     height: 200px;
     overflow-y: auto;
+    white-space: pre-wrap;
 }
