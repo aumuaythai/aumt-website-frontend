@@ -4,9 +4,10 @@ import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined,
 import { Button, Result, Input, Divider, Radio, notification, InputNumber} from 'antd'
 import moment from 'moment'
 import './Event.css'
-import { AumtEvent, AumtMember } from '../../../types'
+import { AumtEvent, AumtMember, LicenseClasses } from '../../../types'
 import firebaseUtil from '../../../services/firebase.util'
 import db from '../../../services/db'
+import { CampSignupForm } from './CampSignupForm'
 
 interface EventProps {
     event: AumtEvent
@@ -22,10 +23,9 @@ interface EventState {
     reservingSpot: boolean
     waitlistingMember: boolean
     withdrawingSpot: boolean
-    currentDisplayName: string
     currentOwnsCar: boolean | undefined
     currentSeats: number | undefined
-    currentLicenseClass: 'Full 2+ years' | 'Full < 2 years' | 'Restricted' | ''
+    currentLicenseClass: LicenseClasses | ''
     currentDietaryRequirements: string
 }
 
@@ -50,8 +50,7 @@ export class Event extends Component<EventProps, EventState> {
             currentLicenseClass: signupInfo && signupInfo.driverLicenseClass || '',
             reservingSpot: false,
             withdrawingSpot: false,
-            waitlistingMember: false,
-            currentDisplayName: ''
+            waitlistingMember: false
         }
     }
     generateMockUid = () => {
@@ -76,39 +75,13 @@ export class Event extends Component<EventProps, EventState> {
         }
         return null
     }
-    onDisplayNameChange = (name: string) => {
-        this.setState({
-            ...this.state,
-            currentDisplayName: name
-        })
-    }
-    onDietaryRequirementsChange = (diet: string) => {
-        this.setState({...this.state, currentDietaryRequirements: diet})
-    }
-    onSeatsChange = (seats: number | undefined) => {
-        if (seats) {
-            this.setState({...this.state, currentSeats: seats})
-        }
-    }
-    onLicenseSelect = (license: 'Full 2+ years' | 'Full < 2 years' | 'Restricted') => {
-        this.setState({...this.state, currentLicenseClass: license})
-    }
-    onOwnsCarChange = (ownsCar: boolean) => {
-        this.setState({...this.state, currentOwnsCar: ownsCar})
-    }
-    onReserveClicked = (waitlist: boolean) => {
-        const displayName = this.state.currentDisplayName || (this.props.authedUser ? `${this.props.authedUser?.firstName} ${this.props.authedUser?.lastName}` : '')
+    onSignupFormSubmit = (signupData: {dietaryRequirements?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
+        const displayName = this.props.authedUser ? `${this.props.authedUser.firstName} ${this.props.authedUser.lastName}` : ''
         if (!displayName) {
             notification.error({message: 'Name required'})
             return
         }
-        if (this.props.event.signups?.isCamp) {
-            if (this.state.currentOwnsCar && !this.state.currentSeats) {
-                notification.error({message: 'Number of Seats Required'})
-                return 
-            }
-        }
-        if (!waitlist) {
+        if (!isWaitlist) {
             this.setState({...this.state, reservingSpot: true })
         } else {
             this.setState({...this.state, waitlistingMember: true})
@@ -121,15 +94,15 @@ export class Event extends Component<EventProps, EventState> {
                 timeSignedUpMs: new Date().getTime(),
                 confirmed,
                 email: this.props.authedUser?.email || 'NO EMAIL'
-            }, this.state.currentDietaryRequirements ? {
-                dietaryRequirements: this.state.currentDietaryRequirements
-            } : {}, this.state.currentLicenseClass ? {
-                driverLicnseClass: this.state.currentLicenseClass,
-                seatsInCar: this.state.currentSeats || -1
+            }, signupData.dietaryRequirements ? {
+                dietaryRequirements: signupData.dietaryRequirements
+            } : {}, signupData.license ? {
+                driverLicenseClass: signupData.license,
+                seatsInCar: signupData.seatsInCar || -1
             } : {})
-            , waitlist)
+            , isWaitlist)
             .then(() => {
-                if (waitlist) {
+                if (isWaitlist) {
                     this.setState({...this.state, waitlisted: true})
                 } else {
                     this.setState({
@@ -259,44 +232,30 @@ export class Event extends Component<EventProps, EventState> {
                                 this.props.event.signups.limit && (this.props.event.signups.limit <= Object.keys(this.props.event.signups.members).length) ?
                                 <div>
                                     <h4>Signups are currently full</h4>
-                                    <p><Button loading={this.state.waitlistingMember} onClick={e => this.onReserveClicked(true)}>
-                                        Join the Waitlist
-                                        </Button> and the committee will let message you if a spot opens.</p>
+                                    <p>Fill out the form below to join the waitlist and the committee will let message you if a spot opens.</p>
+                                        <CampSignupForm
+                                            includeNameAndEmail={false}
+                                            isWaitlist={true}
+                                            onSubmit={(data) => this.onSignupFormSubmit(data, true)}
+                                            submitting={this.state.waitlistingMember}></CampSignupForm>
                                 </div>
                                 :
                                 <div>
                                     <h2>Signups</h2>
                                     {this.props.event.signups.isCamp ? 
-                                        <div className="eventSignupForm">
-                                            <h4>Dietary Requirements (optional)</h4>
-                                            <Input onChange={e => this.onDietaryRequirementsChange(e.target.value)}/>
-                                            <h4>Driving (optional)</h4>
-                                            <p>If selected as a driver, you'll receive a $20 discount and fuel reimbursement.</p>
-                                            <div>License class: 
-                                                <Radio.Group value={this.state.currentLicenseClass} onChange={e => this.onLicenseSelect(e.target.value)}>
-                                                    <Radio.Button value={'Full > 2 years'}>Full &gt; 2 years</Radio.Button>
-                                                    <Radio.Button value={'Full < 2 years'}>Full &lt; 2 years</Radio.Button>
-                                                    <Radio.Button value={'Restricted'}>Restricted</Radio.Button>
-                                                </Radio.Group>
-                                            </div>
-                                            {this.state.currentLicenseClass ? 
-                                                <div>Do you own a car you would be willing to drive down?
-                                                    <Radio.Group value={this.state.currentOwnsCar} onChange={e => this.onOwnsCarChange(e.target.value)}>
-                                                        <Radio.Button value={true}>Yes</Radio.Button>
-                                                        <Radio.Button value={false}>No</Radio.Button>
-                                                    </Radio.Group>
-                                                    {this.state.currentOwnsCar ? 
-                                                        <div>How many seats? <InputNumber min={1} value={this.state.currentSeats} onChange={this.onSeatsChange}/></div>
-                                                    : ''}
-                                                </div>
-                                            : ''}
-                                        </div>
-                                    : ''}
+                                        <CampSignupForm
+                                            includeNameAndEmail={false}
+                                            isWaitlist={false}
+                                            onSubmit={(data) => this.onSignupFormSubmit(data, false)}
+                                            submitting={this.state.reservingSpot}></CampSignupForm>
+                                    :
                                     <Button
                                         loading={this.state.reservingSpot}
                                         type='primary'
-                                        onClick={e => this.onReserveClicked(false)}>Reserve a Spot</Button>
-                                    {/* {this.props.authedUser ? '' : <Input placeholder='Enter your Full Name' onChange={e => this.onDisplayNameChange(e.target.value)}/>} */}
+                                        block
+                                        className='reserveEventSpotButton'
+                                        onClick={e => this.onSignupFormSubmit({}, false)}>Reserve a Spot</Button>
+                                    }
                                 </div>
                                 }
                         </div>

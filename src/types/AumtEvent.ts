@@ -4,9 +4,11 @@ export interface AumtEventSignupData {
     timeSignedUpMs: number
     confirmed: boolean
     dietaryRequirements?: string
-    driverLicenseClass?: 'Full 2+ years' | 'Full < 2 years' | 'Restricted'
+    driverLicenseClass?: LicenseClasses
     seatsInCar?: number
 }
+
+export type LicenseClasses = 'Full 2+ years' | 'Full < 2 years' | 'Restricted'
 
 export type AumtEventSignup = Record<string,AumtEventSignupData>
 

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
-import { Spin, Button, notification, Input } from 'antd'
+import { Spin, Button, notification, Input, Radio } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import './EventSignups.css'
 import { AumtEvent } from '../../../types'
@@ -195,6 +195,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                     <div className="eventSignupMemberDisplayHeader">
                         <h3 className='eventSignupMemberDisplayTitle'>Signups</h3>
                         <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round' onClick={this.addMemberClick}><PlusOutlined/>Add Member</Button>
+                        <p className='eventSignupMemberDisplayTotalText'>Total: {Object.keys(this.state.event.signups.members).length} / {this.state.event.signups.limit}</p>
                         <div className="clearBoth"></div>
                         {this.state.addingMember ? 
                             <div className="eventSignupsAddMemberContainer">
@@ -218,6 +219,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                             isWaitlist={false}
                             eventId={this.state.event.id}
                             signupData={this.state.event.signups.members}
+                            isCamp={this.state.event.signups.isCamp}
                             limit={this.state.event.signups.limit}></EventSignupTable>
                     </div>
                 </div>
@@ -225,6 +227,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                     <div className="eventSignupMemberDisplayHeader">
                         <h3 className='eventSignupMemberDisplayTitle'>Waitlist</h3>
                         <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round' onClick={this.addWaitlistMemberClick}><PlusOutlined/>Add Member</Button>
+                        <p className='eventSignupMemberDisplayTotalText'>Total: {Object.keys(this.state.event.signups.members).length}</p>
                         <div className="clearBoth"></div>
                         {this.state.addingWaitlistMember ? 
                             <div className="eventSignupsAddMemberContainer">
@@ -249,6 +252,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                             isWaitlist={true}
                             eventId={this.state.event.id}
                             signupData={this.state.event.signups.waitlist}
+                            isCamp={this.state.event.signups.isCamp}
                             limit={null}></EventSignupTable>
                     </div>
                 </div>
