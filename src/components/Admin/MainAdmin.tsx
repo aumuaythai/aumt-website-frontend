@@ -8,6 +8,7 @@ import {ManageEvents} from './Events/ManageEvents'
 import './MainAdmin.css'
 import { TrainingDashboard } from './Trainings/TrainingDashboard'
 import { Feedback } from './Feedback/Feedback';
+import { CommitteeApps } from './CommitteeApps/CommitteeApps'
 import MemberDashboard from './Members/MemberDashboard'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import AdminStore from './AdminStore';
@@ -74,6 +75,8 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
             currentSelectedAdmin = 'members'
         } else if (pathname.indexOf('/admin/feedback') > -1) {
             currentSelectedAdmin = 'feedback'
+        } else if (pathname.indexOf('/admin/committee-apps') > -1) {
+            currentSelectedAdmin = 'committee-apps'
         }
         this.setState({
             ...this.state,
@@ -107,6 +110,9 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                 </Menu.Item>
                 <Menu.Item key="feedback">
                     <Link to='/admin/feedback'>Feedback</Link>
+                </Menu.Item>
+                <Menu.Item key="committee-apps">
+                    <Link to='/admin/committee-apps'>Committee Apps</Link>
                 </Menu.Item>
             </Menu>
         )
@@ -148,6 +154,9 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                         </Route>
                         <Route path='/admin/feedback'>
                             <Feedback forms={this.state.forms}></Feedback>
+                        </Route>
+                        <Route path='/admin/committee-apps'>
+                            <CommitteeApps></CommitteeApps>
                         </Route>
                         <Route path='/admin/createtraining'>
                             <div className="mainAdminCreateFormContainer">

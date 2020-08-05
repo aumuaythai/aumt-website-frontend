@@ -1,11 +1,15 @@
 import React, {Component} from 'react'
 import {Divider} from 'antd'
 import './Team.css'
+import { CommitteeApplications } from './CommitteeApplications'
 
-export class Team extends Component {
+class Team extends Component {
     render() {
         return (
             <div className='teamContainer'>
+                {Date.now() < 1596974400000 ? 
+                    <CommitteeApplications></CommitteeApplications>
+                : ''}
                 <div className="teamGroup">
                     <h1>Committee</h1>
                     <div className='imgRow mainRow'>
@@ -50,12 +54,12 @@ export class Team extends Component {
                     </div>
                     <div className='imgRow'>
                         <div className='personContainer'>
-                            <p className="name">Tom Woodd</p>
-                            <img className='headshot' src="./photos/tomwoodd.jpg" alt="Tom Woodd"/>
+                            <p className="name">Sunny Thangavelu</p>
+                            <img className='headshot' src="./photos/sunny.jpg" alt="Sundaresh Thangavelu"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Kurt Russel</p>
-                            <img className='headshot' src="./photos/kurt.jpg" alt="Kurt Russel"/>
+                            <p className="name">Johnson Lo</p>
+                            <img className='headshot' src="./photos/johnson.jpg" alt="Johnson Lo"/>
                         </div>
                         <div className='personContainer'>
                             <p className="name">Huch</p>
@@ -70,12 +74,16 @@ export class Team extends Component {
                             <img className='headshot' src="./photos/christian.jpg" alt="Christian Lux"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Anthony Wei</p>
-                            <img className='headshot' src="./photos/anthony.jpg" alt="Anthony Wei"/>
+                            <p className="name">Hasnaen Hossain</p>
+                            <img className='headshot' src="./photos/hasnaen.jpg" alt="Hasnaen Hossain"/>
                         </div>
-                        <div className='personContainer'>
+                        {/* <div className='personContainer'>
                             <p className="name">Kevin Ku</p>
                             <img className='headshot' src="./photos/kevin.jpg" alt="Kevin Ku"/>
+                        </div> */}
+                        <div className='personContainer'>
+                            <p className="name">Josh Webb</p>
+                            <img className='headshot' src="./photos/josh.jpeg" alt="Josh Webb"/>
                         </div>
                     </div>
                 </div>
@@ -83,3 +91,5 @@ export class Team extends Component {
         )
     }
 }
+
+export default Team

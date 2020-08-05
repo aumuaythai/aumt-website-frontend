@@ -10,6 +10,7 @@ import { AumtWeeklyTraining } from '../../../types'
 import { EditSignups } from './EditSignups'
 import db from '../../../services/db'
 import AdminStore from '../AdminStore'
+import pdfUtil from '../../../services/pdf.util'
 
 
 interface TrainingDashboardProps {
@@ -94,6 +95,9 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
             })
         }
     }
+    onExportClick = () => {
+        pdfUtil.createTrainingPdf(this.props.forms)
+    }
     getFormsDropdown = () => {
         return (
             <Menu onClick={this.onFormSelect}>
@@ -124,6 +128,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                             overlay={this.getFormsDropdown}>
                             <Button size='large'>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
                         </Dropdown>
+                        <Button className='exportAllButton' type='link' onClick={this.onExportClick}>Generate Report</Button>
                         <div className="clearBoth"></div>
                     </div>
                 <div className="trainingDashboardContentContainer">

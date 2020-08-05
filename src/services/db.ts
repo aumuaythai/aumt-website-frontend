@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
-import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignupData } from '../types';
+import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignupData, AumtCommitteeApp } from '../types';
 import validator from './validator';
 
 type MockMember = {
@@ -27,7 +27,12 @@ class DB {
             .then((doc) => {
                 const docData = doc.data()
                 if (doc.exists && docData) {
-                    return docData as AumtMember
+                    try {
+                        const member = this.docToMember(docData)
+                        return member
+                    } catch (e) {
+                        throw e
+                    }
                 } else {
                     throw new Error('No AUMT member exists for this acccount ' + fbUser.uid)
                 }
@@ -137,6 +142,26 @@ class DB {
                     }
                 })
                 return members
+            })
+    }
+
+    public submitCommitteeApplication = (app: AumtCommitteeApp): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('committee-apps')
+            .doc(this.getListenerId())
+            .set(app)
+    }
+
+    public getCommitteeApplications = (): Promise<AumtCommitteeApp[]> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection('committee-apps')
+            .get()
+            .then((querySnapshot) => {
+                const apps: AumtCommitteeApp[] = []
+                querySnapshot.forEach((doc) => {
+                    apps.push(doc.data() as AumtCommitteeApp)
+                })
+                return apps.sort((a, b) => a.timestampMs - b.timestampMs)
             })
     }
 
@@ -273,18 +298,18 @@ class DB {
             if (!this.db) return Promise.reject('No db object')
             const currentDate = new Date()
             return this.db.collection('weekly_trainings')
-                .where('opens', '<=', currentDate)
+                .where('closes', '>=', currentDate)
                 .get()
                 .then((querySnapshot) => {
                     const trainings: AumtWeeklyTraining[] = []
                     querySnapshot.forEach((doc) => {
                         const data = doc.data()
-                        // can't do where('closes', '>', currentDate) in firestore db so have to here
-                        if (data.closes.seconds * 1000 >= currentDate.getTime()) {
+                        // can't do where('opens', '<', currentDate) in firestore db so have to here
+                        if (data.opens.seconds * 1000 <= currentDate.getTime()) {
                             const weeklyTraining = this.docToForm(data)
                             trainings.push(weeklyTraining)
                         }
-                    });
+                    })
                     return trainings
                 })
     }
@@ -424,7 +449,7 @@ class DB {
             })
     }
 
-    formatMembers = () => {
+    public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
         return this.db.collection('events')
@@ -444,7 +469,7 @@ class DB {
             })
     }
 
-    signMockData = () => {
+    public signMockData = () => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('members')
             .get()
@@ -488,7 +513,18 @@ class DB {
             })
     }
 
-    listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
+    public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
+        if (!this.db) throw new Error('no db')
+        const listenerId = this.getListenerId()
+        this.listeners[listenerId] = this.db.collection('weekly_trainings')
+            .doc(formId)
+            .onSnapshot((doc: firebase.firestore.DocumentSnapshot) => {
+                callback(formId, this.docToForm(doc.data()))
+            })
+        return listenerId
+    }
+
+    public listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('weekly_trainings')
@@ -502,7 +538,7 @@ class DB {
         return listenerId
     }
 
-    listenToEvents = (callback: (events: AumtEvent[]) => void, errorCallback: (message: string) => void): string => {
+    public listenToEvents = (callback: (events: AumtEvent[]) => void, errorCallback: (message: string) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('events')
@@ -523,7 +559,7 @@ class DB {
         return listenerId
     }
 
-    listenToMembers = (callback: (members: AumtMembersObj) => void): string => {
+    public listenToMembers = (callback: (members: AumtMembersObj) => void): string => {
         if (!this.db) throw new Error('No db')
         const listenerId = this.getListenerId()
         this.listeners[listenerId] = this.db.collection('members')
@@ -542,7 +578,7 @@ class DB {
         return listenerId
     }
 
-    unlisten = (listenerId: string) => {
+    public unlisten = (listenerId: string) => {
         if (this.listeners[listenerId]) {
             this.listeners[listenerId]()
             delete this.listeners[listenerId]
@@ -563,6 +599,9 @@ class DB {
     }
 
     private docToForm = (docData: any): AumtWeeklyTraining => {
+        if (!Array.isArray(docData.sessions)) {
+            throw new Error('Outdated website, refresh page please')
+        }
         const docSessions = docData.sessions.map((session: any) => {
             Object.keys(session.members).forEach((i) => {
                 session.members[i].timeAdded = new Date(session.members[i].timeAdded.seconds * 1000)

@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {Select, Button, Statistic, notification, Dropdown, Menu, Row, Col} from 'antd'
+import {Select, Button, Statistic, notification, Input, Dropdown, Menu, Row, Col} from 'antd'
+// import { PlusOutlined } from '@ant-design/icons'
 import './EditSignups.css'
 import db from '../../../services/db'
 import { AumtWeeklyTraining, AumtTrainingSession } from '../../../types'
@@ -20,6 +21,12 @@ interface EditSignupsState {
     movingInProcess: {
         [sessionId: string]: boolean
     }
+    addedMember: {
+        [sessionId: string]: string
+    }
+    addingInProcess: {
+        [sessionId: string]: boolean
+    }
 }
 
 export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
@@ -28,7 +35,9 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         this.state = {
             selectedMembers: {},
             removingInProcess: {},
-            movingInProcess: {}
+            movingInProcess: {},
+            addedMember: {},
+            addingInProcess: {}
         }
     }
     onSelectChange = (member: any, sessionId: string) => {
@@ -41,6 +50,14 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
     }
     memberSort = (uidA: string, uidB: string, session: AumtTrainingSession): number => {
         return session.members[uidA].name > session.members[uidB].name ? 1 : -1
+    }
+    generateMockUid = () => {
+        let alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
+        let uid = 'NONMEMBER'
+        for (let i = 0; i < 10; i++) {
+            uid += alphabet[Math.floor(Math.random() * alphabet.length)]
+        }
+        return uid
     }
     onRemoveClick = (sessionId: string) => {
         const uidToRemove = this.state.selectedMembers[sessionId]
@@ -65,6 +82,28 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                         ...this.state,
                         removingInProcess: Object.assign(this.state.removingInProcess, {[sessionId]: false})
                     })
+                })
+        }
+    }
+    setAddMember = (sessionId: string, name: string) => {
+        this.setState({
+            ...this.state,
+            addedMember: {...this.state.addedMember, [sessionId]: name}
+        })
+    }
+    addToSession = (sessionId: string) => {
+        const name = this.state.addedMember[sessionId]
+        if (name) {
+            this.setState({...this.state, addingInProcess: {...this.state.addingInProcess, [sessionId]: true}})
+            db.signUserUp(this.generateMockUid(), name, new Date(), this.props.form.trainingId, sessionId, '')
+                .then(() => {
+                    notification.success({message: 'Successfully signed up ' + name})
+                })
+                .catch((err) => {
+                    notification.error({message: 'Error adding to session: ' + err.toString()})
+                })
+                .finally(() => {
+                    this.setState({...this.state, addingInProcess: {...this.state.addingInProcess, [sessionId]: false}})
                 })
         }
     }
@@ -158,6 +197,8 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                         })}
                                 </Select>
                                 <div className="editSignupsOptionButtons">
+                                    <Input onChange={e => this.setAddMember(session.sessionId, e.target.value)} className='editSignupsAddMemberInput'/>
+                                    <Button onClick={e => this.addToSession(session.sessionId)} loading={this.state.addingInProcess[session.sessionId]}>Add</Button>
                                     <Dropdown
                                         disabled={!this.state.selectedMembers[session.sessionId]}
                                         overlay={this.getMoveDropdown(session.sessionId)}

@@ -167,7 +167,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             return notification.error({message: errorStr})
         }
         if (this.props.member.email !== this.state.currentEmail) {
-            notification.open({message: 'Reminder: If you change the email here, also change it in the Firebase Admin Console under the Authentication tab'})
+            notification.open({message: 'Reminder: If you change the email here, also change it in Firebase by using the Admin SDK (see firebase user management guide)'})
         }
         this.setState({...this.state, saving: true})
         db.setMember(this.props.member.key, member)

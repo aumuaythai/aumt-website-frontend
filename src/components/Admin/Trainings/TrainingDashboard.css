@@ -37,6 +37,9 @@
         width: 100%;
         min-height: unset;
     }
+    .exportAllButton {
+        display: none;
+    }
     .manageTrainingsComponentWrapper {
         max-height: unset;
         height: unset;

@@ -40,8 +40,8 @@ class EventsWrapperWithoutRouter extends Component<EventWrapperProps, EventWrapp
                 this.setState({
                     ...this.state,
                     errorMessage: '',
-                    pastEvents: events.filter(e => e.date < currentDate),
-                    upcomingEvents: events.filter(e => e.date >= currentDate),
+                    pastEvents: events.filter(e => e.date < currentDate).sort((a, b) => a.date < b.date ? 1 : -1),
+                    upcomingEvents: events.filter(e => e.date >= currentDate).sort((a, b) => a.date > b.date ? 1 : -1),
                     loadingEvents: false
                 })
             })

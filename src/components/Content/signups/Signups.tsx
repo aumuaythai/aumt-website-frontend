@@ -19,7 +19,7 @@ interface SignupState {
     forms: AumtWeeklyTraining[]
     noFormText: string,
     loadingForms: boolean
-    dbListenerId: string
+    dbListenerIds: string[]
 }
 
 class Signups extends Component<SignupProps, SignupState> {
@@ -30,7 +30,7 @@ class Signups extends Component<SignupProps, SignupState> {
             forms: [],
             noFormText: '',
             loadingForms: false,
-            dbListenerId: ''
+            dbListenerIds: []
         }
     }
     copyText = (text: string) => {
@@ -46,7 +46,7 @@ class Signups extends Component<SignupProps, SignupState> {
                 this.setState({
                     ...this.state,
                     loadingForms: false,
-                    dbListenerId: db.listenToTrainings(this.onDbChanges)
+                    dbListenerIds: forms.map(f => db.listenToOneTraining(f.trainingId, this.onDbChanges))
                 })
                 this.handleNewForms(forms)
             })
@@ -60,12 +60,15 @@ class Signups extends Component<SignupProps, SignupState> {
                 })
             })
     }
-    onDbChanges = (newForms: AumtWeeklyTraining[]) => {
-        const now = new Date()
-        const openForms = newForms.filter(f => f.closes > now && f.opens < now)
-        if (openForms !== this.state.forms) {
-            this.handleNewForms(openForms)  
+    onDbChanges = (formId: string, newFormData: AumtWeeklyTraining) => {
+        const newForms = this.state.forms.slice()
+        for (const idx in this.state.forms) {
+            if (this.state.forms[idx].trainingId === formId) {
+                newForms[idx] = newFormData
+                break
+            }
         }
+        this.handleNewForms(newForms)
     }
     getDisplayName = (): string | null => {
         if (this.props.authedUser) {
@@ -84,7 +87,7 @@ class Signups extends Component<SignupProps, SignupState> {
         })
     }
     componentWillUnmount = () => {
-        db.unlisten(this.state.dbListenerId)
+        this.state.dbListenerIds.forEach(db.unlisten)
     }
     render() {
         if (this.state.loadingForms || this.props.clubSignupSem === 'loading') {
@@ -109,8 +112,14 @@ class Signups extends Component<SignupProps, SignupState> {
                             } else if (this.props.authedUser && this.props.authedUser.paid === 'No') {
                                 return <div key={form.trainingId} className='signupsNotPaidContainer'>
                                     <h2>{form.title}</h2>
-                                    <p>Our records show you have not paid the membership fee - once you do you can sign up to trainings!</p>
-                                    <p>Membership is $50 for the semester or $90 for the year and can be paid by cash to a committee member or transfer to the bank account below (with your NAME in the reference).</p>
+                                    <p>Our records show you have not paid the membership fee - once you do, you can sign up to trainings!</p>
+
+                                    <h3>This Week Only</h3>
+                                    If you would like to pay at the training, message the AUMT Facebook page - we will sign you up for the session of your choice.
+                                    <Divider/>
+
+                                    
+                                    <p>Membership is $50 for the semester and can be paid by cash to a committee member or transfer to the bank account below (with your NAME in the reference).</p>
                                     <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                                     <Divider/>
                                 </div>
