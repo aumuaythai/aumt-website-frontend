@@ -53,8 +53,8 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
     }
     generateMockUid = () => {
         let alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
-        let uid = ''
-        for (let i = 0; i < 16; i++) {
+        let uid = 'NONMEMBER'
+        for (let i = 0; i < 10; i++) {
             uid += alphabet[Math.floor(Math.random() * alphabet.length)]
         }
         return uid
