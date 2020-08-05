@@ -29,6 +29,10 @@
     float: right;
     display: none;
 }
+.eventSignupsAddMemberContainer {
+    max-width: 600px;
+    margin-bottom: 15px;
+}
 .clearBoth {
     clear: both;
 }

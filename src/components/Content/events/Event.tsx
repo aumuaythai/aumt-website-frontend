@@ -234,6 +234,7 @@ export class Event extends Component<EventProps, EventState> {
                                     <h4>Signups are currently full</h4>
                                     <p>Fill out the form below to join the waitlist and the committee will let message you if a spot opens.</p>
                                         <CampSignupForm
+                                            isCamp={this.props.event.signups.isCamp}
                                             includeNameAndEmail={false}
                                             isWaitlist={true}
                                             onSubmit={(data) => this.onSignupFormSubmit(data, true)}
@@ -244,6 +245,7 @@ export class Event extends Component<EventProps, EventState> {
                                     <h2>Signups</h2>
                                     {this.props.event.signups.isCamp ? 
                                         <CampSignupForm
+                                            isCamp={this.props.event.signups.isCamp}
                                             includeNameAndEmail={false}
                                             isWaitlist={false}
                                             onSubmit={(data) => this.onSignupFormSubmit(data, false)}

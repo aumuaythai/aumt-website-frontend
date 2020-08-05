@@ -3,9 +3,10 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import { Spin, Button, notification, Input, Radio } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import './EventSignups.css'
-import { AumtEvent } from '../../../types'
+import { AumtEvent, LicenseClasses } from '../../../types'
 import AdminStore from '../AdminStore'
 import { EventSignupTable } from './EventSignupTable'
+import { CampSignupForm } from '../../Content/events/CampSignupForm'
 import db from '../../../services/db'
 
 
@@ -17,11 +18,9 @@ interface EventSignupsState {
     event: AumtEvent | null
     loadingEvents: boolean
     addingMember: boolean
-    signupMemberName: string
-    signupMemberEmail: string
     addingWaitlistMember: boolean
-    waitlistMemberName: string
-    waitlistMemberEmail: string
+    submittingMember: boolean
+    submittingWaitlistMember: boolean
 }
 
 class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
@@ -32,11 +31,9 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
             event: null,
             loadingEvents: false,
             addingMember: false,
-            signupMemberName: '',
-            signupMemberEmail: '',
             addingWaitlistMember: false,
-            waitlistMemberName: '',
-            waitlistMemberEmail: ''
+            submittingMember: false,
+            submittingWaitlistMember: false
         }
     }
 
@@ -95,13 +92,6 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
         this.setState({...this.state, addingMember: false})
     }
 
-    signupNameChange = (name: string) => {
-        this.setState({...this.state, signupMemberName: name})
-    }
-
-    signupEmailChange = (email: string) => {
-        this.setState({...this.state, signupMemberEmail: email})
-    }
 
     addWaitlistMemberClick = () => {
         this.setState({...this.state, addingWaitlistMember: true})
@@ -111,59 +101,44 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
         this.setState({...this.state, addingWaitlistMember: false})
     }
 
-    waitlistNameChange = (name: string) => {
-        this.setState({...this.state, waitlistMemberName: name})
-    }
 
-    waitlistEmailChange = (email: string) => {
-        this.setState({...this.state, waitlistMemberEmail: email})
-    }
-
-    signUpNewMember = () => {
-        if (!this.state.signupMemberName) {
+    signUpNewMember = (signupData: {dietaryRequirements?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
+        if (!signupData.name) {
             return notification.error({message: 'Name required'})
         }
-        if (!this.state.signupMemberEmail) {
+        if (!signupData.email) {
             return notification.error({message: 'Email required'})
         }
         if (!this.state.event) {
             return
         }
+        if (isWaitlist) {
+            this.setState({...this.state, submittingWaitlistMember: true})
+        } else {
+            this.setState({...this.state, submittingMember: true})
+        }
+
         db.signUpToEvent(this.state.event?.id, this.generateMockUid(), {
             confirmed: false,
             timeSignedUpMs: new Date().getTime(),
-            displayName: this.state.signupMemberName,
-            email: this.state.signupMemberEmail
-        }, false)
+            displayName: signupData.name,
+            email: signupData.email,
+            dietaryRequirements: signupData.dietaryRequirements,
+            seatsInCar: signupData.seatsInCar,
+            driverLicenseClass: signupData.license
+        }, isWaitlist)
             .then(() => {
-                notification.success({message: `Successfully signed up ${this.state.signupMemberName}`})
+                notification.success({message: `Successfully signed up ${signupData.name}`})
             })
             .catch((err) => {
                 notification.error({message: `Error signing up to event: ${err.toString()}`})
             })
-    }
-
-    waitlistNewMember = () => {
-        if (!this.state.waitlistMemberName) {
-            return notification.error({message: 'Name required'})
-        }
-        if (!this.state.waitlistMemberEmail) {
-            return notification.error({message: 'Email required'})
-        }
-        if (!this.state.event) {
-            return
-        }
-        db.signUpToEvent(this.state.event.id, this.generateMockUid(), {
-            confirmed: false,
-            timeSignedUpMs: new Date().getTime(),
-            displayName: this.state.waitlistMemberName,
-            email: this.state.waitlistMemberEmail
-        }, true)
-            .then(() => {
-                notification.success({message: `Successfully added ${this.state.waitlistMemberName} to waitlist`})
-            })
-            .catch((err) => {
-                notification.error({message: `Error signing up to event: ${err.toString()}`})
+            .finally(() => {
+                if (isWaitlist) {
+                    this.setState({...this.state, submittingWaitlistMember: false, addingWaitlistMember: false})
+                } else {
+                    this.setState({...this.state, submittingMember: false, addingMember: false})
+                }
             })
     }
 
@@ -199,19 +174,14 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                         <div className="clearBoth"></div>
                         {this.state.addingMember ? 
                             <div className="eventSignupsAddMemberContainer">
-                                <Input
-                                    placeholder={'Name'}
-                                    ref={(input) => { this.signupNameInput = input; }}
-                                    onChange={e => this.signupNameChange(e.target.value)}
-                                    className='eventSignupsAddMemberInput'/>
-                                <Input
-                                    placeholder={'Email'}
-                                    // ref={(input) => { this.signupNameInput = input; }}
-                                    onChange={e => this.signupEmailChange(e.target.value)}
-                                    className='eventSignupsAddMemberInput'
-                                    onPressEnter={this.signUpNewMember}/>
-                                <Button onClick={this.signUpNewMember}>Add</Button>
-                                <Button onClick={this.onCancelAddMember} type='link'>Cancel</Button>
+                                <Button onClick={this.onCancelAddMember}>Cancel</Button>
+                                <CampSignupForm
+                                    isCamp={this.state.event.signups.isCamp}
+                                    onSubmit={(data) => this.signUpNewMember(data, false)}
+                                    isWaitlist={false}
+                                    includeNameAndEmail={true}
+                                    submitting={this.state.submittingMember}
+                                    ></CampSignupForm>
                             </div>
                         : ''}
                         <EventSignupTable
@@ -231,20 +201,14 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                         <div className="clearBoth"></div>
                         {this.state.addingWaitlistMember ? 
                             <div className="eventSignupsAddMemberContainer">
-                                <Input
-                                    placeholder={'Name'}
-                                    // ref={(input) => { this.signupNameInput = input; }}
-                                    onChange={e => this.waitlistNameChange(e.target.value)}
-                                    className='eventSignupsAddMemberInput'/>
-                                <Input
-                                    placeholder={'Email'}
-                                    // ref={(input) => { this.signupNameInput = input; }}
-                                    onChange={e => this.waitlistEmailChange(e.target.value)}
-                                    className='eventSignupsAddMemberInput'
-                                    onPressEnter={this.waitlistNewMember}
-                                    />
-                                <Button onClick={this.waitlistNewMember}>Add</Button>
-                                <Button onClick={this.onCancelAddWaitlistMember} type='link'>Cancel</Button>
+                            <Button onClick={this.onCancelAddWaitlistMember}>Cancel</Button>
+                               <CampSignupForm
+                               isCamp={this.state.event.signups.isCamp}
+                                onSubmit={(data) => this.signUpNewMember(data, true)}
+                                isWaitlist={true}
+                                includeNameAndEmail={true}
+                                submitting={this.state.submittingWaitlistMember}
+                                ></CampSignupForm>
                             </div>
                         : ''}
                         <EventSignupTable
