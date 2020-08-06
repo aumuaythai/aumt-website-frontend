@@ -203,8 +203,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                         <p>Thoughts on last training/feedback?</p>
                         <Input.TextArea autoSize={{ maxRows: 6 }} placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
                     </div>
-                :  ''}
-                {this.props.openToPublic ?
+                :  this.props.openToPublic ?
                     <div className="feedbackInputContainer">
                         <p>Enter your Full Name</p>
                         <Input placeholder={'Enter your Full Name'} onChange={e => this.onDisplayNameChange(e.target.value)}/>
