@@ -58,7 +58,6 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     }
     componentDidUpdate = (prevProps: EventSignupTableProps, prevState: EventSignupTableState) => {
         if (prevProps.signupData !== this.props.signupData) {
-            console.log(this.props.signupData)
             this.handleNewData(Object.assign({}, this.props.signupData))
         }
     }
@@ -199,11 +198,11 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         ].filter(r => this.props.isCamp ? r : ['dietaryRequirements', 'driverLicenseClass', 'seatsInCar'].indexOf(r.dataIndex || '') === -1)
         return columns
     }
-    getFooter = () => {
+    getFooter = (totalDisplayed: number) => {
         return <div>
-            Total: {this.state.rows.length} Limit: {this.props.limit || 'None'}
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.copyEmails}>Copy Emails</Button>
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.downloadCsv}>Download .csv</Button>
+            <p className='eventSignupsTableFooterText'>Total: {totalDisplayed} / Limit: {this.props.limit || 'None'}</p>
         </div>
     }
     copyText = (text: string | undefined) => {
@@ -302,12 +301,17 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         return <div>
             <Table
                 size='small'
-                pagination={false}
+                pagination={{
+                    defaultPageSize: 10,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50'],
+                    showTotal: this.getFooter
+                }}
                 bordered
                 loading={this.state.tableLoading}
                 columns={this.getColumns()}
                 dataSource={this.state.rows}
-                footer={this.getFooter}
+                scroll={{ y: 400 }}
             ></Table>
         </div>
     }

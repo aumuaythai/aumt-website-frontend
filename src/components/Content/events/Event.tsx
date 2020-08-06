@@ -232,7 +232,7 @@ export class Event extends Component<EventProps, EventState> {
                                 this.props.event.signups.limit && (this.props.event.signups.limit <= Object.keys(this.props.event.signups.members).length) ?
                                 <div>
                                     <h4>Signups are currently full</h4>
-                                    <p>Fill out the form below to join the waitlist and the committee will let message you if a spot opens.</p>
+                                    <p className='eventWaitlistInfoText'>Fill out the form below to join the waitlist and the committee will message you if a spot opens.</p>
                                         <CampSignupForm
                                             isCamp={this.props.event.signups.isCamp}
                                             includeNameAndEmail={false}

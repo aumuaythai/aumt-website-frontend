@@ -33,3 +33,6 @@
 .reserveEventSpotButton {
     margin-top: 10px
 }
+.eventWaitlistInfoText {
+    text-align: left;
+}
