@@ -27,3 +27,12 @@
 .detail {
     padding: 5px;
 }
+.eventSignupForm {
+    text-align: left;
+}
+.reserveEventSpotButton {
+    margin-top: 10px
+}
+.eventWaitlistInfoText {
+    text-align: left;
+}

@@ -1,12 +1,13 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
-import { Button, Result, Divider, notification} from 'antd'
+import { Button, Result, Input, Divider, Radio, notification, InputNumber} from 'antd'
 import moment from 'moment'
 import './Event.css'
-import { AumtEvent, AumtMember } from '../../../types'
+import { AumtEvent, AumtMember, LicenseClasses } from '../../../types'
 import firebaseUtil from '../../../services/firebase.util'
 import db from '../../../services/db'
+import { CampSignupForm } from './CampSignupForm'
 
 interface EventProps {
     event: AumtEvent
@@ -22,7 +23,10 @@ interface EventState {
     reservingSpot: boolean
     waitlistingMember: boolean
     withdrawingSpot: boolean
-    currentDisplayName: string
+    currentOwnsCar: boolean | undefined
+    currentSeats: number | undefined
+    currentLicenseClass: LicenseClasses | ''
+    currentDietaryRequirements: string
 }
 
 export class Event extends Component<EventProps, EventState> {
@@ -40,10 +44,13 @@ export class Event extends Component<EventProps, EventState> {
             signedUp: !!signupInfo,
             waitlisted: !!waitlistedInfo,
             confirmedSignUp: !!signupInfo && signupInfo.confirmed,
+            currentOwnsCar: !!signupInfo && !!signupInfo.seatsInCar || undefined,
+            currentSeats: signupInfo && signupInfo.seatsInCar || undefined,
+            currentDietaryRequirements: signupInfo && signupInfo.dietaryRequirements || '',
+            currentLicenseClass: signupInfo && signupInfo.driverLicenseClass || '',
             reservingSpot: false,
             withdrawingSpot: false,
-            waitlistingMember: false,
-            currentDisplayName: ''
+            waitlistingMember: false
         }
     }
     generateMockUid = () => {
@@ -68,19 +75,13 @@ export class Event extends Component<EventProps, EventState> {
         }
         return null
     }
-    onDisplayNameChange = (name: string) => {
-        this.setState({
-            ...this.state,
-            currentDisplayName: name
-        })
-    }
-    onReserveClicked = (waitlist: boolean) => {
-        const displayName = this.state.currentDisplayName || (this.props.authedUser ? `${this.props.authedUser?.firstName} ${this.props.authedUser?.lastName}` : '')
+    onSignupFormSubmit = (signupData: {dietaryRequirements?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
+        const displayName = this.props.authedUser ? `${this.props.authedUser.firstName} ${this.props.authedUser.lastName}` : ''
         if (!displayName) {
             notification.error({message: 'Name required'})
             return
         }
-        if (!waitlist) {
+        if (!isWaitlist) {
             this.setState({...this.state, reservingSpot: true })
         } else {
             this.setState({...this.state, waitlistingMember: true})
@@ -88,14 +89,20 @@ export class Event extends Component<EventProps, EventState> {
         const confirmed = this.props.event.signups?.needAdminConfirm ? false : true
         db.signUpToEvent(this.props.event.id,
             firebaseUtil.getCurrentUid() || this.generateMockUid(),
-            {
+            Object.assign({
                 displayName,
                 timeSignedUpMs: new Date().getTime(),
                 confirmed,
                 email: this.props.authedUser?.email || 'NO EMAIL'
-            }, waitlist)
+            }, signupData.dietaryRequirements ? {
+                dietaryRequirements: signupData.dietaryRequirements
+            } : {}, signupData.license ? {
+                driverLicenseClass: signupData.license,
+                seatsInCar: signupData.seatsInCar || -1
+            } : {})
+            , isWaitlist)
             .then(() => {
-                if (waitlist) {
+                if (isWaitlist) {
                     this.setState({...this.state, waitlisted: true})
                 } else {
                     this.setState({
@@ -225,17 +232,32 @@ export class Event extends Component<EventProps, EventState> {
                                 this.props.event.signups.limit && (this.props.event.signups.limit <= Object.keys(this.props.event.signups.members).length) ?
                                 <div>
                                     <h4>Signups are currently full</h4>
-                                    <p><Button loading={this.state.waitlistingMember} onClick={e => this.onReserveClicked(true)}>
-                                        Join the Waitlist
-                                        </Button> and the committee will let message you if a spot opens.</p>
+                                    <p className='eventWaitlistInfoText'>Fill out the form below to join the waitlist and the committee will message you if a spot opens.</p>
+                                        <CampSignupForm
+                                            isCamp={this.props.event.signups.isCamp}
+                                            includeNameAndEmail={false}
+                                            isWaitlist={true}
+                                            onSubmit={(data) => this.onSignupFormSubmit(data, true)}
+                                            submitting={this.state.waitlistingMember}></CampSignupForm>
                                 </div>
                                 :
                                 <div>
-                                    {/* {this.props.authedUser ? '' : <Input placeholder='Enter your Full Name' onChange={e => this.onDisplayNameChange(e.target.value)}/>} */}
+                                    <h2>Signups</h2>
+                                    {this.props.event.signups.isCamp ? 
+                                        <CampSignupForm
+                                            isCamp={this.props.event.signups.isCamp}
+                                            includeNameAndEmail={false}
+                                            isWaitlist={false}
+                                            onSubmit={(data) => this.onSignupFormSubmit(data, false)}
+                                            submitting={this.state.reservingSpot}></CampSignupForm>
+                                    :
                                     <Button
                                         loading={this.state.reservingSpot}
                                         type='primary'
-                                        onClick={e => this.onReserveClicked(false)}>Reserve a Spot</Button>
+                                        block
+                                        className='reserveEventSpotButton'
+                                        onClick={e => this.onSignupFormSubmit({}, false)}>Reserve a Spot</Button>
+                                    }
                                 </div>
                                 }
                         </div>
