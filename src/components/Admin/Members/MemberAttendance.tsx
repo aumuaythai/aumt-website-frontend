@@ -81,7 +81,6 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
                 authedUserId={this.props.member.key}
                 notes={form.notes}
                 openToPublic={false}
-                useInterSem={false}
                 onSignupChanged={() => this.getAttendance(true)}></SignupForm>
         )
     }

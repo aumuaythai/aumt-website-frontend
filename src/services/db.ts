@@ -609,7 +609,6 @@ class DB {
             trainingId: docData.trainingId,
             sessions: docSessions,
             openToPublic: docData.openToPublic || false,
-            useInterSemMembers: docData.useInterSemMembers || false,
             opens: new Date(docData.opens.seconds * 1000),
             closes: new Date(docData.closes.seconds * 1000),
             notes: docData.notes.split('%%NEWLINE%%').join('\n')

@@ -27,5 +27,4 @@ export interface AumtWeeklyTraining {
     closes: Date
     notes: string
     openToPublic: boolean
-    useInterSemMembers: boolean
 }

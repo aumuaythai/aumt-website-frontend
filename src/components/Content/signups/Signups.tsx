@@ -140,7 +140,6 @@ class Signups extends Component<SignupProps, SignupState> {
                                     authedUserId={this.props.authedUserId}
                                     notes={form.notes}
                                     openToPublic={form.openToPublic}
-                                    useInterSem={form.useInterSemMembers}
                                     ></SignupForm>
                                 </div>
                             )

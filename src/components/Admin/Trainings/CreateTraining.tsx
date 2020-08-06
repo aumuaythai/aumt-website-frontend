@@ -20,7 +20,6 @@ interface CreateTrainingState {
     currentNotes: string
     currentFeedback: string[]
     currentOpenToPublic: boolean
-    currentUseInterSemMembers: boolean
     currentPopulateWeekValue: number
     currentTrainingId: string
     loadingTraining: boolean
@@ -46,7 +45,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentCloses: new Date(),
             currentSessions: [],
             currentOpenToPublic: false,
-            currentUseInterSemMembers: false,
             isSubmitting: false,
             currentNotes: '',
             currentFeedback: [],
@@ -96,7 +94,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                         currentSessions: training.sessions,
                         currentNotes: training.notes,
                         currentOpenToPublic: training.openToPublic,
-                        currentUseInterSemMembers: training.useInterSemMembers,
                         currentFeedback: training.feedback,
                         currentTrainingId: training.trainingId,
                         loadingTraining: false
@@ -146,12 +143,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         this.setState({
             ...this.state,
             currentOpenToPublic: open
-        })
-    }
-    onUseInterSemMembersChange = (use: boolean) => {
-        this.setState({
-            ...this.state,
-            currentUseInterSemMembers: use
         })
     }
     onTrainingTitleChange = (title: string) => {
@@ -236,7 +227,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             openToPublic: this.state.currentOpenToPublic,
-            useInterSemMembers: this.state.currentUseInterSemMembers,
             notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
             trainingId: this.state.currentTrainingId || this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
             feedback: this.state.currentFeedback
@@ -279,13 +269,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 <div>
                     Open to Non-Members:
                     <Radio.Group value={this.state.currentOpenToPublic} onChange={e => this.onOpenToPublicChange(e.target.value)}>
-                        <Radio.Button value={true}>Yes</Radio.Button>
-                        <Radio.Button value={false}>No</Radio.Button>
-                    </Radio.Group>
-                </div>
-                <div>
-                    Use Inter Sem Members:
-                    <Radio.Group value={this.state.currentUseInterSemMembers} onChange={e => this.onUseInterSemMembersChange(e.target.value)}>
                         <Radio.Button value={true}>Yes</Radio.Button>
                         <Radio.Button value={false}>No</Radio.Button>
                     </Radio.Group>

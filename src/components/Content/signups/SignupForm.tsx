@@ -16,7 +16,6 @@ export interface SignupFormProps {
     submittingAsName?: string
     authedUserId: string | null
     notes: string
-    useInterSem: boolean
     openToPublic: boolean
     onSignupChanged?: () => void
 }
@@ -29,9 +28,6 @@ interface SignupFormState {
     currentDisplayName: string
     errorMessage: string
     removingState: boolean
-    interSemMembers: AumtMembersObjWithCollated
-    currentInterSemUid: string | null
-    interSemLoading: boolean
 }
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
@@ -44,38 +40,11 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             errorMessage: '',
             signedUpOption: '',
             submittingState: false,
-            removingState: false,
-            interSemMembers: {},
-            currentInterSemUid: null,
-            interSemLoading: false
+            removingState: false
         }
     }
     componentDidMount() {
         this.checkSignedUp()
-        if (this.props.useInterSem) {
-            this.setState({
-                ...this.state,
-                interSemLoading: true
-            })
-            Promise.all([db.getTrainingData(this.props.id), db.getAllInterSemMembers()])
-                .then((outputs) => {
-                    const memberObj = Object.assign({}, outputs[1])
-                    const [trainingData] = outputs
-                    trainingData.sessions.forEach((session) => {
-                        Object.keys(session.members).forEach((uid) => {
-                            delete memberObj[uid]
-                        })
-                    })
-                    return dataUtil.getCollatedMembersObj(memberObj)
-                })
-                .then((members) => {
-                    this.setState({
-                        ...this.state,
-                        interSemMembers: members,
-                        interSemLoading: false
-                    })
-                })
-        }
     }
     componentDidUpdate(prevProps: SignupFormProps, prevState: SignupFormState) {
         if (prevProps.authedUserId === '' && this.props.authedUserId) {
@@ -101,33 +70,12 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 })
         }
     }
-    memberSort = (uidA: string, uidB: string): number => {
-        const nameA = this.state.interSemMembers[uidA].collated
-        const nameB = this.state.interSemMembers[uidB].collated
-        return nameA > nameB ? 1 : -1
-    }
     onOptionChange = (e: RadioChangeEvent) => {
         this.setState({
             ...this.state,
             currentSessionId: e.target.value,
             errorMessage: ''
         });
-    }
-    onNameSelected = (name: string, oProps: any) => {
-        const {key} = oProps
-        const selectedMember = this.state.interSemMembers[key]
-        if (selectedMember) {
-            const displayName = selectedMember.preferredName ? 
-                `${selectedMember.firstName} "${selectedMember.preferredName}" ${selectedMember.lastName}` :
-                `${selectedMember.firstName} ${selectedMember.lastName}`
-            this.setState({
-                ...this.state,
-                currentInterSemUid: key,
-                currentDisplayName: displayName
-            })
-        } else {
-            console.error('no member for key', key, name)
-        }
     }
     onFeedbackChange = (feedback: string) => {
         this.setState({
@@ -194,7 +142,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         })
 
         db.signUserUp(
-                this.props.authedUserId || this.state.currentInterSemUid || this.generateMockUid(),
+                this.props.authedUserId || this.generateMockUid(),
                 this.props.displayName || this.state.currentDisplayName,
                 new Date(),
                 this.props.id,
@@ -208,9 +156,6 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 })
                 if (this.props.onSignupChanged) {
                     this.props.onSignupChanged()
-                }
-                if (this.props.useInterSem) {
-                    notification.success({message: `Successfully signed up for ${this.props.sessions.find(s => s.sessionId === optionSelected)?.title}`})
                 }
             })
             .catch((err) => {
@@ -254,44 +199,17 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     </Radio.Group>
                 </div>
                 {this.props.authedUserId ? 
-                <div className="feedbackInputContainer">
-                    <p>Thoughts on last training/feedback?</p>
-                    <Input.TextArea autoSize={{ maxRows: 6 }} placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
-                </div>
-                :  
-                <div>
-                {
-                this.props.useInterSem ?
-                <div className={`feedbackInputContainer ${this.props.openToPublic ? 'topFeedbackInputContainer' : ''}`}>
-                    <h4>AUMT Members</h4>
-                    <Select
-                        showSearch={window.innerWidth > 600}
-                        loading={this.state.interSemLoading}
-                        className='interSemCollatedSelect'
-                        placeholder='Select your Name'
-                        onChange={this.onNameSelected}>
-                        {Object.keys(this.state.interSemMembers).sort((a, b) => this.memberSort(a, b)).map((uid: string) => {
-                            const member = this.state.interSemMembers[uid]
-                            return <Select.Option key={uid} value={member.collated}>
-                                {member.collated}
-                            </Select.Option>
-                        })}
-                    </Select>
-                </div>
-                : ''}
+                    <div className="feedbackInputContainer">
+                        <p>Thoughts on last training/feedback?</p>
+                        <Input.TextArea autoSize={{ maxRows: 6 }} placeholder='Feedback will be sent anonymously' onChange={e => this.onFeedbackChange(e.target.value)}/>
+                    </div>
+                :  ''}
                 {this.props.openToPublic ?
-                <div className="feedbackInputContainer">
-                    {this.props.useInterSem ? 
-                        <div>
-                            <h4 className='orTextForNonMembersSignupForm'>OR</h4>
-                            <h4>Non-Members</h4> 
-                        </div>:
-                        <p>Enter your Full Name</p>}
-                    <Input placeholder={this.props.useInterSem ? 'Enter your Full Name' : ''} onChange={e => this.onDisplayNameChange(e.target.value)}/>
-                </div>
+                    <div className="feedbackInputContainer">
+                        <p>Enter your Full Name</p>
+                        <Input placeholder={'Enter your Full Name'} onChange={e => this.onDisplayNameChange(e.target.value)}/>
+                    </div>
                 : '' }
-                </div>
-                }
                 <div className="messageContainer">
                     {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
                 </div>
