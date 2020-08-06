@@ -106,28 +106,6 @@ class DB {
             })
     }
 
-    public getS22020UnverifiedMembers = (): Promise<AumtMembersObj> => {
-        if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('members')
-            .where('membership', 'in', ['FY', 'S2'])
-            .where('emailVerified', '==', false)
-            .get()
-            .then((querySnapshot) => {
-                const members: AumtMembersObj = {}
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data()
-                    try {
-                        const member = this.docToMember(data)
-                        members[doc.id] = member
-                    } catch (e) {
-                        console.warn(e)
-                    }
-                })
-                return members
-            })
-
-    }
-
     public getAllInterSemMembers = (): Promise<AumtMembersObj> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection('inter-sem-members').get()
