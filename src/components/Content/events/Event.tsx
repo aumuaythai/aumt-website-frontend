@@ -219,7 +219,7 @@ export class Event extends Component<EventProps, EventState> {
                             </div>
                         }
                         return <div>
-                            {signups.opens > new Date(20000000000000) ?
+                            {signups.opens > new Date() ?
                                 <div>Signups will open {moment(signups.opens).format('MMMM Do')}</div>
                                 : 
                                 !this.props.authedUser ? 
