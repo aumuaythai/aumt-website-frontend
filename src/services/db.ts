@@ -504,7 +504,8 @@ class DB {
     }
 
     private docToForm = (docData: any): AumtWeeklyTraining => {
-        if (!Array.isArray(docData.sessions)) {
+        if (Array.isArray(docData.sessions)) {
+            console.log(docData)
             throw new Error('Outdated website, clear cache and refresh page please')
         }
         Object.keys(docData.sessions).forEach((sessionId: string) => {
