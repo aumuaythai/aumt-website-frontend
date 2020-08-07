@@ -381,20 +381,9 @@ class DB {
     public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
-        const batch = this.db.batch()
         return this.db.collection('weekly_trainings')
             .get()
-            .then((querySnapshot) => {
-                const training_collection = this.db?.collection('weekly_trainings')
-                querySnapshot.forEach((doc) => {
-                    const form = this.oldDocToForm(doc.data())
-                    const docRef = training_collection?.doc(form.trainingId)
-                    if (docRef) {
-                        batch.set(docRef, form)
-                    }
-                })
-                return batch.commit()
-            })
+            .then((querySnapshot) => {})
     }
 
     public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
@@ -480,27 +469,6 @@ class DB {
             id += chars[Math.floor(Math.random() * chars.length)]
         }
         return id
-    }
-
-    private oldDocToForm = (docData: any): AumtWeeklyTraining => {
-        const sessionsObj: Record<string, AumtTrainingSession> = {}
-        docData.sessions.forEach((session: any, idx: number) => {
-            Object.keys(session.members).forEach((i) => {
-                session.members[i].timeAdded = new Date(session.members[i].timeAdded.seconds * 1000)
-            })
-            sessionsObj[session.sessionId] = {...session, position: idx}
-        })
-        const weeklyTraining: AumtWeeklyTraining = {
-            title: docData.title,
-            feedback: docData.feedback,
-            trainingId: docData.trainingId,
-            sessions: sessionsObj,
-            openToPublic: docData.openToPublic || false,
-            opens: new Date(docData.opens.seconds * 1000),
-            closes: new Date(docData.closes.seconds * 1000),
-            notes: docData.notes.split('%%NEWLINE%%').join('\n')
-        }
-        return weeklyTraining
     }
 
     private docToForm = (docData: any): AumtWeeklyTraining => {
