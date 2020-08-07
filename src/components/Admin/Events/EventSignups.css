@@ -2,6 +2,8 @@
     text-align: center;
     width: 100%;
     margin-top: 50px;
+    overflow-y: scroll;
+    height: 100%;
 }
 .eventSignupsHeaderContainer {
     margin-top: 30px;
@@ -13,9 +15,10 @@
     float: right;
 }
 .eventSignupsMemberDisplaySection {
-    width: 50%;
-    float: left;
-    padding: 20px;
+    width: 100%;
+    margin: 30px 0;
+    /* float: left;
+    padding: 20px; */
 }
 .eventSignupMemberDisplayTitle {
     float: left;
@@ -24,11 +27,20 @@
     float: left;
     margin: 0 20px;
 }
+.eventSignupMemberDisplayTotalText {
+    float: right;
+    display: none;
+}
+.eventSignupsAddMemberContainer {
+    max-width: 600px;
+    margin-bottom: 15px;
+}
 .clearBoth {
     clear: both;
 }
 .eventSignupsAddMemberInput {
-    max-width: 50%;
+    width: 50%;
+    max-width: 300px;
     /* margin-right: 10px; */
 }
 
@@ -38,5 +50,11 @@
     }
     .eventSignupsHeader {
         margin-top: 0;
+    }
+    .eventSignupsHeaderButtons {
+        display: none;
+    }
+    .eventSignupMemberDisplayTotalText {
+        display: initial;
     }
 }

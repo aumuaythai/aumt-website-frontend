@@ -26,6 +26,7 @@ interface CreateEventState {
     showEditSignups: boolean
     currentHasLimit: boolean
     currentSignupLimit: number
+    currentIsCamp: boolean
     currentSignupOpenDate: Date
     currentNeedAdminConfirm: boolean
     currentOpenToNonMembers: boolean
@@ -48,6 +49,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             currentLocationLink: '',
             currentFbLink:  '',
             currentSignupLimit: 30,
+            currentIsCamp: false,
             currentHasLimit: true,
             currentSignupOpenDate: new Date(),
             currentNeedAdminConfirm: false,
@@ -87,6 +89,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                         currentSignupOpenDate: loadedEvent.signups?.opens || new Date(),
                         currentNeedAdminConfirm: loadedEvent.signups?.needAdminConfirm || false,
                         currentOpenToNonMembers: loadedEvent.signups?.openToNonMembers || false,
+                        currentIsCamp: loadedEvent.signups?.isCamp || false,
                         currentMembers: loadedEvent.signups?.members || {},
                         currentWaitlist: loadedEvent.signups?.waitlist || {},
                     })
@@ -178,6 +181,12 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             showEditSignups: checked
         })
     }
+    onIsCampChange = (checked: boolean) => {
+        this.setState({
+            ...this.state,
+            currentIsCamp: checked
+        })
+    }
     onHasLimitCheck = (checked: boolean) => {
         this.setState({
             ...this.state,
@@ -249,6 +258,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                 openToNonMembers: this.state.currentOpenToNonMembers,
                 limit: this.state.currentHasLimit ? this.state.currentSignupLimit : null,
                 needAdminConfirm: this.state.currentNeedAdminConfirm,
+                isCamp: this.state.currentIsCamp,
                 members: this.state.currentMembers || {},
                 waitlist: this.state.currentWaitlist || {}
             }
@@ -323,6 +333,9 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                         <div>
                             <Checkbox checked={this.state.currentNeedAdminConfirm} onChange={e => this.onNeedAdminConfirmCheck(e.target.checked)}>Need Admin Confirmation?</Checkbox>
                             (Confirm spot when paid, etc)
+                        </div>
+                        <div>
+                            <Checkbox checked={this.state.currentIsCamp} onChange={e => this.onIsCampChange(e.target.checked)}>Include Drivers and Dietary Requirement Form</Checkbox>
                         </div>
                         {/* <div>
                             <Checkbox checked={this.state.currentOpenToNonMembers} onChange={e => this.onOpenToNonMembersCheck(e.target.checked)}>Non Members can sign themselves up (admin can sign up anyone regardless)</Checkbox>

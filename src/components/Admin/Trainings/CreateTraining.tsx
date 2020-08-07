@@ -20,7 +20,6 @@ interface CreateTrainingState {
     currentNotes: string
     currentFeedback: string[]
     currentOpenToPublic: boolean
-    currentUseInterSemMembers: boolean
     currentPopulateWeekValue: number
     currentTrainingId: string
     loadingTraining: boolean
@@ -32,11 +31,10 @@ const TRAINING_0_CLOSES_DATE = new Date(2020, 6, 24, 20, 30, 0)
 
 const TRAINING_DEFAULT_NOTES = `Rules/Etiquette
 1.    Keep the training area free until your session starts.
-2.    Remove shoes and socks before entering the gym floor.
+2.    Remove shoes and socks before entering the gym mats.
 3.   Let your trainer know if you need to leave early or take a rest due to injury/medical reasons/overtraining.
-4.   Wipe inside and outside of gloves and shins pads using provided wipes at the end of class and with a large towel and place equipment back in the blue bags.
-5.  Dispose of all rubbish in the bins after class
-6.   Put ALL training pads back after use.`
+4.   Wipe inside and outside of gloves and shins pads using provided wipes at the end of class
+5.   Put ALL training pads back after use.`
 
 class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {
@@ -47,7 +45,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentCloses: new Date(),
             currentSessions: [],
             currentOpenToPublic: false,
-            currentUseInterSemMembers: false,
             isSubmitting: false,
             currentNotes: '',
             currentFeedback: [],
@@ -65,9 +62,9 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
         const currentSessions = [
             this.createSession(`Thursday 6:30 (Beginners)`),
-            this.createSession(`Thursday 7:30 (Beginners)`),
+            this.createSession(`Thursday 7:30 (Advanced)`),
             this.createSession(`Friday 6:30 (Beginners)`),
-            this.createSession(`Friday 7:30 (Advanced)`),
+            this.createSession(`Friday 7:30 (Beginners)`),
 
         ]
         this.setState({
@@ -101,7 +98,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                         currentSessions: sessions.sort((a, b) => a.position - b.position),
                         currentNotes: training.notes,
                         currentOpenToPublic: training.openToPublic,
-                        currentUseInterSemMembers: training.useInterSemMembers,
                         currentFeedback: training.feedback,
                         currentTrainingId: training.trainingId,
                         loadingTraining: false
@@ -151,12 +147,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         this.setState({
             ...this.state,
             currentOpenToPublic: open
-        })
-    }
-    onUseInterSemMembersChange = (use: boolean) => {
-        this.setState({
-            ...this.state,
-            currentUseInterSemMembers: use
         })
     }
     onTrainingTitleChange = (title: string) => {
@@ -246,7 +236,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             openToPublic: this.state.currentOpenToPublic,
-            useInterSemMembers: this.state.currentUseInterSemMembers,
             notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
             trainingId: this.state.currentTrainingId || this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
             feedback: this.state.currentFeedback
@@ -289,13 +278,6 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 <div>
                     Open to Non-Members:
                     <Radio.Group value={this.state.currentOpenToPublic} onChange={e => this.onOpenToPublicChange(e.target.value)}>
-                        <Radio.Button value={true}>Yes</Radio.Button>
-                        <Radio.Button value={false}>No</Radio.Button>
-                    </Radio.Group>
-                </div>
-                <div>
-                    Use Inter Sem Members:
-                    <Radio.Group value={this.state.currentUseInterSemMembers} onChange={e => this.onUseInterSemMembersChange(e.target.value)}>
                         <Radio.Button value={true}>Yes</Radio.Button>
                         <Radio.Button value={false}>No</Radio.Button>
                     </Radio.Group>

@@ -16,6 +16,7 @@ interface EventSignupTableProps {
     urlPath: string
     eventId: string
     isWaitlist: boolean
+    isCamp: boolean
     limit: number | null
 }
 
@@ -33,7 +34,10 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         key: 'Firebase UID',
         timeSignedUpMs: 'Time Signed Up (ms)',
         displayTime: 'Time Signed Up',
-        email: 'Email'
+        email: 'Email',
+        dietaryRequirements: 'Dietary',
+        driverLicenseClass: 'License',
+        seatsInCar: 'Seats'
     }
     constructor(props: EventSignupTableProps) {
         super(props)
@@ -157,9 +161,27 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 }
             },
             {
+                title: 'Dietary Reqs',
+                dataIndex: 'dietaryRequirements'
+            },
+            {
+                title: 'License',
+                dataIndex: 'driverLicenseClass',
+                filters: [{text: 'Full 2+ years', value: 'Full 2+ years'},
+                        {text: 'Full <2 years', value: 'Full <2 years'},
+                        {text: 'Restricted', value: 'Restricted'}]
+            },
+            {
+                title: 'Owns Car',
+                dataIndex: 'seatsInCar',
+                render: (val: number, record: TableRow) => {
+                    return val && val > -1 ? <span>Yes, {val} seats</span> : 'No'
+                }
+            },
+            {
                 title: 'Time',
                 dataIndex: 'displayTime',
-                defaultSortOrder: 'ascend',
+                defaultSortOrder: 'ascend' as any,
                 sorter: (a: TableRow, b: TableRow) => a.timeSignedUpMs - b.timeSignedUpMs,
             },
             {
@@ -173,13 +195,14 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     </span>
                 }
             }
-        ]
+        ].filter(r => this.props.isCamp ? r : ['dietaryRequirements', 'driverLicenseClass', 'seatsInCar'].indexOf(r.dataIndex || '') === -1)
         return columns
     }
-    getFooter = () => {
+    getFooter = (totalDisplayed: number) => {
         return <div>
-            Total: {this.state.rows.length} Limit: {this.props.limit || 'None'}
+            <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.copyEmails}>Copy Emails</Button>
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.downloadCsv}>Download .csv</Button>
+            <p className='eventSignupsTableFooterText'>Total: {totalDisplayed} / Limit: {this.props.limit || 'None'}</p>
         </div>
     }
     copyText = (text: string | undefined) => {
@@ -193,13 +216,18 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             displayName: 100,
             email: 90,
             confirmed: 80,
-            timeSignedUpMs: 10,
             displayTime: 50,
+            dietaryRequirements: 40,
+            driverLicenseClass: 30,
+            seatsInCar: 20,
+            timeSignedUpMs: 10,
             key: 5
         }
         return keyMap[a] > keyMap[b] ? -1 : 1
     }
-    
+    copyEmails = () => {
+        dataUtil.copyText(Object.values(this.props.signupData).map(s => s.email).join('\n'))
+    }
     downloadCsv = () => {
         let header = false
         let csvStr = ''
@@ -229,6 +257,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     }
     render() {
         if (window.innerWidth < 600) {
+            const curSelected = this.state.selectedSignup
             return <div>
                 <Select
                 className='eventSignupSelect'
@@ -245,23 +274,26 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                                 </Select.Option>
                         })}
                 </Select>
-                {this.state.selectedSignup ?
+                {curSelected ?
                 <div className="eventSignupMemberInfo">
-                    <p>Email: {this.state.selectedSignup.email} <CopyOutlined onClick={e => this.copyText(this.state.selectedSignup?.email)}/></p>
-                    <p>Paid: {this.state.selectedSignup.confirmed ? 'Yes' : 'No'}
+                    <p>Email: {curSelected.email} <CopyOutlined onClick={e => this.copyText(curSelected?.email)}/></p>
+                    <p>Paid: {curSelected.confirmed ? 'Yes' : 'No'}
                         <Button 
                         type='link'
-                        onClick={e => this.updateConfirmed(this.state.selectedSignup, !this.state.selectedSignup?.confirmed)}>
+                        onClick={e => this.updateConfirmed(curSelected, !curSelected?.confirmed)}>
                             Change
                             </Button>
                         </p>
+                    <p>Dietary Reqs: {curSelected.dietaryRequirements || 'None'}</p>
+                    <p>License: {curSelected.driverLicenseClass || 'None'}</p>
+                    <p>Owns a Car?, Seats: {(curSelected.seatsInCar && curSelected.seatsInCar > -1) ? `Yes, ${curSelected.seatsInCar}` : 'No'}</p>
                     <Button
-                        onClick={e => this.onMoveClick(this.state.selectedSignup?.key || '')}
-                        disabled={!this.state.selectedSignup}>
+                        onClick={e => this.onMoveClick(curSelected?.key || '')}
+                        disabled={!curSelected}>
                         Move to {this.props.isWaitlist ? ' signups' : ' waitlist'}</Button>
                     <Button
-                        onClick={e => this.deleteMember(this.state.selectedSignup?.key || '')}
-                        disabled={!this.state.selectedSignup} type='link'>Delete</Button>
+                        onClick={e => this.deleteMember(curSelected?.key || '')}
+                        disabled={!curSelected} type='link'>Delete</Button>
                 </div>
                 : ''}
             </div>
@@ -269,12 +301,17 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         return <div>
             <Table
                 size='small'
-                pagination={false}
+                pagination={{
+                    defaultPageSize: 10,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50'],
+                    showTotal: this.getFooter
+                }}
                 bordered
                 loading={this.state.tableLoading}
                 columns={this.getColumns()}
                 dataSource={this.state.rows}
-                footer={this.getFooter}
+                scroll={{ y: 400 }}
             ></Table>
         </div>
     }

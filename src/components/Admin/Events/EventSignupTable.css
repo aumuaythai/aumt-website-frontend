@@ -17,3 +17,7 @@
 .eventSignupTableFooterDownloadButton {
     float: right;
 }
+.eventSignupsTableFooterText {
+    margin-top: 4px;
+    float: right;
+}
