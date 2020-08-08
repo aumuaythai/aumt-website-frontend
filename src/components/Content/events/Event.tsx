@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
-import { Button, Result, Input, Divider, Radio, notification, InputNumber} from 'antd'
+import { Button, Result, Divider, notification} from 'antd'
 import moment from 'moment'
 import './Event.css'
 import { AumtEvent, AumtMember, LicenseClasses } from '../../../types'
@@ -44,10 +44,10 @@ export class Event extends Component<EventProps, EventState> {
             signedUp: !!signupInfo,
             waitlisted: !!waitlistedInfo,
             confirmedSignUp: !!signupInfo && signupInfo.confirmed,
-            currentOwnsCar: !!signupInfo && !!signupInfo.seatsInCar || undefined,
-            currentSeats: signupInfo && signupInfo.seatsInCar || undefined,
-            currentDietaryRequirements: signupInfo && signupInfo.dietaryRequirements || '',
-            currentLicenseClass: signupInfo && signupInfo.driverLicenseClass || '',
+            currentOwnsCar: (!!signupInfo && !!signupInfo.seatsInCar) || undefined,
+            currentSeats: (signupInfo && signupInfo.seatsInCar) || undefined,
+            currentDietaryRequirements: (signupInfo && signupInfo.dietaryRequirements) || '',
+            currentLicenseClass: (signupInfo && signupInfo.driverLicenseClass) || '',
             reservingSpot: false,
             withdrawingSpot: false,
             waitlistingMember: false

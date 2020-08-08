@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
-import { Spin, Button, notification, Input, Radio } from 'antd'
+import { Spin, Button, notification, Input } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import './EventSignups.css'
 import { AumtEvent, LicenseClasses } from '../../../types'

@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {Spin, Radio, Button, Select, Alert, Tooltip, notification, Input, Tag } from 'antd'
+import {Spin, Radio, Button, Alert, Tooltip, Input, Tag } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
-import { AumtTrainingSession, AumtMembersObjWithCollated } from '../../../types'
+import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';
 
 export interface SignupFormProps {
