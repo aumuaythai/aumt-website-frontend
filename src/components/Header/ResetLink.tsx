@@ -81,7 +81,7 @@ export class ResetPasswordLink extends Component<ResetPasswordLinkProps, ResetPa
   render() {
     const { visible, confirmLoading } = this.state;
     return (
-      <div className="resetContainer">
+      <span className="resetContainer">
         <Button type='link' className="mockLink" onClick={this.showModal}>{this.props.text || 'Reset Password'}</Button>
         <Modal
           title="Reset Password"
@@ -94,7 +94,7 @@ export class ResetPasswordLink extends Component<ResetPasswordLinkProps, ResetPa
         {this.state.errorText ? <Alert type='error' message={this.state.errorText}></Alert>: ''}
         <Input type='email' placeholder="email" onPressEnter={this.handleResetClick} onChange={this.onEmailChange} prefix={<UserOutlined />} />
         </Modal>
-      </div>
+      </span>
     );
   }
 }

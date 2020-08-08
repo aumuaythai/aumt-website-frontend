@@ -25,6 +25,7 @@ interface SignupFormState {
     signedUpOption: string
     submittingState: boolean
     currentDisplayName: string
+    currentMockUid: string
     errorMessage: string
     removingState: boolean
 }
@@ -36,6 +37,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             currentSessionId: '',
             currentFeedback: '',
             currentDisplayName: '',
+            currentMockUid: '',
             errorMessage: '',
             signedUpOption: '',
             submittingState: false,
@@ -109,7 +111,11 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     }
                 })
                 .catch((err) => {
-                    notification.error({message: 'Could not remove from training: ' + err.toString()})
+                    this.setState({
+                        ...this.state,
+                        removingState: false,
+                        errorMessage: 'Error removing signup:' + err.toString()
+                    })
                 })
         }
     }
@@ -133,9 +139,10 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             errorMessage: '',
             submittingState: true
         })
+        const uid = this.props.authedUserId || this.state.currentMockUid || this.generateMockUid()
 
         db.signUserUp(
-                this.props.authedUserId || this.generateMockUid(),
+                uid,
                 this.props.displayName || this.state.currentDisplayName,
                 new Date(),
                 this.props.id,
@@ -146,6 +153,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 this.setState({
                     ...this.state,
                     signedUpOption: optionSelected,
+                    currentMockUid: uid,
                     submittingState: false,
                 })
                 if (this.props.onSignupChanged) {

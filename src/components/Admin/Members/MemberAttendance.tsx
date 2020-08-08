@@ -72,6 +72,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
             return <p>No form found for id</p>
         }
         return (
+            <div className='attendanceFormPopoverContainer'>
             <SignupForm 
                 title={form.title}
                 id={form.trainingId}
@@ -82,6 +83,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
                 notes={form.notes}
                 openToPublic={false}
                 onSignupChanged={() => this.getAttendance(true)}></SignupForm>
+            </div>
         )
     }
     render() {
