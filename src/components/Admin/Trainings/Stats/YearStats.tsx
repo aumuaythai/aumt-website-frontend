@@ -9,6 +9,8 @@ import {
     LineChart,
   } from 'recharts'
 
+import { Radio } from 'antd'
+
 import './YearStats.css'
 import { AumtWeeklyTraining } from '../../../../types'
 
@@ -19,14 +21,16 @@ interface YearStatsProps {
 }
 
 interface YearStatsState {
-    currentGraphData: {week: string, total: number}[]
+    currentGraphData: {week: string, total: number, totalPercent: number}[]
+    showPercent: boolean
 }
 
 export class YearStats extends Component<YearStatsProps, YearStatsState> {
     constructor(props: YearStatsProps) {
         super(props)
         this.state = {
-            currentGraphData: []
+            currentGraphData: [],
+            showPercent: false
         }
     }
     componentDidUpdate(prevProps: YearStatsProps, prevState: YearStatsState) {
@@ -35,11 +39,14 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
             const graphData = this.props.forms
                 .filter(f => f.opens < now)
                 .map((form) => {
+                    const total = Object.values(form.sessions).reduce((sum, cur) => {
+                        return sum + Object.keys(cur.members).length
+                    }, 0)
+                    const limit = Object.values(form.sessions).reduce((sum, cur) => sum + cur.limit, 0)
                     return {
                         week: form.trainingId,
-                        total: Object.values(form.sessions).reduce((sum, cur) => {
-                            return sum + Object.keys(cur.members).length
-                        }, 0)
+                        total,
+                        totalPercent: 100 * total / limit
                     }
                 })
             this.setState({
@@ -47,6 +54,9 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                 currentGraphData: graphData.slice().reverse()
             })
         }
+    }
+    setShowPercent = (percent: boolean) => {
+        this.setState({...this.state, showPercent: percent})
     }
     onFormClick = (data: {payload: {week: string}}) => {
         this.props.onTrainingClick(data.payload.week)
@@ -60,8 +70,9 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
             const members = Object.keys(session.members).length
             vals[session.sessionId] = members
             vals['total'] += members
+            vals['limit'] += session.limit
             return vals
-        }, {total: 0} as Record<string, number>)
+        }, {total: 0, limit: 0} as Record<string, number>)
         return (
             <div className='yearStatsTooltip'>
                 <div className="yearStatsTooltipTitle">
@@ -72,7 +83,9 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                             TOTAL
                     </div>
                     <div className="yearStatsTooltipVal">
-                        {tooltipValues['total']}
+                        {this.state.showPercent ?
+                            `${Math.round(tooltipValues['total'] * 100 / tooltipValues['limit'])}% (${tooltipValues['total']} / ${tooltipValues.limit})` :
+                            tooltipValues['total']}
                     </div>
                     <div className="clearBoth"></div>
                 </div>
@@ -83,7 +96,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                                 {session.title}
                             </div>
                             <div className="yearStatsTooltipVal">
-                                {tooltipValues[session.sessionId]}
+                                {this.state.showPercent ? `${tooltipValues[session.sessionId]} / ${session.limit}`: tooltipValues[session.sessionId]}
                             </div>
                             <div className="clearBoth"></div>
                         </div>
@@ -95,6 +108,10 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
     render() {
         return (
             <div className='yearStatsContainer'>
+                <Radio.Group className='yearStatsTotalOrPercent' value={this.state.showPercent} onChange={e => this.setShowPercent(e.target.value)}>
+                    <Radio.Button value={false}>Total</Radio.Button>
+                    <Radio.Button value={true}>Percent</Radio.Button>
+                </Radio.Group>
                 <ResponsiveContainer width = '100%' height = '100%' >
                     <LineChart data={this.state.currentGraphData}>
                         <XAxis
@@ -106,7 +123,7 @@ export class YearStats extends Component<YearStatsProps, YearStatsState> {
                         <CartesianGrid horizontal={true} vertical={false}/>
                             <Tooltip content={this.customTooltip}/>
                         <YAxis/>
-                    <Line dataKey='total' activeDot={{onClick: (p: {payload: {week: string}})=> this.onFormClick(p) }}/>
+                    <Line dataKey={this.state.showPercent ? 'totalPercent' : 'total'} activeDot={{onClick: (p: {payload: {week: string}})=> this.onFormClick(p) }}/>
                     </LineChart>
                 </ResponsiveContainer>
             </div>
