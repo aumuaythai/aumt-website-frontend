@@ -1,18 +1,25 @@
 export interface AumtMember {
+    // contact
     firstName: string
     lastName: string
     preferredName: string
-    upi: string
     email: string
-    emailVerified: boolean
+    instagramHandle: string
+
+    // details
+    upi: string
     isReturningMember: 'Yes' | 'No'
     isUoAStudent: 'Yes' | 'No'
-    membership: 'S1' | 'S2' | 'FY'
     initialExperience: string
-    instagramHandle: string
+
+    // Membership
+    membership: 'S1' | 'S2' | 'FY'
     paymentType: 'Cash' | 'Bank Transfer' | 'Other'
     paid: 'Yes' | 'No'
+    emailVerified: boolean
     timeJoinedMs: number
+
+    // Emergency Contact
     EmergencyContactName: string
     EmergencyContactNumber: string
     EmergencyContactRelationship: string
@@ -20,13 +27,6 @@ export interface AumtMember {
 
 export interface AumtMembersObj {
     [uid: string]: AumtMember
-}
-
-export interface AumtAdmin {
-    id: string
-    name: string
-    email: string
-    position: string
 }
 
 export interface AumtMemberWithCollated extends AumtMember {
