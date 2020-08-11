@@ -26,6 +26,8 @@
 .yearStatsContainer {
     height: 100%;
     position: relative;
+    width: calc(100% + 40px);
+    margin-left: -40px;
 }
 .yearStatsTotalOrPercent {
     position: absolute;
