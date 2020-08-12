@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { List, Spin } from 'antd'
+import { Divider, Spin } from 'antd'
 import './Feedback.css'
 import { AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
@@ -55,16 +55,13 @@ export class Feedback extends Component<FeedbackProps, FeedbackState> {
                 {this.state.feedbackForms.map((form) => {
                     const feedback = form.feedback.reverse()
                     return (
-                        <List
-                            key={form.trainingId}
-                            className='feedbackListObject'
-                            bordered
-                            header={<h4 className='feedbackListTitle'>{form.title}</h4>}
-                            dataSource={feedback}
-                            renderItem={item => {
-                                return <List.Item>{item}</List.Item>
-                            }}
-                        />
+                        <div key={form.trainingId}>
+                            <h3>{form.title}</h3>
+                            {feedback.length ? feedback.map((line) => {
+                                return <p>{line}</p>
+                            }) : <p>No Feedback</p>}
+                            <Divider/>
+                        </div>
                     )
                 })}
                 <div className="clearBoth"></div>
