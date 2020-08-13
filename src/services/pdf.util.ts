@@ -32,9 +32,10 @@ class PdfUtil {
     }
     
     private getTrainingDocDefinition = (data: AumtWeeklyTraining[]) => {
+        const currentDate = new Date()
         const content = [
             // {image: '/logorectangle.png', width: 150, alignment: 'center'},
-            {text: 'AUMT Trainings Report', style: 'header', alignment: 'center'},
+            {text: `AUMT Trainings Report ${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`, style: 'header', alignment: 'center'},
         ]
         content.push({text: `${data.length} Trainings`, style: 'subHeader', alignment: 'left'})
         const summaryBody = data.reduce((body, training) => {

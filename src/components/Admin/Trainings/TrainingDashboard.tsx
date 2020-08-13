@@ -100,18 +100,24 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         pdfUtil.createTrainingPdf(this.props.forms)
     }
     downloadTrainingCsv = () => {
-        const csvHeader = 'trainingId,title,opensMs,closesMs,notes,openToPublic,feedback,sessionIds'
+        const csvHeader = 'trainingId,formTitle,opensMs,closesMs,notes,openToPublic,feedback,sessionId,sessionTitle,sessionLimit,sessionPosition'
         const lines: string[] = [csvHeader]
         this.props.forms.forEach((form) => {
-            lines.push([form.trainingId,
-                `"${form.title}"`,
-                form.opens.getTime(),
-                form.closes.getTime(),
-                `"${form.notes}"`,
-                form.openToPublic ? 'Yes' : 'No',
-                `"${form.feedback.join('%%')}"`,
-                `"${Object.keys(form.sessions).sort((a, b) => form.sessions[a].position - form.sessions[b].position).join('%%')}"`
-            ].join(','))
+            Object.keys(form.sessions).forEach((sessionId) => {
+                const session = form.sessions[sessionId]
+                lines.push([form.trainingId,
+                    `"${form.title}"`,
+                    form.opens.getTime(),
+                    form.closes.getTime(),
+                    `"${form.notes}"`,
+                    form.openToPublic ? 'Yes' : 'No',
+                    `"${form.feedback.join('%%')}"`,
+                    `${sessionId}`,
+                    `"${session.title}"`,
+                    session.limit,
+                    session.position
+                    ].join(','))
+                })
         })
         dataUtil.downloadCsv('trainings', lines.join('\n'))
     }
@@ -122,7 +128,11 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
             Object.values(form.sessions).forEach((session) => {
                 lines = lines.concat(Object.keys(session.members).map((uid) => {
                     const member = session.members[uid]
-                    return [uid, member.name, member.timeAdded.getTime(), session.sessionId, form.trainingId].join(',')
+                    return [uid,
+                        member.name,
+                        member.timeAdded.getTime(),
+                        session.sessionId,
+                        form.trainingId].join(',')
                 }))
             })
         })
