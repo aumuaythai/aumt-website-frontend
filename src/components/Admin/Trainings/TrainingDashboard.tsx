@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import { Spin, Button, Menu, Dropdown, notification } from 'antd'
+import { Spin, Button, Menu, Dropdown, notification, Popover } from 'antd'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
 import './TrainingDashboard.css'
 import { WeekStats } from './Stats/WeekStats'
@@ -11,6 +11,7 @@ import { EditSignups } from './EditSignups'
 import db from '../../../services/db'
 import AdminStore from '../AdminStore'
 import pdfUtil from '../../../services/pdf.util'
+import dataUtil from '../../../services/data.util'
 
 
 interface TrainingDashboardProps {
@@ -98,6 +99,35 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
     onExportClick = () => {
         pdfUtil.createTrainingPdf(this.props.forms)
     }
+    downloadTrainingCsv = () => {
+        const csvHeader = 'trainingId,title,opensMs,closesMs,notes,openToPublic,feedback,sessionIds'
+        const lines: string[] = [csvHeader]
+        this.props.forms.forEach((form) => {
+            lines.push([form.trainingId,
+                `"${form.title}"`,
+                form.opens.getTime(),
+                form.closes.getTime(),
+                `"${form.notes}"`,
+                form.openToPublic ? 'Yes' : 'No',
+                `"${form.feedback.join('%%')}"`,
+                `"${Object.keys(form.sessions).sort((a, b) => form.sessions[a].position - form.sessions[b].position).join('%%')}"`
+            ].join(','))
+        })
+        dataUtil.downloadCsv('trainings', lines.join('\n'))
+    }
+    downloadSignupsCsv = () => {
+        const csvHeader = 'uid,name,timeAddedMs,sessionId,trainingId'
+        let lines: string[] = [csvHeader]
+        this.props.forms.forEach((form) => {
+            Object.values(form.sessions).forEach((session) => {
+                lines = lines.concat(Object.keys(session.members).map((uid) => {
+                    const member = session.members[uid]
+                    return [uid, member.name, member.timeAdded.getTime(), session.sessionId, form.trainingId].join(',')
+                }))
+            })
+        })
+        dataUtil.downloadCsv('signups', lines.join('\n'))
+    }
     getFormsDropdown = () => {
         return (
             <Menu onClick={this.onFormSelect}>
@@ -151,6 +181,14 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                             <Link to='/admin/createtraining'>
                                 <Button className='manageTrainingsAddButton' shape='round' ><PlusOutlined/></Button>
                             </Link>
+                            <Popover trigger='click' content={
+                                <div>
+                                    <Button className='trainingDashboardDownloadCsvOption' type='link' onClick={this.downloadTrainingCsv}>Trainings .csv</Button>
+                                    <Button className='trainingDashboardDownloadCsvOption' type='link' onClick={this.downloadSignupsCsv}>Signups .csv</Button>
+                                </div>
+                            }>
+                                <Button type='link'>Download...</Button>
+                            </Popover>
                         </h2>
                         <div className="manageTrainingsComponentWrapper">
                             <ManageTrainings

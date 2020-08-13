@@ -102,6 +102,16 @@ class DataFormatUtil {
             notification.error({message: 'Text not copied: ' + err.toString()})
         })
     }
+
+    downloadCsv = (fileName: string, text: string): void => {
+        const blob = new Blob([text]);
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
 }
 
 export default new DataFormatUtil()

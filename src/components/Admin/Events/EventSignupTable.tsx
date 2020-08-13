@@ -247,13 +247,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     .map((key) => row[key])
                     .join(',') + '\n'
             })
-        const blob = new Blob([csvStr])
-        const a = document.createElement("a")
-        a.href = URL.createObjectURL(blob)
-        a.download = fileName
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
+        dataUtil.downloadCsv(fileName, csvStr)
     }
     render() {
         if (window.innerWidth < 600) {
