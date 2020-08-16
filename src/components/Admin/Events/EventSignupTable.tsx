@@ -36,6 +36,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         displayTime: 'Time Signed Up',
         email: 'Email',
         dietaryRequirements: 'Dietary',
+        medicalInfo: 'Medical',
         driverLicenseClass: 'License',
         seatsInCar: 'Seats'
     }
@@ -165,6 +166,10 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 dataIndex: 'dietaryRequirements'
             },
             {
+                title: 'Medical Info',
+                dataIndex: 'medicalInfo'
+            },
+            {
                 title: 'License',
                 dataIndex: 'driverLicenseClass',
                 filters: [{text: 'Full 2+ years', value: 'Full 2+ years'},
@@ -218,6 +223,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             confirmed: 80,
             displayTime: 50,
             dietaryRequirements: 40,
+            medicalInfo: 35,
             driverLicenseClass: 30,
             seatsInCar: 20,
             timeSignedUpMs: 10,

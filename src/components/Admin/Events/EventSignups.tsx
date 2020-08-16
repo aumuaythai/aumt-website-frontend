@@ -102,7 +102,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
     }
 
 
-    signUpNewMember = (signupData: {dietaryRequirements?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
+    signUpNewMember = (signupData: {dietaryRequirements?: string, medicalInfo?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
         if (!signupData.name) {
             return notification.error({message: 'Name required'})
         }
@@ -124,6 +124,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
             displayName: signupData.name,
             email: signupData.email,
             dietaryRequirements: signupData.dietaryRequirements,
+            medicalInfo: signupData.medicalInfo,
             seatsInCar: signupData.seatsInCar,
             driverLicenseClass: signupData.license
         }, isWaitlist)

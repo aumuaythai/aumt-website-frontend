@@ -4,6 +4,7 @@ export interface AumtEventSignupData {
     timeSignedUpMs: number
     confirmed: boolean
     dietaryRequirements?: string
+    medicalInfo?: string
     driverLicenseClass?: LicenseClasses
     seatsInCar?: number
 }
@@ -15,6 +16,7 @@ export type AumtEventSignup = Record<string,AumtEventSignupData>
 export interface AumtEventSignupObject {
     limit: number | null
     opens: Date
+    closes: Date
     needAdminConfirm: boolean
     openToNonMembers: boolean
     isCamp: boolean

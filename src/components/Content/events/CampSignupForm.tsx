@@ -11,7 +11,7 @@ interface CampSignupFormProps {
     submitting: boolean
     isWaitlist: boolean
     isCamp: boolean
-    onSubmit: (obj: {dietaryRequirements: string, seatsInCar: number, license: LicenseClasses, name: string, email: string}) => void
+    onSubmit: (obj: {dietaryRequirements: string, medicalInfo: string, seatsInCar: number, license: LicenseClasses, name: string, email: string}) => void
 }
 
 interface CampSignupFormState {
@@ -26,6 +26,7 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
     onSubmit = (vals: any) => {
         const submitObj = {
             dietaryRequirements: vals.dietaryRequirements || '',
+            medicalInfo: vals.medicalInfo || '',
             seatsInCar: vals.seatsInCar || -1,
             license: vals.license || '',
             name: vals.name || '',
@@ -52,6 +53,9 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                             <Form.Item label='Dietary Requirements (optional)' name='dietaryRequirements'>
                                 <Input placeholder='Allergies, vegetarian, etc'/>
                             </Form.Item>
+                            <Form.Item label='Medical Info (optional)' name='medicalInfo'>
+                                <Input placeholder='Injuries, conditions, etc'/>
+                            </Form.Item>
                             <p className='eventFormMockLabel'>Driving (optional)</p>
                             <p>If selected as a driver, you'll receive a $20 discount and fuel reimbursement.</p>
                             <Form.Item name='license' label='License Class'>
@@ -71,7 +75,7 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                         </Radio.Group>
                                     </Form.Item>
                                     {this.formRef?.current.getFieldValue('ownsCar') ? 
-                                        <Form.Item label='How Many Seats?' name='seatsInCar' rules={[{required: true}]}>
+                                        <Form.Item label='How Many Seats (including driver)?' name='seatsInCar' rules={[{required: true}]}>
                                             <InputNumber min={1}/>
                                         </Form.Item>
                                     : ''}

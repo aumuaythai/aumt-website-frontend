@@ -159,13 +159,13 @@ export class Aumt extends Component<AumtProps, AumtState> {
                               authedUser={this.state.authedUser}></SignupsLazyWrapper>
                           </Route>
                           <Route path="/events">
-                            {this.state.authedUser ? 
+                            {/* {this.state.authedUser ?  */}
                             <EventsWrapper authedUser={this.state.authedUser}></EventsWrapper>
-                            : 
+                            {/* : 
                             <div>
                               You must <Link to='/login?from=/events'> log in </Link> to view events.
                             </div>
-                            }
+                            } */}
                           </Route>
                           <Route path="/join">
                             <MainJoin
