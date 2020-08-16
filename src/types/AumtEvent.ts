@@ -9,7 +9,7 @@ export interface AumtEventSignupData {
     seatsInCar?: number
 }
 
-export type LicenseClasses = 'Full 2+ years' | 'Full < 2 years' | 'Restricted'
+export type LicenseClasses = 'Full 2+ years' | 'Full < 2 years' | 'Restricted' | 'Other'
 
 export type AumtEventSignup = Record<string,AumtEventSignupData>
 

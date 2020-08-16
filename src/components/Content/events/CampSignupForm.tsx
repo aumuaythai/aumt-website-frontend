@@ -63,9 +63,10 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                     <Radio.Button value={'Full 2+ years'}>Full 2+ years</Radio.Button>
                                     <Radio.Button value={'Full <2 years'}>Full &lt;2 years</Radio.Button>
                                     <Radio.Button value={'Restricted'}>Restricted</Radio.Button>
+                                    <Radio.Button value={'Other'}>Other/None</Radio.Button>
                                 </Radio.Group>
                             </Form.Item>
-                            {this.formRef?.current?.getFieldValue('license') ?
+                            {this.formRef?.current?.getFieldValue('license') && this.formRef?.current?.getFieldValue('license')  !== 'Other' ?
                                 <div>
                                     <p className='eventFormMockLabel'>Do you own a car you would be willing to drive down?</p>
                                     <Form.Item name='ownsCar'>
@@ -74,7 +75,7 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                             <Radio.Button value={false}>No</Radio.Button>
                                         </Radio.Group>
                                     </Form.Item>
-                                    {this.formRef?.current.getFieldValue('ownsCar') ? 
+                                    {this.formRef?.current?.getFieldValue('ownsCar') ? 
                                         <Form.Item label='How Many Seats (including driver)?' name='seatsInCar' rules={[{required: true}]}>
                                             <InputNumber min={1}/>
                                         </Form.Item>

@@ -1,12 +1,14 @@
 import React, {Component} from 'react'
 import { Table, Tooltip, notification, Button, Select, Tag } from 'antd'
 import { FormOutlined, CopyOutlined, ArrowRightOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { TableCurrentDataSource } from 'antd/lib/table/interface';
 import './EventSignupTable.css'
-import { AumtEventSignupData, AumtEventSignup } from '../../../types'
+import { AumtEventSignupData, AumtEventSignup, LicenseClasses } from '../../../types'
 import moment from 'moment'
 import { ColumnsType } from 'antd/lib/table'
 import db from '../../../services/db'
 import dataUtil from '../../../services/data.util'
+import { spawn } from 'child_process'
 
 
 type TableRow = AumtEventSignupData & {key: string, displayTime: string}
@@ -22,6 +24,7 @@ interface EventSignupTableProps {
 
 interface EventSignupTableState {
     rows: TableRow[]
+    selectedRows: TableRow[]
     columns: ColumnsType<TableRow>
     tableLoading: boolean
     selectedSignup: TableRow | null
@@ -44,6 +47,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         super(props)
         this.state = {
             rows: [],
+            selectedRows: [],
             columns: [],
             tableLoading: false,
             selectedSignup: null
@@ -174,20 +178,33 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 dataIndex: 'driverLicenseClass',
                 filters: [{text: 'Full 2+ years', value: 'Full 2+ years'},
                         {text: 'Full <2 years', value: 'Full <2 years'},
-                        {text: 'Restricted', value: 'Restricted'}]
+                        {text: 'Restricted', value: 'Restricted'},
+                        {text: 'None/Other', value: 'Other'}],
+                onFilter: (value: string | number | boolean, record: TableRow) => {
+                    return value === record.driverLicenseClass
+                },
+                render: (val: LicenseClasses, record: TableRow) => {
+                    return <span>{(val === 'Other' || !val) ? 'None/Other' : val}</span>
+                }
             },
             {
                 title: 'Owns Car',
                 dataIndex: 'seatsInCar',
                 render: (val: number, record: TableRow) => {
                     return val && val > -1 ? <span>Yes, {val} seats</span> : 'No'
+                },
+                filters: [{text: 'Yes', value: true},
+                            {text: 'No', value: false}],
+                onFilter: (value: boolean | string | number, record: TableRow) => {
+                    console.log(value, record.seatsInCar)
+                    return !(record.seatsInCar == -1) === value
                 }
             },
             {
                 title: 'Time',
                 dataIndex: 'displayTime',
                 defaultSortOrder: 'ascend' as any,
-                sorter: (a: TableRow, b: TableRow) => a.timeSignedUpMs - b.timeSignedUpMs,
+                sorter: (a: TableRow, b: TableRow) => b.timeSignedUpMs - a.timeSignedUpMs,
             },
             {
                 title: 'Action',
@@ -232,13 +249,22 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         return keyMap[a] > keyMap[b] ? -1 : 1
     }
     copyEmails = () => {
-        dataUtil.copyText(Object.values(this.props.signupData).map(s => s.email).join('\n'))
+        dataUtil.copyText(Object.keys(this.props.signupData)
+            .filter(key => {
+                if (this.state.selectedRows.length) {
+                    return this.state.selectedRows.find(r => r.key === key)
+                }
+                return true
+            })
+            .map(key => this.props.signupData[key].email)
+            .join('\n'))
     }
     downloadCsv = () => {
         let header = false
         let csvStr = ''
         const fileName = `${this.props.urlPath}_${this.props.isWaitlist ? 'waitlist' : 'signups'}.csv`
-        this.state.rows
+        const csvRows = this.state.selectedRows.length ? this.state.selectedRows : this.state.rows
+        csvRows
             .sort((a, b) => a.timeSignedUpMs - b.timeSignedUpMs)
             .forEach((row) => {
                 if (!header) {
@@ -254,6 +280,12 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     .join(',') + '\n'
             })
         dataUtil.downloadCsv(fileName, csvStr)
+    }
+    onTableChange = (pagination: any, filter: Record<keyof TableRow, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableRow>, ...extra: any) => {
+            this.setState({
+                ...this.state,
+                selectedRows: dataSource.currentDataSource,
+            })
     }
     render() {
         if (window.innerWidth < 600) {
@@ -307,6 +339,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     pageSizeOptions: ['10', '20', '50'],
                     showTotal: this.getFooter
                 }}
+                onChange={this.onTableChange}
                 bordered
                 loading={this.state.tableLoading}
                 columns={this.getColumns()}

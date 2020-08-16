@@ -231,11 +231,11 @@ export class Event extends Component<EventProps, EventState> {
                             </div>
                         }
                         return <div>
-                            {signups.opens > new Date() ?
+                            {/* {signups.opens > new Date() ?
                                 <div>Signups will open {moment(signups.opens).format('MMMM Do')}</div>
                                 : signups.closes < new Date() ?
                                 <div>Signups have closed!</div>
-                                :
+                                : */} {
                                 (!this.props.authedUser && !this.props.event.signups.openToNonMembers) ? 
                                 <div>
                                     <p>You must <Link to={`/login?from=/events/${this.props.event.urlPath}`}> log in </Link> to reserve your place.</p>
