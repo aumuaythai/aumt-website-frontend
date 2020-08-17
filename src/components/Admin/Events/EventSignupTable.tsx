@@ -330,7 +330,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 placeholder='Select Member'
                 onChange={this.onSelectSignup}
                 >
-                    {this.state.rows.sort((a, b) => a.timeSignedUpMs - b.timeSignedUpMs).map((signup: TableRow) => {
+                    {this.state.rows.sort((a, b) => b.timeSignedUpMs - a.timeSignedUpMs).map((signup: TableRow) => {
                             return <Select.Option key={signup.key} value={signup.key}>
                                 <div className='eventSignupSelectName'>{signup.displayName}</div>
                                 <div className='eventSignupSelectTime'>{signup.displayTime}</div>
