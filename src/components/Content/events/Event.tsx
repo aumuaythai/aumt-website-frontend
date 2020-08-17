@@ -28,6 +28,7 @@ interface EventState {
     currentSeats: number | undefined
     currentLicenseClass: LicenseClasses | ''
     currentDietaryRequirements: string
+    currentPhoneNumber: string
 }
 
 export class Event extends Component<EventProps, EventState> {
@@ -48,6 +49,7 @@ export class Event extends Component<EventProps, EventState> {
             currentOwnsCar: (!!signupInfo && !!signupInfo.seatsInCar) || undefined,
             currentSeats: (signupInfo && signupInfo.seatsInCar) || undefined,
             currentDietaryRequirements: (signupInfo && signupInfo.dietaryRequirements) || '',
+            currentPhoneNumber: (signupInfo && signupInfo.phoneNumber) || '',
             currentLicenseClass: (signupInfo && signupInfo.driverLicenseClass) || '',
             reservingSpot: false,
             withdrawingSpot: false,
@@ -76,7 +78,7 @@ export class Event extends Component<EventProps, EventState> {
         }
         return null
     }
-    onSignupFormSubmit = (signupData: {dietaryRequirements?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
+    onSignupFormSubmit = (signupData: {phoneNumber?: string, ecName?: string, ecRelation?: string, ecPhoneNumber?: string, dietaryRequirements?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
         const displayName = this.props.authedUser ? `${this.props.authedUser.firstName} ${this.props.authedUser.lastName}` : signupData.name
         const email = this.props.authedUser ? this.props.authedUser.email : signupData.email
         if (!displayName || !email) {
@@ -89,6 +91,7 @@ export class Event extends Component<EventProps, EventState> {
             this.setState({...this.state, waitlistingMember: true})
         }
         const confirmed = this.props.event.signups?.needAdminConfirm ? false : true
+        console.log(signupData)
         db.signUpToEvent(this.props.event.id,
             firebaseUtil.getCurrentUid() || this.generateMockUid(),
             Object.assign({
@@ -96,6 +99,10 @@ export class Event extends Component<EventProps, EventState> {
                 timeSignedUpMs: new Date().getTime(),
                 confirmed,
                 email,
+                phoneNumber: signupData.phoneNumber || '', 
+                ecName: signupData.ecName,
+                ecPhoneNumber: signupData.ecPhoneNumber,
+                ecRelation: signupData.ecRelation
             }, signupData.dietaryRequirements ? {
                 dietaryRequirements: signupData.dietaryRequirements
             } : {}, signupData.license ? {

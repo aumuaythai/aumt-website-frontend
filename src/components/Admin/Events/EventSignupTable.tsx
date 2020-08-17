@@ -1,17 +1,14 @@
 import React, {Component} from 'react'
 import { Table, Tooltip, notification, Button, Select, Tag } from 'antd'
-import { FormOutlined, CopyOutlined, ArrowRightOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { FormOutlined, CopyOutlined, ArrowRightOutlined, ArrowLeftOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
 import './EventSignupTable.css'
-import { AumtEventSignupData, AumtEventSignup, LicenseClasses } from '../../../types'
+import { AumtEventSignup, LicenseClasses, TableRow } from '../../../types'
 import moment from 'moment'
 import { ColumnsType } from 'antd/lib/table'
 import db from '../../../services/db'
 import dataUtil from '../../../services/data.util'
-import { spawn } from 'child_process'
-
-
-type TableRow = AumtEventSignupData & {key: string, displayTime: string}
+import { EventSignupDetails } from './EventSignupDetails'
 
 interface EventSignupTableProps {
     signupData: AumtEventSignup
@@ -38,10 +35,14 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         timeSignedUpMs: 'Time Signed Up (ms)',
         displayTime: 'Time Signed Up',
         email: 'Email',
+        phoneNumber: 'Phone',
         dietaryRequirements: 'Dietary',
         medicalInfo: 'Medical',
         driverLicenseClass: 'License',
-        seatsInCar: 'Seats'
+        seatsInCar: 'Seats',
+        ecName: 'Emergency Contact Name',
+        ecPhoneNumber: 'Emergency Contact Phone',
+        ecRelation: 'Emergency Contact Relation'
     }
     constructor(props: EventSignupTableProps) {
         super(props)
@@ -109,6 +110,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     }
     onSelectSignup = (key: string) => {
         const member = this.state.rows.find(r => r.key === key)
+        console.log(key, member)
         if (member) {
             this.setState({
                 ...this.state,
@@ -139,14 +141,31 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             {
                 title: 'Name',
                 dataIndex: 'displayName',
+                render: (name: string, record: TableRow) => {
+                    return <Tooltip placement='right' title='View Details'>
+                                <span className='eventTableNameLink' onClick={e => this.onSelectSignup(record.key)}>
+                                    {name}
+                                </span>
+                            </Tooltip>
+                }
             },
             {
                 title: 'Email',
-                dataIndex: 'email'
+                dataIndex: 'email',
+                render: (email: string, record: TableRow) => {
+                    return  <span>{email} <Tooltip title='Copy'>
+                        <span className='noLinkA rightTableText' onClick={e => e.stopPropagation()}><CopyOutlined onClick={e => this.copyText(email)}/></span>
+                    </Tooltip></span>
+                }
+            },
+            {
+                title: 'Phone',
+                dataIndex: 'phoneNumber'
             },
             {
                 title: 'Paid',
                 dataIndex: 'confirmed',
+                width: 85,
                 filters: [{text: 'Yes', value: true}, 
                     {text: 'No', value: false}],
                 onFilter: (value: string | number | boolean, record: TableRow) => {
@@ -166,7 +185,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 }
             },
             {
-                title: 'Dietary Reqs',
+                title: 'Diet Reqs',
                 dataIndex: 'dietaryRequirements'
             },
             {
@@ -197,7 +216,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                             {text: 'No', value: false}],
                 onFilter: (value: boolean | string | number, record: TableRow) => {
                     console.log(value, record.seatsInCar)
-                    return !(record.seatsInCar == -1) === value
+                    return !(record.seatsInCar === -1) === value
                 }
             },
             {
@@ -217,7 +236,15 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     </span>
                 }
             }
-        ].filter(r => this.props.isCamp ? r : ['dietaryRequirements', 'driverLicenseClass', 'seatsInCar'].indexOf(r.dataIndex || '') === -1)
+        ].filter(r => {
+            if (this.props.isCamp) {
+                return this.state.selectedSignup ?
+                    ['displayName', 'email', 'confirmed', 'displayTime'].indexOf(r.dataIndex || '') > -1 || r.title === 'Action'
+                    : r
+            } else {
+                return ['dietaryRequirements', 'driverLicenseClass', 'seatsInCar', 'phoneNumber'].indexOf(r.dataIndex || '') === -1
+            }
+        })
         return columns
     }
     getFooter = (totalDisplayed: number) => {
@@ -233,10 +260,14 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     onMemberSelect = (member: TableRow) => {
         this.setState({...this.state, selectedSignup: member})
     }
+    exitSelectedSignup = () => {
+        this.setState({...this.state, selectedSignup: null})
+    }
     sortTableKeys = (a: keyof TableRow, b: keyof TableRow) => {
         const keyMap: Record<keyof TableRow, number> = {
             displayName: 100,
             email: 90,
+            phoneNumber: 85,
             confirmed: 80,
             displayTime: 50,
             dietaryRequirements: 40,
@@ -244,7 +275,10 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             driverLicenseClass: 30,
             seatsInCar: 20,
             timeSignedUpMs: 10,
-            key: 5
+            key: 5,
+            ecName: 5,
+            ecPhoneNumber: 5,
+            ecRelation: 5
         }
         return keyMap[a] > keyMap[b] ? -1 : 1
     }
@@ -308,17 +342,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 </Select>
                 {curSelected ?
                 <div className="eventSignupMemberInfo">
-                    <p>Email: {curSelected.email} <CopyOutlined onClick={e => this.copyText(curSelected?.email)}/></p>
-                    <p>Paid: {curSelected.confirmed ? 'Yes' : 'No'}
-                        <Button 
-                        type='link'
-                        onClick={e => this.updateConfirmed(curSelected, !curSelected?.confirmed)}>
-                            Change
-                            </Button>
-                        </p>
-                    <p>Dietary Reqs: {curSelected.dietaryRequirements || 'None'}</p>
-                    <p>License: {curSelected.driverLicenseClass || 'None'}</p>
-                    <p>Owns a Car?, Seats: {(curSelected.seatsInCar && curSelected.seatsInCar > -1) ? `Yes, ${curSelected.seatsInCar}` : 'No'}</p>
+                    <EventSignupDetails isWaitlist={this.props.isWaitlist} eventId={this.props.eventId} selectedRow={curSelected}></EventSignupDetails>
                     <Button
                         onClick={e => this.onMoveClick(curSelected?.key || '')}
                         disabled={!curSelected}>
@@ -331,21 +355,32 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             </div>
         }
         return <div>
-            <Table
-                size='small'
-                pagination={{
-                    defaultPageSize: 10,
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50'],
-                    showTotal: this.getFooter
-                }}
-                onChange={this.onTableChange}
-                bordered
-                loading={this.state.tableLoading}
-                columns={this.getColumns()}
-                dataSource={this.state.rows}
-                scroll={{ y: 400 }}
-            ></Table>
+            <div className={`eventSignupTableContainer ${this.state.selectedSignup ? 'eventSignupTableContainerNarrow': ''}`}>
+                <Table
+                    size='small'
+                    pagination={{
+                        defaultPageSize: 10,
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50'],
+                        showTotal: this.getFooter
+                    }}
+                    onChange={this.onTableChange}
+                    bordered
+                    loading={this.state.tableLoading}
+                    columns={this.getColumns()}
+                    dataSource={this.state.rows}
+                    scroll={{ y: 400 }}
+                ></Table>
+            </div>
+            {this.state.selectedSignup ? 
+            <div className='eventSignupTableContainerNarrow'>
+                <div className="eventSignupDetailsHeader">
+                    <h2 className="eventSignupViewTitle">{this.state.selectedSignup.displayName}</h2>
+                    <div className="eventSignupDetailsCloseIcon"><CloseCircleOutlined onClick={this.exitSelectedSignup} /></div>
+                </div>
+                <EventSignupDetails isWaitlist={this.props.isWaitlist} eventId={this.props.eventId} selectedRow={this.state.selectedSignup}></EventSignupDetails>
+            </div>
+            : ''}
         </div>
     }
 }

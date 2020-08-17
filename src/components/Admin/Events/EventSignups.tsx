@@ -102,7 +102,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
     }
 
 
-    signUpNewMember = (signupData: {dietaryRequirements?: string, medicalInfo?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
+    signUpNewMember = (signupData: {phoneNumber: string, dietaryRequirements?: string, medicalInfo?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
         if (!signupData.name) {
             return notification.error({message: 'Name required'})
         }
@@ -123,6 +123,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
             timeSignedUpMs: new Date().getTime(),
             displayName: signupData.name,
             email: signupData.email,
+            phoneNumber: signupData.phoneNumber,
             dietaryRequirements: signupData.dietaryRequirements,
             medicalInfo: signupData.medicalInfo,
             seatsInCar: signupData.seatsInCar,
@@ -194,6 +195,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                             limit={this.state.event.signups.limit}></EventSignupTable>
                     </div>
                 </div>
+                <div className="clearBoth"></div>
                 <div className="eventSignupsMemberDisplaySection">
                     <div className="eventSignupMemberDisplayHeader">
                         <h3 className='eventSignupMemberDisplayTitle'>Waitlist</h3>

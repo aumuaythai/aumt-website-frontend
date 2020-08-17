@@ -21,3 +21,28 @@
     margin-top: 4px;
     float: right;
 }
+.eventSignupTableContainerNarrow {
+    width: 50%;
+    float: left;
+    position: relative;
+}
+.eventTableNameLink {
+    cursor: pointer;
+}
+.noLinkA {
+    color: rgba(0, 0, 0, 0.65);
+}
+.rightTableText {
+    float: right;
+} 
+.eventSignupDetailsHeader {
+    position: absolute;
+    top: -40px;
+    width: 100%;
+}
+.eventSignupDetailsCloseIcon {
+    float: right;
+}
+.eventSignupViewTitle {
+    float: left;
+}
