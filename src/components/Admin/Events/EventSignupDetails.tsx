@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { notification } from 'antd'
+import { notification, Button } from 'antd'
 import './EventSignupDetails.css'
 import { TableRow } from '../../../types'
 import db from '../../../services/db'
@@ -50,6 +50,11 @@ export class EventSignupDetails extends Component<EventSignupDetailsProps, Event
                 <h3 className='esDetailHeader'>Info</h3>
                 <p><span className='esDetailLab'>Paid: </span>
                     {this.props.selectedRow.confirmed ? 'Yes' : 'No'}
+                    <Button 
+                        type='link'
+                        onClick={e => this.updateConfirmed(this.props.selectedRow, !this.props.selectedRow?.confirmed)}>
+                            Change
+                            </Button>
                 </p>
                 <p><span className='esDetailLab'>Dietary Reqs: </span>
                     {this.props.selectedRow.dietaryRequirements || 'None'}
