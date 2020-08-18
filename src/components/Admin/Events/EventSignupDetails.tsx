@@ -34,7 +34,6 @@ export class EventSignupDetails extends Component<EventSignupDetailsProps, Event
             })
     }
     render() {
-        console.log(this.props.selectedRow)
         return (
             <div className="eventSignupDetailsContainer">
                 <h3 className='esDetailHeader'>Contact</h3>

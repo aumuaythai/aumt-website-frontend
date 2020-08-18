@@ -200,7 +200,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                     <div className="eventSignupMemberDisplayHeader">
                         <h3 className='eventSignupMemberDisplayTitle'>Waitlist</h3>
                         <Button className='eventSignupMemberDisplayAddButton' type='primary' shape='round' onClick={this.addWaitlistMemberClick}><PlusOutlined/>Add Member</Button>
-                        <p className='eventSignupMemberDisplayTotalText'>Total: {Object.keys(this.state.event.signups.members).length}</p>
+                        <p className='eventSignupMemberDisplayTotalText'>Total: {Object.keys(this.state.event.signups.waitlist).length}</p>
                         <div className="clearBoth"></div>
                         {this.state.addingWaitlistMember ? 
                             <div className="eventSignupsAddMemberContainer">
