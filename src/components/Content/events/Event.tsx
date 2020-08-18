@@ -91,7 +91,6 @@ export class Event extends Component<EventProps, EventState> {
             this.setState({...this.state, waitlistingMember: true})
         }
         const confirmed = this.props.event.signups?.needAdminConfirm ? false : true
-        console.log(signupData)
         db.signUpToEvent(this.props.event.id,
             firebaseUtil.getCurrentUid() || this.generateMockUid(),
             Object.assign({
