@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import { Table, Tooltip, notification, Button, Select, Tag } from 'antd'
+import React, { Component } from 'react'
+import { Table, Tooltip, notification, Button, Select, Tag, Drawer } from 'antd'
 import { FormOutlined, CopyOutlined, ArrowRightOutlined, ArrowLeftOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
 import './EventSignupTable.css'
@@ -25,6 +25,8 @@ interface EventSignupTableState {
     columns: ColumnsType<TableRow>
     tableLoading: boolean
     selectedSignup: TableRow | null
+    showCarAllocs: boolean
+    randomCars: { carOwner: string, driver: string, passengers: string[] }[]
 }
 
 export class EventSignupTable extends Component<EventSignupTableProps, EventSignupTableState> {
@@ -42,7 +44,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         seatsInCar: 'Seats',
         ecName: 'Emergency Contact Name',
         ecPhoneNumber: 'Emergency Contact Phone',
-        ecRelation: 'Emergency Contact Relation'
+        ecRelation: 'Emergency Contact Relation',
     }
     constructor(props: EventSignupTableProps) {
         super(props)
@@ -51,7 +53,9 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             selectedRows: [],
             columns: [],
             tableLoading: false,
-            selectedSignup: null
+            selectedSignup: null,
+            showCarAllocs: false,
+            randomCars: []
         }
     }
     componentDidMount = () => {
@@ -74,38 +78,38 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         }
         db.confirmMemberEventSignup(this.props.eventId, row.key, newConfirmed, this.props.isWaitlist)
             .then(() => {
-                notification.success({message: `Updated confirmed for ${row.displayName} to ${newConfirmed ? 'Yes' : 'No'}`})
+                notification.success({ message: `Updated confirmed for ${row.displayName} to ${newConfirmed ? 'Yes' : 'No'}` })
             })
             .catch((err) => {
-                notification.error({message: `Error confirming signup: ${err.toString()}`})
+                notification.error({ message: `Error confirming signup: ${err.toString()}` })
             })
     }
     deleteMember = (key: string) => {
         if (!key) return
         db.removeMemberFromEvent(key, this.props.eventId, this.props.isWaitlist)
             .then(() => {
-                notification.success({message: `Removed from ${this.props.isWaitlist ? 'waitlist' : 'signups'}`})
+                notification.success({ message: `Removed from ${this.props.isWaitlist ? 'waitlist' : 'signups'}` })
             })
             .catch((err) => {
-                notification.error({message: `Error removing from event: ${err.toString()}`})
+                notification.error({ message: `Error removing from event: ${err.toString()}` })
             })
     }
     onMoveClick = (key: string) => {
         if (!key) return
-        this.setState({...this.state, tableLoading: true})
+        this.setState({ ...this.state, tableLoading: true })
         const data = this.props.signupData[key]
         db.signUpToEvent(this.props.eventId, key, data, !this.props.isWaitlist)
             .then(() => {
                 return db.removeMemberFromEvent(key, this.props.eventId, this.props.isWaitlist)
             })
             .then(() => {
-                notification.success({message: `Successfully moved to ${this.props.isWaitlist ? 'signups' : 'waitlist'}`})
+                notification.success({ message: `Successfully moved to ${this.props.isWaitlist ? 'signups' : 'waitlist'}` })
             })
             .catch((err) => {
-                notification.error({message: `Error moving member: ${err.toString()}`})
+                notification.error({ message: `Error moving member: ${err.toString()}` })
             })
             .finally(() => {
-                this.setState({...this.state, tableLoading: false})
+                this.setState({ ...this.state, tableLoading: false })
             })
     }
     onSelectSignup = (key: string) => {
@@ -136,6 +140,12 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             selectedSignup: selectedMember || null
         })
     }
+    setShowCarAllocations = (showCarAllocs: boolean) => {
+        this.setState({ ...this.state,
+            showCarAllocs,
+            randomCars: showCarAllocs ? dataUtil.getRandomCars(this.state.rows) : []
+        })
+    }
     getColumns = () => {
         const columns: ColumnsType<TableRow> = [
             {
@@ -143,18 +153,18 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 dataIndex: 'displayName',
                 render: (name: string, record: TableRow) => {
                     return <Tooltip placement='right' title='View Details'>
-                                <span className='eventTableNameLink' onClick={e => this.onSelectSignup(record.key)}>
-                                    {name}
-                                </span>
-                            </Tooltip>
+                        <span className='eventTableNameLink' onClick={e => this.onSelectSignup(record.key)}>
+                            {name}
+                        </span>
+                    </Tooltip>
                 }
             },
             {
                 title: 'Email',
                 dataIndex: 'email',
                 render: (email: string, record: TableRow) => {
-                    return  <span>{email} <Tooltip title='Copy'>
-                        <span className='noLinkA rightTableText' onClick={e => e.stopPropagation()}><CopyOutlined onClick={e => this.copyText(email)}/></span>
+                    return <span>{email} <Tooltip title='Copy'>
+                        <span className='noLinkA rightTableText' onClick={e => e.stopPropagation()}><CopyOutlined onClick={e => this.copyText(email)} /></span>
                     </Tooltip></span>
                 }
             },
@@ -166,19 +176,19 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 title: 'Paid',
                 dataIndex: 'confirmed',
                 width: 85,
-                filters: [{text: 'Yes', value: true}, 
-                    {text: 'No', value: false}],
+                filters: [{ text: 'Yes', value: true },
+                { text: 'No', value: false }],
                 onFilter: (value: string | number | boolean, record: TableRow) => {
                     return value === record.confirmed
                 },
                 render: (val: boolean, record: TableRow) => {
                     const text = val ? 'Yes' : 'No'
-                    const newConfirmed = text === 'Yes'  ? 'No' : 'Yes'
+                    const newConfirmed = text === 'Yes' ? 'No' : 'Yes'
                     return <span>
                         {text}
-                         <Tooltip title={`Change to ${newConfirmed}`}>
+                        <Tooltip title={`Change to ${newConfirmed}`}>
                             <span className="noLinkA rightTableText" onClick={e => e.stopPropagation()}>
-                                <FormOutlined onClick={e => this.updateConfirmed(record, newConfirmed === 'Yes')}/>
+                                <FormOutlined onClick={e => this.updateConfirmed(record, newConfirmed === 'Yes')} />
                             </span>
                         </Tooltip>
                     </span>
@@ -195,10 +205,10 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             {
                 title: 'License',
                 dataIndex: 'driverLicenseClass',
-                filters: [{text: 'Full 2+ years', value: 'Full 2+ years'},
-                        {text: 'Full <2 years', value: 'Full <2 years'},
-                        {text: 'Restricted', value: 'Restricted'},
-                        {text: 'None/Other', value: 'Other'}],
+                filters: [{ text: 'Full 2+ years', value: 'Full 2+ years' },
+                { text: 'Full <2 years', value: 'Full <2 years' },
+                { text: 'Restricted', value: 'Restricted' },
+                { text: 'None/Other', value: 'Other' }],
                 onFilter: (value: string | number | boolean, record: TableRow) => {
                     return value === record.driverLicenseClass
                 },
@@ -212,8 +222,8 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 render: (val: number, record: TableRow) => {
                     return val && val > -1 ? <span>Yes, {val} seats</span> : 'No'
                 },
-                filters: [{text: 'Yes', value: true},
-                            {text: 'No', value: false}],
+                filters: [{ text: 'Yes', value: true },
+                { text: 'No', value: false }],
                 onFilter: (value: boolean | string | number, record: TableRow) => {
                     console.log(value, record.seatsInCar)
                     return !(record.seatsInCar === -1) === value
@@ -229,9 +239,9 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 title: 'Action',
                 render: (val: boolean, record: TableRow) => {
                     return <span>
-                        {this.props.isWaitlist ? 
-                        <Button onClick={e => this.onMoveClick(record.key)}>Move<ArrowLeftOutlined/></Button>
-                        : <Button onClick={e => this.onMoveClick(record.key)}><ArrowRightOutlined/>Move</Button>}
+                        {this.props.isWaitlist ?
+                            <Button onClick={e => this.onMoveClick(record.key)}>Move<ArrowLeftOutlined /></Button>
+                            : <Button onClick={e => this.onMoveClick(record.key)}><ArrowRightOutlined />Move</Button>}
                         <Button type='link' onClick={e => this.deleteMember(record.key)}>Delete</Button>
                     </span>
                 }
@@ -250,6 +260,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     getFooter = (totalDisplayed: number) => {
         return <div>
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.copyEmails}>Copy Emails</Button>
+            {!this.props.isWaitlist ? <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={e => this.setShowCarAllocations(true)}>Car Allocations</Button> : ''}
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.downloadCsv}>Download .csv</Button>
             <p className='eventSignupsTableFooterText'>Total: {totalDisplayed} / Limit: {this.props.limit || 'None'}</p>
         </div>
@@ -258,10 +269,10 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         if (text) dataUtil.copyText(text)
     }
     onMemberSelect = (member: TableRow) => {
-        this.setState({...this.state, selectedSignup: member})
+        this.setState({ ...this.state, selectedSignup: member })
     }
     exitSelectedSignup = () => {
-        this.setState({...this.state, selectedSignup: null})
+        this.setState({ ...this.state, selectedSignup: null })
     }
     sortTableKeys = (a: keyof TableRow, b: keyof TableRow) => {
         const keyMap: Record<keyof TableRow, number> = {
@@ -303,7 +314,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             .forEach((row) => {
                 if (!header) {
                     header = true
-                    csvStr  += (Object.keys(row) as (keyof TableRow)[])
+                    csvStr += (Object.keys(row) as (keyof TableRow)[])
                         .sort(this.sortTableKeys)
                         .map(k => this.keyNameMap[k])
                         .join(',') + '\n'
@@ -316,46 +327,65 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         dataUtil.downloadCsv(fileName, csvStr)
     }
     onTableChange = (pagination: any, filter: Record<keyof TableRow, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableRow>, ...extra: any) => {
-            this.setState({
-                ...this.state,
-                selectedRows: dataSource.currentDataSource,
-            })
+        this.setState({
+            ...this.state,
+            selectedRows: dataSource.currentDataSource,
+        })
     }
     render() {
         if (window.innerWidth < 600) {
             const curSelected = this.state.selectedSignup
             return <div>
                 <Select
-                className='eventSignupSelect'
-                placeholder='Select Member'
-                onChange={this.onSelectSignup}
+                    className='eventSignupSelect'
+                    placeholder='Select Member'
+                    onChange={this.onSelectSignup}
                 >
                     {this.state.rows.sort((a, b) => b.timeSignedUpMs - a.timeSignedUpMs).map((signup: TableRow) => {
-                            return <Select.Option key={signup.key} value={signup.key}>
-                                <div className='eventSignupSelectName'>{signup.displayName}</div>
-                                <div className='eventSignupSelectTime'>{signup.displayTime}</div>
-                                {signup.confirmed ? 
-                                    <Tag className='eventSignupSelectPaidTag' color='success'>Paid</Tag>
-                                    : ''}
-                                </Select.Option>
-                        })}
+                        return <Select.Option key={signup.key} value={signup.key}>
+                            <div className='eventSignupSelectName'>{signup.displayName}</div>
+                            <div className='eventSignupSelectTime'>{signup.displayTime}</div>
+                            {signup.confirmed ?
+                                <Tag className='eventSignupSelectPaidTag' color='success'>Paid</Tag>
+                                : ''}
+                        </Select.Option>
+                    })}
                 </Select>
                 {curSelected ?
-                <div className="eventSignupMemberInfo">
-                    <EventSignupDetails isWaitlist={this.props.isWaitlist} eventId={this.props.eventId} selectedRow={curSelected}></EventSignupDetails>
-                    <Button
-                        onClick={e => this.onMoveClick(curSelected?.key || '')}
-                        disabled={!curSelected}>
-                        Move to {this.props.isWaitlist ? ' signups' : ' waitlist'}</Button>
-                    <Button
-                        onClick={e => this.deleteMember(curSelected?.key || '')}
-                        disabled={!curSelected} type='link'>Delete</Button>
-                </div>
-                : ''}
+                    <div className="eventSignupMemberInfo">
+                        <EventSignupDetails isWaitlist={this.props.isWaitlist} eventId={this.props.eventId} selectedRow={curSelected}></EventSignupDetails>
+                        <Button
+                            onClick={e => this.onMoveClick(curSelected?.key || '')}
+                            disabled={!curSelected}>
+                            Move to {this.props.isWaitlist ? ' signups' : ' waitlist'}</Button>
+                        <Button
+                            onClick={e => this.deleteMember(curSelected?.key || '')}
+                            disabled={!curSelected} type='link'>Delete</Button>
+                    </div>
+                    : ''}
             </div>
         }
         return <div>
-            <div className={`eventSignupTableContainer ${this.state.selectedSignup ? 'eventSignupTableContainerNarrow': ''}`}>
+            <div className={`eventSignupTableContainer ${this.state.selectedSignup ? 'eventSignupTableContainerNarrow' : ''}`}>
+                <Drawer
+                    visible={this.state.showCarAllocs}
+                    title='Random Car Allocations'
+                    getContainer={false}
+                    placement='right'
+                    onClose={e => this.setShowCarAllocations(false)}
+                    width={600}
+                    style={{ position: 'absolute'}}
+                >
+                    {this.state.randomCars.map((car, idx) => {
+                        return <div key={idx}>
+                            <h3>Car {idx + 1}</h3>
+                            {car.carOwner === car.driver ?
+                                <p>Owner/Driver: {car.carOwner}</p> :
+                                <p>Owner: {car.carOwner}, Driver: {car.driver}</p>}
+                            <p>Passengers: {car.passengers.join(', ')}</p>
+                        </div>
+                    })}
+                </Drawer>
                 <Table
                     size='small'
                     pagination={{
@@ -372,15 +402,15 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     scroll={{ y: 400 }}
                 ></Table>
             </div>
-            {this.state.selectedSignup ? 
-            <div className='eventSignupTableContainerNarrow'>
-                <div className="eventSignupDetailsHeader">
-                    <h2 className="eventSignupViewTitle">{this.state.selectedSignup.displayName}</h2>
-                    <div className="eventSignupDetailsCloseIcon"><CloseCircleOutlined onClick={this.exitSelectedSignup} /></div>
+            {this.state.selectedSignup ?
+                <div className='eventSignupTableContainerNarrow'>
+                    <div className="eventSignupDetailsHeader">
+                        <h2 className="eventSignupViewTitle">{this.state.selectedSignup.displayName}</h2>
+                        <div className="eventSignupDetailsCloseIcon"><CloseCircleOutlined onClick={this.exitSelectedSignup} /></div>
+                    </div>
+                    <EventSignupDetails isWaitlist={this.props.isWaitlist} eventId={this.props.eventId} selectedRow={this.state.selectedSignup}></EventSignupDetails>
                 </div>
-                <EventSignupDetails isWaitlist={this.props.isWaitlist} eventId={this.props.eventId} selectedRow={this.state.selectedSignup}></EventSignupDetails>
-            </div>
-            : ''}
+                : ''}
         </div>
     }
 }

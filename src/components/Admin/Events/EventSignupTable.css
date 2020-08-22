@@ -21,6 +21,10 @@
     margin-top: 4px;
     float: right;
 }
+.eventSignupTableContainer {
+    position: relative;
+    overflow: hidden;
+}
 .eventSignupTableContainerNarrow {
     width: 50%;
     float: left;

@@ -1,4 +1,4 @@
-import { AumtWeeklyTraining, AumtMembersObj, AumtMembersObjWithCollated } from "../types"
+import { AumtWeeklyTraining, AumtMembersObj, AumtMembersObjWithCollated, TableRow , LicenseClasses} from "../types"
 import { notification } from 'antd'
 
 export type MemberPoint = Record<string, number>
@@ -67,6 +67,78 @@ class DataFormatUtil {
             })
         })
         return attendance
+    }
+
+    getRandomCars = (signups: TableRow[]): {driver: string, carOwner: string, passengers: string[]}[] => {
+        const owners: {key: string, name: string, license: LicenseClasses, seats: number}[] = []
+        const fullDrivers: {key: string, name: string, license: LicenseClasses}[] = []
+        const passengers: {key: string, name: string}[] = []
+        const cars: {driver: string, carOwner: string, passengers: string[]}[] = []
+        let totalCarSeats = 0
+        const shuffled = signups.map((a) => ({sort: Math.random(), value: a}))
+            .sort((a, b) => a.sort - b.sort)
+            .map((a) => a.value)
+        
+        shuffled.forEach((signup) => {
+            if (signup.seatsInCar && signup.seatsInCar > -1) {
+                totalCarSeats += signup.seatsInCar
+                owners.push({
+                    key: signup.key,
+                    name: signup.displayName,
+                    seats: signup.seatsInCar,
+                    license: signup.driverLicenseClass || 'Restricted'
+                })
+            } else if (signup.driverLicenseClass && signup.driverLicenseClass !== 'Other' && signup.driverLicenseClass !== 'Restricted') {
+                fullDrivers.push({
+                    key: signup.key,
+                    name: signup.displayName,
+                    license: signup.driverLicenseClass
+                })
+            } else {
+                passengers.push({
+                    key: signup.key,
+                    name: signup.displayName
+                })
+            }
+        })
+        const total = shuffled.length
+        if (totalCarSeats < total) {
+            throw new Error('More signups than car seats')
+        }
+        let needsRestrictedDrivers = false
+        const fullOwners = owners.filter(o => o.license !== 'Restricted')
+        if (fullOwners) {
+            const fullOwnerSeats = fullOwners.reduce((totalSeats, owner) => {
+                return totalSeats + owner.seats
+            }, 0)
+            if (fullOwnerSeats < shuffled.length) {
+                needsRestrictedDrivers = true
+            }
+        }
+        while (passengers.length || fullDrivers.length || owners.length) {
+            if (!needsRestrictedDrivers) {
+                const car1Owner = owners.pop()
+                if (car1Owner) {
+                    cars.push({
+                        driver: car1Owner.name,
+                        carOwner: car1Owner.name,
+                        passengers: []
+                    })
+                    let newPassenger = passengers[passengers.length - 1] || fullDrivers[fullDrivers.length - 1] || owners[owners.length - 1]
+                    while (cars[cars.length - 1].passengers.length < car1Owner.seats - 1 && newPassenger) {
+                        cars[cars.length - 1].passengers.push(newPassenger.name)
+                        passengers.pop() || fullDrivers.pop() || owners.pop()
+                        newPassenger = passengers[passengers.length - 1] || fullDrivers[fullDrivers.length - 1] || owners[owners.length - 1]
+                    }
+                } else {
+                    throw new Error('End of car owners before run out')
+                }
+            } else {
+                break
+            }
+        }
+        console.log(cars)
+        return cars
     }
 
     getCollatedMembersObj = (members: AumtMembersObj): AumtMembersObjWithCollated => {
