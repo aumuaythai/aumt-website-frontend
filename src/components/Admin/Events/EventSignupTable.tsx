@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { Table, Tooltip, notification, Button, Select, Tag, Drawer } from 'antd'
-import { FormOutlined, CopyOutlined, ArrowRightOutlined, ArrowLeftOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { FormOutlined, CopyOutlined, ArrowRightOutlined, ArrowLeftOutlined, ReloadOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
 import './EventSignupTable.css'
 import { AumtEventSignup, LicenseClasses, TableRow } from '../../../types'
 import moment from 'moment'
 import { ColumnsType } from 'antd/lib/table'
 import db from '../../../services/db'
-import dataUtil from '../../../services/data.util'
+import dataUtil, { CarAllocation } from '../../../services/data.util'
 import { EventSignupDetails } from './EventSignupDetails'
 
 interface EventSignupTableProps {
@@ -141,9 +141,18 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         })
     }
     setShowCarAllocations = (showCarAllocs: boolean) => {
+        let randomCars: CarAllocation[] = []
+        if (showCarAllocs) {
+            try {
+                randomCars = dataUtil.getRandomCars(this.state.rows)
+            } catch(e) {
+                notification.error({message: 'Could not generate allocations: ' + e.toString()})
+                return
+            }
+        }
         this.setState({ ...this.state,
             showCarAllocs,
-            randomCars: showCarAllocs ? dataUtil.getRandomCars(this.state.rows) : []
+            randomCars
         })
     }
     getColumns = () => {
@@ -260,7 +269,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     getFooter = (totalDisplayed: number) => {
         return <div>
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.copyEmails}>Copy Emails</Button>
-            {!this.props.isWaitlist ? <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={e => this.setShowCarAllocations(true)}>Car Allocations</Button> : ''}
+            {!this.props.isWaitlist && !this.state.selectedSignup ? <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={e => this.setShowCarAllocations(true)}>Car Allocations</Button> : ''}
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.downloadCsv}>Download .csv</Button>
             <p className='eventSignupsTableFooterText'>Total: {totalDisplayed} / Limit: {this.props.limit || 'None'}</p>
         </div>
@@ -307,7 +316,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     downloadCsv = () => {
         let header = false
         let csvStr = ''
-        const fileName = `${this.props.urlPath}_${this.props.isWaitlist ? 'waitlist' : 'signups'}.csv`
+        const fileName = `${this.props.urlPath}_${this.props.isWaitlist ? 'waitlist' : 'signups'}`
         const csvRows = this.state.selectedRows.length ? this.state.selectedRows : this.state.rows
         csvRows
             .sort((a, b) => a.timeSignedUpMs - b.timeSignedUpMs)
@@ -325,6 +334,27 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     .join(',') + '\n'
             })
         dataUtil.downloadCsv(fileName, csvStr)
+    }
+    downloadCarCsv = () => {
+        const allocations = this.state.randomCars
+        let allCars: string[][] = []
+        let maxLength = 0
+        allocations.forEach((car) => {
+            const occupants = [car.carOwner].concat(car.carOwner === car.driver ? [] : [car.driver]).concat(car.passengers)
+            allCars.push(occupants)
+            maxLength = Math.max(occupants.length, maxLength)
+        })
+        allCars = allCars.map((row) => {
+            const diff = maxLength - row.length
+            return diff ? row.concat(Array(diff).join('.').split('.')) : row
+        })
+        const csvStr =  ',' + 
+            allocations.map((c, idx) => `Car ${idx + 1}`).join(',') + 
+            '\n' + 
+            dataUtil.transpose(allCars)
+                .map((row, idx) => (idx === 0 ? 'Owner/Driver' : '') + ',' + row.join(','))
+                .join('\n')
+        dataUtil.downloadCsv('car_allocations', csvStr)
     }
     onTableChange = (pagination: any, filter: Record<keyof TableRow, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableRow>, ...extra: any) => {
         this.setState({
@@ -376,13 +406,18 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     width={600}
                     style={{ position: 'absolute'}}
                 >
+                    <div className="carDrawerText">
+                        <p>Each car group has to have at least one owner and one driver on their full. An owner with a restricted license will have a driver with a full license in their group. Click New Allocation to generate new groups!</p>
+                        <Button icon={<ReloadOutlined/>} onClick={e => this.setShowCarAllocations(true)}>New Allocation</Button>
+                        <Button type='link' onClick={this.downloadCarCsv}>Download .csv</Button>
+                    </div>
                     {this.state.randomCars.map((car, idx) => {
                         return <div key={idx}>
                             <h3>Car {idx + 1}</h3>
                             {car.carOwner === car.driver ?
-                                <p>Owner/Driver: {car.carOwner}</p> :
-                                <p>Owner: {car.carOwner}, Driver: {car.driver}</p>}
-                            <p>Passengers: {car.passengers.join(', ')}</p>
+                                <p className='carAllocationListLine'>Owner/Driver: {car.carOwner}</p> :
+                                <p className='carAllocationListLine'>Owner: {car.carOwner}, Driver: {car.driver}</p>}
+                            <p className='carAllocationListLine'>Passengers: {car.passengers.join(', ')}</p>
                         </div>
                     })}
                 </Drawer>

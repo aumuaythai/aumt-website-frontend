@@ -5,6 +5,7 @@ import { AumtWeeklyTraining } from '../types'
 import { createPdf, TDocumentDefinition } from 'pdfmake/build/pdfmake';
 // @ts-ignore
 import * as vfsFonts from "pdfmake/build/vfs_fonts";
+import dataUtil from './data.util'
 
 
 
@@ -25,10 +26,6 @@ class PdfUtil {
             },
           }, vfsFonts.pdfMake.vfs)
         doc.download('aumt_training_report.pdf')
-    }
-
-    private transpose = (matrix: Array<any>[]) => {
-        return matrix[0].map((col, c) => matrix.map((row, r) => matrix[r][c]).map(e => e || ''))
     }
     
     private getTrainingDocDefinition = (data: AumtWeeklyTraining[]) => {
@@ -84,7 +81,7 @@ class PdfUtil {
                 obj.flatSessions.push(sessionNames)
                 return obj
             }, {widths: [], flatSessions: []} as {widths: string[], flatSessions: Array<Object>[]})
-            const body = this.transpose(flatSessions)
+            const body = dataUtil.transpose(flatSessions)
             content.push({
                 table: {
                     widths,

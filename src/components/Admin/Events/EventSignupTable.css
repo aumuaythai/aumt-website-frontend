@@ -21,9 +21,15 @@
     margin-top: 4px;
     float: right;
 }
+.carAllocationListLine {
+    margin: 2px auto;
+}
 .eventSignupTableContainer {
     position: relative;
     overflow: hidden;
+}
+.carDrawerText {
+    margin-bottom: 15px;
 }
 .eventSignupTableContainerNarrow {
     width: 50%;

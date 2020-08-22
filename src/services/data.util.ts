@@ -3,6 +3,8 @@ import { notification } from 'antd'
 
 export type MemberPoint = Record<string, number>
 
+export type CarAllocation = {driver: string, carOwner: string, passengers: string[], seats: number}
+
 class DataFormatUtil {
     getDataFromForm = (form: AumtWeeklyTraining): MemberPoint[] => {
         let sessionNames = Object.values(form.sessions).reduce((sessionObj, session) => {
@@ -68,16 +70,23 @@ class DataFormatUtil {
         })
         return attendance
     }
-
-    getRandomCars = (signups: TableRow[]): {driver: string, carOwner: string, passengers: string[]}[] => {
-        const owners: {key: string, name: string, license: LicenseClasses, seats: number}[] = []
-        const fullDrivers: {key: string, name: string, license: LicenseClasses}[] = []
-        const passengers: {key: string, name: string}[] = []
-        const cars: {driver: string, carOwner: string, passengers: string[]}[] = []
-        let totalCarSeats = 0
-        const shuffled = signups.map((a) => ({sort: Math.random(), value: a}))
+    
+    shuffleArray = (arr: any[]) => {
+        return arr
+            .slice()
+            .map((a) => ({sort: Math.random(), value: a}))
             .sort((a, b) => a.sort - b.sort)
             .map((a) => a.value)
+    }
+
+    getRandomCars = (signups: TableRow[]): CarAllocation[] => {
+        let owners: {key: string, name: string, license: LicenseClasses, seats: number}[] = []
+        let fullDrivers: {key: string, name: string, license: LicenseClasses}[] = []
+        const passengers: {key: string, name: string}[] = []
+        const cars: CarAllocation[] = []
+        let totalCarSeats = 0
+        const shuffled = this.shuffleArray(signups)
+            
         
         shuffled.forEach((signup) => {
             if (signup.seatsInCar && signup.seatsInCar > -1) {
@@ -101,8 +110,8 @@ class DataFormatUtil {
                 })
             }
         })
-        const total = shuffled.length
-        if (totalCarSeats < total) {
+        const totalSignups = shuffled.length
+        if (totalCarSeats < totalSignups) {
             throw new Error('More signups than car seats')
         }
         let needsRestrictedDrivers = false
@@ -115,29 +124,62 @@ class DataFormatUtil {
                 needsRestrictedDrivers = true
             }
         }
-        while (passengers.length || fullDrivers.length || owners.length) {
+        let seatsAvailable = 0
+        while (seatsAvailable < totalSignups) {
             if (!needsRestrictedDrivers) {
-                const car1Owner = owners.pop()
+                const car1Owner = owners.find(o => o.license !== 'Restricted')
                 if (car1Owner) {
+                    // if (car1Owner.seats === 5) car1Owner.seats = 4
                     cars.push({
                         driver: car1Owner.name,
                         carOwner: car1Owner.name,
-                        passengers: []
+                        passengers: [],
+                        seats: car1Owner.seats
                     })
-                    let newPassenger = passengers[passengers.length - 1] || fullDrivers[fullDrivers.length - 1] || owners[owners.length - 1]
-                    while (cars[cars.length - 1].passengers.length < car1Owner.seats - 1 && newPassenger) {
-                        cars[cars.length - 1].passengers.push(newPassenger.name)
-                        passengers.pop() || fullDrivers.pop() || owners.pop()
-                        newPassenger = passengers[passengers.length - 1] || fullDrivers[fullDrivers.length - 1] || owners[owners.length - 1]
-                    }
+                    owners = owners.filter(o => o.key !== car1Owner.key)
+                    seatsAvailable += car1Owner.seats
+
                 } else {
                     throw new Error('End of car owners before run out')
                 }
             } else {
-                break
+                const car1Owner = owners.find(o => o.license === 'Restricted')
+                if (car1Owner) {
+                    // if (car1Owner.seats === 5) car1Owner.seats = 4
+                    const driver = fullDrivers.find(d => d.license === 'Full 2+ years') || fullDrivers.pop()
+                    if (!driver) {
+                        throw new Error('Not enough full license holders to drive cars')
+                    }
+                    cars.push({
+                        driver: driver.name,
+                        carOwner: car1Owner.name,
+                        passengers: [],
+                        seats: car1Owner.seats
+                    })
+                    owners = owners.filter(o => o.key !== car1Owner.key)
+                    fullDrivers = fullDrivers.filter(d => d.key !== driver.key)
+                    seatsAvailable += car1Owner.seats
+                } else {
+                    needsRestrictedDrivers = false
+                }
             }
         }
-        console.log(cars)
+        const remainingSignups = this.shuffleArray(passengers.concat(fullDrivers).concat(owners))
+        let loopidx = 0
+        while (remainingSignups.length > 0) {
+            const carIdx = loopidx % cars.length
+            const c = cars[carIdx]
+            loopidx += 1
+            if (loopidx > 1000) {
+                throw new Error('Infinite loop trying to fit passengers into cars')
+                break
+            }
+            if (c.passengers.length + 1 + (c.driver === c.carOwner ? 0 : 1) < c.seats) {
+                cars[carIdx].passengers.push(remainingSignups.pop()?.name || '')
+            } else {
+                continue
+            }
+        }
         return cars
     }
 
@@ -173,6 +215,10 @@ class DataFormatUtil {
         .catch((err) => {
             notification.error({message: 'Text not copied: ' + err.toString()})
         })
+    }
+
+    transpose = (matrix: Array<any>[]) => {
+        return matrix[0].map((col, c) => matrix.map((row, r) => matrix[r][c]).map(e => e || ''))
     }
 
     downloadCsv = (fileName: string, text: string): void => {

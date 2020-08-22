@@ -67,6 +67,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
               clubSignupSem: config.clubSignupSem
             })
           })
+          .catch((err) => {
+            notification.error({message: 'Failed to get website config: ' + err.toString()})
+          })
     }
 
     private authStateChange = (fbUser: User | null) => {
