@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Tooltip, notification, Button, Select, Tag, Drawer } from 'antd'
+import { Table, Tooltip, notification, Button, Select, Tag, Drawer, Checkbox } from 'antd'
 import { FormOutlined, CopyOutlined, ArrowRightOutlined, ArrowLeftOutlined, ReloadOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
 import './EventSignupTable.css'
@@ -26,7 +26,8 @@ interface EventSignupTableState {
     tableLoading: boolean
     selectedSignup: TableRow | null
     showCarAllocs: boolean
-    randomCars: { carOwner: string, driver: string, passengers: string[] }[]
+    randomCars: CarAllocation[]
+    max4Seats: boolean
 }
 
 export class EventSignupTable extends Component<EventSignupTableProps, EventSignupTableState> {
@@ -55,7 +56,8 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             tableLoading: false,
             selectedSignup: null,
             showCarAllocs: false,
-            randomCars: []
+            randomCars: [],
+            max4Seats: false
         }
     }
     componentDidMount = () => {
@@ -144,7 +146,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         let randomCars: CarAllocation[] = []
         if (showCarAllocs) {
             try {
-                randomCars = dataUtil.getRandomCars(this.state.rows)
+                randomCars = dataUtil.getRandomCars(this.state.rows, this.state.max4Seats)
             } catch(e) {
                 notification.error({message: 'Could not generate allocations: ' + e.toString()})
                 return
@@ -153,6 +155,12 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         this.setState({ ...this.state,
             showCarAllocs,
             randomCars
+        })
+    }
+    setMax4Seats = (checked: boolean) => {
+        this.setState({
+            ...this.state,
+            max4Seats: checked
         })
     }
     getColumns = () => {
@@ -269,7 +277,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     getFooter = (totalDisplayed: number) => {
         return <div>
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.copyEmails}>Copy Emails</Button>
-            {!this.props.isWaitlist && !this.state.selectedSignup ? <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={e => this.setShowCarAllocations(true)}>Car Allocations</Button> : ''}
+            {!this.props.isWaitlist && !this.state.selectedSignup ? <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={e => this.setShowCarAllocations(true)}>Random Car Allocations</Button> : ''}
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.downloadCsv}>Download .csv</Button>
             <p className='eventSignupsTableFooterText'>Total: {totalDisplayed} / Limit: {this.props.limit || 'None'}</p>
         </div>
@@ -352,7 +360,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             allocations.map((c, idx) => `Car ${idx + 1}`).join(',') + 
             '\n' + 
             dataUtil.transpose(allCars)
-                .map((row, idx) => (idx === 0 ? 'Owner/Driver' : '') + ',' + row.join(','))
+                .map((row, idx) => (idx === 0 ? 'Owner' : '') + ',' + row.join(','))
                 .join('\n')
         dataUtil.downloadCsv('car_allocations', csvStr)
     }
@@ -410,6 +418,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                         <p>Each car group has to have at least one owner and one driver on their full. An owner with a restricted license will have a driver with a full license in their group. Click New Allocation to generate new groups!</p>
                         <Button icon={<ReloadOutlined/>} onClick={e => this.setShowCarAllocations(true)}>New Allocation</Button>
                         <Button type='link' onClick={this.downloadCarCsv}>Download .csv</Button>
+                        <Checkbox onChange={e => this.setMax4Seats(e.target.checked)}>Limit 4 People/Car</Checkbox>
                     </div>
                     {this.state.randomCars.map((car, idx) => {
                         return <div key={idx}>

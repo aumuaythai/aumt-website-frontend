@@ -79,7 +79,7 @@ class DataFormatUtil {
             .map((a) => a.value)
     }
 
-    getRandomCars = (signups: TableRow[]): CarAllocation[] => {
+    getRandomCars = (signups: TableRow[], max4Seats: boolean = false): CarAllocation[] => {
         let owners: {key: string, name: string, license: LicenseClasses, seats: number}[] = []
         let fullDrivers: {key: string, name: string, license: LicenseClasses}[] = []
         const passengers: {key: string, name: string}[] = []
@@ -129,7 +129,9 @@ class DataFormatUtil {
             if (!needsRestrictedDrivers) {
                 const car1Owner = owners.find(o => o.license !== 'Restricted')
                 if (car1Owner) {
-                    // if (car1Owner.seats === 5) car1Owner.seats = 4
+                    if (max4Seats && car1Owner.seats === 5) {
+                        car1Owner.seats = 4
+                    }
                     cars.push({
                         driver: car1Owner.name,
                         carOwner: car1Owner.name,
@@ -145,7 +147,9 @@ class DataFormatUtil {
             } else {
                 const car1Owner = owners.find(o => o.license === 'Restricted')
                 if (car1Owner) {
-                    // if (car1Owner.seats === 5) car1Owner.seats = 4
+                    if (max4Seats && car1Owner.seats === 5) {
+                        car1Owner.seats = 4
+                    }
                     const driver = fullDrivers.find(d => d.license === 'Full 2+ years') || fullDrivers.pop()
                     if (!driver) {
                         throw new Error('Not enough full license holders to drive cars')
@@ -172,7 +176,6 @@ class DataFormatUtil {
             loopidx += 1
             if (loopidx > 1000) {
                 throw new Error('Infinite loop trying to fit passengers into cars')
-                break
             }
             if (c.passengers.length + 1 + (c.driver === c.carOwner ? 0 : 1) < c.seats) {
                 cars[carIdx].passengers.push(remainingSignups.pop()?.name || '')
