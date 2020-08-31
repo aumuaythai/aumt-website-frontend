@@ -24,6 +24,9 @@
     white-space: pre-line;
     text-align: left;
 }
+.eventDescriptionContainer {
+    text-align: left;
+}
 .detail {
     padding: 5px;
 }

@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {Spin, Radio, Button, Alert, Tooltip, Input, Tag } from 'antd'
+import ReactMarkdown from 'react-markdown'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
@@ -174,7 +175,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 <h2 className="formTitle">{this.props.title}</h2>
                 {this.props.notes ?
                     (<div className="trainingNotesContainer">
-                        {this.props.notes}
+                        <ReactMarkdown source={this.props.notes} skipHtml={true} linkTarget={'_blank'}></ReactMarkdown>
                     </div>) :
                     ''
                 }

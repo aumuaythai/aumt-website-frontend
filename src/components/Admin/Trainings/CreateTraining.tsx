@@ -4,6 +4,7 @@ import { Button, Input, InputNumber, DatePicker, notification, Radio, Spin } fro
 import moment from 'moment'
 import { MinusCircleOutlined} from '@ant-design/icons'
 import './CreateTraining.css'
+import { MarkdownEditor } from '../utility/MarkdownEditor'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
 import db from '../../../services/db'
@@ -236,7 +237,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             openToPublic: this.state.currentOpenToPublic,
-            notes: this.state.currentNotes.split('\n').join('%%NEWLINE%%'),
+            notes: this.state.currentNotes,
             trainingId: this.state.currentTrainingId || this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
             feedback: this.state.currentFeedback
         })
@@ -303,11 +304,10 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 </div>
                 <h4 className='formSectionTitle'>Notes</h4>
                 <div className="notesContainer">
-                    <Input.TextArea
-                        autoSize={{ minRows: 2, maxRows: 6 }}
-                        onChange={e => this.onNotesChange(e.target.value)}
-                        placeholder='Any notes you want displayed on the form (optional)'
-                        value={this.state.currentNotes}/>
+                    <MarkdownEditor
+                        onChange={this.onNotesChange}
+                        value={this.state.currentNotes}
+                        ></MarkdownEditor>
                 </div>
                 <div className='submitTrainingContainer'>
                     <Button

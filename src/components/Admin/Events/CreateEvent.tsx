@@ -3,6 +3,7 @@ import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
 import { Button, Input, InputNumber, DatePicker, notification, Checkbox, Spin } from 'antd'
 import moment from 'moment'
 import './CreateEvent.css'
+import { MarkdownEditor } from '../utility/MarkdownEditor'
 import { AumtEvent, AumtEventSignup } from '../../../types'
 import AdminStore from '../AdminStore'
 import db from '../../../services/db'
@@ -304,11 +305,11 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                     Url Path: 
                     <Input className='shortInput' value={this.state.currentUrlPath} placeholder='aumt.co.nz/events/<url-path>' onChange={e => this.onUrlPathChange(e.target.value)}/>
                 </p>
-                <p>Description</p>
-                <Input.TextArea
-                    autoSize={{ minRows: 2, maxRows: 6 }}
+                <h4 className='formSectionTitle'>Description</h4>
+                <MarkdownEditor
+                    onChange={this.onDescriptionChange}
                     value={this.state.currentDescription}
-                    onChange={e => this.onDescriptionChange(e.target.value)}/>
+                    ></MarkdownEditor>
                 <h4 className='formSectionTitle'>Details</h4>
                 <div>
                     Date: <DatePicker value={moment(this.state.currentDate)} showTime onChange={e => this.onDateChange(e?.toDate())}/>

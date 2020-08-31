@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
 import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
 import { Button, Result, Divider, notification} from 'antd'
 import moment from 'moment'
@@ -201,9 +202,9 @@ export class Event extends Component<EventProps, EventState> {
                     : ''}
                 </div>
                 <Divider/>
-                <p className='eventDescription'>
-                    {this.props.event.description}
-                </p>
+                <div className="eventDescriptionContainer">
+                    <ReactMarkdown source={this.props.event.description} skipHtml={true} linkTarget={'_blank'}></ReactMarkdown>
+                </div>
                 <Divider/>
                 {(() => {
                     if (this.props.event.signups) {
