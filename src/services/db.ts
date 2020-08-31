@@ -259,7 +259,7 @@ class DB {
             if (!this.db) return Promise.reject('No db object')
             const currentDate = new Date()
             return this.db.collection('weekly_trainings')
-                // .where('closes', '>=', currentDate)
+                .where('closes', '>=', currentDate)
                 .get()
                 .then((querySnapshot) => {
                     const trainings: AumtWeeklyTraining[] = []
