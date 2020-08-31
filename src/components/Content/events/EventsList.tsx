@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Divider } from 'antd'
+import ReactMarkdown from 'react-markdown'
 import { AumtEvent } from '../../../types'
 import './EventsList.css'
 
@@ -34,7 +35,9 @@ class EventsList extends Component<EventListProps, EventListState> {
                         </div>
                         <Divider></Divider>
                         <div className='eventPreviewBody'>
-                            <p className="eventPreviewDescription">{event.description}</p>
+                            <p className="eventPreviewDescription">
+                                <ReactMarkdown source={event.description} skipHtml={true} linkTarget={'_blank'}></ReactMarkdown>
+                            </p>
                         </div>
                     </div>
                 )
