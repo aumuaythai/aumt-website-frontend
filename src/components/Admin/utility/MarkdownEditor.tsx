@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 /*
-TODO: write own markdown parser for headings, text styling, and images
+TODO: write own markdown parser for headings, text styling, links and images
 ReactMarkdown has HTML support and other things that are unnecessary for this app
 Installing ReactMarkdown installs 40 new packages, better to not have that bloat
 */
@@ -22,6 +22,7 @@ export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEdito
     constructor(props: MarkdownEditorProps) {
         super(props)
     }
+    // TODO: add history for ctrl Z functionality
     private titleElement = <h4>Markdown Editor 
         <a href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' target='_blank' rel='noopener noreferrer'>
             <Tooltip title="Click for a Guide on How to Use Markdown. Images won't resize for now">
