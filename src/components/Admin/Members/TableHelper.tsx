@@ -11,6 +11,7 @@ import db from '../../../services/db';
 import Validator from '../../../services/validator';
 
 import DataFormatterUtil from '../../../services/data.util'
+import dataUtil from '../../../services/data.util';
 export type TableDataLine = AumtMember & {key: string, tableName: string}
 export type TableColumn = any
 
@@ -208,13 +209,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 }
             }
         }
-        const blob = new Blob([csvStr]);
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = fileName + '.csv';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        dataUtil.downloadCsv(fileName, csvStr)
     }
 
     public copyCurrentEmails = () => {

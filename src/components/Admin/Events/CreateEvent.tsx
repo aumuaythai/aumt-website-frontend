@@ -28,6 +28,7 @@ interface CreateEventState {
     currentSignupLimit: number
     currentIsCamp: boolean
     currentSignupOpenDate: Date
+    currentSignupClosesDate: Date
     currentNeedAdminConfirm: boolean
     currentOpenToNonMembers: boolean
     currentMembers: AumtEventSignup,
@@ -52,6 +53,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             currentIsCamp: false,
             currentHasLimit: true,
             currentSignupOpenDate: new Date(),
+            currentSignupClosesDate: new Date(),
             currentNeedAdminConfirm: false,
             currentOpenToNonMembers: false,
             isSubmitting: false,
@@ -87,6 +89,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                         currentSignupLimit: loadedEvent.signups?.limit || 30,
                         currentHasLimit: loadedEvent.signups?.limit === null ? false : true,
                         currentSignupOpenDate: loadedEvent.signups?.opens || new Date(),
+                        currentSignupClosesDate: loadedEvent.signups?.closes || new Date(),
                         currentNeedAdminConfirm: loadedEvent.signups?.needAdminConfirm || false,
                         currentOpenToNonMembers: loadedEvent.signups?.openToNonMembers || false,
                         currentIsCamp: loadedEvent.signups?.isCamp || false,
@@ -210,6 +213,11 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             })
         }
     }
+    onSignupClosesDateChange = (d: Date | undefined) => {
+        if (d) {
+            this.setState({...this.state, currentSignupClosesDate: d})
+        }
+    }
     onNeedAdminConfirmCheck = (checked: boolean) => {
         this.setState({
             ...this.state,
@@ -255,6 +263,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
             locationLink: this.state.currentLocationLink,
             signups: !this.state.showEditSignups ? null : {
                 opens: this.state.currentSignupOpenDate,
+                closes: this.state.currentSignupClosesDate,
                 openToNonMembers: this.state.currentOpenToNonMembers,
                 limit: this.state.currentHasLimit ? this.state.currentSignupLimit : null,
                 needAdminConfirm: this.state.currentNeedAdminConfirm,
@@ -325,6 +334,10 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                             <DatePicker value={moment(this.state.currentSignupOpenDate)} onChange={e => this.onSignupOpenDateChange(e?.toDate())}/>
                         </div>
                         <div>
+                            Signups Close: 
+                            <DatePicker value={moment(this.state.currentSignupClosesDate)} onChange={e => this.onSignupClosesDateChange(e?.toDate())}/>
+                        </div>
+                        <div>
                             <Checkbox checked={this.state.currentHasLimit} onChange={e => this.onHasLimitCheck(e.target.checked)}>
                                 Limit: 
                             </Checkbox>
@@ -337,9 +350,9 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                         <div>
                             <Checkbox checked={this.state.currentIsCamp} onChange={e => this.onIsCampChange(e.target.checked)}>Include Drivers and Dietary Requirement Form</Checkbox>
                         </div>
-                        {/* <div>
+                        <div>
                             <Checkbox checked={this.state.currentOpenToNonMembers} onChange={e => this.onOpenToNonMembersCheck(e.target.checked)}>Non Members can sign themselves up (admin can sign up anyone regardless)</Checkbox>
-                        </div> */}
+                        </div>
                     </div>
                 : ''}
                 <div className='submitEventContainer'>

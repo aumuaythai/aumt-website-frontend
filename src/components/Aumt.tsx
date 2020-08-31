@@ -1,5 +1,5 @@
 import React, { lazy, Component, Suspense } from 'react'
-import { BrowserRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import {notification, Spin} from 'antd'
 import { User } from 'firebase/app'
 import Header from './Header/Header'
@@ -66,6 +66,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
               clubSignupStatus: config.clubSignupStatus,
               clubSignupSem: config.clubSignupSem
             })
+          })
+          .catch((err) => {
+            notification.error({message: 'Failed to get website config: ' + err.toString()})
           })
     }
 
@@ -159,13 +162,13 @@ export class Aumt extends Component<AumtProps, AumtState> {
                               authedUser={this.state.authedUser}></SignupsLazyWrapper>
                           </Route>
                           <Route path="/events">
-                            {this.state.authedUser ? 
+                            {/* {this.state.authedUser ?  */}
                             <EventsWrapper authedUser={this.state.authedUser}></EventsWrapper>
-                            : 
+                            {/* : 
                             <div>
                               You must <Link to='/login?from=/events'> log in </Link> to view events.
                             </div>
-                            }
+                            } */}
                           </Route>
                           <Route path="/join">
                             <MainJoin
