@@ -3,6 +3,7 @@ import db from '../../services/db'
 import { notification } from 'antd'
 
 interface AdminState {
+    // TODO add support for member storage here.
     members: AumtMembersObj
     
     trainings: AumtWeeklyTraining[]

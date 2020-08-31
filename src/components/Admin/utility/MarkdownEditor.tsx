@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { QuestionCircleOutlined } from '@ant-design/icons'
+/*
+TODO: write own markdown parser for headings, text styling, and images
+ReactMarkdown has HTML support and other things that are unnecessary for this app
+Installing ReactMarkdown installs 40 new packages, better to not have that bloat
+*/
 import ReactMarkdown from 'react-markdown'
 import { Input, Tabs, Tooltip } from 'antd'
 import './MarkdownEditor.css'
