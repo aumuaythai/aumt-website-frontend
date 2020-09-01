@@ -22,26 +22,74 @@ interface MarkdownEditorState {
 }
 
 export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEditorState> {
+    private currentText: string = ''
+    private textHistory: string[] = []
+    private textFuture: string[] = []
+    private titleElement = <h4>Markdown Editor 
+            <a href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' target='_blank' rel='noopener noreferrer'>
+                <Tooltip title="Click for a Guide on How to Use Markdown. Images won't resize for now">
+                    <QuestionCircleOutlined/>
+                </Tooltip>
+            </a>
+        </h4>
+
     constructor(props: MarkdownEditorProps) {
         super(props)
+        this.currentText = this.props.value
     }
-    // TODO: add history for ctrl Z functionality
-    private titleElement = <h4>Markdown Editor 
-        <a href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' target='_blank' rel='noopener noreferrer'>
-            <Tooltip title="Click for a Guide on How to Use Markdown. Images won't resize for now">
-                 <QuestionCircleOutlined/>
-            </Tooltip>
-        </a>
-        </h4>
+
+    componentWillUnmount = () => {
+        document.removeEventListener('keydown', this.keydownListener)
+    }
+    
+    onInputFocus = () => {
+        document.addEventListener('keydown', this.keydownListener)
+    }
+    onInputBlur = () => {
+        document.removeEventListener('keydown', this.keydownListener)
+    }
+    keydownListener = (event: KeyboardEvent) => {
+        if (event.ctrlKey && event.key === 'z') {
+            this.undo()
+        } else if (event.ctrlKey && event.key === 'Z') {
+            this.redo()
+        }
+    }
+    undo = () => {
+        const prevText = this.textHistory.pop()
+        if (prevText !== undefined) {
+            console.log('Undo event')
+            this.textFuture.unshift(this.currentText)
+            this.currentText = prevText
+            this.props.onChange(prevText)
+        }
+    }
+    redo = () => {
+        const futureText = this.textFuture.shift()
+        if (futureText) {
+            this.textHistory.push(this.currentText)
+            this.currentText = futureText
+            this.props.onChange(futureText)
+        }
+    }
+    onChange = (text: string) => {
+        console.log('Change event')
+        this.textFuture = []
+        this.textHistory.push(this.currentText)
+        this.currentText = text
+        this.props.onChange(text)
+    }
     render() {
         return <div className='markdownEditorContainer'>
             <Tabs tabBarExtraContent={this.titleElement}>
                 <Tabs.TabPane tab='Edit' key='1'>
                     <Input.TextArea
+                            onFocus={this.onInputFocus}
+                            onBlur={this.onInputBlur}
                             placeholder='Enter markdown text'
                             autoSize={{ minRows: 2, maxRows: 26 }}
                             value={this.props.value}
-                            onChange={e => this.props.onChange(e.target.value)}/>
+                            onChange={e => this.onChange(e.target.value)}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab='Preview' key='2'>
                     <ReactMarkdown source={this.props.value} skipHtml={true} linkTarget={'_blank'}></ReactMarkdown>
