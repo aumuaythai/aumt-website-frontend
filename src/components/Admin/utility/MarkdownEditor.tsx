@@ -21,6 +21,8 @@ interface MarkdownEditorProps {
 interface MarkdownEditorState {
 }
 
+const UNDO_AVAILABLE = false
+
 export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEditorState> {
     private currentText: string = ''
     private textHistory: string[] = []
@@ -39,14 +41,20 @@ export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEdito
     }
 
     componentWillUnmount = () => {
-        document.removeEventListener('keydown', this.keydownListener)
+        if (UNDO_AVAILABLE) {
+            document.removeEventListener('keydown', this.keydownListener)
+        }
     }
     
     onInputFocus = () => {
-        document.addEventListener('keydown', this.keydownListener)
+        if (UNDO_AVAILABLE) {
+            document.addEventListener('keydown', this.keydownListener)
+        }
     }
     onInputBlur = () => {
-        document.removeEventListener('keydown', this.keydownListener)
+        if (UNDO_AVAILABLE) {
+            document.removeEventListener('keydown', this.keydownListener)
+        }
     }
     keydownListener = (event: KeyboardEvent) => {
         if (event.ctrlKey && event.key === 'z') {
@@ -58,7 +66,6 @@ export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEdito
     undo = () => {
         const prevText = this.textHistory.pop()
         if (prevText !== undefined) {
-            console.log('Undo event')
             this.textFuture.unshift(this.currentText)
             this.currentText = prevText
             this.props.onChange(prevText)
@@ -73,10 +80,11 @@ export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEdito
         }
     }
     onChange = (text: string) => {
-        console.log('Change event')
-        this.textFuture = []
-        this.textHistory.push(this.currentText)
-        this.currentText = text
+        if (UNDO_AVAILABLE) {
+            this.textFuture = []
+            this.textHistory.push(this.currentText)
+            this.currentText = text
+        }
         this.props.onChange(text)
     }
     render() {
