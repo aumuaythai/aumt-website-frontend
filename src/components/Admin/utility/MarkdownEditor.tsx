@@ -21,7 +21,8 @@ interface MarkdownEditorProps {
 interface MarkdownEditorState {
 }
 
-const UNDO_AVAILABLE = false
+const UNDO_AVAILABLE = true
+const MAX_HISTORY = 20
 
 export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEditorState> {
     private currentText: string = ''
@@ -83,6 +84,9 @@ export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEdito
         if (UNDO_AVAILABLE) {
             this.textFuture = []
             this.textHistory.push(this.currentText)
+            if (MAX_HISTORY < this.textHistory.length) {
+                this.textHistory.shift()
+            }
             this.currentText = text
         }
         this.props.onChange(text)
