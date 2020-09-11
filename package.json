@@ -27,8 +27,8 @@
     "extends": "react-app"
   },
   "dependencies": {
-    "antd": "^4.0.0",
-    "firebase": "^7.20.0",
+    "antd": "~4.6.3",
+    "firebase": "~7.20.0",
     "marked": "^1.1.1",
     "papaparse": "^5.2.0",
     "pdfmake": "^0.1.67",
