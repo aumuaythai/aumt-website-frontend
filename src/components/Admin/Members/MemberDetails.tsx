@@ -271,7 +271,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                     <div className="memberDescriptionSection">
                         <Button className='memberDescriptionButton' type='primary' loading={this.state.saving} onClick={this.onSaveClick}>Save {this.state.currentFirstName} {this.state.currentLastName}</Button>
                         <Popconfirm title={`Confirm delete ${this.state.currentFirstName}? RIP`} onConfirm={this.onRemoveClick}>
-                            <Button className='memberDescriptionButton' type='danger' loading={this.state.removing}>Remove {this.state.currentFirstName} {this.state.currentLastName}</Button>
+                            <Button className='memberDescriptionButton' danger type='primary' loading={this.state.removing}>Remove {this.state.currentFirstName} {this.state.currentLastName}</Button>
                         </Popconfirm>
                     </div>
                     <div className="clearBoth"></div>

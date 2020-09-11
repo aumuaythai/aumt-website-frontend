@@ -12,6 +12,7 @@
 .topMenuContainer {
     width: calc(100% - 310px);
     float: left;
+    text-align: center;
 }
 .socialsContainer {
     width: 155px;

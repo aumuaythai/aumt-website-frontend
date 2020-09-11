@@ -198,11 +198,11 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
         })
     }
 
-    onSignupLimitChange = (limit: number | undefined) => {
+    onSignupLimitChange = (limit: string | number | undefined) => {
         if (limit) {
             this.setState({
                 ...this.state,
-                currentSignupLimit: limit
+                currentSignupLimit: Number(limit)
             })
         }
     }

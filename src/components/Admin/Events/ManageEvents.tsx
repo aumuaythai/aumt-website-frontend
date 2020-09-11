@@ -108,7 +108,7 @@ export class ManageEvents extends Component<ManageEventsProps, ManageEventsState
                                         <Button className='manageEventOptionButton'>Edit</Button>
                                     </Link>
                                     <Popconfirm title='Confirm Delete Event?' onConfirm={e => this.removeEvent(event.id)}>
-                                        <Button className='manageEventOptionButton' loading={this.state.removingEvent[event.id]} type='danger'>Remove</Button>
+                                        <Button className='manageEventOptionButton' loading={this.state.removingEvent[event.id]} danger type='primary'>Remove</Button>
                                     </Popconfirm>
                                 </div>
                                 <div className="clearBoth"></div>

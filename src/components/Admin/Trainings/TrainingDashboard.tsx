@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, ReactText} from 'react'
 import { Link } from 'react-router-dom'
 import { Spin, Button, Menu, Dropdown, notification, Popover } from 'antd'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
@@ -83,7 +83,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
     onClickTraining = (trainingId: string) => {
         this.onFormSelect({key: trainingId})
     }
-    onFormSelect = (event: {key: string}) => {
+    onFormSelect = (event: {key: ReactText}) => {
         const selectedForm = this.state.allForms.find(f => f.trainingId === event.key)
         if (selectedForm) {
             this.setState({
@@ -144,7 +144,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 {this.state.allForms.map((form) => {
                     return (
                         <Menu.Item key={form.trainingId}>
-                            {form.title}
+                            {form.title.length > 50 && window.innerWidth < 600 ? form.title.slice(0,47) + '...' : form.title}
                         </Menu.Item>
                         )
                     })
@@ -166,7 +166,11 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                         <Dropdown className='trainingDashboardFormSelector'
                             trigger={['click']}
                             overlay={this.getFormsDropdown}>
-                            <Button size='large'>{this.state.currentForm && this.state.currentForm.title} <DownOutlined /></Button>
+                            <Button size='large'>{this.state.currentForm && this.state.currentForm.title ? 
+                            (this.state.currentForm.title.length > 40 && window.innerWidth < 600 ?
+                                this.state.currentForm.title.slice(0,37) + '...' :
+                                this.state.currentForm.title)
+                            : ''} <DownOutlined /></Button>
                         </Dropdown>
                         <Button className='exportAllButton' type='link' onClick={this.onExportClick}>Generate Report</Button>
                         <div className="clearBoth"></div>

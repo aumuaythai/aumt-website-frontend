@@ -438,7 +438,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                         </div>
                                     }
                                 }}
-                                scroll={{ y: 625 }}></Table>
+                                scroll={{ y: 725 }}></Table>
                             }
                         </div>
                 ) : ''}

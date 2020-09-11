@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, ReactText } from 'react'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import {Menu} from 'antd';
 import {DownOutlined} from '@ant-design/icons'
@@ -51,9 +51,9 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
         this.setState({current: 'About'})
     }
 
-  handleClick = (e: {key: string}) => {
+  handleClick = (e: {key: ReactText}) => {
     this.setState({
-      current: e.key,
+      current: String(e.key),
     });
   };
 
@@ -98,7 +98,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
 
   desktopMenu = () => {
     return (
-      <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
+      <Menu style={{textAlign: 'center'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
         <Menu.SubMenu title={
             <>
             About <DownOutlined className='menuDownIcon' />

@@ -1,10 +1,8 @@
-import React, {Component} from 'react'
+import React, {Component, ReactText} from 'react'
 import {Select, Button, Statistic, notification, Input, Dropdown, Menu, Row, Col} from 'antd'
-// import { PlusOutlined } from '@ant-design/icons'
 import './EditSignups.css'
 import db from '../../../services/db'
 import { AumtWeeklyTraining, AumtTrainingSession } from '../../../types'
-import { ClickParam } from 'antd/lib/menu'
 
 
 interface EditSignupsProps {
@@ -107,8 +105,11 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                 })
         }
     }
-    onMoveClick = (clickParam: ClickParam, fromSession: string) => {
+    onMoveClick = (clickParam: {key: ReactText}, fromSession: string) => {
         const {key} = clickParam
+        if (typeof key !== 'string') {
+            return notification.error({message: 'Ant-D error: click handler returned non-string value'})
+        }
         const currentUserIdSelected = this.state.selectedMembers[fromSession]
         const session = this.props.form.sessions[fromSession]
         const displayName = session &&
@@ -216,7 +217,8 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                     <Button
                                         loading={this.state.removingInProcess[session.sessionId]}
                                         disabled={!this.state.selectedMembers[session.sessionId]}
-                                        type='danger'
+                                        danger
+                                        type='primary'
                                         onClick={e => this.onRemoveClick(session.sessionId)}
                                         >Remove</Button>
                                 </div>

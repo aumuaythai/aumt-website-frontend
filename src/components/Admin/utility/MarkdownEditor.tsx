@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { Input, Tabs, Tooltip } from 'antd'
+import { Input, Tabs, Popover } from 'antd'
 import './MarkdownEditor.css'
 import { RenderMarkdown } from './RenderMarkdown'
 
@@ -21,11 +20,17 @@ export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEdito
     private textHistory: string[] = []
     private textFuture: string[] = []
     private titleElement = <h4>Markdown Editor 
-            <a href='https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet' target='_blank' rel='noopener noreferrer'>
-                <Tooltip title="Click for a Guide on How to Use Markdown. Images won't resize for now">
+                <Popover content={
+                    <div>
+                        <p>Click <a rel='noopener noreferrer' target='_blank' href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"> here </a>
+                            for a guide on Markdown.</p>
+                        <p>To add images use the following format: </p>
+                        <p>![title](url "=widthxheight") e.g.</p>
+                        <p>![tom](https://aumt.co.nz/photos/tom.jpg "=100x100")</p>
+                    </div>
+                }>
                     <QuestionCircleOutlined/>
-                </Tooltip>
-            </a>
+                </Popover>
         </h4>
 
     constructor(props: MarkdownEditorProps) {

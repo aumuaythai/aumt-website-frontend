@@ -125,8 +125,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         }
         return id
     }
-    onPopulateWeekChange = (n: number | undefined) => {
-        this.setState({...this.state, currentPopulateWeekValue: n || 1})
+    onPopulateWeekChange = (n: string | number | undefined) => {
+        this.setState({...this.state, currentPopulateWeekValue: Number(n) || 1})
     }
     onOpenDateChange = (d: Date | undefined) => {
         if (d) {
@@ -175,7 +175,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             })
         }
     }
-    onSessionLimitChange=  (limit: number | undefined, sessionId: string) => {
+    onSessionLimitChange=  (limit: string | number | undefined, sessionId: string) => {
         if (typeof limit === 'number') {
             this.state.currentSessions.forEach((s) => {
                 if (s.sessionId === sessionId) {

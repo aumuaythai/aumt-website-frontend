@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, ReactText} from 'react'
 import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Menu, Button, Drawer } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined, MenuOutlined } from '@ant-design/icons'
@@ -88,9 +88,9 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
         this.setState({...this.state, menuOpen: open})
     }
 
-    handleMenuClick = (e: {key: string}) => {
+    handleMenuClick = (e: {key: ReactText}) => {
         this.setState({
-          currentSelectedAdmin: e.key,
+            currentSelectedAdmin: String(e.key),
         });
       };
 
