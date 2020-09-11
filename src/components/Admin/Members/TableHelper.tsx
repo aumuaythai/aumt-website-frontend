@@ -1,5 +1,4 @@
 import React, {Component, ReactText} from 'react'
-import Highlighter from 'react-highlight-words';
 import { Input, Button, Tooltip, notification, Popconfirm } from 'antd'
 import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
 import moment from 'moment'
@@ -64,17 +63,20 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         this.setState({ searchText: '' });
     }
     private renderHighlightedText = (text: string, columnIndex: string) => {
-        return this.state.searchedColumn === columnIndex ? (
-            // TODO: change to js without library
-            <Highlighter
-                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-                searchWords={[this.state.searchText]}
-                autoEscape
-                textToHighlight={text.toString()}
-            />
-            ) : (
-                text
-            )
+        if (this.state.searchedColumn === columnIndex) {
+            // https://stackoverflow.com/a/43235785
+            const parts = text.split(new RegExp(`(${this.state.searchText})`, 'gi'));
+            return <span>
+                {parts.map((part, idx) => {
+                    const match = part.toLowerCase() === this.state.searchText.toLowerCase()
+                    return <span key={idx} style={match ? { backgroundColor: '#ffc069' } : {} }>
+                        { part }
+                    </span>})
+                }
+            </span>
+        } else {
+            return text
+        }
     }
 
     private getSelectedRows = (): TableDataLine[] => {

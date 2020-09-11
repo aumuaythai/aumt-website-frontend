@@ -3,11 +3,11 @@ import marked from 'marked'
 
 import './RenderMarkdown.css'
 /*
-This class exists because ReactMarkdown has HTML support and other things that are unnecessary for this app
+This class exists because react-markdown has things that are unnecessary for this app
 Installing ReactMarkdown installs 40 new packages, better to not have that bloat
 
-Also as of writing this images don't render properly
-https://github.com/rexxars/react-markdown/issues/265
+Also as of writing this images aren't quite up to markdown spec, a polyfill was implemented above the class, see issue below
+https://github.com/markedjs/marked/issues/339
 */
 
 const renderer = new marked.Renderer();
