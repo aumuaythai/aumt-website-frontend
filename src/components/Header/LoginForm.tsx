@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import {Button, Input, Divider} from 'antd'
+import {Button, Input} from 'antd'
 import UserOutlined from '@ant-design/icons/UserOutlined'
 import {ResetPasswordLink} from './ResetLink'
 import './LoginForm.css'
 import { Redirect, Link } from 'react-router-dom'
 import { LoginErrorMessage } from './LoginErrorMessage'
 import FirebaseUtil from '../../services/firebase.util'
-import {FirstTimeLogin} from './FirstTimeLogin'
 
 export interface LoginProps {
 
@@ -111,8 +110,6 @@ export class LoginForm extends Component<LoginProps, LoginState> {
                     <Button className="loginButton" onClick={this.onLoginClick} loading={this.state.authing}>Log in</Button>
                     <div className="clearBoth"></div>
                 </div>
-                <Divider/>
-                <FirstTimeLogin></FirstTimeLogin>
             </div>
         )
     }
