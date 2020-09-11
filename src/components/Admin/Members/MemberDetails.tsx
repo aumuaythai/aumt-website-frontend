@@ -15,6 +15,8 @@ interface MemberDetailsProps extends RouteComponentProps {
     member: TableDataLine
 }
 
+// TODO add other details like time joined, email verified, etc
+
 interface MemberDetailsState {
     currentFirstName: string
     currentLastName: string
