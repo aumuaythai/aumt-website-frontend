@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Divider } from 'antd'
-import ReactMarkdown from 'react-markdown'
 import { AumtEvent } from '../../../types'
 import './EventsList.css'
+import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown'
 
 interface EventListProps extends RouteComponentProps {
     events: AumtEvent[]
@@ -36,7 +36,7 @@ class EventsList extends Component<EventListProps, EventListState> {
                         <Divider></Divider>
                         <div className='eventPreviewBody'>
                             <p className="eventPreviewDescription">
-                                <ReactMarkdown source={event.description} skipHtml={true} linkTarget={'_blank'}></ReactMarkdown>
+                                <RenderMarkdown source={event.description}></RenderMarkdown>
                             </p>
                         </div>
                     </div>

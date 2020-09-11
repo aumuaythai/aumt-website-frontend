@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import ReactMarkdown from 'react-markdown'
 import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
 import { Button, Result, Divider, notification} from 'antd'
 import moment from 'moment'
@@ -10,6 +9,7 @@ import firebaseUtil from '../../../services/firebase.util'
 import db from '../../../services/db'
 import { CampSignupForm } from './CampSignupForm'
 import dataUtil from '../../../services/data.util'
+import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown'
 
 interface EventProps {
     event: AumtEvent
@@ -203,7 +203,7 @@ export class Event extends Component<EventProps, EventState> {
                 </div>
                 <Divider/>
                 <div className="eventDescriptionContainer">
-                    <ReactMarkdown source={this.props.event.description} skipHtml={true} linkTarget={'_blank'}></ReactMarkdown>
+                    <RenderMarkdown source={this.props.event.description}></RenderMarkdown>
                 </div>
                 <Divider/>
                 {(() => {

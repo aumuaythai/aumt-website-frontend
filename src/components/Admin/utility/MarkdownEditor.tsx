@@ -1,17 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-/*
-TODO: write own markdown parser for headings, text styling, links and images
-ReactMarkdown has HTML support and other things that are unnecessary for this app
-Installing ReactMarkdown installs 40 new packages, better to not have that bloat
-
-Also see here
-https://github.com/rexxars/react-markdown/issues/265
-*/
-import ReactMarkdown from 'react-markdown'
 import { Input, Tabs, Tooltip } from 'antd'
 import './MarkdownEditor.css'
+import { RenderMarkdown } from './RenderMarkdown'
 
 interface MarkdownEditorProps {
     onChange: (text: string) => void
@@ -104,7 +96,7 @@ export class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEdito
                             onChange={e => this.onChange(e.target.value)}/>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab='Preview' key='2'>
-                    <ReactMarkdown source={this.props.value} skipHtml={true} linkTarget={'_blank'}></ReactMarkdown>
+                    <RenderMarkdown source={this.props.value}></RenderMarkdown>
                 </Tabs.TabPane>
             </Tabs>
         </div>

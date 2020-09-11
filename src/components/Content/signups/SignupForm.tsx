@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import {Spin, Radio, Button, Alert, Tooltip, Input, Tag } from 'antd'
-import ReactMarkdown from 'react-markdown'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';
+import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown';
 
 export interface SignupFormProps {
     title: string
@@ -175,7 +175,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 <h2 className="formTitle">{this.props.title}</h2>
                 {this.props.notes ?
                     (<div className="trainingNotesContainer">
-                        <ReactMarkdown source={this.props.notes} skipHtml={true} linkTarget={'_blank'}></ReactMarkdown>
+                        <RenderMarkdown source={this.props.notes}></RenderMarkdown>
                     </div>) :
                     ''
                 }

@@ -65,11 +65,12 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     }
     private renderHighlightedText = (text: string, columnIndex: string) => {
         return this.state.searchedColumn === columnIndex ? (
+            // TODO: change to js without library
             <Highlighter
-            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-            searchWords={[this.state.searchText]}
-            autoEscape
-            textToHighlight={text.toString()}
+                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                searchWords={[this.state.searchText]}
+                autoEscape
+                textToHighlight={text.toString()}
             />
             ) : (
                 text
