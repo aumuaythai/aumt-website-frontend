@@ -55,8 +55,11 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         }
     }
     populateWeeklyDefaults = () => {
-        const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * this.state.currentPopulateWeekValue))
-        const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * this.state.currentPopulateWeekValue))
+        // assume semester breaks at week 6
+        const actualWeek = this.state.currentPopulateWeekValue > 6 ? this.state.currentPopulateWeekValue + 2 : this.state.currentPopulateWeekValue
+        
+        const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * actualWeek))
+        const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * actualWeek))
         const dateThursday = new Date(newOpens.getTime() + (1000 * 60 * 60 * 24 * 4))
         const dateFriday = new Date(newOpens.getTime() + (1000 * 60 * 60 * 24 * 5))
         const dateStrThu = `${dateThursday.getDate()}/${dateThursday.getMonth() + 1}`

@@ -205,8 +205,16 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                                         })}
                                 </Select>
                                 <div className="editSignupsOptionButtons">
-                                    <Input onChange={e => this.setAddMember(session.sessionId, e.target.value)} className='editSignupsAddMemberInput'/>
-                                    <Button onClick={e => this.addToSession(session.sessionId)} loading={this.state.addingInProcess[session.sessionId]}>Add</Button>
+                                    <Input
+                                        addonAfter={
+                                            <Button
+                                                className='editSignupsAddMemberButton'
+                                                type='text'
+                                                onClick={e => this.addToSession(session.sessionId)}
+                                                loading={this.state.addingInProcess[session.sessionId]}>Add</Button>
+                                        }
+                                        onChange={e => this.setAddMember(session.sessionId, e.target.value)}
+                                        className='editSignupsAddMemberInput'/>
                                     <Dropdown
                                         disabled={!this.state.selectedMembers[session.sessionId]}
                                         overlay={this.getMoveDropdown(session.sessionId)}

@@ -13,5 +13,9 @@
     padding-bottom: 10px;
 }
 .editSignupsAddMemberInput {
-    width: 120px;
+    width: 160px;
+}
+.editSignupsAddMemberButton {
+    padding: 0;
+    height: 0;
 }
