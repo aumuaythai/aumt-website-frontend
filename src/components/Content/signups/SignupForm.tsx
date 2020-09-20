@@ -17,6 +17,7 @@ export interface SignupFormProps {
     authedUserId: string | null
     notes: string
     openToPublic: boolean
+    showNotes: boolean
     onSignupChanged?: () => void
 }
 
@@ -173,7 +174,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         return (
             <div>
                 <h2 className="formTitle">{this.props.title}</h2>
-                {this.props.notes ?
+                {this.props.notes && this.props.showNotes ?
                     (<div className="trainingNotesContainer">
                         <RenderMarkdown source={this.props.notes}></RenderMarkdown>
                     </div>) :

@@ -79,6 +79,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
                 closes={form.closes}
                 sessions={form.sessions}
                 displayName={this.getDisplayName()}
+                showNotes={false}
                 authedUserId={this.props.member.key}
                 notes={form.notes}
                 openToPublic={false}
