@@ -32,6 +32,8 @@ interface SignupFormState {
     removingState: boolean
 }
 
+const SPOTS_TAG_LIMIT = 5
+
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     constructor(props: SignupFormProps) {
         super(props)
@@ -195,7 +197,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                                             disabled={isFull}
                                             value={session.sessionId}>
                                                 {session.title}
+                                            {spotsLeft <= SPOTS_TAG_LIMIT ? 
                                             <Tag className='spotsLeftTag' color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>
+                                            : ''}
                                             {this.state.signedUpOption === session.sessionId ? <CheckSquareTwoTone className='signedUpOptionCheck' twoToneColor="#52c41a" /> : ''}
                                         </Radio> 
                                     </Tooltip>
