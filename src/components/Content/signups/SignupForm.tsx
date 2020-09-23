@@ -32,7 +32,7 @@ interface SignupFormState {
     removingState: boolean
 }
 
-const SPOTS_TAG_LIMIT = 5
+const SPOTS_TAG_LIMIT = 5 // Infinity
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     constructor(props: SignupFormProps) {
