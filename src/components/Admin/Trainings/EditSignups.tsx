@@ -93,7 +93,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         const name = this.state.addedMember[sessionId]
         if (name) {
             this.setState({...this.state, addingInProcess: {...this.state.addingInProcess, [sessionId]: true}})
-            db.signUserUp(this.generateMockUid(), name, new Date(), this.props.form.trainingId, sessionId, '', '')
+            db.signUserUp(this.generateMockUid(), name, new Date(), this.props.form.trainingId, [sessionId], '', [])
                 .then(() => {
                     notification.success({message: 'Successfully signed up ' + name})
                 })
@@ -129,7 +129,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                 [fromSession]: true
             })
         })
-        db.signUserUp(currentUserIdSelected, displayName, timeAdded, this.props.form.trainingId, key, '', fromSession)
+        db.signUserUp(currentUserIdSelected, displayName, timeAdded, this.props.form.trainingId, [key], '', [fromSession])
             .then(() => {
                 delete this.state.selectedMembers[fromSession]
                 this.setState({

@@ -9,6 +9,9 @@ type MockMember = {
         timeAdded: Date
     }
 }
+
+const TRAINING_DB_PATH = 'weekly_trainings'
+
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
     private listeners: Record<string, Function> = {}
@@ -131,7 +134,7 @@ class DB {
         if (!formData) {
             return Promise.reject('No form data submitted')
         }
-        return this.db.collection('weekly_trainings')
+        return this.db.collection(TRAINING_DB_PATH)
             .doc(formData.trainingId)
             .set(formData)
     }
@@ -221,14 +224,14 @@ class DB {
 
     public removeTraining = (trainingId: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('weekly_trainings')
+        return this.db.collection(TRAINING_DB_PATH)
             .doc(trainingId)
             .delete()
     }
 
     public getAllForms = (): Promise<AumtWeeklyTraining[]> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('weekly_trainings')
+        return this.db.collection(TRAINING_DB_PATH)
             .get()
             .then((querySnapshot) => {
                 const allForms: AumtWeeklyTraining[] = []
@@ -258,7 +261,7 @@ class DB {
     public getOpenForms = (): Promise<AumtWeeklyTraining[]> => {
             if (!this.db) return Promise.reject('No db object')
             const currentDate = new Date()
-            return this.db.collection('weekly_trainings')
+            return this.db.collection(TRAINING_DB_PATH)
                 .where('closes', '>=', currentDate)
                 .get()
                 .then((querySnapshot) => {
@@ -313,7 +316,7 @@ class DB {
 
     public getTrainingData = (formId: string): Promise<AumtWeeklyTraining> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('weekly_trainings')
+        return this.db.collection(TRAINING_DB_PATH)
             .doc(formId)
             .get()
             .then((doc) => {
@@ -327,7 +330,7 @@ class DB {
 
     public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('weekly_trainings')
+        return this.db.collection(TRAINING_DB_PATH)
             .doc(formId)
             .set({
                 sessions: {
@@ -344,28 +347,33 @@ class DB {
         displayName: string,
         timeAdded: Date,
         formId: string,
-        sessionId: string,
+        sessionIds: string[],
         feedback: string,
-        prevSessionId: string): Promise<void> => {
+        prevSessionIds: string[]): Promise<void> => {
             if (!this.db) return Promise.reject('No db object')
-            let mergeObj = {
-                sessions: {
-                    [sessionId]: {
-                        members: {
-                            [userId]: {
-                                name: displayName,
-                                timeAdded
-                            }
+            const sessionObj = {}
+            sessionIds.forEach((sessionId) => {
+                (sessionObj as any)[sessionId] = {
+                    members: {
+                        [userId]: {
+                            name: displayName,
+                            timeAdded
                         }
                     }
                 }
-            }
-            if (prevSessionId && prevSessionId !== sessionId) {
-                (mergeObj as any)['sessions'][prevSessionId] = {
-                    members: {
-                        [userId]: firebase.firestore.FieldValue.delete()
+            })
+            const removeSessions = prevSessionIds.filter((sId) => !sessionIds.includes(sId))
+            if (removeSessions.length) {
+                removeSessions.forEach((sId) => {
+                    (sessionObj as any)[sId] = {
+                        members: {
+                            [userId]: firebase.firestore.FieldValue.delete()
+                        }
                     }
-                }
+                })
+            }
+            let mergeObj = {
+                sessions: sessionObj
             }
             if (feedback) {
                 (mergeObj as any) = {
@@ -373,7 +381,7 @@ class DB {
                     feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
                 }
             }
-            return this.db.collection('weekly_trainings')
+            return this.db.collection(TRAINING_DB_PATH)
                 .doc(formId)
                 .set(mergeObj, {merge: true})
     }
@@ -394,7 +402,7 @@ class DB {
     public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
-        this.listeners[listenerId] = this.db.collection('weekly_trainings')
+        this.listeners[listenerId] = this.db.collection(TRAINING_DB_PATH)
             .doc(formId)
             .onSnapshot((doc: firebase.firestore.DocumentSnapshot) => {
                 callback(formId, this.docToForm(doc.data()))
@@ -405,7 +413,7 @@ class DB {
     public listenToTrainings = (callback: (forms: AumtWeeklyTraining[]) => void): string => {
         if (!this.db) throw new Error('no db')
         const listenerId = this.getListenerId()
-        this.listeners[listenerId] = this.db.collection('weekly_trainings')
+        this.listeners[listenerId] = this.db.collection(TRAINING_DB_PATH)
             .onSnapshot((querySnapshot) => {
                 const newForms: AumtWeeklyTraining[] = []
                 querySnapshot.docs.forEach((doc) => {

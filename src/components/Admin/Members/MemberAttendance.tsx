@@ -14,7 +14,7 @@ interface MemberAttendanceProps {
 
 interface MemberAttendanceState {
     loadingAttendance: boolean
-    attendance: {formTitle: string, formId: string, sessionTitle: string}[]
+    attendance: {formTitle: string, formId: string, sessionTitles: string[]}[]
     forms: AumtWeeklyTraining[]
 }
 
@@ -98,7 +98,9 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
                         <div key={record.formTitle} className='attendanceLine'>
                             <h4 className="attendanceLineForm">{record.formTitle}</h4>
                             <p className="attendanceLineSession">
-                                {record.sessionTitle || 'None'}
+                                {record.sessionTitles.length ? 
+                                    record.sessionTitles.join(', ')
+                                : 'None'}
                                 <Popover placement='rightTop' content={this.getSignupPopover(record.formId)} trigger='click'>
                                     <Tooltip title='Edit'>
                                         <EditOutlined className='attendanceSessionEdit' />

@@ -58,14 +58,16 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     }
     checkSignedUp = () => {
         if (this.props.authedUserId) {
+            const signedUpSessions: string[] = []
             Object.values(this.props.sessions).forEach((session) => {
                 if (this.props.authedUserId && session.members[this.props.authedUserId]) {
-                    this.setState({
-                        ...this.state,
-                        signedUpOption: session.sessionId,
-                        currentSessionId: session.sessionId
-                    })
+                    signedUpSessions.push(session.sessionId)
                 }
+            })
+            this.setState({
+                ...this.state,
+                signedUpOption: signedUpSessions[0],
+                currentSessionId: signedUpSessions[0]
             })
         }
     }
@@ -150,9 +152,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 this.props.displayName || this.state.currentDisplayName,
                 new Date(),
                 this.props.id,
-                optionSelected,
+                [optionSelected],
                 this.state.currentFeedback,
-                this.state.signedUpOption)
+                [this.state.signedUpOption])
             .then(() => {
                 this.setState({
                     ...this.state,

@@ -54,18 +54,18 @@ class DataFormatUtil {
         forms.sort((a, b) => {
             return a.closes < b.closes ? 1 : -1
         })
-        const attendance: {formTitle: string, formId: string, sessionTitle: string}[] = []
+        const attendance: {formTitle: string, formId: string, sessionTitles: string[]}[] = []
         forms.forEach((form) => {
-            let foundSession = ''
+            let foundSessions: string[] = []
             Object.values(form.sessions).forEach((session) => {
                 if (session.members[memberId]) {
-                    foundSession = session.title
+                    foundSessions.push(session.title)
                 }
             })
             attendance.push({
                 formTitle: form.title,
                 formId: form.trainingId,
-                sessionTitle: foundSession
+                sessionTitles: foundSessions
             })
         })
         return attendance
