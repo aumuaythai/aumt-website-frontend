@@ -6,7 +6,7 @@ import './SignupForm.css'
 import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';
 import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown';
-import { CheckboxChangeEvent, CheckboxOptionType } from 'antd/lib/checkbox';
+import { CheckboxOptionType } from 'antd/lib/checkbox';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 export interface SignupFormProps {
@@ -21,6 +21,7 @@ export interface SignupFormProps {
     openToPublic: boolean
     showNotes: boolean
     onSignupChanged?: () => void
+    signupMaxSessions: number
 }
 
 interface SignupFormState {

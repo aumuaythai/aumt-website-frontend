@@ -25,6 +25,9 @@
 .submitTrainingContainer {
     padding: 10px 0;
 }
+.createTrainingMaxSessionInput {
+    width: 55px;
+}
 .minusIcon {
     padding-left: 10px;
     cursor: pointer;

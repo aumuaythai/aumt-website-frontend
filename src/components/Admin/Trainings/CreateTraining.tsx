@@ -22,6 +22,7 @@ interface CreateTrainingState {
     currentFeedback: string[]
     currentOpenToPublic: boolean
     currentPopulateWeekValue: number
+    currentSignupMaxSessions: number
     currentTrainingId: string
     loadingTraining: boolean
 }
@@ -50,6 +51,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentNotes: '',
             currentFeedback: [],
             currentPopulateWeekValue: 1,
+            currentSignupMaxSessions: 1,
             currentTrainingId: '',
             loadingTraining: false
         }
@@ -65,10 +67,10 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         const dateStrThu = `${dateThursday.getDate()}/${dateThursday.getMonth() + 1}`
         const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
         const currentSessions = [
-            this.createSession(`Thursday 6:30 (Beginners)`),
-            this.createSession(`Thursday 7:30 (Advanced)`),
-            this.createSession(`Friday 6:30 (Beginners)`),
-            this.createSession(`Friday 7:30 (Beginners)`),
+            this.createSession(`Thursday 6:30 (Beginners)`, 0),
+            this.createSession(`Thursday 7:30 (Advanced)`, 1),
+            this.createSession(`Friday 6:30 (Beginners)`, 2),
+            this.createSession(`Friday 7:30 (Beginners)`, 3),
 
         ]
         this.setState({
@@ -193,12 +195,20 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentSessions: this.state.currentSessions.filter(s => s.sessionId !== sessionId)
         })
     }
-    createSession = (sessionTitle: string) => {
+    onSignupMaxSessionsChange = (maxSessions: string | number | undefined) => {
+        const numMaxSessions = Number(maxSessions || 1)
+        this.setState({
+            ...this.state,
+            currentSignupMaxSessions: numMaxSessions
+        })
+
+    }
+    createSession = (sessionTitle: string, position: number) => {
         const newSession: AumtTrainingSession = {
             limit: DEFAULT_TRAINING_LIMIT,
             sessionId: this.generateSessionId(10),
             title: sessionTitle,
-            position: this.state.currentSessions.length,
+            position,
             trainers: [],
             members: {},
             waitlist: {}
@@ -206,7 +216,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         return newSession
     }
     onAddSessionClick = () => {
-        const newSession = this.createSession('')
+        const newSession = this.createSession('', this.state.currentSessions.length)
 
         this.setState({
             ...this.state,
@@ -237,6 +247,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         db.submitNewForm({
             title: this.state.currentTitle,
             sessions,
+            signupMaxSessions: 1,
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             openToPublic: this.state.currentOpenToPublic,
@@ -287,6 +298,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                     </Radio.Group>
                 </div>
                 <h4 className='formSectionTitle'>Sessions</h4>
+                Members can sign up for <InputNumber onChange={this.onSignupMaxSessionsChange} className='createTrainingMaxSessionInput' defaultValue={1} min={1}/> session(s).
                 <div className="sessionSection">
                     <div className='addSessionButton'>
                         <Button onClick={this.onAddSessionClick}>Add Session +</Button>

@@ -1,5 +1,3 @@
-import { AumtMember } from "./AumtMember";
-
 export interface AumtTrainingSession {
     limit: number
     title: string
@@ -27,5 +25,6 @@ export interface AumtWeeklyTraining {
     opens: Date
     closes: Date
     notes: string
+    signupMaxSessions: number
     openToPublic: boolean
 }

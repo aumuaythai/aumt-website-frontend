@@ -83,6 +83,7 @@ export class MemberAttendance extends Component<MemberAttendanceProps, MemberAtt
                 authedUserId={this.props.member.key}
                 notes={form.notes}
                 openToPublic={false}
+                signupMaxSessions={Object.keys(form.sessions.length).length}
                 onSignupChanged={() => this.getAttendance(true)}></SignupForm>
             </div>
         )

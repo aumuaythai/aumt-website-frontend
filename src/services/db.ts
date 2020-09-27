@@ -392,14 +392,15 @@ class DB {
     public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
-        return this.db.collection('events')
-            .doc('8aqkptdcrd')
-            .set({
-                signups: {
-                    closes: new Date()
-                }
-            }, {merge: true})
-            // .then((querySnapshot) => {})
+        return this.db.collection('weekly_trainings_dup')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    doc.ref.update({
+                        signupMaxSessions: 1
+                    })
+                })
+            })
     }
 
     public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
@@ -503,6 +504,7 @@ class DB {
             feedback: docData.feedback,
             trainingId: docData.trainingId,
             sessions: docData.sessions,
+            signupMaxSessions: docData.signupMaxSessions || 1,
             openToPublic: docData.openToPublic || false,
             opens: new Date(docData.opens.seconds * 1000),
             closes: new Date(docData.closes.seconds * 1000),
