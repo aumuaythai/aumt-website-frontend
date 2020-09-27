@@ -36,7 +36,8 @@
 }
 .spotsLeftTag {
     float: right;
-    margin-right: 0;
+    /* TODO: align checkboxes properly without negative margin */
+    margin-right: -8px;
 }
 .trainingSignupRadioGroup {
     width: 100%;
@@ -46,7 +47,9 @@
     margin-top: 20px;
 }
 .optionLine {
-    margin: 25px 0;
+    margin: 10px 0;
+    display: inline-block;
+    width: calc(100% - 32px);
 }
 .signupFormRemoveLoadingIcon {
     margin-right: 5px;

@@ -64,7 +64,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                 ...this.state,
                 removingInProcess: Object.assign(this.state.removingInProcess, {[sessionId]: true})
             })
-            db.removeMemberFromForm(uidToRemove, this.props.form.trainingId, sessionId)
+            db.removeMemberFromForm(uidToRemove, this.props.form.trainingId, [sessionId])
                 .then(() => {
                     delete this.state.selectedMembers[sessionId]
                     this.setState({

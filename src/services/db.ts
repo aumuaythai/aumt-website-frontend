@@ -10,7 +10,7 @@ type MockMember = {
     }
 }
 
-const TRAINING_DB_PATH = 'weekly_trainings'
+const TRAINING_DB_PATH = 'weekly_trainings_dup'
 
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
@@ -328,18 +328,20 @@ class DB {
             })
     }
 
-    public removeMemberFromForm = (userId: string, formId: string, sessionId: string): Promise<void> => {
+    public removeMemberFromForm = (userId: string, formId: string, sessionIds: string[]): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
+        const sessionObj = {}
+        sessionIds.forEach((id) => {
+            (sessionObj as any)[id] = {
+                members: {
+                    [userId]: firebase.firestore.FieldValue.delete()
+                }
+            }
+        })
         return this.db.collection(TRAINING_DB_PATH)
             .doc(formId)
             .set({
-                sessions: {
-                    [sessionId]: {
-                        members: {
-                            [userId]: firebase.firestore.FieldValue.delete()
-                        }
-                    }
-                }
+                sessions: sessionObj
             }, {merge: true})
     }
 
@@ -381,6 +383,7 @@ class DB {
                     feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
                 }
             }
+            console.log(mergeObj)
             return this.db.collection(TRAINING_DB_PATH)
                 .doc(formId)
                 .set(mergeObj, {merge: true})

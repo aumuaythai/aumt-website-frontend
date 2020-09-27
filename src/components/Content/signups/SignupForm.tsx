@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
-import {Spin, Radio, Button, Alert, Tooltip, Input, Tag } from 'antd'
+import {Spin, Checkbox, Button, Alert, Tooltip, Input, Tag } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';
 import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown';
+import { CheckboxChangeEvent, CheckboxOptionType } from 'antd/lib/checkbox';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 export interface SignupFormProps {
     title: string
@@ -22,9 +24,9 @@ export interface SignupFormProps {
 }
 
 interface SignupFormState {
-    currentSessionId: string
+    currentSessionIds: string[]
     currentFeedback: string
-    signedUpOption: string
+    signedUpOptions: string[]
     submittingState: boolean
     currentDisplayName: string
     currentMockUid: string
@@ -38,12 +40,12 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     constructor(props: SignupFormProps) {
         super(props)
         this.state = {
-            currentSessionId: '',
+            currentSessionIds: [],
             currentFeedback: '',
             currentDisplayName: '',
             currentMockUid: '',
             errorMessage: '',
-            signedUpOption: '',
+            signedUpOptions: [],
             submittingState: false,
             removingState: false
         }
@@ -66,15 +68,15 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             })
             this.setState({
                 ...this.state,
-                signedUpOption: signedUpSessions[0],
-                currentSessionId: signedUpSessions[0]
+                signedUpOptions: signedUpSessions,
+                currentSessionIds: signedUpSessions
             })
         }
     }
-    onOptionChange = (e: RadioChangeEvent) => {
+    onOptionChange = (ids: CheckboxValueType[]) => {
         this.setState({
             ...this.state,
-            currentSessionId: e.target.value,
+            currentSessionIds: ids.map(i => i.toString()),
             errorMessage: ''
         });
     }
@@ -99,18 +101,19 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         return uid
     }
     onRemoveClick = () => {
-        if (this.state.signedUpOption && this.props.authedUserId) {
+        if (this.state.signedUpOptions.length && this.props.authedUserId) {
             this.setState({
                 ...this.state,
                 removingState: true
             })
-            db.removeMemberFromForm(this.props.authedUserId, this.props.id, this.state.signedUpOption)
+            db.removeMemberFromForm(this.props.authedUserId, this.props.id, this.state.signedUpOptions)
                 .then(() => {
                     this.setState({
                         ...this.state,
-                        signedUpOption: '',
-                        currentSessionId: '',
-                        removingState: false
+                        signedUpOptions: [],
+                        currentSessionIds: [],
+                        removingState: false,
+                        errorMessage: ''
                     })
                     if (this.props.onSignupChanged) {
                         this.props.onSignupChanged()
@@ -126,8 +129,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
         }
     }
     onSubmitClick = () => {
-        const optionSelected = this.state.currentSessionId
-        if (!optionSelected) {
+        const selectedSessions = this.state.currentSessionIds
+        if (selectedSessions.length === 0) {
             this.setState({
                 ...this.state,
                 errorMessage: 'You must select a session'
@@ -152,13 +155,13 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 this.props.displayName || this.state.currentDisplayName,
                 new Date(),
                 this.props.id,
-                [optionSelected],
+                selectedSessions,
                 this.state.currentFeedback,
-                [this.state.signedUpOption])
+                this.state.signedUpOptions)
             .then(() => {
                 this.setState({
                     ...this.state,
-                    signedUpOption: optionSelected,
+                    signedUpOptions: selectedSessions,
                     currentMockUid: uid,
                     submittingState: false,
                 })
@@ -174,6 +177,32 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 })
             })
     }
+    getCheckboxGroup = (sessions: Record<string, AumtTrainingSession>): CheckboxOptionType[] => {
+        return Object.values(sessions)
+            .sort((a, b) => a.position - b.position)
+            .map((session) => {
+                const isFull = session.limit <= Object.keys(session.members).length
+                const spotsLeft = Math.max(0, session.limit - Object.keys(session.members).length)
+                const label = (
+                    <span key={session.title} className="optionLine">
+                        <Tooltip title={isFull ? 'Class full' : ''} placement='left'>
+                            <span className='signupFormSessionTitle'>{session.title}
+                                {this.state.signedUpOptions.includes(session.sessionId) ? <CheckSquareTwoTone className='signedUpOptionCheck' twoToneColor="#52c41a" /> : ''}
+                            </span>
+                            {spotsLeft <= SPOTS_TAG_LIMIT ? 
+                            <Tag className='spotsLeftTag' color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>
+                            : ''}
+                        </Tooltip>
+                    </span>
+                )
+                return {
+                    label,
+                    value: session.sessionId,
+                    disabled: isFull,
+                    style: {width: '100%','marginRight':0}
+                }
+            })
+    }
     render() {
         return (
             <div>
@@ -185,7 +214,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     ''
                 }
                 <div className="optionsContainer">
-                    <Radio.Group className="trainingSignupRadioGroup" onChange={this.onOptionChange} value={this.state.currentSessionId}>
+                    {/* <Radio.Group className="trainingSignupRadioGroup" onChange={this.onOptionChange} value={this.state.currentSessionId}>
                         {Object.values(this.props.sessions)
                         .sort((a, b) => a.position - b.position)
                         .map((session) => {
@@ -208,7 +237,11 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                                 </div>
                             )
                         })}
-                    </Radio.Group>
+                    </Radio.Group> */}
+                    <Checkbox.Group 
+                        value={this.state.currentSessionIds}
+                        onChange={this.onOptionChange}
+                        options={this.getCheckboxGroup(this.props.sessions)}></Checkbox.Group>
                 </div>
                 {this.props.authedUserId ? 
                     <div className="feedbackInputContainer">
@@ -235,8 +268,8 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     loading={this.state.submittingState}
                     onClick={this.onSubmitClick}>Submit</Button>
                 {this.props.authedUserId ?
-                <Button disabled={!this.state.signedUpOption} type='link' className='signupFormRemove' onClick={this.onRemoveClick} block>
-                    {this.state.removingState ? <span><Spin className='signupFormRemoveLoadingIcon'/> </span>: ''} Remove Signup
+                <Button disabled={!this.state.signedUpOptions.length} type='link' className='signupFormRemove' onClick={this.onRemoveClick} block>
+                    {this.state.removingState ? <span><Spin className='signupFormRemoveLoadingIcon'/> </span>: ''} Remove Signup{this.state.signedUpOptions.length > 1 ? 's' : ''}
                 </Button> : ''
                 }
             </div>

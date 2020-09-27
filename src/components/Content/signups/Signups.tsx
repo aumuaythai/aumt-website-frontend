@@ -56,7 +56,8 @@ class Signups extends Component<SignupProps, SignupState> {
                 })
                 this.setState({
                     ...this.state,
-                    loadingForms: false
+                    loadingForms: false,
+                    noFormText: 'Error getting weekly trainings from db: ' + JSON.stringify(err)
                 })
             })
     }
