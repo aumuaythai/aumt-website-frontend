@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {Spin, Checkbox, Button, Alert, Tooltip, Input, Tag } from 'antd'
-import { RadioChangeEvent } from 'antd/lib/radio';
 import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession } from '../../../types'
@@ -85,7 +84,6 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 ids = this.sessionHistory.slice(this.sessionHistory.length - this.props.signupMaxSessions)
             }
         }
-        console.log(this.sessionHistory)
         this.setState({
             ...this.state,
             currentSessionIds: ids,
@@ -226,30 +224,6 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     ''
                 }
                 <div className="optionsContainer">
-                    {/* <Radio.Group className="trainingSignupRadioGroup" onChange={this.onOptionChange} value={this.state.currentSessionId}>
-                        {Object.values(this.props.sessions)
-                        .sort((a, b) => a.position - b.position)
-                        .map((session) => {
-                            const isFull = session.limit <= Object.keys(session.members).length
-                            const spotsLeft = Math.max(0, session.limit - Object.keys(session.members).length)
-                            return (
-                                <div key={session.title} className="optionLine">
-                                    <Tooltip title={isFull ? 'Class full' : ''} placement='left'>
-                                        <Radio
-                                            className='sessionOption'
-                                            disabled={isFull}
-                                            value={session.sessionId}>
-                                                {session.title}
-                                            {spotsLeft <= SPOTS_TAG_LIMIT ? 
-                                            <Tag className='spotsLeftTag' color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>
-                                            : ''}
-                                            {this.state.signedUpOption === session.sessionId ? <CheckSquareTwoTone className='signedUpOptionCheck' twoToneColor="#52c41a" /> : ''}
-                                        </Radio> 
-                                    </Tooltip>
-                                </div>
-                            )
-                        })}
-                    </Radio.Group> */}
                     <Checkbox.Group 
                         value={this.state.currentSessionIds}
                         onChange={this.onOptionChange}
