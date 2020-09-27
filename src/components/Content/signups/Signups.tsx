@@ -23,7 +23,6 @@ interface SignupState {
 }
 
 class Signups extends Component<SignupProps, SignupState> {
-    private isFirstUpdate = true
     constructor(props: SignupProps) {
         super(props)
         this.state = {

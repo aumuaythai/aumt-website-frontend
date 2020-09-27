@@ -10,7 +10,7 @@ type MockMember = {
     }
 }
 
-const TRAINING_DB_PATH = 'weekly_trainings_dup'
+const TRAINING_DB_PATH = 'weekly_trainings'
 
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
@@ -383,7 +383,6 @@ class DB {
                     feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
                 }
             }
-            console.log(mergeObj)
             return this.db.collection(TRAINING_DB_PATH)
                 .doc(formId)
                 .set(mergeObj, {merge: true})
