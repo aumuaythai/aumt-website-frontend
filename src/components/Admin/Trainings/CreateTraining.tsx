@@ -106,6 +106,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                         currentOpenToPublic: training.openToPublic,
                         currentFeedback: training.feedback,
                         currentTrainingId: training.trainingId,
+                        currentSignupMaxSessions: training.signupMaxSessions,
                         loadingTraining: false
                     })
                 })
@@ -247,7 +248,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         db.submitNewForm({
             title: this.state.currentTitle,
             sessions,
-            signupMaxSessions: 1,
+            signupMaxSessions: this.state.currentSignupMaxSessions,
             opens: this.state.currentOpens,
             closes: this.state.currentCloses,
             openToPublic: this.state.currentOpenToPublic,
@@ -298,7 +299,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                     </Radio.Group>
                 </div>
                 <h4 className='formSectionTitle'>Sessions</h4>
-                Members can sign up for <InputNumber onChange={this.onSignupMaxSessionsChange} className='createTrainingMaxSessionInput' defaultValue={1} min={1}/> session(s).
+                Members can sign up to <InputNumber value={this.state.currentSignupMaxSessions} onChange={this.onSignupMaxSessionsChange} className='createTrainingMaxSessionInput' defaultValue={1} min={1}/> session(s).
                 <div className="sessionSection">
                     <div className='addSessionButton'>
                         <Button onClick={this.onAddSessionClick}>Add Session +</Button>

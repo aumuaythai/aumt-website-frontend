@@ -38,6 +38,7 @@ interface SignupFormState {
 const SPOTS_TAG_LIMIT = 5 // Infinity
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
+    private sessionHistory: string[] = []
     constructor(props: SignupFormProps) {
         super(props)
         this.state = {
@@ -74,10 +75,20 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
             })
         }
     }
-    onOptionChange = (ids: CheckboxValueType[]) => {
+    onOptionChange = (e: CheckboxValueType[]) => {
+        let ids = e.map(i => i.toString())
+        const newId = ids.find(i => !this.state.currentSessionIds.includes(i))
+        if (newId) {
+            this.sessionHistory = this.sessionHistory.filter(s => s !== newId)
+            this.sessionHistory.push(newId)
+            if (ids.length > this.props.signupMaxSessions) {
+                ids = this.sessionHistory.slice(this.sessionHistory.length - this.props.signupMaxSessions)
+            }
+        }
+        console.log(this.sessionHistory)
         this.setState({
             ...this.state,
-            currentSessionIds: ids.map(i => i.toString()),
+            currentSessionIds: ids,
             errorMessage: ''
         });
     }

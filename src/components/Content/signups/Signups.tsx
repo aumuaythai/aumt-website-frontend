@@ -141,7 +141,7 @@ class Signups extends Component<SignupProps, SignupState> {
                                         : ''}
                                     authedUserId={this.props.authedUserId}
                                     notes={form.notes}
-                                    signupMaxSessions={Object.keys(form.sessions).length}
+                                    signupMaxSessions={form.signupMaxSessions}
                                     openToPublic={form.openToPublic}
                                     ></SignupForm>
                                 </div>
