@@ -9,4 +9,6 @@
 }
 .tableLongTextContainer {
     max-width: 100%;
+    display: inline-block;
+    padding-right: 5px;
 }
