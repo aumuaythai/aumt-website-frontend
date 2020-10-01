@@ -456,10 +456,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                     <Route path='/admin/members/:id'>
                         {this.state.selectedMember ? 
                         <div className="memberDetailsSection">
-                            <h2 className="memberDetailsTitle">{this.state.selectedMember.tableName}</h2>
-                            <div className="memberDetailsCloseIcon"><CloseCircleOutlined onClick={this.exitSelectedMember} /></div>
-                            <div className="clearBoth"></div>
-                            <MemberDetails member={this.state.selectedMember}></MemberDetails>
+                            <MemberDetails member={this.state.selectedMember} onExit={this.exitSelectedMember}></MemberDetails>
                         </div>
                         : ''}
                     </Route>

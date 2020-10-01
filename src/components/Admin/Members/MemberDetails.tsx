@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import { Tooltip, Input, Radio, Button, Popconfirm } from 'antd'
-import {CopyOutlined} from '@ant-design/icons'
+import {CopyOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { MemberAttendance } from './MemberAttendance'
 import './MemberDetails.css'
 import { TableDataLine } from './TableHelper'
@@ -13,6 +13,7 @@ import Validator from '../../../services/validator'
 
 interface MemberDetailsProps extends RouteComponentProps {
     member: TableDataLine
+    onExit: () => void
 }
 
 // TODO add other details like time joined, email verified, etc
@@ -27,6 +28,7 @@ interface MemberDetailsState {
     currentUpi: string
     currentMembership: 'S1' | 'FY' | 'S2'
     currentPaid: 'Yes' | 'No',
+    currentNotes: string
     currentPaymentType: 'Bank Transfer' | 'Cash' | 'Other'
     currentIsReturningMember: 'Yes' | 'No'
     currentEmailVerified: boolean
@@ -51,6 +53,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             currentUpi: props.member.upi,
             currentMembership: props.member.membership,
             currentPaid: props.member.paid,
+            currentNotes: props.member.notes,
             currentPaymentType: props.member.paymentType,
             currentIsReturningMember: props.member.isReturningMember,
             currentEmailVerified: props.member.emailVerified,
@@ -76,6 +79,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                 currentUpi: this.props.member.upi,
                 currentMembership: this.props.member.membership,
                 currentPaid: this.props.member.paid,
+                currentNotes: this.props.member.notes,
                 currentPaymentType: this.props.member.paymentType,
                 currentIsReturningMember: this.props.member.isReturningMember,
                 currentEmailVerified: this.props.member.emailVerified,
@@ -112,6 +116,9 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     }
     onPaidChange = (paid: 'Yes' | 'No') => {
         this.setState({...this.state, currentPaid: paid})
+    }
+    onNotesChange = (notes: string) => {
+        this.setState({...this.state, currentNotes: notes})
     }
     onPaymentTypeChange = (payment: 'Bank Transfer' | 'Cash' | 'Other') => {
         this.setState({...this.state, currentPaymentType: payment})
@@ -155,6 +162,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             upi: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
             paid: this.state.currentPaid,
+            notes: this.state.currentNotes,
             isReturningMember: this.state.currentIsReturningMember,
             initialExperience: this.state.currentInitialExperience || '',
             EmergencyContactName: this.state.currentECName,
@@ -187,6 +195,15 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     render() {
         return (
             <div>
+                <h2 className="memberDetailsTitle">{this.props.member.tableName}</h2>
+                <div className="memberDetailsCloseIcon"><CloseCircleOutlined onClick={this.props.onExit} /></div>
+                <div className="memberDetailsHeaderButtons">
+                    <Button className='memberDescriptionButton' type='primary' loading={this.state.saving} onClick={this.onSaveClick}>Save {this.state.currentFirstName}</Button>
+                    <Popconfirm title={`Confirm delete ${this.state.currentFirstName}? RIP`} onConfirm={this.onRemoveClick}>
+                        <Button className='memberDescriptionButton' danger type='primary' loading={this.state.removing}>Remove {this.state.currentFirstName}</Button>
+                    </Popconfirm>
+                </div>
+                <div className="clearBoth"></div>
                 <div className="membershipDescriptionContainer">
                     <div className="memberDescriptionSection">
                         <h4>Contact</h4>
@@ -269,12 +286,6 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                             <span className='memberDescriptionTitle'>Relation: </span>
                             <Input className='memberEditInput' value={this.state.currentECRelationship} onChange={e => this.onECRelationChange(e.target.value)}/>
                         </div>
-                    </div>
-                    <div className="memberDescriptionSection">
-                        <Button className='memberDescriptionButton' type='primary' loading={this.state.saving} onClick={this.onSaveClick}>Save {this.state.currentFirstName} {this.state.currentLastName}</Button>
-                        <Popconfirm title={`Confirm delete ${this.state.currentFirstName}? RIP`} onConfirm={this.onRemoveClick}>
-                            <Button className='memberDescriptionButton' danger type='primary' loading={this.state.removing}>Remove {this.state.currentFirstName} {this.state.currentLastName}</Button>
-                        </Popconfirm>
                     </div>
                     <div className="clearBoth"></div>
                 </div>

@@ -381,14 +381,15 @@ class DB {
     public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
-        return this.db.collection('events')
-            .doc('8aqkptdcrd')
-            .set({
-                signups: {
-                    closes: new Date()
-                }
-            }, {merge: true})
-            // .then((querySnapshot) => {})
+        return this.db.collection('members')
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    doc.ref.update({
+                        notes: ''
+                    })
+                })
+            })
     }
 
     public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {

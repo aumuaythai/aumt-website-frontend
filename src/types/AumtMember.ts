@@ -11,6 +11,7 @@ export interface AumtMember {
     isReturningMember: 'Yes' | 'No'
     isUoAStudent: 'Yes' | 'No'
     initialExperience: string
+    notes: string
 
     // Membership
     membership: 'S1' | 'S2' | 'FY'
