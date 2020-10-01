@@ -7,3 +7,6 @@
 .rightTableText {
     float: right;
 }
+.tableLongTextContainer {
+    max-width: 100%;
+}

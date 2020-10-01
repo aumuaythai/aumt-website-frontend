@@ -444,17 +444,28 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                     return moment(Number(text)).format('MMM DD')
                 }
             },
+            // {
+            //     dataIndex: 'emailVerified',
+            //     title: 'Logged In',
+            //     filters: [{text: 'Yes', value: true}, 
+            //     {text: 'No', value: false}],
+            //     onFilter: (value: boolean, record: TableDataLine) => {
+            //         return value === record.emailVerified
+            //     },
+            //     render: (verified: boolean) => {
+            //         return verified ? 'Yes' : 'No'
+            //     }
+            // }
             {
-                dataIndex: 'emailVerified',
-                title: 'Logged In',
-                filters: [{text: 'Yes', value: true}, 
-                {text: 'No', value: false}],
-                onFilter: (value: boolean, record: TableDataLine) => {
-                    return value === record.emailVerified
-                },
-                render: (verified: boolean) => {
-                    return verified ? 'Yes' : 'No'
+                dataIndex: 'notes',
+                title: 'Notes',
+                ...this.getColumnSearchProps('notes'),
+                render: (text: string) => {
+                    return <p className='tableLongTextContainer'>
+                            <span>{this.renderHighlightedText(text, 'notes')}</span>
+                        </p>
                 }
+
             }
             // {
             //     title: 'Emergency Contact',

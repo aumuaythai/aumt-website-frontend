@@ -17,8 +17,6 @@ interface MemberDetailsProps extends RouteComponentProps {
     onExit: () => void
 }
 
-// TODO add other details like time joined, email verified, etc
-
 interface MemberDetailsState {
     currentFirstName: string
     currentLastName: string

@@ -15,7 +15,6 @@
     margin: 0 10px;
 }
 .memberDescriptionSection {
-    /* display: inline-block; */
     min-width: 320px;
     margin-bottom: 20px;
 }
@@ -44,7 +43,6 @@
 }
 .memberEditInput {
     border: 0;
-    /* width: 120px; */
     border-bottom: 1px solid #bbb;
 }
 .memberEditTxtArea {
