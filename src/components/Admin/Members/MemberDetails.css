@@ -2,46 +2,67 @@
     color: #999;
     /* font-size: 12px; */
 }
+.memberDetailsTitle {
+    float: left;
+}
+.memberDetailsCloseIcon {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
 .membershipDescriptionValue {
     color: #444;
     margin: 0 10px;
 }
 .memberDescriptionSection {
-    display: inline-block;
     min-width: 320px;
+    margin-bottom: 20px;
 }
 .clearBoth {
     clear: both
 }
+.memberDetailsTableLabel {
+    text-align: right;
+}
 .memberDescriptionLine {
     margin: 10px 0;
+    padding-right: 20px;
 }
-.memberDescriptionLine.noHeight {
-    height: 0;
-    margin: 0;
-    overflow-y: hidden;
+.displayNone {
+    display: none;
 }
 .atttendanceContainer {
     margin-top: 20px;
 }
+.memberDetailsTable {
+    width: 350px;
+    padding-right: 10px;
+}
+.memberDetailsTableData {
+    padding-right: 25px;
+}
 .memberEditInput {
     border: 0;
-    width: 120px;
     border-bottom: 1px solid #bbb;
+}
+.memberEditTxtArea {
+    width: 250px;
 }
 .memberEditInput.longMemberEditInput {
     width: 250px;
 }
 .memberDescriptionButton {
-    margin: 20px;
-    display: block;
+    margin-left: 20px;
+    display: inline-block;
 }
 .membershipDescriptionContainer {
     max-height: 380px;
     overflow-y: auto;
-}
-.memberDetailsPaymentTypeRadio {
-    margin-left: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
 }
 @media(max-width: 1180px) {
     .membershipDescriptionContainer {

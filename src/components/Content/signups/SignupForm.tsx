@@ -4,9 +4,9 @@ import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';
-import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown';
 import { CheckboxOptionType } from 'antd/lib/checkbox';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import { RenderMarkdown } from '../../utility/RenderMarkdown';
 
 export interface SignupFormProps {
     title: string

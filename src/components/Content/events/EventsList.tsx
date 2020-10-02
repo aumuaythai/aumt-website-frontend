@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Divider } from 'antd'
 import { AumtEvent } from '../../../types'
 import './EventsList.css'
-import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown'
+import { RenderMarkdown } from '../../utility/RenderMarkdown'
 
 interface EventListProps extends RouteComponentProps {
     events: AumtEvent[]

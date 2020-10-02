@@ -37,14 +37,6 @@
     float: right;
     padding: 10px;
 }
-.memberDetailsTitle {
-    float: left;
-}
-.memberDetailsCloseIcon {
-    float: right;
-    font-size: 20px;
-    cursor: pointer;
-}
 .joinFormAdminContainer {
     max-height: calc(100% - 30px);
     overflow-y: auto;

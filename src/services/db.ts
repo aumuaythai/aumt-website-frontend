@@ -394,13 +394,13 @@ class DB {
         // const experiences = ['Cash', 'Bank Transfer']
         return this.db.collection('weekly_trainings_dup')
             .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    doc.ref.update({
-                        signupMaxSessions: 1
-                    })
-                })
-            })
+            // .then((querySnapshot) => {
+            //     querySnapshot.forEach((doc) => {
+            //         // doc.ref.update({
+                        
+            //         // })
+            //     })
+            // })
     }
 
     public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {

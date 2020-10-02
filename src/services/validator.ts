@@ -28,6 +28,7 @@ class Validator {
             instagramHandle: obj.instagramHandle || '',
             paymentType: obj.paymentType || 'Cash',
             paid: obj.paid,
+            notes: obj.notes || '',
             timeJoinedMs: Number(obj.timeJoinedMs),
             EmergencyContactName: obj.EmergencyContactName,
             EmergencyContactNumber: obj.EmergencyContactNumber,

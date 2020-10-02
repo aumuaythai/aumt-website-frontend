@@ -9,7 +9,7 @@ import firebaseUtil from '../../../services/firebase.util'
 import db from '../../../services/db'
 import { CampSignupForm } from './CampSignupForm'
 import dataUtil from '../../../services/data.util'
-import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown'
+import { RenderMarkdown } from '../../utility/RenderMarkdown'
 
 interface EventProps {
     event: AumtEvent

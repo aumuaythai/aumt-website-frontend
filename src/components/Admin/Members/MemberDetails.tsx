@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import { Tooltip, Input, Radio, Button, Popconfirm } from 'antd'
-import {CopyOutlined} from '@ant-design/icons'
+import {CopyOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { MemberAttendance } from './MemberAttendance'
 import './MemberDetails.css'
 import { TableDataLine } from './TableHelper'
@@ -10,12 +10,12 @@ import { AumtMember } from '../../../types'
 import db from '../../../services/db'
 import DataFormatterUtil from '../../../services/data.util'
 import Validator from '../../../services/validator'
+import moment from 'moment'
 
 interface MemberDetailsProps extends RouteComponentProps {
     member: TableDataLine
+    onExit: () => void
 }
-
-// TODO add other details like time joined, email verified, etc
 
 interface MemberDetailsState {
     currentFirstName: string
@@ -27,6 +27,7 @@ interface MemberDetailsState {
     currentUpi: string
     currentMembership: 'S1' | 'FY' | 'S2'
     currentPaid: 'Yes' | 'No',
+    currentNotes: string
     currentPaymentType: 'Bank Transfer' | 'Cash' | 'Other'
     currentIsReturningMember: 'Yes' | 'No'
     currentEmailVerified: boolean
@@ -51,6 +52,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             currentUpi: props.member.upi,
             currentMembership: props.member.membership,
             currentPaid: props.member.paid,
+            currentNotes: props.member.notes,
             currentPaymentType: props.member.paymentType,
             currentIsReturningMember: props.member.isReturningMember,
             currentEmailVerified: props.member.emailVerified,
@@ -76,6 +78,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                 currentUpi: this.props.member.upi,
                 currentMembership: this.props.member.membership,
                 currentPaid: this.props.member.paid,
+                currentNotes: this.props.member.notes,
                 currentPaymentType: this.props.member.paymentType,
                 currentIsReturningMember: this.props.member.isReturningMember,
                 currentEmailVerified: this.props.member.emailVerified,
@@ -112,6 +115,9 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     }
     onPaidChange = (paid: 'Yes' | 'No') => {
         this.setState({...this.state, currentPaid: paid})
+    }
+    onNotesChange = (notes: string) => {
+        this.setState({...this.state, currentNotes: notes})
     }
     onPaymentTypeChange = (payment: 'Bank Transfer' | 'Cash' | 'Other') => {
         this.setState({...this.state, currentPaymentType: payment})
@@ -155,6 +161,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             upi: this.state.currentUpi || '0',
             membership: this.state.currentMembership,
             paid: this.state.currentPaid,
+            notes: this.state.currentNotes,
             isReturningMember: this.state.currentIsReturningMember,
             initialExperience: this.state.currentInitialExperience || '',
             EmergencyContactName: this.state.currentECName,
@@ -187,94 +194,233 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     render() {
         return (
             <div>
+                <h2 className="memberDetailsTitle">{this.props.member.tableName}</h2>
+                <div className="memberDetailsCloseIcon"><CloseCircleOutlined onClick={this.props.onExit} /></div>
+                <div className="memberDetailsHeaderButtons">
+                    <Button className='memberDescriptionButton' type='primary' loading={this.state.saving} onClick={this.onSaveClick}>Save {this.state.currentFirstName}</Button>
+                    <Popconfirm title={`Confirm delete ${this.state.currentFirstName}? RIP`} onConfirm={this.onRemoveClick}>
+                        <Button className='memberDescriptionButton' danger type='primary' loading={this.state.removing}>Remove {this.state.currentFirstName}</Button>
+                    </Popconfirm>
+                </div>
+                <div className="clearBoth"></div>
                 <div className="membershipDescriptionContainer">
                     <div className="memberDescriptionSection">
-                        <h4>Contact</h4>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>First: </span>
-                            <Input className='memberEditInput' value={this.state.currentFirstName} onChange={e => this.onFirstNameChange(e.target.value)}/>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Last: </span>
-                            <Input className='memberEditInput' value={this.state.currentLastName} onChange={e => this.onLastNameChange(e.target.value)}/>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Preferred: </span>
-                            <Input className='memberEditInput' value={this.state.currentPreferredName} onChange={e => this.onPreferredNameChange(e.target.value)}/>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Email: </span>
-                            <Input className='memberEditInput longMemberEditInput' value={this.state.currentEmail} onChange={e => this.onEmailChange(e.target.value)}/>
-                            <Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.state.currentEmail)}/></Tooltip>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Instagram Handle: </span>
-                            <Input prefix='@' className='memberEditInput' value={this.state.currentIgHandle} onChange={e => this.onInstagramChange(e.target.value)}/>
-                        </div>
+                        <h3>Contact</h3>
+                        <table className='memberDetailsTable'>
+                            <tr>
+                                <td className='memberDetailsTableLabel'>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>First: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input className='memberEditInput' value={this.state.currentFirstName} onChange={e => this.onFirstNameChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Last: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input className='memberEditInput' value={this.state.currentLastName} onChange={e => this.onLastNameChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Preferred: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input className='memberEditInput' value={this.state.currentPreferredName} onChange={e => this.onPreferredNameChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Email: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input
+                                        className='memberEditInput'
+                                        value={this.state.currentEmail}
+                                        suffix={<Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.state.currentEmail)}/></Tooltip>}
+                                        onChange={e => this.onEmailChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Ig Handle: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input prefix='@' className='memberEditInput' value={this.state.currentIgHandle} onChange={e => this.onInstagramChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div className="memberDescriptionSection">
-                        <h4>Details</h4>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>UoA Student: </span>
-                            <Radio.Group value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
-                                <Radio.Button value="Yes">Yes</Radio.Button>
-                                <Radio.Button value="No">No</Radio.Button>
-                            </Radio.Group>
-                        </div>
-                        <div className={`memberDescriptionLine ${this.state.currentIsUoaStudent === 'Yes' ? '' : 'noHeight'}`}>
-                            <span className='memberDescriptionTitle'>UPI: </span>
-                            <Input className='memberEditInput' value={this.state.currentUpi} onChange={e => this.onUpiChange(e.target.value)}/>
-                            <Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.upi)}/></Tooltip>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Membership: </span>
-                            <Radio.Group value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
-                                <Radio.Button value="S1">S1</Radio.Button>
-                                <Radio.Button value="S2">S2</Radio.Button>
-                                <Radio.Button value="FY">FY</Radio.Button>
-                            </Radio.Group>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Paid: </span>
-                            <Radio.Group value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
-                                <Radio.Button value="Yes">Yes</Radio.Button>
-                                <Radio.Button value="No">No</Radio.Button>
-                            </Radio.Group>
-                            <Radio.Group className='memberDetailsPaymentTypeRadio' value={this.state.currentPaymentType} onChange={e => this.onPaymentTypeChange(e.target.value)}>
-                                <Radio.Button value="Cash">Cash</Radio.Button>
-                                <Radio.Button value="Bank Transfer">Transfer</Radio.Button>
-                                <Radio.Button value="Other">Other</Radio.Button>
-                            </Radio.Group>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Returning Member: </span>
-                            <Radio.Group value={this.state.currentIsReturningMember} onChange={e => this.onIsReturningChange(e.target.value)}>
-                                <Radio.Button value="Yes">Yes</Radio.Button>
-                                <Radio.Button value="No">No</Radio.Button>
-                            </Radio.Group>
-                        </div>
+                        <h3>Membership</h3>
+                        <table className='memberDetailsTable'>
+                            <tr>
+                                <td className='memberDetailsTableLabel'>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Term: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Radio.Group value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
+                                        <Radio.Button value="S1">S1</Radio.Button>
+                                        <Radio.Button value="S2">S2</Radio.Button>
+                                        <Radio.Button value="FY">FY</Radio.Button>
+                                    </Radio.Group>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Paid: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Radio.Group value={this.state.currentPaid} onChange={e => this.onPaidChange(e.target.value)}>
+                                        <Radio.Button value="Yes">Yes</Radio.Button>
+                                        <Radio.Button value="No">No</Radio.Button>
+                                    </Radio.Group>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Payment: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Radio.Group value={this.state.currentPaymentType} onChange={e => this.onPaymentTypeChange(e.target.value)}>
+                                        <Radio.Button value="Cash">Cash</Radio.Button>
+                                        <Radio.Button value="Bank Transfer">Transfer</Radio.Button>
+                                        <Radio.Button value="Other">Other</Radio.Button>
+                                    </Radio.Group>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Returning: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Radio.Group value={this.state.currentIsReturningMember} onChange={e => this.onIsReturningChange(e.target.value)}>
+                                        <Radio.Button value="Yes">Yes</Radio.Button>
+                                        <Radio.Button value="No">No</Radio.Button>
+                                    </Radio.Group>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Joined: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <span> {moment(this.props.member.timeJoinedMs).format('MMM DD yyyy')}</span>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div className="memberDescriptionSection">
-                        <h4>Emergency Contact</h4>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Name: </span>
-                            <Input className='memberEditInput' value={this.state.currentECName} onChange={e => this.onECNameChange(e.target.value)}/>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Number: </span>
-                            <Input className='memberEditInput' value={this.state.currentECNumber} onChange={e => this.onECNumberChange(e.target.value)}/>
-                            <Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.EmergencyContactNumber)}/></Tooltip>
-                        </div>
-                        <div className='memberDescriptionLine'>
-                            <span className='memberDescriptionTitle'>Relation: </span>
-                            <Input className='memberEditInput' value={this.state.currentECRelationship} onChange={e => this.onECRelationChange(e.target.value)}/>
-                        </div>
+                        <h3>Details</h3>
+                        <table className='memberDetailsTable'>
+                            <tr>
+                                <td className='memberDetailsTableLabel'>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>UoA: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Radio.Group value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
+                                        <Radio.Button value="Yes">Yes</Radio.Button>
+                                        <Radio.Button value="No">No</Radio.Button>
+                                    </Radio.Group>
+                                </td>
+                            </tr>
+                            <tr className={`memberDescriptionLine ${this.state.currentIsUoaStudent === 'Yes' ? '' : 'displayNone'}`}>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>UPI: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input
+                                        className='memberEditInput'
+                                        suffix={<Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.upi)}/></Tooltip>}
+                                        value={this.state.currentUpi}
+                                        onChange={e => this.onUpiChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>ID: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <span>{this.props.member.key}</span>
+                                    <Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.key)}/></Tooltip>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Notes: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input.TextArea
+                                        className='memberEditTxtArea'
+                                        onChange={e => this.onNotesChange(e.target.value)}
+                                        placeholder='Admin Notes' autoSize={{minRows: 2, maxRows: 2}}
+                                        value={this.state.currentNotes}/>
+                                </td>
+                            </tr>
+                        </table>
+                        {/* <div className={`memberDescriptionLine`}>
+                            <span className='memberDescriptionTitle'>Experience: </span>
+                            <Input className='memberEditInput' value={this.state.currentInitialExperience} onChange={e => this.onInitialExperienceChange(e.target.value)}/>
+                        </div> */}
                     </div>
                     <div className="memberDescriptionSection">
-                        <Button className='memberDescriptionButton' type='primary' loading={this.state.saving} onClick={this.onSaveClick}>Save {this.state.currentFirstName} {this.state.currentLastName}</Button>
-                        <Popconfirm title={`Confirm delete ${this.state.currentFirstName}? RIP`} onConfirm={this.onRemoveClick}>
-                            <Button className='memberDescriptionButton' danger type='primary' loading={this.state.removing}>Remove {this.state.currentFirstName} {this.state.currentLastName}</Button>
-                        </Popconfirm>
+                        <h3>Emergency Contact</h3>
+                        <table className='memberDetailsTable'>
+                            <tr>
+                                <td className='memberDetailsTableLabel'>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Name: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input className='memberEditInput' value={this.state.currentECName} onChange={e => this.onECNameChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Number: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input
+                                        className='memberEditInput'
+                                        value={this.state.currentECNumber}
+                                        suffix={<Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.EmergencyContactNumber)}/></Tooltip>}
+                                        onChange={e => this.onECNumberChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                            <tr className='memberDescriptionLine'>
+                                <td className='memberDetailsTableLabel'>
+                                    <span className='memberDescriptionTitle'>Relation: </span>
+                                </td>
+                                <td className='memberDetailsTableData'>
+                                    <Input className='memberEditInput' value={this.state.currentECRelationship} onChange={e => this.onECRelationChange(e.target.value)}/>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div className="clearBoth"></div>
                 </div>
