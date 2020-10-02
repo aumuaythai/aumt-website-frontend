@@ -38,6 +38,7 @@ const SPOTS_TAG_LIMIT = 5 // Infinity
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     private sessionHistory: string[] = []
+    private advancedInfoText = 'Please make sure Victor has given you the OK to join the advanced session and remember to bring a mouthguard - if one of these conditions isn\'t met we may stop you from training!'
     constructor(props: SignupFormProps) {
         super(props)
         this.state = {
@@ -73,6 +74,11 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 currentSessionIds: signedUpSessions
             })
         }
+    }
+    isAdvancedSelected = () => {
+        return this.state.currentSessionIds.some((sessionId) => {
+            return this.props.sessions[sessionId]?.title?.toLowerCase().indexOf('advanced') !== -1
+        })
     }
     onOptionChange = (e: CheckboxValueType[]) => {
         let ids = e.map(i => i.toString())
@@ -241,8 +247,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     </div>
                 : '' }
                 <div className="messageContainer">
-                    {(() => {return this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''})()}
+                    {this.state.errorMessage ? <Alert type='error' message={this.state.errorMessage}></Alert> : ''}
                 </div>
+                {this.isAdvancedSelected() ? <Alert type='info' className='signupFormInfoTextContainer' showIcon message={this.advancedInfoText}></Alert> :''}
                 {this.props.submittingAsName ? 
                     <div className="aboveSubmitSignupFormText">Submitting as {`${this.props.submittingAsName}`}</div>
                 : ''}

@@ -383,7 +383,6 @@ class DB {
                     feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
                 }
             }
-            console.log(mergeObj)
             return this.db.collection(TRAINING_DB_PATH)
                 .doc(formId)
                 .set(mergeObj, {merge: true})
