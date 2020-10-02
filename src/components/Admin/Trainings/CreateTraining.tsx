@@ -31,7 +31,7 @@ const DEFAULT_TRAINING_LIMIT = 30
 const TRAINING_0_OPENS_DATE = new Date(2020, 6, 19, 1, 0, 0)
 const TRAINING_0_CLOSES_DATE = new Date(2020, 6, 24, 20, 30, 0)
 
-const TRAINING_DEFAULT_NOTES = `Rules/Etiquette
+const TRAINING_DEFAULT_NOTES = `### Rules/Etiquette
 1.    Keep the training area free until your session starts.
 2.    Remove shoes and socks before entering the gym mats.
 3.   Let your trainer know if you need to leave early or take a rest due to injury/medical reasons/overtraining.
