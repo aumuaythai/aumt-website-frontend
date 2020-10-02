@@ -10,7 +10,7 @@ type MockMember = {
     }
 }
 
-const TRAINING_DB_PATH = 'weekly_trainings_dup'
+const TRAINING_DB_PATH = 'weekly_trainings'
 
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
