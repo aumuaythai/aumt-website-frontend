@@ -6,7 +6,7 @@ import PapaParse from 'papaparse'
 import './TableHelper.css'
 import { AumtMember, AumtMembersObj } from '../../../types'
 import { TableCurrentDataSource } from 'antd/lib/table/interface';
-import { Marquee } from '../utility/Marquee'
+import { Marquee } from '../../utility/Marquee'
 import db from '../../../services/db';
 import Validator from '../../../services/validator';
 
@@ -463,7 +463,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 ...this.getColumnSearchProps('notes'),
                 render: (text: string) => {
                     return <div className='tableLongTextContainer'>
-                            <Marquee text={this.renderHighlightedText(text, 'notes')} scroll={true}></Marquee>
+                            <Marquee text={this.renderHighlightedText(text, 'notes')} scroll={text.length > 10}></Marquee>
                         </div>
                 }
 

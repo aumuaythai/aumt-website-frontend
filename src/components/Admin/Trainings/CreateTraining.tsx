@@ -4,7 +4,7 @@ import { Button, Input, InputNumber, DatePicker, notification, Radio, Spin } fro
 import moment from 'moment'
 import { MinusCircleOutlined} from '@ant-design/icons'
 import './CreateTraining.css'
-import { MarkdownEditor } from '../utility/MarkdownEditor'
+import { MarkdownEditor } from '../../utility/MarkdownEditor'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
 import db from '../../../services/db'

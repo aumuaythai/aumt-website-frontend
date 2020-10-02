@@ -4,7 +4,7 @@ import DownOutlined from '@ant-design/icons/DownOutlined'
 import {ResetPasswordLink} from './ResetLink'
 import './UserInfo.css'
 import { AumtMember } from '../../types'
-import { Marquee } from '../Admin/utility/Marquee'
+import { Marquee } from '../utility/Marquee'
 import FirebaseUtil from '../../services/firebase.util'
 interface UserInfoProps {
     authedUser: AumtMember

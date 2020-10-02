@@ -5,7 +5,7 @@ import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';
-import { RenderMarkdown } from '../../Admin/utility/RenderMarkdown';
+import { RenderMarkdown } from '../../utility/RenderMarkdown';
 
 export interface SignupFormProps {
     title: string
