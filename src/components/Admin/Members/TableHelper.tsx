@@ -1,5 +1,5 @@
 import React, {Component, ReactText} from 'react'
-import { Input, Button, Tooltip, notification, Popconfirm } from 'antd'
+import { Input, Button, Tooltip, notification, Popconfirm, Checkbox } from 'antd'
 import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import PapaParse from 'papaparse'
@@ -28,6 +28,7 @@ interface TableHelperState {
     totalMembers: number
     deletingSelectedMembers: boolean
     currentTableLines: number
+    invertSearchMap: Record<string, boolean>
 }
 
 export class TableHelper extends Component<TableHelperProps, TableHelperState> {
@@ -39,6 +40,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             currentData: [],
             currentSelectedRows: [],
             currentFilters: {},
+            invertSearchMap: {},
             totalMembers: 0,
             deletingSelectedMembers: false,
             currentTableLines: 0
@@ -54,14 +56,15 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     private handleSearch = (selectedKeys: string[], confirm: Function, dataIndex: string) => {
         confirm();
         this.setState({
+            ...this.state,
             searchText: selectedKeys[0],
             searchedColumn: dataIndex,
-        });
+        }, this.forceUpdate)
     }
 
     private handleReset = (clearFilters: Function) => {
         clearFilters();
-        this.setState({ searchText: '' });
+        this.setState({ ...this.state, searchText: '' });
     }
     private renderHighlightedText = (text: string, columnIndex: string) => {
         if (this.state.searchedColumn === columnIndex) {
@@ -69,7 +72,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             const parts = text.split(new RegExp(`(${this.state.searchText})`, 'gi'));
             return <span>
                 {parts.map((part, idx) => {
-                    const match = part.toLowerCase() === this.state.searchText.toLowerCase()
+                    const match = part.toLowerCase() === this.state.searchText?.toLowerCase()
                     return <span key={idx} style={match ? { backgroundColor: '#ffc069' } : {} }>
                         { part }
                     </span>})
@@ -78,6 +81,13 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         } else {
             return text
         }
+    }
+
+    private setInvertSearch = (dataIndex: keyof TableDataLine, checked: boolean) => {
+        this.setState({
+            ...this.state,
+            invertSearchMap: Object.assign(this.state.invertSearchMap, {[dataIndex]: checked})
+        })
     }
 
     private getSelectedRows = (): TableDataLine[] => {
@@ -120,6 +130,10 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
               onPressEnter={() => this.handleSearch(fns.selectedKeys, fns.confirm, dataIndex)}
               style={{ width: 188, marginBottom: 8, display: 'block' }}
             />
+            <div>
+            {/* TODO: working invert search */}
+            {/* {dataIndex === 'notes' ? <Checkbox onChange={e => this.setInvertSearch(dataIndex, e.target.checked)}>Invert</Checkbox>: ''} */}
+            </div>
             <Button
               type="primary"
               onClick={() => this.handleSearch(fns.selectedKeys, fns.confirm, dataIndex)}
@@ -136,7 +150,11 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         ),
         filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         onFilter: (value: string, record: TableDataLine) => {
-          return record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase())
+            if (this.state.invertSearchMap[dataIndex]) {
+                return !record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase())
+            } else {
+                return record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase())
+            }
         },
         onFilterDropdownVisibleChange: (visible: boolean) => {
           if (visible) {
@@ -167,7 +185,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                             return memberObj
                         }
                         const aumtMember = Validator.createAumtMember(line)
-                        if (typeof(aumtMember) == 'string') {
+                        if (typeof(aumtMember) === 'string') {
                             errorsFound.push(`ERROR - Removed member with invalid data values at member number ${idx + 1}. Reason: ${aumtMember}`)
                             return memberObj
                         }
