@@ -38,7 +38,7 @@ const SPOTS_TAG_LIMIT = 5 // Infinity
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     private sessionHistory: string[] = []
-    private advancedInfoText = 'Please make sure Victor has given you the OK to join the advanced session and remember to bring a mouthguard - if one of these conditions isn\'t met we may stop you from training!'
+    private advancedInfoText = 'Please make sure you have asked Victor before joining the advanced session and remember to bring a mouthguard - if one of these conditions isn\'t met we may stop you from training!'
     constructor(props: SignupFormProps) {
         super(props)
         this.state = {
