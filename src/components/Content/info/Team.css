@@ -32,6 +32,9 @@
     opacity: 1;
     transition: 0.2s all;
 }
+.committeeApplicationsContainer {
+    text-align: justify;
+}
 .aboutText {
     background-color: rgba(0, 0, 0, 0.75);
     position: absolute;

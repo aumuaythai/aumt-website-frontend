@@ -2,16 +2,60 @@ import React, {Component} from 'react'
 import {Divider} from 'antd'
 import './Team.css'
 import { CommitteeApplicationForm } from './CommitteeApplicationForm'
+import { RenderMarkdown } from '../../utility/RenderMarkdown'
 
 class Team extends Component {
+    private committeeAppMd = `
+### What we do
+
+Being part of the AUMT committee is an opportunity to get more involved with the best club in the world and it comes with endless benefits (see below).
+You will be part of a small team that directs AUMT on its path towards world domination, little by little.
+As there is a large variety of tasks the club has to manage, there is a variety of roles available to suit your skills.
+Below are our roles and some loosely defined responsibilities for each:
+
+* President and Vice President - Lead club operations, establish short and long term goals and plans
+* Secretary - Send emails to members, organise meetings, coordinate with web dev for training/event signups and logistics
+* Treasurer - Collect and handle payments, make budgets
+* Public Relations - Photography and posting on Instagram and Facebook, designing event banners, replying to member messages
+* Web Dev - maintain our new website, add features like this committee application form, get experience with Typescript, React and Firebase
+
+![Our Team](https://media.gettyimages.com/photos/together-wed-make-quite-a-formidable-team-picture-id854434990 "=192x260")
+
+Pictured above: the current committee after a productive meeting.
+
+
+### What's in it for you
+
+* Continue training for free
+* Make awesome new friends
+* Each role's responsibilities can be a Major CV Addition™
+* Leadership opportunities including training members
+* Get to know the Muay Thai community in Auckland
+* Exclusive committee trainings
+* Much much more (if we listed all the benefits your computer would probably crash)
+
+### What we are looking for
+
+* Passion for AUMT and Muay Thai
+* Willingness to learn and receive feedback
+* Preferred but not mandatory: experience in photoshop, public relations or mailchimp
+* Ability to commit some time and effort towards the club throughout the year
+* Contribute consistently to the team, constructively give and listen to opinions
+    `
     render() {
         return (
             <div className='teamContainer'>
-                {Date.now() < 1602072000000 ? 
+                {/* {Date.now() < 1602072000000 ? 
                     <p>The application form will open Thursday 08/10</p> :
-                    Date.now() < 1602932399000 ?
-                    <CommitteeApplicationForm></CommitteeApplicationForm>
-                : <p>Committee applications have closed.</p>}
+                    Date.now() < 1602921600000 ? */}
+                    <div>
+                        <h1>Applications</h1>
+                        <div className='committeeApplicationsContainer'>
+                            <RenderMarkdown source={this.committeeAppMd}></RenderMarkdown>
+                            <CommitteeApplicationForm></CommitteeApplicationForm>
+                        </div>
+                    </div>
+                {/* : <p>Committee applications have closed.</p>} */}
                 <div className="teamGroup">
                     <h1>Committee</h1>
                     <div className='imgRow mainRow'>

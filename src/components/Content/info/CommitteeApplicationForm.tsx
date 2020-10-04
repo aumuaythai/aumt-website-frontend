@@ -82,49 +82,46 @@ export class CommitteeApplicationForm extends Component<CommitteeApplicationForm
             </div>
         }
         return (
-            <div className='committeeApplicationsContainer'>
-                <h1>Applications</h1>
-                <div className="committeeApplicationsFormContainer">
-                    <p>Apply to be a member of the AUMT Committee here! This form will close Saturday October 17th. </p>
-                    <Form layout='vertical' onFinish={this.onSubmit} ref={this.formRef}>
-                        <Form.Item name='fullName' label='Full Name' rules={[{required: true, message: 'Name is required'}]}>
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item name='email' label='Email' rules={[{required: true}]}>
-                            <Input/>
-                        </Form.Item>
-                        <Form.Item name='phone' label='Phone number'>
-                            <Input type='tel'/>
-                        </Form.Item>
-                        <Form.Item name='role1' label='Select your preferred role' rules={[{required: true}]}>
-                            <Select value={this.state.currentRole1} style={{width: 200}} onChange={this.onRole1Select}>
-                                {this.rolesList.map((role, idx) => {
-                                    return <Select.Option key={idx} value={role}>{role}</Select.Option>
-                                })}
-                            </Select>
-                        </Form.Item>
-                        <Form.Item name='whyrole1' label='Why have you decided this role?' rules={[{required: true}]}>
-                            <Input.TextArea autoSize={{maxRows: 6, minRows: 3}} placeholder='Please explain what interests you about this role and being on the committee in general.'></Input.TextArea>
-                        </Form.Item>
-                        <Form.Item name='role2' label='Select a backup role (optional)'>
-                            <Select allowClear value={this.state.currentRole2} style={{width: 200}} onChange={this.onRole2Select}>
-                                {this.rolesList.map((role: string, idx) => {
-                                    return <Select.Option key={idx} value={role}>{role}</Select.Option>
-                                })}
-                            </Select>
-                        </Form.Item>
-                        {this.state.currentRole2 ? 
-                        <Form.Item name='whyrole2' label='Why have you decided this role? (optional)'>
-                            <Input.TextArea autoSize={{maxRows: 6, minRows: 3}} placeholder='Please explain what interests you about this role and being on the committee in general.'></Input.TextArea>
-                        </Form.Item>
-                        : ''}
-                        <Form.Item>
-                            <Button type="primary" block htmlType="submit" loading={this.state.submitting}>
-                                Submit
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </div>
+            <div className="committeeApplicationsFormContainer">
+                <p>Apply to be a member of the AUMT Committee here! This form will close Saturday October 17th at 9pm. </p>
+                <Form layout='vertical' onFinish={this.onSubmit} ref={this.formRef}>
+                    <Form.Item name='fullName' label='Full Name' rules={[{required: true, message: 'Name is required'}]}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item name='email' label='Email' rules={[{required: true}]}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item name='phone' label='Phone number'>
+                        <Input type='tel'/>
+                    </Form.Item>
+                    <Form.Item name='role1' label='Select your preferred role' rules={[{required: true}]}>
+                        <Select value={this.state.currentRole1} style={{width: 200}} onChange={this.onRole1Select}>
+                            {this.rolesList.map((role, idx) => {
+                                return <Select.Option key={idx} value={role}>{role}</Select.Option>
+                            })}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name='whyrole1' label='Why have you decided this role?' rules={[{required: true}]}>
+                        <Input.TextArea autoSize={{maxRows: 6, minRows: 3}} placeholder='Please explain what interests you about this role and being on the committee in general.'></Input.TextArea>
+                    </Form.Item>
+                    <Form.Item name='role2' label='Select a backup role (optional)'>
+                        <Select allowClear value={this.state.currentRole2} style={{width: 200}} onChange={this.onRole2Select}>
+                            {this.rolesList.map((role: string, idx) => {
+                                return <Select.Option key={idx} value={role}>{role}</Select.Option>
+                            })}
+                        </Select>
+                    </Form.Item>
+                    {this.state.currentRole2 ? 
+                    <Form.Item name='whyrole2' label='Why have you decided this role? (optional)'>
+                        <Input.TextArea autoSize={{maxRows: 6, minRows: 3}} placeholder='Please explain what interests you about this role and being on the committee in general.'></Input.TextArea>
+                    </Form.Item>
+                    : ''}
+                    <Form.Item>
+                        <Button type="primary" block htmlType="submit" loading={this.state.submitting}>
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
             </div>
         )
     }
