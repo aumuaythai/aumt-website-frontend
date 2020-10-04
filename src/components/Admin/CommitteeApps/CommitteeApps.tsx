@@ -60,7 +60,18 @@ export class CommitteeApps extends Component<CommitteeAppsProps, CommitteeAppsSt
                             </Tooltip></p>
                             <p>Phone Number: {app.phone || 'Not Provided'}</p>
                             <div className="committeeAppSkillsContainer">
-                                <p>{app.skills}</p>
+                                <div className="committeeAppRoleResponseDisplay">
+                                    <h3>Role 1: {app.role1}</h3>
+                                    <p>{app.whyrole1}</p>
+                                </div>
+                                {app.role2 ? 
+                                <div className="committeeAppRoleResponseDisplay">
+                                    <h3>Role 2: {app.role2}</h3>
+                                    <p>{app.whyrole2}</p>
+                                </div>
+                                : 
+                                <h3>Role 2: None</h3>
+                                }
                             </div>
                         </Card>
                     </div>
