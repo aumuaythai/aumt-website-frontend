@@ -7,9 +7,11 @@ class Team extends Component {
     render() {
         return (
             <div className='teamContainer'>
-                {/* {Date.now() < 1596974400000 ?  */}
+                {Date.now() < 1602072000000 ? 
+                    <p>The application form will open Thursday 08/10</p> :
+                    Date.now() < 1602932399000 ?
                     <CommitteeApplicationForm></CommitteeApplicationForm>
-                {/* : ''} */}
+                : <p>Committee applications have closed.</p>}
                 <div className="teamGroup">
                     <h1>Committee</h1>
                     <div className='imgRow mainRow'>
