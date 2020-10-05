@@ -45,17 +45,18 @@ Pictured above: the current committee after a productive meeting.
     render() {
         return (
             <div className='teamContainer'>
-                {/* {Date.now() < 1602072000000 ? 
-                    <p>The application form will open Thursday 08/10</p> :
-                    Date.now() < 1602921600000 ? */}
                     <div>
                         <h1>Applications</h1>
                         <div className='committeeApplicationsContainer'>
                             <RenderMarkdown source={this.committeeAppMd}></RenderMarkdown>
+                {Date.now() < 1602072000000 ? 
+                    <p>The application form will open here on Thursday 08/10</p> :
+                    Date.now() < 1602921600000 ?
                             <CommitteeApplicationForm></CommitteeApplicationForm>
+                            : <p>Committee applications have closed.</p>}
                         </div>
                     </div>
-                {/* : <p>Committee applications have closed.</p>} */}
+                <Divider/>
                 <div className="teamGroup">
                     <h1>Committee</h1>
                     <div className='imgRow mainRow'>
