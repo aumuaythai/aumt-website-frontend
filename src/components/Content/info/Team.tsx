@@ -82,6 +82,22 @@ Pictured above: the current committee after a productive meeting.
                             <p className="name">Annie Milsom - Public Relations</p>
                             <img className='headshot' src="./photos/annie2.jpg" alt="Annie Milsom"/>
                         </div>
+                        <div className='personContainer'>
+                            <p className="name">Joon Kwon - Renaissance Man</p>
+                            <img className='headshot' src="./photos/joon.jpg" alt="Joon Kwon"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Louise Miao - UniGuide Consultant</p>
+                            <img className='headshot' src="./photos/louise.jpg" alt="Louise Miao"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Terry Krause - Motorcycle Gear Owner</p>
+                            <img className='headshot' src="./photos/terry.jpg" alt="Terry Krause"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Rish Kumar - Calisthenics Virtuoso</p>
+                            <img className='headshot' src="./photos/rish.jpg" alt="Annie Milsom"/>
+                        </div>
                     </div>
                 </div>
                 <Divider></Divider>
