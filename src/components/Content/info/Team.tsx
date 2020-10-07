@@ -40,7 +40,7 @@ Pictured above: the current committee after a productive meeting.
 * Passion for AUMT and Muay Thai
 * Willingness to listen to feedback, learn and grow
 * Ability to commit some time and effort towards the club throughout the year
-* Willingness to make your voice heard; to contribute to new ideas and give feedback to your fellow exedc members
+* Willingness to make your voice heard; to contribute to new ideas and give feedback to your fellow committee members
 * Preferred but not mandatory: experience in photoshop, public relations or mailchimp
     `
     render() {
