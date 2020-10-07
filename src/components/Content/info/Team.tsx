@@ -13,11 +13,12 @@ You will be part of a small team that directs AUMT on its path towards world dom
 As there is a large variety of tasks the club has to manage, there is a variety of roles available to suit your skills.
 Below are our roles and some loosely defined responsibilities for each:
 
-* President and Vice President - Lead club operations, establish short and long term goals and plans
-* Secretary - Send emails to members, organise meetings, coordinate with web dev for training/event signups and logistics
-* Treasurer - Collect and handle payments, make budgets
-* Public Relations - Photography and posting on Instagram and Facebook, designing event banners, replying to member messages
+* President and Vice President - Lead club operations, establish short and long term goals and plans, set deadlines and handle relations within committee
+* Secretary - Create written content such as emails, organise meetings and take minutes, liase with social and events and web dev officers for logistics, promotion and content
+* Treasurer - Create annual budget, receive and safeguard all payments for the club, discuss finances with members
+* Social and Public Relations - Post on Instagram and Facebook, take photos at trainings and events, design event banners, reply to member messages
 * Web Dev - maintain our new website, add features like this committee application form, get experience with Typescript, React and Firebase
+* Events - Organise events and their logistics, liase with Public Relations Officer for event marketing
 
 ![Our Team](https://media.gettyimages.com/photos/together-wed-make-quite-a-formidable-team-picture-id854434990 "=192x260")
 
@@ -26,21 +27,21 @@ Pictured above: the current committee after a productive meeting.
 
 ### What's in it for you
 
-* Continue training for free
+* Gain experience leading and/or running a lively, vibrant club
+* Free membership for the whole year
 * Make awesome new friends
+* Acquaint yourself with the Muay Thai community in Auckland
+* Access exclusive committee trainings
 * Each role's responsibilities can be a Major CV Addition™
-* Leadership opportunities including training members
-* Get to know the Muay Thai community in Auckland
-* Exclusive committee trainings
-* Much much more (if we listed all the benefits your computer would probably crash)
+* Much much more
 
 ### What we are looking for
 
 * Passion for AUMT and Muay Thai
-* Willingness to learn and receive feedback
-* Preferred but not mandatory: experience in photoshop, public relations or mailchimp
+* Willingness to listen to feedback, learn and grow
 * Ability to commit some time and effort towards the club throughout the year
-* Contribute consistently to the team, constructively give and listen to opinions
+* Willingness to make your voice heard; to contribute to new ideas and give feedback to your fellow exedc members
+* Preferred but not mandatory: experience in photoshop, public relations or mailchimp
     `
     render() {
         return (
@@ -49,11 +50,9 @@ Pictured above: the current committee after a productive meeting.
                         <h1>Applications</h1>
                         <div className='committeeApplicationsContainer'>
                             <RenderMarkdown source={this.committeeAppMd}></RenderMarkdown>
-                {Date.now() < 1602072000000 ? 
-                    <p>The application form will open here on Thursday 08/10</p> :
-                    Date.now() < 1602921600000 ?
+                    {Date.now() < 1602921600000 ?
                             <CommitteeApplicationForm></CommitteeApplicationForm>
-                            : <p>Committee applications have closed.</p>}
+                        : <p>Committee applications have closed.</p>}
                         </div>
                     </div>
                 <Divider/>

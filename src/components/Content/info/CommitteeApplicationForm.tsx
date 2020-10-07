@@ -16,7 +16,7 @@ interface CommitteeApplicationFormState {
 
 const LOCAL_STORAGE_KEY = 'committeeApp'
 export class CommitteeApplicationForm extends Component<CommitteeApplicationFormProps, CommitteeApplicationFormState> {
-    private rolesList = ['President', 'Vice President', 'Secretary', 'Treasurer', 'Public Relations', 'Web Development']
+    private rolesList = ['President', 'Vice President', 'Secretary', 'Treasurer', 'Public Relations', 'Web Development', 'Events']
     private formRef = React.createRef<FormInstance>();
     private layout = {
         labelCol: { span: 8 },
@@ -77,13 +77,13 @@ export class CommitteeApplicationForm extends Component<CommitteeApplicationForm
                 <Result
                     status='success'
                     title='Your application has been recorded'
-                    subTitle={'The current committee will contact you about an interview! Right now interviews are planned to take place around Week 11'}>
+                    subTitle={'The current committee will contact you about an interview! Interviews will be held between Monday the 19th and Wednesday the 21st of October, in person at the university'}>
                 </Result>
             </div>
         }
         return (
             <div className="committeeApplicationsFormContainer">
-                <p>Apply to be a member of the AUMT Committee here! This form will close Saturday October 17th at 9pm. </p>
+                <p>Apply below! This form will close Saturday October 17th at 9pm. </p>
                 <Form layout='vertical' onFinish={this.onSubmit} ref={this.formRef}>
                     <Form.Item name='fullName' label='Full Name' rules={[{required: true, message: 'Name is required'}]}>
                         <Input/>
