@@ -125,7 +125,7 @@ class DB {
                 querySnapshot.forEach((doc) => {
                     apps.push(doc.data() as AumtCommitteeApp)
                 })
-                return apps.sort((a, b) => b.timestampMs - a.timestampMs)
+                return apps.sort((a, b) => a.timestampMs - b.timestampMs)
             })
     }
 
