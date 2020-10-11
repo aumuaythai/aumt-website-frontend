@@ -1,4 +1,4 @@
-import React, {Component, ReactText} from 'react'
+import React, {Component, ReactText,lazy} from 'react'
 import { Switch, Route, Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Menu, Button, Drawer } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined, MenuOutlined } from '@ant-design/icons'
@@ -9,11 +9,16 @@ import './MainAdmin.css'
 import { TrainingDashboard } from './Trainings/TrainingDashboard'
 import { Feedback } from './Feedback/Feedback';
 import { CommitteeApps } from './CommitteeApps/CommitteeApps'
-import MemberDashboard from './Members/MemberDashboard'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import AdminStore from './AdminStore';
 import EventSignups from './Events/EventSignups';
 
+
+const MemberDashboardLazyWrapper = (
+    lazy(() => (
+      import('./Members/MemberDashboard')
+    ))
+  )
 
 interface MainAdminProps extends RouteComponentProps {
 }
@@ -150,7 +155,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                             </div>
                         </Route>
                         <Route path='/admin/members'>
-                            <MemberDashboard></MemberDashboard>
+                            <MemberDashboardLazyWrapper></MemberDashboardLazyWrapper>
                         </Route>
                         <Route path='/admin/feedback'>
                             <Feedback forms={this.state.forms}></Feedback>
