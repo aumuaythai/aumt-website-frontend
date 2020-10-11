@@ -75,7 +75,7 @@ Pictured above: the current committee after a productive meeting.
                             <img className='headshot' src="./photos/karl.jpg" alt="Karl Oberio"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Alex Walker - Treasurer</p>
+                            <p className="name">Alex Walker - Treasurer / Website</p>
                             <img className='headshot' src="./photos/alex.jpg" alt="Alex Walker"/>
                         </div>
                         <div className='personContainer'>
@@ -83,19 +83,19 @@ Pictured above: the current committee after a productive meeting.
                             <img className='headshot' src="./photos/annie2.jpg" alt="Annie Milsom"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Joon Kwon - Renaissance Man</p>
+                            <p className="name">Joon Kwon</p>
                             <img className='headshot' src="./photos/joon.jpg" alt="Joon Kwon"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Louise Miao - UniGuide Consultant</p>
+                            <p className="name">Louise Miao</p>
                             <img className='headshot' src="./photos/louise.jpg" alt="Louise Miao"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Terry Krause - Motorcycle Gear Owner</p>
+                            <p className="name">Terry Krause</p>
                             <img className='headshot' src="./photos/terry.jpg" alt="Terry Krause"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Rish Kumar - Calisthenics Virtuoso</p>
+                            <p className="name">Rish Kumar</p>
                             <img className='headshot' src="./photos/rish.jpg" alt="Annie Milsom"/>
                         </div>
                     </div>
