@@ -52,7 +52,7 @@ export class CommitteeApps extends Component<CommitteeAppsProps, CommitteeAppsSt
         }
         return (
             <div className="committeeAppsDisplayContainer">
-                {this.state.apps.slice().reverse().map((app) => {
+                {this.state.apps.map((app) => {
                     return <div className='committeeApplicationContainer' key={app.timestampMs}>
                         <Card title={app.fullName}>
                             <p>Email: {app.email} <Tooltip title='Copy'>
