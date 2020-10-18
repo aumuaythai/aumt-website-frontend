@@ -17,7 +17,6 @@
 .eventPreviewBody {
     max-height: 100px;
     overflow-y: auto;
-    white-space: pre-line;
     text-align: left;
 }
 .eventPreviewContainer {

@@ -21,7 +21,6 @@
     padding: 20px;
 }
 .eventDescription {
-    white-space: pre-line;
     text-align: left;
 }
 .eventDescriptionContainer {
