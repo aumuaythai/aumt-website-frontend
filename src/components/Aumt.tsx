@@ -16,19 +16,19 @@ import { AumtMember } from '../types';
 
 const MainAdminLazyWrapper = (
   lazy(() => (
-    import('./Admin/MainAdmin')
+    import('./Admin/MainAdmin' /* webpackChunkName: "main-admin" */)
   ))
 )
 
 const TeamLazyWrapper = (
   lazy(() => (
-    import ('./Content/info/Team')
+    import ('./Content/info/Team' /* webpackChunkName: "team" */)
   ))
 )
 
 const SignupsLazyWrapper = (
   lazy(() => (
-    import('./Content/signups/Signups')
+    import('./Content/signups/Signups' /* webpackChunkName: "signups" */)
   ))
 )
 

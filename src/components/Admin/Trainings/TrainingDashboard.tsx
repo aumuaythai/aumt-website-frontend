@@ -1,4 +1,4 @@
-import React, {Component, ReactText} from 'react'
+import React, {Component, ReactText,lazy} from 'react'
 import { Link } from 'react-router-dom'
 import { Spin, Button, Menu, Dropdown, notification, Popover } from 'antd'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
@@ -8,9 +8,9 @@ import { YearStats } from './Stats/YearStats'
 import { ManageTrainings } from './ManageTrainings'
 import { AumtWeeklyTraining } from '../../../types'
 import { EditSignups } from './EditSignups'
+import GenerateReportWrapper from './Report/GenerateReportWrapper'
 import db from '../../../services/db'
 import AdminStore from '../AdminStore'
-import pdfUtil from '../../../services/pdf.util'
 import dataUtil from '../../../services/data.util'
 
 
@@ -96,9 +96,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
             })
         }
     }
-    onExportClick = () => {
-        pdfUtil.createTrainingPdf(this.props.forms)
-    }
+
     downloadTrainingCsv = () => {
         const csvHeader = 'trainingId,formTitle,opensMs,closesMs,notes,openToPublic,feedback,sessionId,sessionTitle,sessionLimit,sessionPosition'
         const lines: string[] = [csvHeader]
@@ -172,7 +170,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                                 this.state.currentForm.title)
                             : ''} <DownOutlined /></Button>
                         </Dropdown>
-                        <Button className='exportAllButton' type='link' onClick={this.onExportClick}>Generate Report</Button>
+                        <GenerateReportWrapper forms={this.state.allForms}></GenerateReportWrapper>
                         <div className="clearBoth"></div>
                     </div>
                 <div className="trainingDashboardContentContainer">

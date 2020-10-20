@@ -16,7 +16,7 @@ import EventSignups from './Events/EventSignups';
 
 const MemberDashboardLazyWrapper = (
     lazy(() => (
-      import('./Members/MemberDashboard')
+      import('./Members/MemberDashboard' /* webpackChunkName: "member-dashboard" */)
     ))
   )
 
