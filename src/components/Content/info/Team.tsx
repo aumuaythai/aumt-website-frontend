@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {Divider} from 'antd'
 import './Team.css'
-import { CommitteeApplicationForm } from './CommitteeApplicationForm'
-import { RenderMarkdown } from '../../utility/RenderMarkdown'
+// import { CommitteeApplicationForm } from './CommitteeApplicationForm'
+// import { RenderMarkdown } from '../../utility/RenderMarkdown'
 
 class Team extends Component {
     private committeeAppMd = `
@@ -46,7 +46,7 @@ Pictured above: the current committee after a productive meeting.
     render() {
         return (
             <div className='teamContainer'>
-                    <div>
+                    {/* <div>
                         <h1>Applications</h1>
                         <div className='committeeApplicationsContainer'>
                             <RenderMarkdown source={this.committeeAppMd}></RenderMarkdown>
@@ -55,7 +55,7 @@ Pictured above: the current committee after a productive meeting.
                         : <p>Committee applications have closed. Message the AUMT page on Facebook or Instagram with any questions.</p>}
                         </div>
                     </div>
-                <Divider/>
+                <Divider/> */}
                 <div className="teamGroup">
                     <h1>Committee</h1>
                     <div className='imgRow mainRow'>
