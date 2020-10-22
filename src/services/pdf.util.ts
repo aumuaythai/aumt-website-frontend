@@ -81,7 +81,16 @@ class PdfUtil {
                 obj.flatSessions.push(sessionNames)
                 return obj
             }, {widths: [], flatSessions: []} as {widths: string[], flatSessions: Array<Object>[]})
-            const body = dataUtil.transpose(flatSessions)
+            const maxLength = flatSessions.reduce((len, cur) => {
+                return Math.max(len, cur.length)
+              }, 0)
+            const evenedSessions = flatSessions.map(session => {
+                while (session.length < maxLength) {
+                  session = session.concat([' '])
+                }
+                  return session
+              })
+            const body = dataUtil.transpose(evenedSessions)
             content.push({
                 table: {
                     widths,
