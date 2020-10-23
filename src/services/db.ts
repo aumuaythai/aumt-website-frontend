@@ -11,6 +11,7 @@ type MockMember = {
 }
 
 const TRAINING_DB_PATH = 'weekly_trainings'
+const MEMBER_DB_PATH = 'members'
 
 class DB {
     private db: firebase.firestore.Firestore |  null = null;
@@ -24,7 +25,7 @@ class DB {
 
     public getUserInfo = (fbUser: firebase.User): Promise<AumtMember> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('members')
+        return this.db.collection(MEMBER_DB_PATH)
             .doc(fbUser.uid)
             .get()
             .then((doc) => {
@@ -52,7 +53,7 @@ class DB {
 
     public setEmailVerified = (userId: string, emailVerified: boolean): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('members')
+        return this.db.collection(MEMBER_DB_PATH)
             .doc(userId)
             .update({emailVerified})
     }
@@ -94,7 +95,7 @@ class DB {
 
     public getAllMembers = (): Promise<AumtMembersObj> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('members').get()
+        return this.db.collection(MEMBER_DB_PATH).get()
             .then((querySnapshot) => {
                 const members: AumtMembersObj = {}
                 querySnapshot.forEach((doc) => {
@@ -246,14 +247,14 @@ class DB {
 
     public updatePaid = (memberId: string, newPaid: 'Yes' | 'No'): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('members')
+        return this.db.collection(MEMBER_DB_PATH)
             .doc(memberId)
             .update({paid: newPaid})
     }
 
     public updateMembership = (memberId: string, newMembership: 'S1' | 'S2' | 'FY'): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('members')
+        return this.db.collection(MEMBER_DB_PATH)
             .doc(memberId)
             .update({membership: newMembership})
     }
@@ -280,7 +281,7 @@ class DB {
 
     public setMember = (memberId: string, memberData: AumtMember): Promise<void> => {
         if (!this.db) return Promise.reject('No db object') 
-        return this.db.collection('members')
+        return this.db.collection(MEMBER_DB_PATH)
             .doc(memberId)
             .set(memberData)
     }
@@ -288,7 +289,7 @@ class DB {
     public addMultipleMembers = (members: Record<string, AumtMember>): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         const batch = this.db.batch()
-        const memberCollection = this.db.collection('members')
+        const memberCollection = this.db.collection(MEMBER_DB_PATH)
         Object.keys(members).forEach((key: string) => {
             const docRef = memberCollection.doc(key)
             batch.set(docRef, members[key])
@@ -300,7 +301,7 @@ class DB {
         if (!this.db) return Promise.reject('No db object')
         const batch = this.db.batch()
         memberIds.forEach((id) => {
-            const doc = this.db!.collection('members')
+            const doc = this.db!.collection(MEMBER_DB_PATH)
                 .doc(id)
             batch.delete(doc)
         })
@@ -309,7 +310,7 @@ class DB {
 
     public removeMember = (memberId: string): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
-        return this.db.collection('members')
+        return this.db.collection(MEMBER_DB_PATH)
             .doc(memberId)
             .delete()
     }
@@ -391,7 +392,7 @@ class DB {
     public formatMembers = () => {
         if (!this.db) return Promise.reject('No db object')
         // const experiences = ['Cash', 'Bank Transfer']
-        return this.db.collection('weekly_trainings_dup')
+        return this.db.collection('members')
             .get()
             // .then((querySnapshot) => {
             //     querySnapshot.forEach((doc) => {
@@ -451,7 +452,7 @@ class DB {
     public listenToMembers = (callback: (members: AumtMembersObj) => void): string => {
         if (!this.db) throw new Error('No db')
         const listenerId = this.getListenerId()
-        this.listeners[listenerId] = this.db.collection('members')
+        this.listeners[listenerId] = this.db.collection(MEMBER_DB_PATH)
             .onSnapshot((querySnapshot) => {
                 const members: AumtMembersObj = {}
                 querySnapshot.forEach((doc) => {
