@@ -16,7 +16,9 @@ This document is for the website developer on the AUMT committee and contains a 
 * Use git at all times:
   * Create a new branch for every feature or bug and name it descriptively
   * Closely follow git [best practices](https://deepsource.io/blog/git-best-practices/), most importantly single-purpose commits and descriptive commit messages
+  * When the work is done, test and then merge into master. Test again
 * Test **thoroughly** and often and as much as possible. Make sure everything looks good and works on both mobile and desktop. 
+* Only deploy from master
 * Try and limit deploying to weekends or whenever there isn't a signup form active just in case things break.
 * Test after deploy to make sure basic features still work
 * Put effort into making things look good and, especially, easy to use
