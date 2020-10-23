@@ -1,10 +1,12 @@
 This guide is for those who would like to contribute to the code and work on the project. It will go over setup, developing, building and deploying
 
+You must have [npm](https://www.npmjs.com/get-npm) and [git](https://git-scm.com/downloads) installed
+
 # Setup
 
 1. Clone the repo from https://github.com/aumuaythai/aumt-website-frontend
 
-2. Log in to consle.firebase.google.com with the AUMT gmail credentials. Select the AUMT Website project, navigating to Project Settings in the top left, then under General, find the Firebase SDK snippet. It should look something like:
+2. Log in to consle.firebase.google.com with the AUMT credentials. Select the AUMT Website project, navigating to Project Settings in the top left, then under General, find the Firebase SDK snippet. It should look something like:
 ```
 const firebaseConfig = {
   apiKey: "<key>",

@@ -13,8 +13,13 @@ This guide will go over how to use the admin section of aumt.co.nz, tab by tab.
     * If No, the website will require a member to sign in and have paid to view the training.
     * If Yes, the form will be open to anyone and the "Feedback" input on the form will be replaced with a "Name" field so admin has an idea who signs up
         * If Yes, the name will displayed as (nonmember) \<Name> in the Edit Members section of the Training Dashboard
-* Sessions - options for members to sign up to. There must be at least one. Each session has a title, displayed as an option on the form, and a limit for how many members can sign up. 
-* Notes - any miscellaneous text for admin to put on the training form for anyone to read. Must be only text (no html, etc)
+* Sessions - options for members to sign up to. There must be at least one. Each session has the following:
+    * Title - displayed as an option on the form
+    * Limit - how many members can sign up
+    * Position - the order of the session: 0 = first option, 1 = second option, etc
+* SignupMaxSessions - how many sessions can be signed up for at once
+* Notes - any miscellaneous text for admin to put on the training form for anyone to read. Must be a markdown string
+* Feedback - any anonymous feedback given when signing up to the training
 
 ### Create a Training
 
@@ -35,7 +40,7 @@ The Populate Weekly Defaults button is entirely optional to use. Select a week a
 
 ### Manage Signups
 
-Admin can move members between forms or remove them from the training under the Edit Members section of the Trainings tab. To do so, select a person from the session displayed. One can move it to a training that isn't full. Removing them will remove them from the session and free up a spot. 
+Admin can move members between forms or remove them from the training under the Edit Members section of the Trainings tab. To do so, select a person from the session displayed. One can move it to a training that isn't full. Removing them will remove them from the session and free up a spot. Admin can also add people to a session using the input and Add button by the session. To sign up a member, use Attendance section under the Members tab.
 
 The numbers to the left are the (number of signups) / (session limit) for the particular session. 
 
@@ -45,24 +50,38 @@ The numbers to the left are the (number of signups) / (session limit) for the pa
     * Week stats shows what time and day people sign up in the week. Its colors are random so they might be super ugly sometimes.
     * Year stats shows how many people total signed up for each form.
 * Click on a point in the Year stats graph, a training title in the Manage Trainings section or select from the top right dropdown to view stats for the desired training.
+* Click Generate Report in the top left to build a pdf of all trainings and signups. The first click should load the pdf-generating code and subsequent clicks should compile a new pdf and prompt a download .
 
 ## Events
 
-Events are intended, for now at least, to only be basic information and just a link to the facebook page where people can join.
+Events can be set to accept signups or display a description and links.
 
 ### Properties
 
 * Title - the main title displayed on the Event
 * Url Path - the path the event will be seen at (a url path of `omori-sem-2` will be aumt.co.nz/events/omori-sem-2)
-* Description - A description of the event
+* Description - A description of the event, in markdown
 * Date - A date and time for the start
 * Location - A location for the event
+* Location Link - a maps url that can be clicked to see the location
 * FB Link - A link to the facebook event page
 * Photo URL - A link to a photo to be displayed on the event page (not implemented so doesn't work yet)
 
 ### Create an Event, Edit an Event, Delete an Event
 
 These are all in the Admin section under the Events tab.
+
+### Signups
+
+If enable signups is checked in the admin section, members will be able to sign up for an event. The signup configuration options are:
+
+* Limit - how many members can sign up to an event before no more are allowed
+* Opens - the date the sign up form opens
+* Closes - the date the sign up form closes
+* Need Admin Confirmation - whether or not a signup needs to be confirmed by admin - this can be done under the signups section where admin can change `Paid?` to yes or no.
+* Open to Non Members - whether one must be logged in to see the form
+* Is Camp - whether to put the driver and meal options on the form
+
 
 ## Members
 
