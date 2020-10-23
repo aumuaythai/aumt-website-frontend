@@ -8,6 +8,7 @@ This document is for the website developer on the AUMT committee and contains a 
 * Take backups of members, especially at the start of the semester when everyone is signing up, and backups of training data at reasonable intervals. Upload these to the AUMT drive. See Admin guide for backups.
 * Coordinate with whoever sends out emails to make sure the member data matches the members on the mailing list
 * Every once in a while, check that the firebase logins match the member table. Remove unnecessary auth accounts.
+* Update documentation
 
 
 # Contributing
