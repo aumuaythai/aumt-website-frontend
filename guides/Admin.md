@@ -52,6 +52,10 @@ The numbers to the left are the (number of signups) / (session limit) for the pa
 * Click on a point in the Year stats graph, a training title in the Manage Trainings section or select from the top right dropdown to view stats for the desired training.
 * Click Generate Report in the top left to build a pdf of all trainings and signups. The first click should load the pdf-generating code and subsequent clicks should compile a new pdf and prompt a download .
 
+### Backups
+
+Backups should be taken regularly and stored on the AUMT drive. These are just so if anything goes wrong the data will at least be somewhere. Download all training data by clicking Download in the Manage Trainings section and downloading both signups or trainings. The csvs are in [tidy (ish) flormat](https://r4ds.had.co.nz/tidy-data.html#tidy-data-1) for ease of use
+
 ## Events
 
 Events can be set to accept signups or display a description and links.
@@ -66,6 +70,7 @@ Events can be set to accept signups or display a description and links.
 * Location Link - a maps url that can be clicked to see the location
 * FB Link - A link to the facebook event page
 * Photo URL - A link to a photo to be displayed on the event page (not implemented so doesn't work yet)
+* Enagle Signups - See below
 
 ### Create an Event, Edit an Event, Delete an Event
 
@@ -75,13 +80,14 @@ These are all in the Admin section under the Events tab.
 
 If enable signups is checked in the admin section, members will be able to sign up for an event. The signup configuration options are:
 
-* Limit - how many members can sign up to an event before no more are allowed
 * Opens - the date the sign up form opens
 * Closes - the date the sign up form closes
+* Limit - how many members can sign up to an event before no more are allowed
 * Need Admin Confirmation - whether or not a signup needs to be confirmed by admin - this can be done under the signups section where admin can change `Paid?` to yes or no.
+* Include Drivers and Dietary Requirement Form - whether to put the driver and meal options on the form, used for camp
 * Open to Non Members - whether one must be logged in to see the form
-* Is Camp - whether to put the driver and meal options on the form
 
+Signups can be seen by clicking `View Signups` on the event from the admin section. .
 
 ## Members
 
