@@ -1,4 +1,4 @@
-import React, {Component, ReactText,lazy} from 'react'
+import React, {Component, ReactText} from 'react'
 import { Link } from 'react-router-dom'
 import { Spin, Button, Menu, Dropdown, notification, Popover } from 'antd'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
