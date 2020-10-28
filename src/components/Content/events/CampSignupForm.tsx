@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Form, Input, InputNumber, Radio, Button } from 'antd'
+import { Form, Input, InputNumber, Radio, Button, Select, notification } from 'antd'
 import { FormInstance } from 'antd/lib/form';
 import './CampSignupForm.css'
 import { AumtCampSignupData } from '../../../types'
@@ -15,15 +15,22 @@ interface CampSignupFormProps {
 }
 
 interface CampSignupFormState {
+    currentStay: string
 }
 
 export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFormState> {
     private formRef = React.createRef<FormInstance>();
     constructor(props: CampSignupFormProps) {
         super(props)
-        this.state = {}
+        this.state = {
+            currentStay: ''
+        }
     }
     onSubmit = (vals: any) => {
+        const daysStaying = vals.daysStaying === 'Other' ? this.state.currentStay : vals.daysStaying
+        if (!daysStaying) {
+            return notification.error({message: 'Please specify your planned length of stay'})
+        }
         const submitObj: AumtCampSignupData = {
             name: vals.name || '',
             email: vals.email || '',
@@ -34,12 +41,19 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
             dietaryRequirements: vals.dietaryRequirements || '',
             medicalInfo: vals.medicalInfo || '',
             hasFirstAid: vals.hasFirstAid || false,
+            daysStaying: daysStaying,
             driverLicenseClass: vals.license || '',
             insuranceDescription: vals.insuranceDescription || '',
             carModel: vals.carModel || '',
             seatsInCar: vals.seatsInCar || -1,
         }
         this.props.onSubmit(submitObj)
+    }
+    onLengthStayChange = (stay: string) => {
+        this.setState({
+            ...this.state,
+            currentStay: stay
+        })
     }
     render() {
         return (
@@ -82,6 +96,16 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                 <Radio.Group name="FirstAidRadio">
                                     <Radio.Button value={true}>Yes</Radio.Button>
                                     <Radio.Button value={false}>No</Radio.Button>
+                                </Radio.Group>
+                            </Form.Item>
+                            <Form.Item label='Planned Length of Stay' name='daysStaying' rules={[{required: true, message: 'Length of Stay Required'}]}>
+                                <Radio.Group name='lengthOfStayRadio'>
+                                    <Radio value="4 days (27th-30th)">4 days (27th-30th)</Radio>
+                                    <Radio value="3 days (27th-29th)">3 days (27th-29th)</Radio>
+                                    <Radio value="3 days (28th-30th)">3 days (28th-30th)</Radio>
+                                    <Radio value="Other">Other
+                                        <Input onChange={e => this.onLengthStayChange(e.target.value)} placeholder='Please specify' style={{width: 150}}/>
+                                    </Radio>
                                 </Radio.Group>
                             </Form.Item>
                             <h4 className='eventSignupFormSectionHead'>Driving (optional)</h4>

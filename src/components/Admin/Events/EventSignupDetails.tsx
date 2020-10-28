@@ -64,6 +64,14 @@ export class EventSignupDetails extends Component<EventSignupDetailsProps, Event
                                     {this.props.selectedRow.phoneNumber} 
                                 </td>
                             </tr>
+                            <tr>
+                                <td className='esDetailLabel'>
+                                    <span className='esDetailTitle'>Staying: </span>
+                                </td>
+                                <td className='esDetailData'>
+                                    {this.props.selectedRow.daysStaying} 
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

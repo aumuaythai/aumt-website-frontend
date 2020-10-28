@@ -6,6 +6,7 @@ export interface AumtCampSignupData {
     ecPhoneNumber?: string,
     ecRelation?: string,
     dietaryRequirements?: string
+    daysStaying?: string
     medicalInfo?: string
     hasFirstAid?: boolean
     driverLicenseClass?: LicenseClasses
