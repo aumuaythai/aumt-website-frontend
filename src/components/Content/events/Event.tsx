@@ -4,7 +4,7 @@ import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined,
 import { Button, Result, Divider, notification} from 'antd'
 import moment from 'moment'
 import './Event.css'
-import { AumtEvent, AumtMember, LicenseClasses } from '../../../types'
+import { AumtEvent, AumtMember, LicenseClasses, AumtCampSignupData } from '../../../types'
 import firebaseUtil from '../../../services/firebase.util'
 import db from '../../../services/db'
 import { CampSignupForm } from './CampSignupForm'
@@ -79,9 +79,9 @@ export class Event extends Component<EventProps, EventState> {
         }
         return null
     }
-    onSignupFormSubmit = (signupData: {phoneNumber?: string, ecName?: string, ecRelation?: string, ecPhoneNumber?: string, dietaryRequirements?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
-        const displayName = this.props.authedUser ? `${this.props.authedUser.firstName} ${this.props.authedUser.lastName}` : signupData.name
-        const email = this.props.authedUser ? this.props.authedUser.email : signupData.email
+    onSignupFormSubmit = (isWaitlist: boolean, signupData?: AumtCampSignupData) => {
+        const displayName = this.props.authedUser ? `${this.props.authedUser.firstName} ${this.props.authedUser.lastName}` : signupData?.name
+        const email = this.props.authedUser ? this.props.authedUser.email : signupData?.email
         if (!displayName || !email) {
             notification.error({message: 'Name and email required'})
             return
@@ -94,21 +94,12 @@ export class Event extends Component<EventProps, EventState> {
         const confirmed = this.props.event.signups?.needAdminConfirm ? false : true
         db.signUpToEvent(this.props.event.id,
             firebaseUtil.getCurrentUid() || this.generateMockUid(),
-            Object.assign({
+            Object.assign(signupData || {}, {
                 displayName,
                 timeSignedUpMs: new Date().getTime(),
                 confirmed,
-                email,
-                phoneNumber: signupData.phoneNumber || '', 
-                ecName: signupData.ecName,
-                ecPhoneNumber: signupData.ecPhoneNumber,
-                ecRelation: signupData.ecRelation
-            }, signupData.dietaryRequirements ? {
-                dietaryRequirements: signupData.dietaryRequirements
-            } : {}, signupData.license ? {
-                driverLicenseClass: signupData.license,
-                seatsInCar: signupData.seatsInCar || -1
-            } : {})
+                email
+            })
             , isWaitlist)
             .then(() => {
                 if (isWaitlist) {
@@ -219,7 +210,7 @@ export class Event extends Component<EventProps, EventState> {
                                     this.props.event.signups.needAdminConfirm ? 'Our records show you have paid, your spot is confirmed' : ''}
                                     extra={this.state.confirmedSignUp ? [] : 
                                         [
-                                            <p key='xtra' className='joinAccountLine'>The fee is $180 for members and $220 for nonmembers and should be paid with your full name as the reference to: 06-0158-0932609-00
+                                            <p key='xtra' className='joinAccountLine'>The fee is $120 for members and $150 for nonmembers and should be paid with your full name as the reference to: 06-0158-0932609-00
                                             <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                                         ]
                                     }
@@ -258,7 +249,7 @@ export class Event extends Component<EventProps, EventState> {
                                             isCamp={this.props.event.signups.isCamp}
                                             includeNameAndEmail={!this.props.authedUser}
                                             isWaitlist={true}
-                                            onSubmit={(data) => this.onSignupFormSubmit(data, true)}
+                                            onSubmit={(data) => this.onSignupFormSubmit(true, data)}
                                             submitting={this.state.waitlistingMember}></CampSignupForm>
                                 </div>
                                 :
@@ -269,7 +260,7 @@ export class Event extends Component<EventProps, EventState> {
                                             isCamp={this.props.event.signups.isCamp}
                                             includeNameAndEmail={!this.props.authedUser}
                                             isWaitlist={false}
-                                            onSubmit={(data) => this.onSignupFormSubmit(data, false)}
+                                            onSubmit={(data) => this.onSignupFormSubmit(false, data)}
                                             submitting={this.state.reservingSpot}></CampSignupForm>
                                     :
                                     <Button
@@ -277,7 +268,7 @@ export class Event extends Component<EventProps, EventState> {
                                         type='primary'
                                         block
                                         className='reserveEventSpotButton'
-                                        onClick={e => this.onSignupFormSubmit({}, false)}>Reserve a Spot</Button>
+                                        onClick={e => this.onSignupFormSubmit(false)}>Reserve a Spot</Button>
                                     }
                                 </div>
                                 }

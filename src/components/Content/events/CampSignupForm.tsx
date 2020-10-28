@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { Form, Input, InputNumber, Radio, Button } from 'antd'
 import { FormInstance } from 'antd/lib/form';
 import './CampSignupForm.css'
-import { LicenseClasses } from '../../../types'
+import { AumtCampSignupData } from '../../../types'
 
 
 
@@ -11,7 +11,7 @@ interface CampSignupFormProps {
     submitting: boolean
     isWaitlist: boolean
     isCamp: boolean
-    onSubmit: (obj: {ecName: string, ecPhoneNumber: string, ecRelation: string, phoneNumber: string, dietaryRequirements: string, medicalInfo: string, seatsInCar: number, license: LicenseClasses, name: string, email: string}) => void
+    onSubmit: (obj: AumtCampSignupData) => void
 }
 
 interface CampSignupFormState {
@@ -24,17 +24,20 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
         this.state = {}
     }
     onSubmit = (vals: any) => {
-        const submitObj = {
+        const submitObj: AumtCampSignupData = {
+            name: vals.name || '',
+            email: vals.email || '',
             phoneNumber: vals.phoneNumber || '',
             ecName: vals.ecName,
             ecPhoneNumber: vals.ecPhoneNumber,
             ecRelation: vals.ecRelation,
             dietaryRequirements: vals.dietaryRequirements || '',
             medicalInfo: vals.medicalInfo || '',
+            hasFirstAid: vals.hasFirstAid || false,
+            driverLicenseClass: vals.license || '',
+            insuranceDescription: vals.insuranceDescription || '',
+            carModel: vals.carModel || '',
             seatsInCar: vals.seatsInCar || -1,
-            license: vals.license || '',
-            name: vals.name || '',
-            email: vals.email || ''
         }
         this.props.onSubmit(submitObj)
     }
@@ -73,7 +76,13 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                 <Input placeholder='Allergies, vegetarian, etc'/>
                             </Form.Item>
                             <Form.Item label='Medical Info (optional)' name='medicalInfo'>
-                                <Input placeholder='Injuries, conditions, etc'/>
+                                <Input placeholder='Allergies, injuries, conditions, etc'/>
+                            </Form.Item>
+                            <Form.Item label='Do you have a First Aid Certificate?' name='hasFirstAid'>
+                                <Radio.Group name="FirstAidRadio">
+                                    <Radio.Button value={true}>Yes</Radio.Button>
+                                    <Radio.Button value={false}>No</Radio.Button>
+                                </Radio.Group>
                             </Form.Item>
                             <h4 className='eventSignupFormSectionHead'>Driving (optional)</h4>
                             <p>If selected as a driver, you won't need to pay for fuel - we will reimburse any fuel costs.</p>
@@ -95,9 +104,17 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                         </Radio.Group>
                                     </Form.Item>
                                     {this.formRef?.current?.getFieldValue('ownsCar') ? 
+                                    <div>
                                         <Form.Item label='How Many Seats (including driver)?' name='seatsInCar' rules={[{required: true}]}>
                                             <InputNumber min={1}/>
                                         </Form.Item>
+                                        <Form.Item label="What is your car's year and model?" name='carModel' rules={[{required: true}]}>
+                                            <Input placeholder='E.g. 2004 Nissan March'/>
+                                        </Form.Item>
+                                        <Form.Item label="Describe your insurance" name='insuranceDescription' rules={[{required: true}]}>
+                                            <Input/>
+                                        </Form.Item>
+                                    </div>
                                     : ''}
                                 </div>
                             : ''}

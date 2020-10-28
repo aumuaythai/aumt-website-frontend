@@ -39,6 +39,10 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
         displayTime: 'Time Signed Up',
         email: 'Email',
         phoneNumber: 'Phone',
+        hasFirstAid: 'First Aid?',
+        carModel: 'Model',
+        insuranceDescription: 'Insurance',
+        name: 'Name',
         dietaryRequirements: 'Dietary',
         medicalInfo: 'Medical',
         driverLicenseClass: 'License',
@@ -116,7 +120,6 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     }
     onSelectSignup = (key: string) => {
         const member = this.state.rows.find(r => r.key === key)
-        console.log(key, member)
         if (member) {
             this.setState({
                 ...this.state,
@@ -242,7 +245,6 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 filters: [{ text: 'Yes', value: true },
                 { text: 'No', value: false }],
                 onFilter: (value: boolean | string | number, record: TableRow) => {
-                    console.log(value, record.seatsInCar)
                     return !(record.seatsInCar === -1) === value
                 }
             },
@@ -300,13 +302,17 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
             displayTime: 50,
             dietaryRequirements: 40,
             medicalInfo: 35,
+            hasFirstAid: 33,
             driverLicenseClass: 30,
             seatsInCar: 20,
+            carModel: 15,
+            insuranceDescription: 12,
             timeSignedUpMs: 10,
             key: 5,
             ecName: 5,
             ecPhoneNumber: 5,
-            ecRelation: 5
+            ecRelation: 5,
+            name: 5,
         }
         return keyMap[a] > keyMap[b] ? -1 : 1
     }

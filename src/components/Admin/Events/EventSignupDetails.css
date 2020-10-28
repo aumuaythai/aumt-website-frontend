@@ -1,6 +1,25 @@
-.esDetailLab {
-    font-weight: bold;
+.esDetailTitle {
+    color: #999;
 }
 .eventSignupDetailsContainer {
     padding: 15px;
+}
+.eventSignupDetailsSection {
+    min-width: 220px;
+    margin-bottom: 20px;
+}
+.esDetailLabel {
+    text-align: right;
+    padding: 5px;
+}
+.eventSignupDetailTable {
+    width: 220px;
+    padding-right: 10px;
+}
+.eventSignupDetailsContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
 }

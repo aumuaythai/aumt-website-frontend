@@ -3,7 +3,7 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import { Spin, Button, notification, Input } from 'antd'
 import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import './EventSignups.css'
-import { AumtEvent, LicenseClasses } from '../../../types'
+import { AumtCampSignupData, AumtEvent } from '../../../types'
 import AdminStore from '../AdminStore'
 import { EventSignupTable } from './EventSignupTable'
 import { CampSignupForm } from '../../Content/events/CampSignupForm'
@@ -102,7 +102,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
     }
 
 
-    signUpNewMember = (signupData: {phoneNumber: string, dietaryRequirements?: string, medicalInfo?: string, seatsInCar?: number, license?: LicenseClasses, name?: string, email?: string}, isWaitlist: boolean) => {
+    signUpNewMember = (signupData: AumtCampSignupData, isWaitlist: boolean) => {
         if (!signupData.name) {
             return notification.error({message: 'Name required'})
         }
@@ -118,17 +118,14 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
             this.setState({...this.state, submittingMember: true})
         }
 
-        db.signUpToEvent(this.state.event?.id, this.generateMockUid(), {
-            confirmed: false,
-            timeSignedUpMs: new Date().getTime(),
-            displayName: signupData.name,
-            email: signupData.email,
-            phoneNumber: signupData.phoneNumber,
-            dietaryRequirements: signupData.dietaryRequirements,
-            medicalInfo: signupData.medicalInfo,
-            seatsInCar: signupData.seatsInCar,
-            driverLicenseClass: signupData.license
-        }, isWaitlist)
+        db.signUpToEvent(this.state.event?.id,
+            this.generateMockUid(),
+            Object.assign(signupData, {
+                confirmed: false,
+                timeSignedUpMs: new Date().getTime(),
+                displayName: signupData.name,
+                email: signupData.email
+            }), isWaitlist)
             .then(() => {
                 notification.success({message: `Successfully signed up ${signupData.name}`})
             })

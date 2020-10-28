@@ -1,16 +1,24 @@
-export interface AumtEventSignupData {
-    displayName: string
-    email: string
-    phoneNumber: string
-    timeSignedUpMs: number
-    confirmed: boolean
+export interface AumtCampSignupData {
+    name?: string,
+    email?: string,
+    phoneNumber?: string
     ecName?: string,
     ecPhoneNumber?: string,
     ecRelation?: string,
     dietaryRequirements?: string
     medicalInfo?: string
+    hasFirstAid?: boolean
     driverLicenseClass?: LicenseClasses
+    insuranceDescription?: string
+    carModel?: string
     seatsInCar?: number
+}
+
+export interface AumtEventSignupData extends AumtCampSignupData {
+    displayName: string
+    email: string
+    timeSignedUpMs: number
+    confirmed: boolean
 }
 
 export type TableRow = AumtEventSignupData & {key: string, displayTime: string}
