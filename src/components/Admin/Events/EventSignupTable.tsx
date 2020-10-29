@@ -190,10 +190,6 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 }
             },
             {
-                title: 'Phone',
-                dataIndex: 'phoneNumber'
-            },
-            {
                 title: 'Paid',
                 dataIndex: 'confirmed',
                 width: 85,
@@ -247,6 +243,24 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 { text: 'No', value: false }],
                 onFilter: (value: boolean | string | number, record: TableRow) => {
                     return !(record.seatsInCar === -1) === value
+                }
+            },
+            {
+                title: 'Staying',
+                dataIndex: 'daysStaying',
+                filters: [
+                    {text: '4 days (27th-30th)', value: '4 days (27th-30th)'},
+                    {text: '3 days (27th-29th)', value: '3 days (27th-29th)'},
+                    {text: '3 days (28th-30th)', value: '3 days (28th-30th)'},
+                    {text: 'Other', value: 'Other'}
+                ],
+                onFilter: (value: boolean | string | number, record: TableRow) => {
+                    const defaultOptions = ['4 days (27th-30th)', '3 days (27th-29th)','3 days (28th-30th)']
+                    if (value !== 'Other') {
+                        return record.daysStaying === value
+                    } else {
+                        return defaultOptions.indexOf(record.daysStaying || '') === -1
+                    }
                 }
             },
             {
