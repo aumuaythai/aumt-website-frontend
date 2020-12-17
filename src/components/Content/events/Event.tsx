@@ -190,7 +190,7 @@ export class Event extends Component<EventProps, EventState> {
                         <div className="detail fbLinkDetail">
                             <FacebookOutlined /> <a href={this.props.event.fbLink} target='_blank' rel="noopener noreferrer">{this.props.event.fbLink}</a>
                         </div>
-                    : ''}
+                    : null}
                 </div>
                 <Divider/>
                 <div className="eventDescriptionContainer">

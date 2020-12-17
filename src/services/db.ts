@@ -1,14 +1,8 @@
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignupData, AumtCommitteeApp } from '../types';
 import validator from './validator';
 
-type MockMember = {
-    [uid: string]: {
-        name: string,
-        timeAdded: Date
-    }
-}
 
 const TRAINING_DB_PATH = 'weekly_trainings'
 const MEMBER_DB_PATH = 'members'

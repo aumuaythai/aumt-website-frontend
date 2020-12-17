@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Form, Input, InputNumber, Radio, Button, Select, notification } from 'antd'
+import { Form, Input, InputNumber, Radio, Button, notification } from 'antd'
 import { FormInstance } from 'antd/lib/form';
 import './CampSignupForm.css'
 import { AumtCampSignupData } from '../../../types'
@@ -69,7 +69,7 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                 <Input/>
                             </Form.Item>
                         </div>
-                        : ''}
+                        : null}
                     {this.props.isCamp ?
                         <div>
                             <Form.Item label='Phone Number' name='phoneNumber' rules={[{required: true}]}>
@@ -139,11 +139,11 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                             <Input/>
                                         </Form.Item>
                                     </div>
-                                    : ''}
+                                    : null}
                                 </div>
-                            : ''}
+                            : null}
                         </div>
-                    : ''}
+                    : null}
                     <Button
                         loading={this.props.submitting}
                         htmlType='submit'

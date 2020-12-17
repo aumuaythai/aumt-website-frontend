@@ -174,7 +174,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio value='Yes'>Yes</Radio>
                             </Radio.Group>
                         </Form.Item>
-                        : ''}
+                        : null}
                         <Form.Item name='UoaStudent' rules={[{ required: true }]} label='Are you a current UoA student? '>
                             <Radio.Group buttonStyle="solid" name="UoaStudentRadio" onChange={e => this.forceUpdate()}>
                                 <Radio.Button value={'Yes'}>Yes</Radio.Button>
@@ -192,7 +192,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                            } rules={[{ required: true}]}>
                                <Input className='joinFormInput'/>
                            </Form.Item>
-                           : ''}
+                           : null}
                         <Form.Item name='ReturningMember' rules={[{ required: true }]} label='Are you a returning AUMT member? '>
                             <Radio.Group buttonStyle="solid" name="ReturningMemberRadio">
                                 <Radio.Button value={'Yes'}>Yes</Radio.Button>
@@ -215,7 +215,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio style={this.verticalRadioStyle} value={'Advanced'}>Advanced</Radio>
                                 <Radio style={this.verticalRadioStyle} value={'Other'}>
                                     Other...
-                                    {this.state.currentExperienceInMuayThai === 'Other' ? <Input className='joinFormInput' style={{ width: 100, marginLeft: 10 }}/> : ''}
+                                    {this.state.currentExperienceInMuayThai === 'Other' ? <Input className='joinFormInput' style={{ width: 100, marginLeft: 10 }}/> : null}
                                 </Radio>
                                 
                             </Radio.Group>
@@ -247,7 +247,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             <p>This is your account to sign in to this site for trainings and events.
                                 Your email here will be used both as your username for the account and as a point of contact for club announcements and invitations.
                                 You can reset your password at any time.</p>
-                                : ''}
+                                : null}
                         </div>
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='email' label='Email'>
                             <Input className='joinFormInput' type='email'/>
@@ -268,11 +268,11 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio.Button value={'S1'}>Semester 1</Radio.Button>
                                 {this.props.isAdmin ? 
                                 <Radio.Button value='S2'>Semester 2</Radio.Button>
-                                : ''}
+                                : null}
                                 <Radio.Button value={'FY'}>Full Year</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
-                        : ''}
+                        : null}
                         <Form.Item name='Payment' rules={[{ required: true }]} label='Payment Type'>
                             <Radio.Group buttonStyle="solid" name="PaymentRadio">
                                 <Radio.Button value={'Bank Transfer'}>Bank Transfer</Radio.Button>
@@ -287,7 +287,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio.Button value={'No'}>No</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
-                        : ''}
+                        : null}
                         {!this.props.isAdmin ?
                         <div>
                             <p>If paying by Bank Transfer, include your NAME and
@@ -298,7 +298,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                             <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>
                         </div>
-                        : ''}
+                        : null}
                         <Form.Item>
                             <Button loading={this.state.submitting} block type="primary" htmlType="submit">
                                 Submit

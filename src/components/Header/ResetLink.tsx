@@ -91,7 +91,7 @@ export class ResetPasswordLink extends Component<ResetPasswordLinkProps, ResetPa
           onCancel={this.handleCancel}
           okText={this.state.buttonText}
         >
-        {this.state.errorText ? <Alert type='error' message={this.state.errorText}></Alert>: ''}
+        {this.state.errorText ? <Alert type='error' message={this.state.errorText}></Alert>: null}
         <Input type='email' placeholder="email" onPressEnter={this.handleResetClick} onChange={this.onEmailChange} prefix={<UserOutlined />} />
         </Modal>
       </span>

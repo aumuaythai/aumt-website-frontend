@@ -294,7 +294,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
     getFooter = (totalDisplayed: number) => {
         return <div>
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.copyEmails}>Copy Emails</Button>
-            {!this.props.isWaitlist && !this.state.selectedSignup ? <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={e => this.setShowCarAllocations(true)}>Random Car Allocations</Button> : ''}
+            {!this.props.isWaitlist && !this.state.selectedSignup ? <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={e => this.setShowCarAllocations(true)}>Random Car Allocations</Button> : null}
             <Button className='eventSignupTableFooterDownloadButton' type='link' onClick={this.downloadCsv}>Download .csv</Button>
             <p className='eventSignupsTableFooterText'>Total: {totalDisplayed} / Limit: {this.props.limit || 'None'}</p>
         </div>
@@ -386,7 +386,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 .join('\n')
         dataUtil.downloadCsv('car_allocations', csvStr)
     }
-    onTableChange = (pagination: any, filter: Record<keyof TableRow, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableRow>, ...extra: any) => {
+    onTableChange = (pagination: any, filter: Record<string,  (string | number | boolean)[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableRow>, ...extra: any) => {
         this.setState({
             ...this.state,
             selectedRows: dataSource.currentDataSource,
@@ -407,7 +407,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                             <div className='eventSignupSelectTime'>{signup.displayTime}</div>
                             {signup.confirmed ?
                                 <Tag className='eventSignupSelectPaidTag' color='success'>Paid</Tag>
-                                : ''}
+                                : null}
                         </Select.Option>
                     })}
                 </Select>
@@ -422,11 +422,11 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                             onClick={e => this.deleteMember(curSelected?.key || '')}
                             disabled={!curSelected} type='link'>Delete</Button>
                     </div>
-                    : ''}
+                    : null}
             </div>
         }
         return <div>
-            <div className={`eventSignupTableContainer ${this.state.selectedSignup ? 'eventSignupTableContainerNarrow' : ''}`}>
+            <div className={`eventSignupTableContainer ${this.state.selectedSignup ? 'eventSignupTableContainerNarrow' : null}`}>
                 <Drawer
                     visible={this.state.showCarAllocs}
                     title='Random Car Allocations'
@@ -476,7 +476,7 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                     </div>
                     <EventSignupDetails isWaitlist={this.props.isWaitlist} eventId={this.props.eventId} selectedRow={this.state.selectedSignup}></EventSignupDetails>
                 </div>
-                : ''}
+                : null}
         </div>
     }
 }

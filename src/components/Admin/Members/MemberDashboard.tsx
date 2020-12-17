@@ -340,7 +340,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             }
                                         </div>
                                     </div>
-                                    :''}
+                                    :null}
                                     {this.longTable ?
                                     <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
                                         Join Form: <AntSwitch
@@ -351,7 +351,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             checkedChildren="open"
                                             unCheckedChildren="closed"></AntSwitch>
                                     </div>
-                                    :''}
+                                    :null}
                                     <div className="memberDashboardGlobalConfigOptionsContainer">
                                         <Button className='memberDashboardHideSmallScreen' onClick={this.showImportMembers}>Import Members <UploadOutlined /></Button>
                                         <Modal
@@ -364,10 +364,10 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             <p>If the column headers of the csv file do not match exactly it will be rejected. The key column of each member must match the UID of their firebase login so make sure every login exists first.</p>
                                             <p>A file with more than 500 members will throw a bunch of errors so... don't</p>
                                             <input onChange={e => this.onImportMemberFileChange(e.target.files)} ref={this.importMemberInput} type='file' accept='.csv,.CSV,'/>
-                                            {this.state.importMemberParsing ? <Spin/> : ''}
+                                            {this.state.importMemberParsing ? <Spin/> : null}
                                             {this.state.importMemberSuccessText ?
                                                 <Alert message={this.state.importMemberSuccessText}></Alert>
-                                                : ''}
+                                                : null}
                                             <div className="importMemberMessagesContainer">
                                                 {this.state.importMemberErrors.map((line, idx) => {
                                                     return <Alert key={idx} type='error' message={line}></Alert>
@@ -441,7 +441,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                 scroll={{ y: 725 }}></Table>
                             }
                         </div>
-                ) : ''}
+                ) : null}
                 <Switch>
                     <Route path='/admin/members/add'>
                         <div className="memberDetailsSection">
@@ -458,7 +458,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                         <div className="memberDetailsSection">
                             <MemberDetails member={this.state.selectedMember} onExit={this.exitSelectedMember}></MemberDetails>
                         </div>
-                        : ''}
+                        : null}
                     </Route>
                 </Switch>
             </div>

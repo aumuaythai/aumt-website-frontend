@@ -115,7 +115,7 @@ export class CommitteeApplicationForm extends Component<CommitteeApplicationForm
                     <Form.Item name='whyrole2' label='Why have you decided this role? (optional)'>
                         <Input.TextArea autoSize={{maxRows: 6, minRows: 3}} placeholder='Please explain what interests you about this role and being on the committee in general.'></Input.TextArea>
                     </Form.Item>
-                    : ''}
+                    : null}
                     <Form.Item>
                         <Button type="primary" block htmlType="submit" loading={this.state.submitting}>
                             Submit

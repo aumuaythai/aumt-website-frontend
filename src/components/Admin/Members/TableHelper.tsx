@@ -1,4 +1,4 @@
-import React, {Component, ReactText} from 'react'
+import React, {Component} from 'react'
 import { Input, Button, Tooltip, notification, Popconfirm } from 'antd'
 import { SearchOutlined, CopyOutlined, FormOutlined } from '@ant-design/icons'
 import moment from 'moment'
@@ -24,7 +24,7 @@ interface TableHelperState {
     searchText: string
     currentData: TableDataLine[]
     currentSelectedRows: TableDataLine[]
-    currentFilters: Record<string, React.ReactText[] | null>
+    currentFilters: Record<string, (string | number | boolean)[] | null>
     totalMembers: number
     deletingSelectedMembers: boolean
     currentTableLines: number
@@ -272,7 +272,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         })
     }
 
-    public onTableChange = (pagination: any, filter: Record<keyof TableDataLine, React.ReactText[] | null>, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>, ...extra: any) => {
+    public onTableChange = (pagination: any, filter: Record<string, (string | number | boolean)[] | null | null>, sorter: any, dataSource: TableCurrentDataSource<TableDataLine>, ...extra: any) => {
         this.setState({
             ...this.state,
             currentFilters: filter,

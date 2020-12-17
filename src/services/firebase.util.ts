@@ -1,8 +1,7 @@
 import 'firebase/auth';
 import 'firebase/database'
 
-import * as firebase from "firebase/app";
-import { User } from 'firebase/app'
+import firebase from "firebase/app";
 
 
 class FirebaseUtil {
@@ -15,7 +14,7 @@ class FirebaseUtil {
         messagingSenderId: process.env.REACT_APP_FB_MESSAGING_SENDER_ID,
         appId: process.env.REACT_APP_FB_APP_ID
     }
-    public initialize = (authStateChange: (a: User | null) => void) => {
+    public initialize = (authStateChange: (a: firebase.User | null) => void) => {
         if (!firebase.apps.length) {
             firebase.initializeApp(this.firebaseConfig);
             firebase.auth().onAuthStateChanged(authStateChange)
@@ -26,7 +25,7 @@ class FirebaseUtil {
         return firebase.auth().signInWithEmailAndPassword(email, password)
     }
 
-    public getCurrentUser = (): User | null => {
+    public getCurrentUser = (): firebase.User | null => {
         return firebase.auth().currentUser
     }
 

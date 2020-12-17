@@ -203,7 +203,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     <span key={session.title} className="optionLine">
                         <Tooltip title={isFull ? 'Class full' : ''} placement='left'>
                             <span className='signupFormSessionTitle'>{session.title}
-                                {this.state.signedUpOptions.includes(session.sessionId) ? <CheckSquareTwoTone className='signedUpOptionCheck' twoToneColor="#52c41a" /> : ''}
+                                {this.state.signedUpOptions.includes(session.sessionId) ? <CheckSquareTwoTone className='signedUpOptionCheck' twoToneColor="#52c41a" /> : null}
                             </span>
                             {spotsLeft <= SPOTS_TAG_LIMIT ? 
                             <Tag className='spotsLeftTag' color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>

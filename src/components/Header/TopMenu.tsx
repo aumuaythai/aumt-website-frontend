@@ -81,7 +81,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
             <Menu.Item key="Admin">
               <Link to='/admin'>Admin</Link>
             </Menu.Item>
-          ) : ''}
+          ) : null}
           <Menu.Item key="Signups">
             <Link to='/signups'>Sign-ups</Link>
           </Menu.Item>
@@ -124,11 +124,10 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
           <Link to='/join'>Join</Link>
         </Menu.Item>
         {this.props.isAdmin ?
-          (
             <Menu.Item key="Admin">
               <Link to='/admin'>Admin</Link>
             </Menu.Item>
-          ) : ''}
+          : null}
       </Menu>
     );
   }

@@ -355,7 +355,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
                             <Checkbox checked={this.state.currentOpenToNonMembers} onChange={e => this.onOpenToNonMembersCheck(e.target.checked)}>Non Members can sign themselves up (admin can sign up anyone regardless)</Checkbox>
                         </div>
                     </div>
-                : ''}
+                : null}
                 <div className='submitEventContainer'>
                     <Button
                         className='createEventSubmitButton'

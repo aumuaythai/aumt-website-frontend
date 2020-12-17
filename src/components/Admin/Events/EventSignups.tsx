@@ -182,7 +182,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                                     submitting={this.state.submittingMember}
                                     ></CampSignupForm>
                             </div>
-                        : ''}
+                        : null}
                         <EventSignupTable
                             urlPath={this.state.event.urlPath}
                             isWaitlist={false}
@@ -210,7 +210,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
                                 submitting={this.state.submittingWaitlistMember}
                                 ></CampSignupForm>
                             </div>
-                        : ''}
+                        : null}
                         <EventSignupTable
                             urlPath={this.state.event.urlPath}
                             isWaitlist={true}

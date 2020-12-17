@@ -1,7 +1,7 @@
 import React, { lazy, Component, Suspense } from 'react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import {notification, Spin} from 'antd'
-import { User } from 'firebase/app'
+import firebase from 'firebase/app'
 import Header from './Header/Header'
 import {LoginForm} from './Header/LoginForm'
 import {About} from './Content/info/About'
@@ -72,7 +72,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
           })
     }
 
-    private authStateChange = (fbUser: User | null) => {
+    private authStateChange = (fbUser: firebase.User | null) => {
       if (fbUser) {
         DB.getUserInfo(fbUser)
           .then((userInfo: AumtMember) => {
