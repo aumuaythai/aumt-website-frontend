@@ -10,9 +10,9 @@ export class Merch extends Component {
                 <h1 className = "header">Merchandise</h1>
         
                 <div className = "imgcontainer">
-                    <img className='photoshoot' src="./photos/merch/merchLeft.jpg" alt="Showing off the AUMT shirt and shorts"/>
-                    <img className='photoshoot' src="./photos/merch/merchMid.jpg" alt="Showing off the AUMT shirt and shorts"/>
-                    <img className='photoshoot' src="./photos/merch/merchRight.jpg" alt="The back of the AUMT shirt and shorts"/>
+                    <img className='photoshoot' src="./photos/Merch/merchLeft.jpg" alt="Showing off the AUMT shirt and shorts"/>
+                    <img className='photoshoot' src="./photos/Merch/merchMid.jpg" alt="Showing off the AUMT shirt and shorts"/>
+                    <img className='photoshoot' src="./photos/Merch/merchRight.jpg" alt="The back of the AUMT shirt and shorts"/>
                 </div>
 
                 <div className = "contentContainer">
