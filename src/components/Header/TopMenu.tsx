@@ -75,6 +75,9 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
               <Menu.Item key="FAQ">
                 <Link to='/faq'>FAQ</Link>
               </Menu.Item>
+              <Menu.Item key="Merch">
+                <Link to='/merch'>Merch</Link>
+            </Menu.Item>
             </Menu.SubMenu>
             {this.props.isAdmin ?
           (
@@ -112,6 +115,9 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
           </Menu.Item>
           <Menu.Item key="FAQ">
             <Link to='/faq'>FAQ</Link>
+          </Menu.Item>
+          <Menu.Item key="Merch">
+            <Link to='/merch'>Merch</Link>
           </Menu.Item>
         </Menu.SubMenu>
         <Menu.Item key="Signups">

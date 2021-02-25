@@ -7,6 +7,7 @@ import {LoginForm} from './Header/LoginForm'
 import {About} from './Content/info/About'
 import EventsWrapper from './Content/events/EventsWrapper'
 import {Faq} from './Content/info/Faq'
+import {Merch} from './Content/info/Merch'
 import { MainJoin } from './Content/join/MainJoin'
 import { ErrorBoundary } from './Content/error/ErrorBoundary'
 import './Aumt.css'
@@ -150,6 +151,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                           </Route>
                           <Route path="/faq">
                             <Faq></Faq>
+                          </Route>
+                          <Route path = "/merch">
+                            <Merch></Merch>
                           </Route>
                           <Route path="/signup">
                             <Redirect to="/signups"/>

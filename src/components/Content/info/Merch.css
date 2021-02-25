@@ -1,0 +1,93 @@
+.merchContainer {
+    padding-bottom: 35px;
+}
+
+.imgContainer{
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
+}
+
+.contentContainer{
+    width: 100%;
+    margin: 0 auto;
+    overflow-y: scroll;
+}
+
+.tshirtContainer,.shortsContainer,.wrapsContainer{
+    width: 33%;
+    float:left;
+}
+
+.photoshoot{
+    height: 100%;
+    width: 575px;
+    display: inline-block;
+    margin: 60px;
+    margin-bottom: 60px;
+}
+
+.tshirtHeading:after,.shortsHeading:after,.wrapsHeading:after{
+    content: '';
+    width: 25px;
+    background-color: black;
+    height: 3px;
+    margin: 0px auto auto;
+    display: block;
+    border-radius:1.5px;
+}
+
+h1{
+    font-size: 26pt;
+    margin: 0;
+}
+
+h2{
+    font-size: 22pt;
+    margin-bottom: 15px;
+}
+
+p{
+    font-size: 14pt;
+    margin: 10px;
+    padding: 0 20px;
+}
+
+@media only screen and (max-width: 600px) {
+
+    .merchContainer {
+        padding-bottom: 10px;
+    }
+
+    .tshirtContainer,.wrapsContainer,.shortsContainer{
+        width:100%;
+    }
+
+    .merchContainer{
+        width: 100%;
+    }
+    
+    .photoshoot{
+        width: 350px;
+        margin: 5px;
+    }
+
+    .imgContainer{
+        float:  none;
+        margin: auto;
+    }
+
+    h2{
+        font-size: 14pt;
+    }
+
+    p{
+        font-size: 9pt;
+        margin: 5;
+        padding: 0 5px;
+    }
+
+    .tshirtHeading{
+        margin: 0,25px;
+    }
+}
