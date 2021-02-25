@@ -45,6 +45,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
     private onSubmit = (values: any) => {
         const {
             UoaStudent: isUoAStudent,
+            interestedInCamp,
             ReturningMember: isReturningMember,
             FirstName: firstName,
             LastName: lastName,
@@ -72,6 +73,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 studentId,
                 membership,
                 initialExperience,
+                interestedInCamp,
                 paymentType,
                 paid,
                 timeJoinedMs: new Date().getTime(),
@@ -224,6 +226,13 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 
                             </Radio.Group>
                         </Form.Item>
+                        <p>Every year AUMT hosts its legendary camp: a few days training and hanging out with fellow members at a remote location TBD</p>
+                        <Form.Item name='interestedInCamp' rules={[{ required: true }]} label='Would you be interested in an AUMT camp?'>
+                            <Radio.Group buttonStyle="solid" name="interestedInCampRadio">
+                                <Radio.Button value={'Yes'}>Yes</Radio.Button>
+                                <Radio.Button value={'No'}>No</Radio.Button>
+                            </Radio.Group>
+                        </Form.Item>
                         <h3 className='formSectionHeader'>Emergency Contact Details</h3>
                         <Form.Item  {...this.alignInputLayout} rules={[{ required: true }]} name='EmergencyContactName' label='Name'>
                             <Input className='joinFormInput'/>
@@ -241,9 +250,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio value={'Yes'}>Yes</Radio>
                                 <Radio value={'No'}>No</Radio>
                             </Radio.Group>
-                        </Form.Item>
-                        <Form.Item  name='Insta' label='What is your instagram handle?'>
-                            <Input prefix='@' className='joinFormInput' placeholder='Optional, if you want the club to follow you'/>
                         </Form.Item>
                         <div>
                             <h3 className='formSectionHeader'>Account</h3>
