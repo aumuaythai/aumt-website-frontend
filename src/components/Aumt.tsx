@@ -111,11 +111,6 @@ export class Aumt extends Component<AumtProps, AumtState> {
           })
           return FirebaseUtil.signOut()
         })
-        .then(() => {
-          if (this.state.authedUser && !this.state.authedUser.emailVerified) {
-            return DB.setEmailVerified(this.state.authedUserId, true)
-          }
-        })
         .catch((err) => {
           notification.error({message: `error with email verified ${err}`})
         })

@@ -21,13 +21,13 @@
 
 .photoshoot{
     height: 100%;
-    width: 500px;
+    width: 575px;
     display: inline-block;
     margin: 60px;
     margin-bottom: 60px;
 }
 
-.itemHeading:after{
+.tshirtHeading:after,.shortsHeading:after,.wrapsHeading:after{
     content: '';
     width: 25px;
     background-color: black;
@@ -37,17 +37,17 @@
     border-radius:1.5px;
 }
 
-.header{
+h1{
     font-size: 26pt;
     margin: 0;
 }
 
-.itemHeading{
+h2{
     font-size: 22pt;
     margin-bottom: 15px;
 }
 
-.plainText{
+p{
     font-size: 14pt;
     margin: 10px;
     padding: 0 20px;
@@ -77,14 +77,17 @@
         margin: auto;
     }
 
-    .itemHeading{
+    h2{
         font-size: 14pt;
     }
 
-    .plainText{
+    p{
         font-size: 9pt;
-        margin: 5px;
+        margin: 5;
         padding: 0 5px;
     }
 
+    .tshirtHeading{
+        margin: 0,25px;
+    }
 }

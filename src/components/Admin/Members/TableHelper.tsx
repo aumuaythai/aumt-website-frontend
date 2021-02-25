@@ -370,6 +370,17 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 ...this.getColumnSearchProps('upi')
             },
             {
+                dataIndex: 'studentId',
+                title: 'Student Id',
+                render: (t: string) => {
+                    return <span>{this.renderHighlightedText(t, 'studentId')} <Tooltip title='Copy'>
+                        <span className='noLinkA rightTableText' onClick={e => e.stopPropagation()}><CopyOutlined onClick={e => this.copyText(t)}/></span>
+                        </Tooltip></span>
+                },
+                sorter: (a: TableDataLine, b: TableDataLine) => a.studentId.localeCompare(b.studentId),
+                ...this.getColumnSearchProps('studentId')
+            },
+            {
                 dataIndex: 'membership',
                 title: 'Membership',
                 filters: [{ text: 'Sem 1', value: 'S1' },
@@ -410,6 +421,15 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 }
             },
             {
+                dataIndex: 'interestedInCamp',
+                title: 'Camp Interest',
+                filters: [{ text: 'Yes', value: 'Yes' },
+                { text: 'No', value: 'No' }],
+                onFilter: (value: string, record: TableDataLine) => {
+                    return record.interestedInCamp === value
+                }
+            },
+            {
                 dataIndex: 'paid',
                 title: 'Paid',
                 filters: [{ text: 'Yes', value: 'Yes' },
@@ -437,14 +457,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 onFilter: (value: string, record: TableDataLine) => {
                     return record.paymentType === value
                 },
-            },
-            {
-                dataIndex: 'instagramHandle',
-                title: 'Insta',
-                ...this.getColumnSearchProps('instagramHandle'),
-                render: (text: string) => {
-                    return text ? <span>@{this.renderHighlightedText(text, 'instagramHandle')}</span> : {text}
-                }
             },
             {
                 dataIndex: 'timeJoinedMs',

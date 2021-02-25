@@ -22,15 +22,15 @@ interface MemberDetailsState {
     currentLastName: string
     currentPreferredName: string
     currentEmail: string
-    currentIgHandle: string
     currentIsUoaStudent: 'Yes' | 'No'
     currentUpi: string
+    currentStudentId: string
     currentMembership: 'S1' | 'FY' | 'S2'
     currentPaid: 'Yes' | 'No',
     currentNotes: string
     currentPaymentType: 'Bank Transfer' | 'Cash' | 'Other'
     currentIsReturningMember: 'Yes' | 'No'
-    currentEmailVerified: boolean
+    currentInterestedInCamp: 'Yes' | 'No'
     currentInitialExperience: string
     currentECName: string
     currentECNumber: string
@@ -47,15 +47,15 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             currentLastName: props.member.lastName,
             currentPreferredName: props.member.preferredName,
             currentEmail: props.member.email,
-            currentIgHandle: props.member.instagramHandle,
             currentIsUoaStudent: props.member.isUoAStudent,
             currentUpi: props.member.upi,
+            currentStudentId: props.member.studentId,
             currentMembership: props.member.membership,
             currentPaid: props.member.paid,
             currentNotes: props.member.notes,
             currentPaymentType: props.member.paymentType,
             currentIsReturningMember: props.member.isReturningMember,
-            currentEmailVerified: props.member.emailVerified,
+            currentInterestedInCamp: props.member.interestedInCamp,
             currentInitialExperience: props.member.initialExperience,
             currentECName: props.member.EmergencyContactName,
             currentECNumber: props.member.EmergencyContactNumber,
@@ -72,16 +72,16 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                 currentLastName: this.props.member.lastName,
                 currentPreferredName: this.props.member.preferredName,
                 currentEmail: this.props.member.email,
-                currentIgHandle: this.props.member.instagramHandle,
                 currentInitialExperience: this.props.member.initialExperience,
                 currentIsUoaStudent: this.props.member.isUoAStudent,
                 currentUpi: this.props.member.upi,
+                currentStudentId: this.props.member.studentId,
                 currentMembership: this.props.member.membership,
                 currentPaid: this.props.member.paid,
                 currentNotes: this.props.member.notes,
                 currentPaymentType: this.props.member.paymentType,
                 currentIsReturningMember: this.props.member.isReturningMember,
-                currentEmailVerified: this.props.member.emailVerified,
+                currentInterestedInCamp: this.props.member.interestedInCamp,
                 currentECName: this.props.member.EmergencyContactName,
                 currentECNumber: this.props.member.EmergencyContactNumber,
                 currentECRelationship: this.props.member.EmergencyContactRelationship
@@ -100,18 +100,21 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     onEmailChange = (newEmail: string) => {
         this.setState({ ...this.state, currentEmail: newEmail })
     }
-    onInstagramChange = (newHandle: string) => {
-        this.setState({ ...this.state, currentIgHandle: newHandle })
-    }
     onIsUoaChange = (isUoa: 'Yes' | 'No') => {
         this.setState({ ...this.state, currentIsUoaStudent: isUoa })
     }
     onUpiChange = (upi: string) => {
         this.setState({ ...this.state, currentUpi: upi })
     }
+    onStudentIdChange = (newId: string) => {
+        this.setState({ ...this.state, currentStudentId: newId })
+    }  
     onMembershipChange = (membership: 'S1' | 'S2' | 'FY') => {
         let newMembership: 'S1' | 'S2' | 'FY' = membership
         this.setState({ ...this.state, currentMembership: newMembership })
+    }
+    onInterestedInCampChange = (interested: 'Yes' | 'No') => {
+        this.setState({ ...this.state, currentInterestedInCamp: interested })
     }
     onPaidChange = (paid: 'Yes' | 'No') => {
         this.setState({ ...this.state, currentPaid: paid })
@@ -156,19 +159,19 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
             lastName: this.state.currentLastName,
             preferredName: this.state.currentPreferredName,
             email: this.state.currentEmail,
-            instagramHandle: this.state.currentIgHandle || '',
             isUoAStudent: this.state.currentIsUoaStudent,
             upi: this.state.currentUpi || '0',
+            studentId: this.state.currentStudentId || '0',
             membership: this.state.currentMembership,
             paid: this.state.currentPaid,
             notes: this.state.currentNotes,
             isReturningMember: this.state.currentIsReturningMember,
+            interestedInCamp: this.state.currentInterestedInCamp,
             initialExperience: this.state.currentInitialExperience || '',
             EmergencyContactName: this.state.currentECName,
             EmergencyContactNumber: this.state.currentECNumber,
             EmergencyContactRelationship: this.state.currentECRelationship,
             timeJoinedMs: this.props.member.timeJoinedMs,
-            emailVerified: this.state.currentEmailVerified,
             paymentType: this.state.currentPaymentType
         }
         const errorStr = Validator.createAumtMember(member)
@@ -248,14 +251,6 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                                             value={this.state.currentEmail}
                                             suffix={<Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.state.currentEmail)} /></Tooltip>}
                                             onChange={e => this.onEmailChange(e.target.value)} />
-                                    </td>
-                                </tr>
-                                <tr className='memberDescriptionLine'>
-                                    <td className='memberDetailsTableLabel'>
-                                        <span className='memberDescriptionTitle'>Ig Handle: </span>
-                                    </td>
-                                    <td className='memberDetailsTableData'>
-                                        <Input prefix='@' className='memberEditInput' value={this.state.currentIgHandle} onChange={e => this.onInstagramChange(e.target.value)} />
                                     </td>
                                 </tr>
                             </tbody>
@@ -340,6 +335,17 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                                 </tr>
                                 <tr className='memberDescriptionLine'>
                                     <td className='memberDetailsTableLabel'>
+                                        <span className='memberDescriptionTitle'>Interested in Camp: </span>
+                                    </td>
+                                    <td className='memberDetailsTableData'>
+                                        <Radio.Group value={this.state.currentInterestedInCamp} onChange={e => this.onInterestedInCampChange(e.target.value)}>
+                                            <Radio.Button value="Yes">Yes</Radio.Button>
+                                            <Radio.Button value="No">No</Radio.Button>
+                                        </Radio.Group>
+                                    </td>
+                                </tr>
+                                <tr className='memberDescriptionLine'>
+                                    <td className='memberDetailsTableLabel'>
                                         <span className='memberDescriptionTitle'>UoA: </span>
                                     </td>
                                     <td className='memberDetailsTableData'>
@@ -359,6 +365,18 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                                             suffix={<Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.upi)} /></Tooltip>}
                                             value={this.state.currentUpi}
                                             onChange={e => this.onUpiChange(e.target.value)} />
+                                    </td>
+                                </tr>
+                                <tr className={`memberDescriptionLine ${this.state.currentIsUoaStudent === 'Yes' ? '' : 'displayNone'}`}>
+                                    <td className='memberDetailsTableLabel'>
+                                        <span className='memberDescriptionTitle'>Student ID: </span>
+                                    </td>
+                                    <td className='memberDetailsTableData'>
+                                        <Input
+                                            className='memberEditInput'
+                                            suffix={<Tooltip title='Copy'><CopyOutlined onClick={e => this.copyText(this.props.member.studentId)} /></Tooltip>}
+                                            value={this.state.currentStudentId}
+                                            onChange={e => this.onStudentIdChange(e.target.value)} />
                                     </td>
                                 </tr>
                                 <tr className='memberDescriptionLine'>

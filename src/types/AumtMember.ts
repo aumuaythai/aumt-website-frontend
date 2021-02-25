@@ -4,7 +4,6 @@ export interface AumtMember {
     lastName: string
     preferredName: string
     email: string
-    instagramHandle: string
 
     // Membership
     membership: 'S1' | 'S2' | 'FY'
@@ -15,7 +14,8 @@ export interface AumtMember {
     
     // details
     upi: string
-    emailVerified: boolean
+    studentId: string 
+    interestedInCamp: 'Yes' | 'No'
     isUoAStudent: 'Yes' | 'No'
     initialExperience: string
     notes: string

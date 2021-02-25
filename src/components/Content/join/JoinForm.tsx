@@ -53,10 +53,10 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             EmergencyContactName,
             EmergencyContactNumber,
             EmergencyContactRelationship,
-            Insta: instagramHandle = '',
             Paid: paid = 'No',
             Membership: membership = 'S2',
             upi,
+            studentId,
             email,
             password,
             uid,
@@ -69,17 +69,16 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 email,
                 isUoAStudent,
                 upi,
+                studentId,
                 membership,
                 initialExperience,
-                instagramHandle,
                 paymentType,
                 paid,
                 timeJoinedMs: new Date().getTime(),
                 isReturningMember,
                 EmergencyContactName,
                 EmergencyContactNumber,
-                EmergencyContactRelationship,
-                emailVerified: false,
+                EmergencyContactRelationship
             })
             if (typeof(member) === 'string') {
                 return message.error({content: `Error creating member: ${member}`})
@@ -182,16 +181,21 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             </Radio.Group>
                         </Form.Item>
                         {this.formRef.current?.getFieldValue('UoaStudent') !== 'No' ? 
-                           <Form.Item  {...this.alignInputLayout} name='upi' label={
-                            <span>
-                                UPI&nbsp;
-                                <Tooltip title="This is the part before your university email (e.g. jdoe295)">
-                                    <QuestionCircleOutlined />
-                                </Tooltip>
-                            </span>
-                           } rules={[{ required: true}]}>
-                               <Input className='joinFormInput'/>
-                           </Form.Item>
+                            <div>
+                                <Form.Item  {...this.alignInputLayout} name='upi' label={
+                                    <span>
+                                        UPI&nbsp;
+                                        <Tooltip title="This is the part before your university email (e.g. jdoe295)">
+                                            <QuestionCircleOutlined />
+                                        </Tooltip>
+                                    </span>
+                                } rules={[{ required: true}]}>
+                                    <Input className='joinFormInput'/>
+                                </Form.Item>
+                                <Form.Item  {...this.alignInputLayout} name='studentId' rules={[{ required: true }]} label='Student Id'>
+                                    <Input className='joinFormInput'/>
+                                </Form.Item>
+                           </div>
                            : null}
                         <Form.Item name='ReturningMember' rules={[{ required: true }]} label='Are you a returning AUMT member? '>
                             <Radio.Group buttonStyle="solid" name="ReturningMemberRadio">
