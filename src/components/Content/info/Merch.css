@@ -1,7 +1,3 @@
-.merchContainer {
-    padding-bottom: 35px;
-}
-
 .imgContainer{
     width: 100%;
     max-width: 1250px;
@@ -52,6 +48,7 @@
     margin: 10px;
     padding: 0 20px;
 }
+
 
 @media only screen and (max-width: 600px) {
 

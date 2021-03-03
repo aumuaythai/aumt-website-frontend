@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {Divider} from 'antd'
+import { Divider, Button } from 'antd'
+import { Links } from '../../../services/links'
 import './Merch.css'
 
 export class Merch extends Component {
@@ -42,7 +43,17 @@ export class Merch extends Component {
                         <p className = "plainText">Available in sizes S-XXXXL</p>
                     </div>
                 </div>
+
+                <Divider className='aboutDivider'/>
+                <div className="aboutFooterNotes">
+                    <h3 className='aboutSectionHead'>Want to place an order?</h3>
+                    <p>Check out our <a href = "https://forms.gle/81qVNjTj8qydny9o9">Merch order form</a>. If you have any questions, just ask a committee member or DM us!
+                    </p>
+                </div>
+
             </div>
+
+            
             
         )
     }

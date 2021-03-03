@@ -42,6 +42,42 @@ Pictured above: the current committee after a productive meeting.
 * Ability to commit some time and effort towards the club throughout the year
 * Willingness to make your voice heard; to contribute to new ideas and give feedback to your fellow committee members
 * Preferred but not mandatory: experience in photoshop, public relations or mailchimp
+
+Trainers Template:
+    <div className='imgRow'>
+    <div className='personContainer'>
+        <p className="name">Sunny Thangavelu</p>
+        <img className='headshot' src="./photos/sunny.jpg" alt="Sundaresh Thangavelu"/>
+    </div>
+    <div className='personContainer'>
+        <p className="name">Johnson Lo</p>
+        <img className='headshot' src="./photos/johnson.jpg" alt="Johnson Lo"/>
+    </div>
+    <div className='personContainer'>
+        <p className="name">Huch</p>
+        <img className='headshot' src="./photos/huch.jpg" alt="Huch"/>
+    </div>
+    <div className='personContainer'>
+        <p className="name">Emma Spierings</p>
+        <img className='headshot' src="./photos/emma.jpg" alt="Emma Spierings"/>
+    </div>
+    <div className='personContainer'>
+        <p className="name">Christian Lux</p>
+        <img className='headshot' src="./photos/christian.jpg" alt="Christian Lux"/>
+    </div>
+    <div className='personContainer'>
+        <p className="name">Hasnaen Hossain</p>
+        <img className='headshot' src="./photos/hasnaen.jpg" alt="Hasnaen Hossain"/>
+    </div>
+    {/* <div className='personContainer'>
+        <p className="name">Kevin Ku</p>
+        <img className='headshot' src="./photos/kevin.jpg" alt="Kevin Ku"/>
+    </div> */}
+    <div className='personContainer'>
+        <p className="name">Josh Webb</p>
+        <img className='headshot' src="./photos/josh.jpeg" alt="Josh Webb"/>
+    </div>
+    </div>
     `
     render() {
         return (
@@ -61,42 +97,30 @@ Pictured above: the current committee after a productive meeting.
                     <div className='imgRow mainRow'>
                         <div></div>
                         <div className='personContainer'>
-                            <p className="name">Tom Haliday - President</p>
-                            <img className='headshot' src="./photos/tom.jpg" alt="Tom Haliday"/>
+                            <p className="name">Joon Kwon - President</p>
+                            <img className='headshot' src="./photos/joon.jpg" alt="Joon Kwon"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Catherine Ma - Vice President</p>
-                            <img className='headshot' src="./photos/cat.jpg" alt="Catherine Ma"/>
+                            <p className="name">Terry Krause - Vice President</p>
+                            <img className='headshot' src="./photos/terry.jpg" alt="Terry Krause"/>
                         </div>
                     </div>
                     <div className='imgRow'>
                         <div className='personContainer'>
-                            <p className="name">Karl Oberio - Secretary</p>
-                            <img className='headshot' src="./photos/karl.jpg" alt="Karl Oberio"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Alex Walker - Treasurer / Website</p>
-                            <img className='headshot' src="./photos/alex.jpg" alt="Alex Walker"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Annie Milsom - Public Relations</p>
-                            <img className='headshot' src="./photos/annie2.jpg" alt="Annie Milsom"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Joon Kwon</p>
-                            <img className='headshot' src="./photos/joon.jpg" alt="Joon Kwon"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Louise Miao</p>
+                            <p className="name">Louise Miao - Secretary</p>
                             <img className='headshot' src="./photos/louise.jpg" alt="Louise Miao"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Terry Krause</p>
-                            <img className='headshot' src="./photos/terry.jpg" alt="Terry Krause"/>
+                            <p className="name">Henry Gann - Web Developer</p>
+                            <img className='headshot' src="./photos/henry.jpg" alt="Henry Gann"/>
                         </div>
                         <div className='personContainer'>
-                            <p className="name">Rish Kumar</p>
-                            <img className='headshot' src="./photos/rish.jpg" alt="Annie Milsom"/>
+                            <p className="name">Rish Kumar - Public Relations</p>
+                            <img className='headshot' src="./photos/rish.jpg" alt="Rish Kumar"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Jay Janah - Treasurer</p>
+                            <img className='headshot' src="./photos/jay.jpg" alt="Jay Janah"/>
                         </div>
                     </div>
                 </div>
@@ -114,40 +138,8 @@ Pictured above: the current committee after a productive meeting.
                             </div>
                         </div>
                     </div>
-                    <div className='imgRow'>
-                        <div className='personContainer'>
-                            <p className="name">Sunny Thangavelu</p>
-                            <img className='headshot' src="./photos/sunny.jpg" alt="Sundaresh Thangavelu"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Johnson Lo</p>
-                            <img className='headshot' src="./photos/johnson.jpg" alt="Johnson Lo"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Huch</p>
-                            <img className='headshot' src="./photos/huch.jpg" alt="Huch"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Emma Spierings</p>
-                            <img className='headshot' src="./photos/emma.jpg" alt="Emma Spierings"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Christian Lux</p>
-                            <img className='headshot' src="./photos/christian.jpg" alt="Christian Lux"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Hasnaen Hossain</p>
-                            <img className='headshot' src="./photos/hasnaen.jpg" alt="Hasnaen Hossain"/>
-                        </div>
-                        {/* <div className='personContainer'>
-                            <p className="name">Kevin Ku</p>
-                            <img className='headshot' src="./photos/kevin.jpg" alt="Kevin Ku"/>
-                        </div> */}
-                        <div className='personContainer'>
-                            <p className="name">Josh Webb</p>
-                            <img className='headshot' src="./photos/josh.jpeg" alt="Josh Webb"/>
-                        </div>
-                    </div>
+                    
+                    <h1>The trainers list for 2021 will be available soon...</h1>
                 </div>
             </div>
         )
