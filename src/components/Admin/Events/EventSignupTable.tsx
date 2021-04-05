@@ -249,13 +249,13 @@ export class EventSignupTable extends Component<EventSignupTableProps, EventSign
                 title: 'Staying',
                 dataIndex: 'daysStaying',
                 filters: [
-                    {text: '4 days (27th-30th)', value: '4 days (27th-30th)'},
-                    {text: '3 days (27th-29th)', value: '3 days (27th-29th)'},
-                    {text: '3 days (28th-30th)', value: '3 days (28th-30th)'},
+                    {text: '2 days (16th-17th)', value: '2 days (16th-17th)'},
+                    {text: '2 days (17th-18th)', value: '2 days (17th-18th)'},
+                    {text: '3 days (16th-18th)', value: '3 days (16th-18th)'},
                     {text: 'Other', value: 'Other'}
                 ],
                 onFilter: (value: boolean | string | number, record: TableRow) => {
-                    const defaultOptions = ['4 days (27th-30th)', '3 days (27th-29th)','3 days (28th-30th)']
+                    const defaultOptions = ['2 days (16th-17th)', '2 days (17th-18th)','3 days (16th-18th)']
                     if (value !== 'Other') {
                         return record.daysStaying === value
                     } else {

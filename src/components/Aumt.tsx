@@ -147,9 +147,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
                           <Route path="/faq">
                             <Faq></Faq>
                           </Route>
-                          <Route path = "/merch">
-                            <Merch></Merch>
-                          </Route>
+                          
                           <Route path="/signup">
                             <Redirect to="/signups"/>
                           </Route>
@@ -177,6 +175,11 @@ export class Aumt extends Component<AumtProps, AumtState> {
                               authedUser={this.state.authedUser}
                               authedUserId={this.state.authedUserId}></MainJoin>
                           </Route>
+
+                          <Route path = "/merch">
+                            <Merch></Merch>
+                          </Route>
+                          
                           <Route path="/admin">
                             {
                               this.state.userIsAdmin ?

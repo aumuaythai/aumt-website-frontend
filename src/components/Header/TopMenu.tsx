@@ -116,9 +116,6 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
           <Menu.Item key="FAQ">
             <Link to='/faq'>FAQ</Link>
           </Menu.Item>
-          <Menu.Item key="Merch">
-            <Link to='/merch'>Merch</Link>
-          </Menu.Item>
         </Menu.SubMenu>
         <Menu.Item key="Signups">
           <Link to='/signups'>Sign-ups</Link>
@@ -129,6 +126,9 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
         <Menu.Item key="Join">
           <Link to='/join'>Join</Link>
         </Menu.Item>
+        <Menu.Item key="Merch">
+            <Link to='/merch'>Merch</Link>
+          </Menu.Item>
         {this.props.isAdmin ?
             <Menu.Item key="Admin">
               <Link to='/admin'>Admin</Link>

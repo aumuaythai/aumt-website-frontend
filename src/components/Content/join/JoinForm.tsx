@@ -151,7 +151,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 {!this.props.isAdmin ?
                 <div>
                     <h2>AUMT {this.currentYear} {this.props.clubSignupSem === 'S2' ? 'Sem 2 ' : ''}Club Sign-ups</h2>
-                    <p>Membership is $50 for the semester{this.props.clubSignupSem === 'S1' ? ' or $90 for the year ': ''} and includes a training session each week!
+                    <p>Membership is $45 for the semester{this.props.clubSignupSem === 'S1' ? ' or $90 for the year and you get a free t-shirt (Free t-shirt offer has now expired) ': ''} plus a training session each week!
                         Please pay membership fees to the account below and add your NAME and 
                         {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
                          as the reference.</p>
@@ -303,7 +303,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             <p>If paying by Bank Transfer, include your NAME and
                                 {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
                                 as the reference.
-                                Membership is $50 {this.props.clubSignupSem === 'S1' ? ' for one semester or $90 for the year': ' for Semester 2'}.
+                                Membership is $45 {this.props.clubSignupSem === 'S1' ? ' for one semester or $90 for the year': ' for Semester 2'}.
                                 Please make your payment to the following account:</p>
                             <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                             <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>

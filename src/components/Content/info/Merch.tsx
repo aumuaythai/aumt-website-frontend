@@ -44,8 +44,8 @@ export class Merch extends Component {
                     </div>
                 </div>
 
-                <Divider className='aboutDivider'/>
-                <div className="aboutFooterNotes">
+                <Divider className='MerchDivider'/>
+                <div className="merchFooterNotes">
                     <h3 className='aboutSectionHead'>Want to place an order?</h3>
                     <p>Check out our <a href = "https://forms.gle/81qVNjTj8qydny9o9">Merch order form</a>. If you have any questions, just ask a committee member or DM us!
                     </p>

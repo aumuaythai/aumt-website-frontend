@@ -34,7 +34,7 @@ interface SignupFormState {
     removingState: boolean
 }
 
-const SPOTS_TAG_LIMIT = 5 // Infinity
+const SPOTS_TAG_LIMIT = 35 // Infinity
 
 export class SignupForm extends Component<SignupFormProps, SignupFormState> {
     private sessionHistory: string[] = []

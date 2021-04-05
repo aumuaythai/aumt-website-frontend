@@ -100,9 +100,9 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                             </Form.Item>
                             <Form.Item label='Planned Length of Stay' name='daysStaying' rules={[{required: true, message: 'Length of Stay Required'}]}>
                                 <Radio.Group name='lengthOfStayRadio'>
-                                    <Radio value="4 days (27th-30th)">4 days (27th-30th)</Radio>
-                                    <Radio value="3 days (27th-29th)">3 days (27th-29th)</Radio>
-                                    <Radio value="3 days (28th-30th)">3 days (28th-30th)</Radio>
+                                    <Radio value="2 days (16th-17th)">2 days (16th-17th)</Radio>
+                                    <Radio value="2 days (17th-18th)">2 days (17th-18th)</Radio>
+                                    <Radio value="3 days (16th-18th)">3 days (16th-18th)</Radio>
                                     <Radio value="Other">Other
                                         <Input onChange={e => this.onLengthStayChange(e.target.value)} placeholder='Please specify' style={{width: 150}}/>
                                     </Radio>

@@ -20,7 +20,7 @@ export class Faq extends Component {
                 <div className="questionContainer">
                     <p className="question">Q: When and where are trainings?</p>
                     <p className="answer">
-                        A: There is a 6:30 Beginners training and a 7:30 Advanced training every Thursday and Friday. Trainings are held at the Hawk's Nest Gym, located at the third floor of&nbsp;
+                        A: There is a 6:30 and 7:30 beginners training on Thursday and a 6:30 beginners training and 7:30 advanced training on Friday. Trainings are held at the Hawk's Nest Gym, located at the third floor of&nbsp;
                         <span className='socialLink' onClick={this.mapClick}>492 Queen Street</span>
                     </p>
                     <Divider/>
@@ -30,7 +30,7 @@ export class Faq extends Component {
                         Q: How much is a membership?
                     </p>
                     <p className="answer">
-                        A: Memberships are $50 for one semester or $90 for the full year
+                        A: Memberships are $45 for one semester or $90 for the full year (Plus a free t-shirt with the full-year payment!)
                     </p>
                     <Divider/>
                 </div>
@@ -57,7 +57,7 @@ export class Faq extends Component {
                         Q: I want to represent the club. Where can I get some sweet sweet merch?
                     </p>
                     <p className="answer">
-                        A: Talk to your nearest committee member! We have AUMT muay thai shorts and a club shirt as well. 
+                        A: Talk to your nearest committee member or check out our awesome <a href = "./merch">merch page</a>! We have AUMT muay thai shorts and a club shirt as well.
                     </p>
                     <Divider/>
                 </div>

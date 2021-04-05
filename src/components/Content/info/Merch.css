@@ -1,3 +1,7 @@
+.merchContainer {
+    padding-bottom: 10px;
+}
+
 .imgContainer{
     width: 100%;
     max-width: 1250px;
@@ -17,10 +21,10 @@
 
 .photoshoot{
     height: 100%;
-    width: 500px;
+    width: 25%;
     display: inline-block;
-    margin: 60px;
-    margin-bottom: 60px;
+    margin: 4%;
+    margin-bottom: 2%;
 }
 
 .itemHeading:after{
@@ -49,12 +53,14 @@
     padding: 0 20px;
 }
 
+.merchFooterNotes{
+    padding:0px;
+}
+
 
 @media only screen and (max-width: 600px) {
 
-    .merchContainer {
-        padding-bottom: 10px;
-    }
+    
 
     .tshirtContainer,.wrapsContainer,.shortsContainer{
         width:100%;
