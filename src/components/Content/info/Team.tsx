@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {Divider} from 'antd'
 import './Team.css'
-// import { CommitteeApplicationForm } from './CommitteeApplicationForm'
-// import { RenderMarkdown } from '../../utility/RenderMarkdown'
+ import { CommitteeApplicationForm } from './CommitteeApplicationForm'
+ import { RenderMarkdown } from '../../utility/RenderMarkdown'
 
 class Team extends Component {
     private committeeAppMd = `
@@ -41,68 +41,29 @@ Pictured above: the current committee after a productive meeting.
 * Willingness to listen to feedback, learn and grow
 * Ability to commit some time and effort towards the club throughout the year
 * Willingness to make your voice heard; to contribute to new ideas and give feedback to your fellow committee members
-* Preferred but not mandatory: experience in photoshop, public relations or mailchimp
-
-Trainers Template:
-    <div className='imgRow'>
-    <div className='personContainer'>
-        <p className="name">Sunny Thangavelu</p>
-        <img className='headshot' src="./photos/sunny.jpg" alt="Sundaresh Thangavelu"/>
-    </div>
-    <div className='personContainer'>
-        <p className="name">Johnson Lo</p>
-        <img className='headshot' src="./photos/johnson.jpg" alt="Johnson Lo"/>
-    </div>
-    <div className='personContainer'>
-        <p className="name">Huch</p>
-        <img className='headshot' src="./photos/huch.jpg" alt="Huch"/>
-    </div>
-    <div className='personContainer'>
-        <p className="name">Emma Spierings</p>
-        <img className='headshot' src="./photos/emma.jpg" alt="Emma Spierings"/>
-    </div>
-    <div className='personContainer'>
-        <p className="name">Christian Lux</p>
-        <img className='headshot' src="./photos/christian.jpg" alt="Christian Lux"/>
-    </div>
-    <div className='personContainer'>
-        <p className="name">Hasnaen Hossain</p>
-        <img className='headshot' src="./photos/hasnaen.jpg" alt="Hasnaen Hossain"/>
-    </div>
-    {/* <div className='personContainer'>
-        <p className="name">Kevin Ku</p>
-        <img className='headshot' src="./photos/kevin.jpg" alt="Kevin Ku"/>
-    </div> */}
-    <div className='personContainer'>
-        <p className="name">Josh Webb</p>
-        <img className='headshot' src="./photos/josh.jpeg" alt="Josh Webb"/>
-    </div>
-    </div>
+* Preferred but not mandatory: experience in photoshop, public relations or Mailerlite
     `
     render() {
         return (
             <div className='teamContainer'>
-                    {/* <div>
+                    <div>
                         <h1>Applications</h1>
                         <div className='committeeApplicationsContainer'>
                             <RenderMarkdown source={this.committeeAppMd}></RenderMarkdown>
-                    {Date.now() < 160292160000 ?
+                    {Date.now() < 16276463990000 ?
                             <CommitteeApplicationForm></CommitteeApplicationForm>
                         : <p>Committee applications have closed. Message the AUMT page on Facebook or Instagram with any questions.</p>}
                         </div>
                     </div>
-                <Divider/> */}
+                <Divider/>
                 <div className="teamGroup">
                     <h1>Committee</h1>
+
                     <div className='imgRow mainRow'>
                         <div></div>
                         <div className='personContainer'>
                             <p className="name">Joon Kwon - President</p>
                             <img className='headshot' src="./photos/joon.jpg" alt="Joon Kwon"/>
-                        </div>
-                        <div className='personContainer'>
-                            <p className="name">Terry Krause - Vice President</p>
-                            <img className='headshot' src="./photos/terry.jpg" alt="Terry Krause"/>
                         </div>
                     </div>
                     <div className='imgRow'>
@@ -114,15 +75,24 @@ Trainers Template:
                             <p className="name">Henry Gann - Web Developer</p>
                             <img className='headshot' src="./photos/henry.jpg" alt="Henry Gann"/>
                         </div>
-                        <div className='personContainer'>
-                            <p className="name">Rish Kumar - Public Relations</p>
-                            <img className='headshot' src="./photos/rish.jpg" alt="Rish Kumar"/>
-                        </div>
+
                         <div className='personContainer'>
                             <p className="name">Jay Janah - Treasurer</p>
                             <img className='headshot' src="./photos/jay.jpg" alt="Jay Janah"/>
                         </div>
+                        
+                        </div>
                     </div>
+
+                    <div className = 'imgRow'>
+                    <div className='personContainer'>
+                            <p className="name">James Stinson - Sponsorship Coordinator</p>
+                            <img className='headshot' src="./photos/james.jpg" alt="James Stinson"/>
+                    </div>
+                    <div className='personContainer'>
+                            <p className="name">Tatki "TK" Lo - Event Coordinator</p>
+                            <img className='headshot' src="./photos/TK.jpg" alt="Tatki Lo"/>
+                        </div>
                 </div>
                 <Divider></Divider>
                 <div className="teamGroup">
@@ -138,8 +108,31 @@ Trainers Template:
                             </div>
                         </div>
                     </div>
-                    
-                    <h1>The trainers list for 2021 will be available soon...</h1>
+                    <div className='imgRow'>
+
+
+                        <div className='personContainer'>
+                            <p className="name">Emma Spierings</p>
+                            <img className='headshot' src="./photos/emma.jpg" alt="Emma Spierings"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Josh Webb</p>
+                            <img className='headshot' src="./photos/josh.jpeg" alt="Josh Webb"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Catherine Ma</p>
+                            <img className='headshot' src="./photos/cat.jpg" alt="Josh Webb"/>
+                        </div>
+
+                        <div className='personContainer'>
+                            <p className="name">Tom Haliday</p>
+                            <img className='headshot' src="./photos/tom.jpg" alt="Josh Webb"/>
+                        </div>
+                        <div className='personContainer'>
+                            <p className="name">Anthony Wei</p>
+                            <img className='headshot' src="./photos/anthony.jpg" alt="Josh Webb"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

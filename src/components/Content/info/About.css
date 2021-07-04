@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+
 .introContainer {
     text-align:left;
     padding: 40px;
@@ -7,6 +9,7 @@
 .introTitle {
     font-size: 4vw;
     font-weight: bolder;
+    font-family: 'Oswald', sans-serif;
 }
 .groupHeaderContainer {
     width: 100%;

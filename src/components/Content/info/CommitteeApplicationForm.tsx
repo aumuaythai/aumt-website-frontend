@@ -77,13 +77,13 @@ export class CommitteeApplicationForm extends Component<CommitteeApplicationForm
                 <Result
                     status='success'
                     title='Your application has been recorded'
-                    subTitle={'The current committee will contact you about an interview! Interviews will be held between Monday the 19th and Wednesday the 21st of October, in person at the university'}>
+                    subTitle={'The current committee will contact you about an interview!'}>
                 </Result>
             </div>
         }
         return (
             <div className="committeeApplicationsFormContainer">
-                <p>Apply below! This form will close Saturday October 17th at 9pm. </p>
+                <p>Apply below! This form will close on the 30th of July at midnight. </p>
                 <Form layout='vertical' onFinish={this.onSubmit} ref={this.formRef}>
                     <Form.Item name='fullName' label='Full Name' rules={[{required: true, message: 'Name is required'}]}>
                         <Input/>
