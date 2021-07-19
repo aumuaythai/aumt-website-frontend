@@ -151,7 +151,8 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 {!this.props.isAdmin ?
                 <div>
                     <h2>AUMT {this.currentYear} {this.props.clubSignupSem === 'S2' ? 'Sem 2 ' : ''}Club Sign-ups</h2>
-                    <p>Membership is $45 for the semester{this.props.clubSignupSem === 'S1' ? ' or $90 for the year and you get a free t-shirt (Free t-shirt offer has now expired) ': ''} plus a training session each week!
+                    <p> <strong> If you want to keep your account from semester 1, please send us a screenshot of your payment. <u> Do not fill out the form again</u>. </strong></p>
+                    <p>Membership is $50 for the semester{this.props.clubSignupSem === 'S1' ? '': ''} plus a training session each week!
                         Please pay membership fees to the account below and add your NAME and 
                         {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
                          as the reference.</p>
@@ -217,11 +218,11 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <Form.Item rules={[{ required: true }]} name='Experience' label='Experience in Muay Thai'>
                             <Radio.Group name="ExperienceRadio" onChange={v => this.setState({...this.state,currentExperienceInMuayThai: v.target.value})}>
                                 <Radio style={this.verticalRadioStyle} value={'None'}>None</Radio>
-                                <Radio style={this.verticalRadioStyle} value={'Beginner/Intermediate'}>Beginner/Intermediate</Radio>
-                                <Radio style={this.verticalRadioStyle} value={'Advanced'}>Advanced</Radio>
-                                <Radio style={this.verticalRadioStyle} value={'Other'}>
-                                    Other...
-                                    {this.state.currentExperienceInMuayThai === 'Other' ? <Input className='joinFormInput' style={{ width: 100, marginLeft: 10 }}/> : null}
+                                <Radio style={this.verticalRadioStyle} value={'Beginner (< 1 year experience)'}>Beginner (Less 1 year experience)</Radio>
+                                <Radio style={this.verticalRadioStyle} value={'Intermediate (1-2 years experience)'}>Intermediate (1-2 years experience)</Radio>
+                                <Radio style={this.verticalRadioStyle} value={'Advanced (2+ years experience)'}>
+                                    Advanced (2+ years experience)
+                                    {this.state.currentExperienceInMuayThai === 'Advanced (2+ years experience)' ? <Input className='joinFormInput' style={{ width: 100, marginLeft: 10 }}/> : null}
                                 </Radio>
                                 
                             </Radio.Group>
@@ -303,7 +304,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             <p>If paying by Bank Transfer, include your NAME and
                                 {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
                                 as the reference.
-                                Membership is $45 {this.props.clubSignupSem === 'S1' ? ' for one semester or $90 for the year': ' for Semester 2'}.
+                                Membership is $50 {this.props.clubSignupSem === 'S1' ? ' for one semester or $90 for the year': ' for Semester 2'}.
                                 Please make your payment to the following account:</p>
                             <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                             <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>

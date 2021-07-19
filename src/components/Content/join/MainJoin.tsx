@@ -31,7 +31,7 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
         const lines: JSX.Element[] = []
         if (this.props.authedUser?.paid === 'No') {
             lines.push(
-                <p className='joinAccountLine'>The membership fee is $45 for one semester or $90 for the full year and should be paid with your full name as the reference to: 06-0158-0932609-00
+                <p className='joinAccountLine'>The membership fee is $50 for semester 2 and should be paid with your full name as the reference to: 06-0158-0932609-00
                     <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
             )
         }
