@@ -50,7 +50,7 @@ Pictured above: the current committee after a productive meeting.
                         <h1>Applications</h1>
                         <div className='committeeApplicationsContainer'>
                             <RenderMarkdown source={this.committeeAppMd}></RenderMarkdown>
-                    {Date.now() < 16276463990000 ?
+                    {Date.now() < 16289855990000?
                             <CommitteeApplicationForm></CommitteeApplicationForm>
                         : <p>Committee applications have closed. Message the AUMT page on Facebook or Instagram with any questions.</p>}
                         </div>

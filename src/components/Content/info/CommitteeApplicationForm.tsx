@@ -83,7 +83,7 @@ export class CommitteeApplicationForm extends Component<CommitteeApplicationForm
         }
         return (
             <div className="committeeApplicationsFormContainer">
-                <p>Apply below! This form will close on the 30th of July at midnight. </p>
+                <p>Apply below! This form will close on the 15th of August at midnight. </p>
                 <Form layout='vertical' onFinish={this.onSubmit} ref={this.formRef}>
                     <Form.Item name='fullName' label='Full Name' rules={[{required: true, message: 'Name is required'}]}>
                         <Input/>
