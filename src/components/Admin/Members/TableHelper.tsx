@@ -309,7 +309,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             })
     }
 
-    private updateMembership = (line: TableDataLine, newMembership: 'S1' | 'S2' | 'FY') => {
+    private updateMembership = (line: TableDataLine, newMembership: 'S1' | 'S2' | 'FY' | 'SS') => {
         db.updateMembership(line.key, newMembership)
             .then(() => {
                 notification.success({message: `Updated membership for ${line.firstName} to ${newMembership}`})
@@ -383,16 +383,20 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
             {
                 dataIndex: 'membership',
                 title: 'Membership',
-                filters: [{ text: 'Sem 1', value: 'S1' },
+                filters:[
+                            { text: 'Sem 1', value: 'S1' },
                             { text: 'Sem 2', value: 'S2' },
-                            { text: 'Full Year', value: 'FY' }],
+                            { text: 'Full Year', value: 'FY' },
+                            { text: 'Summer School', value: 'SS' }
+                        ],
                 onFilter: (value: string, record: TableDataLine) => {
                     return (!record.membership && value === 'None') || record.membership === value
                 },
-                render: (text: 'S1' | 'S2' | 'FY', line: TableDataLine) => {
-                    let newText: 'S1' | 'S2' | 'FY' = 'S2'
+                render: (text: 'S1' | 'S2' | 'FY' | 'SS', line: TableDataLine) => {
+                    let newText: 'S1' | 'S2' | 'FY'| 'SS' = 'S2'
                     if (text === 'S2') newText = 'FY'
-                    if (text === 'FY') newText = 'S1'
+                    if (text === 'FY') newText = 'SS'
+                    if (text === 'SS') newText = 'S1'
                     return <span>
                         {text} <Tooltip title={`Change to ${newText}`}>
                             <span className="noLinkA rightTableText" onClick={e => e.stopPropagation()}>

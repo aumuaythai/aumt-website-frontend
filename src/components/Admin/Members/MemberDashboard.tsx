@@ -336,6 +336,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                             <Radio.Group value={this.state.clubSignupSem} onChange={e => this.onSignupSemChange(e.target.value) }>
                                                 <Radio.Button value='S1'>Sem 1</Radio.Button>
                                                 <Radio.Button value='S2'>Sem 2</Radio.Button>
+                                                <Radio.Button value='SS'>Summer School</Radio.Button>
                                             </Radio.Group>
                                             }
                                         </div>

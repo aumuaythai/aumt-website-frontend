@@ -109,8 +109,8 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     onStudentIdChange = (newId: string) => {
         this.setState({ ...this.state, currentStudentId: newId })
     }  
-    onMembershipChange = (membership: 'S1' | 'S2' | 'FY') => {
-        let newMembership: 'S1' | 'S2' | 'FY' = membership
+    onMembershipChange = (membership: 'S1' | 'S2' | 'FY' | 'SS') => {
+        let newMembership: 'S1' | 'S2' | 'FY' | 'SS' = membership
         this.setState({ ...this.state, currentMembership: newMembership })
     }
     onInterestedInCampChange = (interested: 'Yes' | 'No') => {
