@@ -12,7 +12,7 @@ interface SignupProps {
     authedUser: AumtMember | null
     authedUserId: string | null
     paid: boolean
-    clubSignupSem: 'S1' | 'S2' | 'loading'
+    clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
 }
 
 interface SignupState {

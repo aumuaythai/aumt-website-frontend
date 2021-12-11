@@ -12,7 +12,7 @@ interface MainJoinProps {
     authedUserId: string
     loadingAuthedUser: boolean
     clubSignupStatus: 'open' | 'closed' | 'loading'
-    clubSignupSem: 'S1' | 'S2' | 'loading'
+    clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
 }
 
 interface MainJoinState {}

@@ -25,7 +25,7 @@ interface MemberDetailsState {
     currentIsUoaStudent: 'Yes' | 'No'
     currentUpi: string
     currentStudentId: string
-    currentMembership: 'S1' | 'FY' | 'S2'
+    currentMembership: 'S1' | 'FY' | 'S2' | 'SS'
     currentPaid: 'Yes' | 'No',
     currentNotes: string
     currentPaymentType: 'Bank Transfer' | 'Cash' | 'Other'

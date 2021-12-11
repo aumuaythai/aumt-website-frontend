@@ -43,7 +43,7 @@ export interface AumtState {
     userIsAdmin: boolean
     authedUserId: string
     clubSignupStatus: 'open' | 'closed' | 'loading'
-    clubSignupSem: 'S1' | 'S2' | 'loading'
+    clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {

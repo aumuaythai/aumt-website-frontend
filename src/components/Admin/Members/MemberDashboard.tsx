@@ -23,7 +23,7 @@ interface MemberDashboardState {
     dbListenerId: string
     currentClubFormOpen: boolean
     clubFormLoading: boolean
-    clubSignupSem: '' | 'S1' | 'S2'
+    clubSignupSem: '' | 'S1' | 'S2' | 'SS'
     loadingSignupSem: boolean
     importMembersVisible: boolean
     importMemberErrors: string[]
@@ -121,7 +121,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
         }
         this.firstListen = false
     }
-    onSignupSemChange = (sem: 'S1' | 'S2') => {
+    onSignupSemChange = (sem: 'S1' | 'S2' | 'SS') => {
         this.setState({
             ...this.state,
             loadingSignupSem: true,

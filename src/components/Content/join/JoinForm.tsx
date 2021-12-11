@@ -11,7 +11,7 @@ import validator from '../../../services/validator';
 
 interface JoinFormProps {
     isAdmin: boolean
-    clubSignupSem: 'S1' | 'S2' | null
+    clubSignupSem: 'S1' | 'S2' | null | 'SS'
 }
 
 interface JoinFormState {
