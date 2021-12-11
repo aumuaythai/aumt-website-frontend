@@ -31,8 +31,19 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
         const lines: JSX.Element[] = []
         if (this.props.authedUser?.paid === 'No') {
             lines.push(
-                <p className='joinAccountLine'>The membership fee is $50 and should be paid with your full name as the reference to: 06-0158-0932609-00
-                    <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                <p className='joinAccountLine'>
+                    If paying by Bank Transfer, include your 'NAME' and
+                    {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
+                    {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                    {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
+                    as the reference.
+                    Membership is 
+                    {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
+                    {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
+                    {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''}
+                    and should be paid with your full name as the reference to: 06-0158-0932609-00
+                    <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button>
+                </p>
             )
         }
         if (this.props.clubSignupStatus === 'open') {
