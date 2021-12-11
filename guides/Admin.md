@@ -97,7 +97,7 @@ Signups can be seen by clicking `View Signups` on the event from the admin secti
 * Preferred Name - optional
 * Email
 * UPI - 0 for people not at UoA, otherwise their UPI
-* Membership - S1, S2 or FY for a Semester one, Semester two, or Full Year membership
+* Membership - S1, S2, SS or FY for a Semester one, Semester two, or Full Year membership
 * Returning Member - whether a member was a member in the past (Yes or No)
 * UoA Student - whether or not a member is enrolled at UoA (Yes or No)
 * Paid - whether or not the member has paid for their membership (Yes or No)
