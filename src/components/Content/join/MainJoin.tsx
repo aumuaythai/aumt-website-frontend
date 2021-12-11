@@ -74,7 +74,7 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
                     status='success'
                     title='You are a member of AUMT!'
                     subTitle={(this.props.authedUser.paid === 'Yes' ? 
-                    'Our records your membership covers the current semester.': '') + 
+                    'Our records show your membership covers the current semester.': '') + 
                     ' Keep an eye out for announcements and next steps by email, Instagram and Facebook!'}
                     extra={this.getExtraResultContent()}
                 />
