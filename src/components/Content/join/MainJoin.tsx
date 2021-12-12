@@ -69,15 +69,28 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
             return <Spin/>
         } else if (this.props.authedUser) {
             return (
-                <Result
-                    className='joinResult'
-                    status='success'
-                    title='You are a member of AUMT!'
-                    subTitle={(this.props.authedUser.paid === 'Yes' ? 
-                    'Our records show your membership covers the current semester.': '') + 
-                    ' Keep an eye out for announcements and next steps by email, Instagram and Facebook!'}
-                    extra={this.getExtraResultContent()}
-                />
+                <div>
+                    <Result
+                        className='joinResult'
+                        status='success'
+                        title='You are a member of AUMT!'
+                        extra={this.getExtraResultContent()}/>
+                    <h1>Your Current Membership</h1>
+                    <p>
+                        Membership coverage: 
+                        <b>
+                            {this.props.authedUser.membership === 'S1' ? ' Semester 1 ': ''}
+                            {this.props.authedUser.membership === 'S2' ? ' Semester 2 ': ''}
+                            {this.props.authedUser.membership === 'SS' ? ' Summer School ': ''}
+                            {this.props.authedUser.membership === 'FY' ? ' Full Year (Semester 1 and 2)': ''}
+                        </b>
+                    </p>
+                    <p>
+                        Status:
+                        <b>{this.props.authedUser.paid === 'Yes' ? ' Paid ': ' Not Paid '}</b>
+                    </p>
+                </div>
+                
             )
         } else if (this.props.clubSignupStatus === 'closed') {
             return (

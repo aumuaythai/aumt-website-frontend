@@ -27,4 +27,5 @@ export interface AumtWeeklyTraining {
     notes: string
     signupMaxSessions: number
     openToPublic: boolean
+    semester: string
 }

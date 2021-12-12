@@ -25,6 +25,7 @@ interface CreateTrainingState {
     currentSignupMaxSessions: number
     currentTrainingId: string
     loadingTraining: boolean
+    semester: string
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
@@ -53,7 +54,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentPopulateWeekValue: 1,
             currentSignupMaxSessions: 1,
             currentTrainingId: '',
-            loadingTraining: false
+            loadingTraining: false,
+            semester: '',
         }
     }
     populateWeeklyDefaults = () => {
@@ -107,7 +109,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                         currentFeedback: training.feedback,
                         currentTrainingId: training.trainingId,
                         currentSignupMaxSessions: training.signupMaxSessions,
-                        loadingTraining: false
+                        loadingTraining: false,
+                        semester: training.semester
                     })
                 })
                 .catch((err) => {
@@ -224,6 +227,13 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentSessions: this.state.currentSessions.concat([newSession])
         })
     }
+    onSemesterChange = (semester: string) => {
+        console.log('semester change', semester);
+        this.setState({
+            ...this.state,
+            semester: semester
+        })
+    }
     onSubmitForm = () => {
         if (!this.state.currentTitle) {
             notification.error({
@@ -235,6 +245,11 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             return
         } else if (this.state.currentSessions.find(s => !s.title)) {
             notification.error({message: 'All session options must have a title'})
+            return
+        } else if (this.state.semester === '') {
+            notification.error({
+                message: 'Semester selection required'
+            })
             return
         }
         this.setState({
@@ -254,7 +269,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             openToPublic: this.state.currentOpenToPublic,
             notes: this.state.currentNotes,
             trainingId: this.state.currentTrainingId || this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
-            feedback: this.state.currentFeedback
+            feedback: this.state.currentFeedback,
+            semester: this.state.semester
         })
         .then(() => {
             this.setState({
@@ -318,6 +334,14 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                         )
                     })}
                 </div>
+
+                <h4 className='formSectionTitle'>Semester</h4>
+                <Radio.Group buttonStyle="solid" name="semesterRadio" value={this.state.semester} onChange={e => this.onSemesterChange(e.target.value)}>
+                    <Radio.Button value={'S1'}>Semester 1</Radio.Button>
+                    <Radio.Button value={'S2'}>Semester 2</Radio.Button>
+                    <Radio.Button value={'SS'}>Summer School</Radio.Button>
+                </Radio.Group>
+
                 <h4 className='formSectionTitle'>Notes</h4>
                 <div className="notesContainer">
                     <MarkdownEditor

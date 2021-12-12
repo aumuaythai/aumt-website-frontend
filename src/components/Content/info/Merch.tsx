@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {Divider} from 'antd'
 import './Merch.css'
 
 export class Merch extends Component {

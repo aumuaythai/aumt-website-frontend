@@ -433,9 +433,11 @@ class DB {
                         const event = this.docToEvent(doc.data())
                         newEvents.push(event)
                     } catch (err) {
-                        if (errorCallback ) {
-                            errorCallback(`Excluding event because ${err.toString()}`)
-                        }
+                        console.warn(err);
+                        // NOTE: uncomment this block if errors occur:
+                        // if (errorCallback ) {
+                        //     errorCallback(`Excluding event because ${err.toString()}`)
+                        // }
                     }
                 })
                 callback(newEvents)
@@ -502,7 +504,8 @@ class DB {
             openToPublic: docData.openToPublic || false,
             opens: new Date(docData.opens.seconds * 1000),
             closes: new Date(docData.closes.seconds * 1000),
-            notes: docData.notes.split('%%NEWLINE%%').join('\n')
+            notes: docData.notes.split('%%NEWLINE%%').join('\n'),
+            semester: docData.semester,
         }
         return weeklyTraining
     }
