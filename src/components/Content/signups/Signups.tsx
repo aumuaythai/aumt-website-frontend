@@ -100,15 +100,18 @@ class Signups extends Component<SignupProps, SignupState> {
             <div className='signupsContainer'>
                 {this.state.forms
                     .map((form) => {
+                        console.log(form);
                         if (!form.openToPublic) {
                             if (!this.props.authedUserId) {
-                                return <div key={form.trainingId}>
-                                    <h2>{form.title}</h2>
-                                    <p>You must <Link to='/login?from=/signups'> log in </Link> to view and sign up!</p>
-                                    <h4>Not a member?</h4>
-                                    <p><Link to='/join'>Join the club!</Link> Club signups are open at the beginning of each semester.</p>
-                                    <Divider/>
-                                </div>
+                                return (
+                                    <div key={form.trainingId}>
+                                        <h2>{form.title}</h2>
+                                        <p>You must <Link to='/login?from=/signups'> log in </Link> to view and sign up!</p>
+                                        <h4>Not a member?</h4>
+                                        <p><Link to='/join'>Join the club!</Link> Club signups are open at the beginning of each semester.</p>
+                                        <Divider/>
+                                    </div>
+                                )
                             } else if (this.props.authedUser && this.props.authedUser.paid === 'No') {
                                 return <div key={form.trainingId} className='signupsNotPaidContainer'>
                                     <h2>{form.title}</h2>
@@ -154,10 +157,9 @@ class Signups extends Component<SignupProps, SignupState> {
                                     authedUserId={this.props.authedUserId}
                                     notes={form.notes}
                                     signupMaxSessions={form.signupMaxSessions}
-                                    openToPublic={form.openToPublic}
-                                    ></SignupForm>
-                                </div>
-                            )
+                                    openToPublic={form.openToPublic}/>
+                            </div>
+                        )
                     })}
             </div>
         )
