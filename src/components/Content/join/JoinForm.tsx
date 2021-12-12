@@ -11,7 +11,7 @@ import validator from '../../../services/validator';
 
 interface JoinFormProps {
     isAdmin: boolean
-    clubSignupSem: 'S1' | 'S2' | null
+    clubSignupSem: 'S1' | 'S2' | null | 'SS'
 }
 
 interface JoinFormState {
@@ -55,7 +55,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             EmergencyContactNumber,
             EmergencyContactRelationship,
             Paid: paid = 'No',
-            Membership: membership = 'S2',
+            Membership: membership = this.props.clubSignupSem,
             upi,
             studentId,
             email,
@@ -150,13 +150,29 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             <div className='joinFormContainer'>
                 {!this.props.isAdmin ?
                 <div>
-                    <h2>AUMT {this.currentYear} {this.props.clubSignupSem === 'S2' ? 'Sem 2 ' : ''}Club Sign-ups</h2>
-                    <p>Membership is $50 for the semester{this.props.clubSignupSem === 'S1' ? ' or $90 for the year ': ''} and includes a training session each week!
+                    <h2>
+                        AUMT {this.currentYear} 
+                        <b>
+                            {this.props.clubSignupSem === 'S2' ? ' Semester 2 ' : ''}
+                            {this.props.clubSignupSem === 'SS' ? ' Summer School ' : ''}
+                        </b>
+                        Club Sign-ups
+                    </h2>
+                    <p>
+                        Membership is 
+                        {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
+                        {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
+                        {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''} 
+                        and includes a training session each week!
+
                         Please pay membership fees to the account below and add your NAME and 
-                        {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
-                         as the reference.</p>
+                        {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
+                        {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                        {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
+                        as the reference.
+                    </p>
                     <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
-                    <p>Our sign-up sheets for training will be posted to aumt.co.nz/signups, so look out for it!</p>
+                    <p>Our weekly sign-up sheets for training will be posted to aumt.co.nz/signups or under the "Sign-ups" tab.</p>
                     <h3>DISCLAIMER:</h3>
                     <p>I understand that by filling out and submitting this form, I am partaking in the club activities at my own risk and all injuries sustained to any person or any damage to equipment during the ordinary course of training will not be the responsibility of the club.
                         Any loss of equipment or personal belongings is the sole responsibility of the member and is not the responsibility of the club or training facility. </p>
@@ -276,8 +292,12 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <Form.Item name='Membership' rules={[{ required: true }]} label='Membership Duration'>
                             <Radio.Group buttonStyle="solid" name="MembershipRadio">
                                 <Radio.Button value={'S1'}>Semester 1</Radio.Button>
-                                {this.props.isAdmin ? 
-                                <Radio.Button value='S2'>Semester 2</Radio.Button>
+                                {this.props.isAdmin ? (
+                                    <>
+                                        <Radio.Button value={'S2'}>Semester 2</Radio.Button>
+                                        <Radio.Button value={'SS'}>Summer School</Radio.Button>
+                                    </>
+                                )
                                 : null}
                                 <Radio.Button value={'FY'}>Full Year</Radio.Button>
                             </Radio.Group>
@@ -300,17 +320,24 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         : null}
                         {!this.props.isAdmin ?
                         <div>
-                            <p>If paying by Bank Transfer, include your NAME and
-                                {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ' AUMTS2 '}
+                            <p>
+                                If paying by Bank Transfer, include your 'NAME' and
+                                {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
+                                {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                                {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
                                 as the reference.
-                                Membership is $50 {this.props.clubSignupSem === 'S1' ? ' for one semester or $90 for the year': ' for Semester 2'}.
-                                Please make your payment to the following account:</p>
+                                Membership is 
+                                {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
+                                {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
+                                {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''}
+                                . Please make your payment to the following account:
+                            </p>
                             <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                             <p>Once the committee receives your payment, you will be able to sign up for trainings!</p>
                         </div>
                         : null}
                         <Form.Item>
-                            <Button loading={this.state.submitting} block type="primary" htmlType="submit">
+                            <Button className='joinFormSubmit' loading={this.state.submitting} block type="primary" htmlType="submit">
                                 Submit
                             </Button>
                         </Form.Item>

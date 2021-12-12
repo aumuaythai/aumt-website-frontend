@@ -12,7 +12,7 @@ interface MainJoinProps {
     authedUserId: string
     loadingAuthedUser: boolean
     clubSignupStatus: 'open' | 'closed' | 'loading'
-    clubSignupSem: 'S1' | 'S2' | 'loading'
+    clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
 }
 
 interface MainJoinState {}
@@ -31,8 +31,22 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
         const lines: JSX.Element[] = []
         if (this.props.authedUser?.paid === 'No') {
             lines.push(
-                <p className='joinAccountLine'>The membership fee is $50 and should be paid with your full name as the reference to: 06-0158-0932609-00
-                    <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                <div>
+                <h1>However, membership payment pending</h1>
+                <p className='joinAccountLine'>
+                    If paying by Bank Transfer, include your 'NAME' and
+                    {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
+                    {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                    {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
+                    as the reference.
+                    Membership is 
+                    {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
+                    {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
+                    {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''}
+                    and should be paid with your full name as the reference to: 06-0158-0932609-00
+                    <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button>
+                </p>
+                </div>
             )
         }
         if (this.props.clubSignupStatus === 'open') {
@@ -59,11 +73,11 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
                     className='joinResult'
                     status='success'
                     title='You are a member of AUMT!'
-                    subTitle={(this.props.authedUser.paid === 'Yes' ? 'Our records show you have paid, you are all set to sign up for trainings.'
-                    : 'Please pay the membership fee to finalise your membership.') + 
+                    subTitle={(this.props.authedUser.paid === 'Yes' ? 
+                    'Our records show your membership covers the current semester.': '') + 
                     ' Keep an eye out for announcements and next steps by email, Instagram and Facebook!'}
                     extra={this.getExtraResultContent()}
-                ></Result>
+                />
             )
         } else if (this.props.clubSignupStatus === 'closed') {
             return (

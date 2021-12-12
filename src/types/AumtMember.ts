@@ -6,7 +6,7 @@ export interface AumtMember {
     email: string
 
     // Membership
-    membership: 'S1' | 'S2' | 'FY'
+    membership: 'S1' | 'S2' | 'FY' | 'SS'
     paymentType: 'Cash' | 'Bank Transfer' | 'Other'
     isReturningMember: 'Yes' | 'No'
     paid: 'Yes' | 'No'

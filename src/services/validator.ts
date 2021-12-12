@@ -9,7 +9,7 @@ class Validator {
         if (yn.indexOf(obj.isReturningMember) < 0) return `"isReturningMember" field (${obj.isReturningMember}) invalid for firstName ${obj.firstName}`
         if (yn.indexOf(obj.paid) < 0) return `"Paid" field (${obj.paid}) invalid for firstName ${obj.firstName}`
         if (yn.indexOf(obj.isUoAStudent) < 0) return `"isUoAStudent" field (${obj.isUoAStudent}) invalid for firstName ${obj.firstName}`
-        if (['S1', 'S2', 'FY'].indexOf(obj.membership) < 0) return `"membership" field (${obj.membership}) invalid for firstName ${obj.firstName}`
+        if (['S1', 'S2', 'FY', 'SS'].indexOf(obj.membership) < 0) return `"membership" field (${obj.membership}) invalid for firstName ${obj.firstName}`
         if (!obj.EmergencyContactName) return 'Emergency Contact Name Required'
         if (!obj.EmergencyContactNumber) return 'Emergency Contact Number Required'
         if (!obj.timeJoinedMs) return 'Time Joined Required'

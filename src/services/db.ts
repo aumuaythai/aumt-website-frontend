@@ -77,7 +77,7 @@ class DB {
             })
     }
 
-    public setClubSignupSem = (sem: 'S1' | 'S2'): Promise<void> => {
+    public setClubSignupSem = (sem: 'S1' | 'S2' | 'SS'): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db
             .collection('config')
@@ -246,7 +246,7 @@ class DB {
             .update({paid: newPaid})
     }
 
-    public updateMembership = (memberId: string, newMembership: 'S1' | 'S2' | 'FY'): Promise<void> => {
+    public updateMembership = (memberId: string, newMembership: 'S1' | 'S2' | 'FY' | 'SS'): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection(MEMBER_DB_PATH)
             .doc(memberId)
