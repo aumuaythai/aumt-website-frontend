@@ -141,15 +141,15 @@ class Signups extends Component<SignupProps, SignupState> {
                                         <p>Our records show you have not paid the membership fee for this semester - once you do, you can sign up to trainings!</p>
                                         <p>
                                             Membership is 
-                                            {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
-                                            {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
-                                            {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''} 
+                                            {form.semester === 'S1' ? ' $50 for the semester 1 or $90 for the year ': ''}
+                                            {form.semester === 'S2' ? ' $50 for the semester 2 ': ''}
+                                            {form.semester === 'SS' ? ' $30 for summer school ': ''} 
                                             and includes a training session each week!
 
                                             Please pay membership fees to the account below and add your NAME and 
-                                            {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
-                                            {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
-                                            {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
+                                            {form.semester === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
+                                            {form.semester === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                                            {form.semester === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
                                             as the reference.
                                         </p>
                                         <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
