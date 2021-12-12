@@ -112,55 +112,80 @@ class Signups extends Component<SignupProps, SignupState> {
                                         <Divider/>
                                     </div>
                                 )
-                            } else if (this.props.authedUser && this.props.authedUser.paid === 'No') {
-                                return <div key={form.trainingId} className='signupsNotPaidContainer'>
-                                    <h2>{form.title}</h2>
-                                    <p>Our records show you have not paid the membership fee - once you do, you can sign up to trainings!</p>
-                                    <p>
-                                        Membership is 
-                                        {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
-                                        {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
-                                        {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''} 
-                                        and includes a training session each week!
+                            } else if (this.props.authedUser && 
+                                this.props.authedUser.paid === 'Yes' && 
+                                (this.props.authedUser.membership === form.semester || 
+                                    (this.props.authedUser.membership === 'FY' && form.semester !== 'SS'))) {
+                                return (
+                                    <div key={form.trainingId} className="formContainer">
+                                        <SignupForm
+                                            title={form.title} 
+                                            id={form.trainingId} 
+                                            closes={form.closes} 
+                                            sessions={form.sessions} 
+                                            displayName={this.getDisplayName()}
+                                            showNotes={true}
+                                            submittingAsName={this.props.authedUser ?
+                                                `${this.props.authedUser.preferredName || this.props.authedUser.firstName} ${this.props.authedUser.lastName}`
+                                                : ''}
+                                            authedUserId={this.props.authedUserId}
+                                            notes={form.notes}
+                                            signupMaxSessions={form.signupMaxSessions}
+                                            openToPublic={form.openToPublic}/>
+                                    </div>
+                                );
+                            } else {
+                                return (
+                                    <div key={form.trainingId} className='signupsNotPaidContainer'>
+                                        <h2>{form.title}</h2>
+                                        <p>Our records show you have not paid the membership fee for this semester - once you do, you can sign up to trainings!</p>
+                                        <p>
+                                            Membership is 
+                                            {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
+                                            {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
+                                            {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''} 
+                                            and includes a training session each week!
 
-                                        Please pay membership fees to the account below and add your NAME and 
-                                        {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
-                                        {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
-                                        {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
-                                        as the reference.
-                                    </p>
-                                    <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
-                                    <Divider/>
+                                            Please pay membership fees to the account below and add your NAME and 
+                                            {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
+                                            {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                                            {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
+                                            as the reference.
+                                        </p>
+                                        <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                                        <Divider/>
 
-                                    <h3>This Week Only</h3>
-                                    <p>
-                                        If you would like to pay at the training, message the AUMT Facebook page - we will sign you up for the session of your choice.
-                                    </p>
-                                    <br/>
-                                    
-                                </div>
+                                        <h3>This Week Only</h3>
+                                        <p>
+                                            If you would like to pay at the training, message the AUMT Facebook page - we will sign you up for the session of your choice.
+                                        </p>
+                                        <br/>
+                                        
+                                    </div>
+                                );
                             }
+                        } else {
+                            return (
+                                <div key={form.trainingId} className="formContainer">
+                                    <SignupForm
+                                        title={form.title} 
+                                        id={form.trainingId} 
+                                        closes={form.closes} 
+                                        sessions={form.sessions} 
+                                        displayName={this.getDisplayName()}
+                                        showNotes={true}
+                                        submittingAsName={this.props.authedUser ?
+                                            `${this.props.authedUser.preferredName || this.props.authedUser.firstName} ${this.props.authedUser.lastName}`
+                                            : ''}
+                                        authedUserId={this.props.authedUserId}
+                                        notes={form.notes}
+                                        signupMaxSessions={form.signupMaxSessions}
+                                        openToPublic={form.openToPublic} />
+                                </div>
+                            )       
                         }
-                        // Can view form
-                        return (
-                            <div key={form.trainingId} className="formContainer">
-                                <SignupForm
-                                    title={form.title} 
-                                    id={form.trainingId} 
-                                    closes={form.closes} 
-                                    sessions={form.sessions} 
-                                    displayName={this.getDisplayName()}
-                                    showNotes={true}
-                                    submittingAsName={this.props.authedUser ?
-                                        `${this.props.authedUser.preferredName || this.props.authedUser.firstName} ${this.props.authedUser.lastName}`
-                                        : ''}
-                                    authedUserId={this.props.authedUserId}
-                                    notes={form.notes}
-                                    signupMaxSessions={form.signupMaxSessions}
-                                    openToPublic={form.openToPublic}/>
-                            </div>
-                        )
-                    })}
+                    })
+                }
             </div>
         )
     }
