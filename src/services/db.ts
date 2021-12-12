@@ -433,9 +433,11 @@ class DB {
                         const event = this.docToEvent(doc.data())
                         newEvents.push(event)
                     } catch (err) {
-                        if (errorCallback ) {
-                            errorCallback(`Excluding event because ${err.toString()}`)
-                        }
+                        console.warn(err);
+                        // NOTE: uncomment this block if errors occur:
+                        // if (errorCallback ) {
+                        //     errorCallback(`Excluding event because ${err.toString()}`)
+                        // }
                     }
                 })
                 callback(newEvents)
