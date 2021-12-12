@@ -502,7 +502,8 @@ class DB {
             openToPublic: docData.openToPublic || false,
             opens: new Date(docData.opens.seconds * 1000),
             closes: new Date(docData.closes.seconds * 1000),
-            notes: docData.notes.split('%%NEWLINE%%').join('\n')
+            notes: docData.notes.split('%%NEWLINE%%').join('\n'),
+            semester: docData.semester,
         }
         return weeklyTraining
     }
