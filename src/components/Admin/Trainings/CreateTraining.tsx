@@ -336,7 +336,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 </div>
 
                 <h4 className='formSectionTitle'>Semester</h4>
-                <Radio.Group buttonStyle="solid" name="semesterRadio" onChange={e => this.onSemesterChange(e.target.value)}>
+                <Radio.Group buttonStyle="solid" name="semesterRadio" value={this.state.semester} onChange={e => this.onSemesterChange(e.target.value)}>
                     <Radio.Button value={'S1'}>Semester 1</Radio.Button>
                     <Radio.Button value={'S2'}>Semester 2</Radio.Button>
                     <Radio.Button value={'SS'}>Summer School</Radio.Button>
