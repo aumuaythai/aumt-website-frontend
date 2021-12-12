@@ -328,7 +328,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                                     </div>
                                     {this.longTable ?
                                     <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
-                                        Signup Sem:
+                                        Joining Semester:
                                         <div className="signupSemChangeContainer">
                                             {this.state.loadingSignupSem ? 
                                             <Spin/>
