@@ -31,3 +31,6 @@ yarn-error.log*
 
 # guides
 guides/*.pdf
+
+# vscode
+.vscode/
