@@ -275,6 +275,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
                                             <Radio.Button value="S1">S1</Radio.Button>
                                             <Radio.Button value="S2">S2</Radio.Button>
                                             <Radio.Button value="FY">FY</Radio.Button>
+                                            <Radio.Button value="SS">SS</Radio.Button>
                                         </Radio.Group>
                                     </td>
                                 </tr>
