@@ -9,6 +9,7 @@ import EventsWrapper from './Content/events/EventsWrapper'
 import {Faq} from './Content/info/Faq'
 import {Merch} from './Content/info/Merch'
 import { MainJoin } from './Content/join/MainJoin'
+import { Account } from './Content/account/Account'
 import { ErrorBoundary } from './Content/error/ErrorBoundary'
 import './Aumt.css'
 import DB from '../services/db'
@@ -30,12 +31,6 @@ const TeamLazyWrapper = (
 const SignupsLazyWrapper = (
   lazy(() => (
     import('./Content/signups/Signups' /* webpackChunkName: "signups" */)
-  ))
-)
-
-const AccountLazyWrapper = (
-  lazy(() => (
-    import('./Content/account/Account' /* webpackChunkName: "signups" */)
   ))
 )
 
@@ -195,7 +190,12 @@ export class Aumt extends Component<AumtProps, AumtState> {
                           <Route path="/account">
                             {
                               this.state.authedUser ?
-                                <AccountLazyWrapper></AccountLazyWrapper> :
+                                <Account
+                                 clubSignupSem={this.state.clubSignupSem}
+                              loadingAuthedUser={this.state.loadingAuthedUser}
+                              clubSignupStatus={this.state.clubSignupStatus}
+                              authedUser={this.state.authedUser}
+                              authedUserId={this.state.authedUserId}></Account> :
                                 <div>
                                   You do not have an account yet. Please join.
                                 </div>
