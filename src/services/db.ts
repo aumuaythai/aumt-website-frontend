@@ -506,6 +506,7 @@ class DB {
             closes: new Date(docData.closes.seconds * 1000),
             notes: docData.notes.split('%%NEWLINE%%').join('\n'),
             semester: docData.semester,
+            paymentLock: docData.paymentLock
         }
         return weeklyTraining
     }

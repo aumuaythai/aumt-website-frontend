@@ -28,4 +28,5 @@ export interface AumtWeeklyTraining {
     signupMaxSessions: number
     openToPublic: boolean
     semester: string
+    paymentLock: boolean
 }
