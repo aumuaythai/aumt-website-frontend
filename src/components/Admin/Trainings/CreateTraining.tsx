@@ -26,6 +26,7 @@ interface CreateTrainingState {
     currentTrainingId: string
     loadingTraining: boolean
     semester: string
+    paymentLock: boolean
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
@@ -56,6 +57,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentTrainingId: '',
             loadingTraining: false,
             semester: '',
+            paymentLock: false,
         }
     }
     populateWeeklyDefaults = () => {
@@ -110,7 +112,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                         currentTrainingId: training.trainingId,
                         currentSignupMaxSessions: training.signupMaxSessions,
                         loadingTraining: false,
-                        semester: training.semester
+                        semester: training.semester,
+                        paymentLock: training.paymentLock
                     })
                 })
                 .catch((err) => {
@@ -234,6 +237,12 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             semester: semester
         })
     }
+    onPaymentLockChange = (lock: boolean) => {
+        this.setState({
+            ...this.state,
+            paymentLock: lock
+        })
+    }
     onSubmitForm = () => {
         if (!this.state.currentTitle) {
             notification.error({
@@ -270,7 +279,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             notes: this.state.currentNotes,
             trainingId: this.state.currentTrainingId || this.state.currentTitle.split(' ').join('').slice(0, 13) + this.generateSessionId(7),
             feedback: this.state.currentFeedback,
-            semester: this.state.semester
+            semester: this.state.semester,
+            paymentLock: this.state.paymentLock
         })
         .then(() => {
             this.setState({
@@ -340,6 +350,12 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                     <Radio.Button value={'S1'}>Semester 1</Radio.Button>
                     <Radio.Button value={'S2'}>Semester 2</Radio.Button>
                     <Radio.Button value={'SS'}>Summer School</Radio.Button>
+                </Radio.Group>
+
+                <h4 className='formSectionTitle'>Payment Lock</h4>
+                <Radio.Group buttonStyle="solid" name="semesterRadio" value={this.state.paymentLock} onChange={e => this.onPaymentLockChange(e.target.value)}>
+                    <Radio.Button value={true}>On</Radio.Button>
+                    <Radio.Button value={false}>Off</Radio.Button>
                 </Radio.Group>
 
                 <h4 className='formSectionTitle'>Notes</h4>
