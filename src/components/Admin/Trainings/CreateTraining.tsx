@@ -112,7 +112,8 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                         currentTrainingId: training.trainingId,
                         currentSignupMaxSessions: training.signupMaxSessions,
                         loadingTraining: false,
-                        semester: training.semester
+                        semester: training.semester,
+                        paymentLock: training.paymentLock
                     })
                 })
                 .catch((err) => {
@@ -352,7 +353,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                 </Radio.Group>
 
                 <h4 className='formSectionTitle'>Payment Lock</h4>
-                <Radio.Group buttonStyle="solid" name="semesterRadio" value={this.state.paymentLock} onChange={e => this.onSemesterChange(e.target.value)}>
+                <Radio.Group buttonStyle="solid" name="semesterRadio" value={this.state.paymentLock} onChange={e => this.onPaymentLockChange(e.target.value)}>
                     <Radio.Button value={true}>On</Radio.Button>
                     <Radio.Button value={false}>Off</Radio.Button>
                 </Radio.Group>

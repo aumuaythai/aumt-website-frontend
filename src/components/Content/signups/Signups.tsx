@@ -113,7 +113,7 @@ class Signups extends Component<SignupProps, SignupState> {
                                     </div>
                                 )
                             } else if (this.props.authedUser && 
-                                this.props.authedUser.paid === 'Yes' && 
+                                (this.props.authedUser.paid === 'Yes' || !form.paymentLock) && 
                                 (this.props.authedUser.membership === form.semester || 
                                     (this.props.authedUser.membership === 'FY' && form.semester !== 'SS'))) {
                                 return (
