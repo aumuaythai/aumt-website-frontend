@@ -33,6 +33,12 @@ const SignupsLazyWrapper = (
   ))
 )
 
+const AccountLazyWrapper = (
+  lazy(() => (
+    import('./Content/account/Account' /* webpackChunkName: "signups" */)
+  ))
+)
+
 export interface AumtProps {
 
 }
@@ -183,6 +189,15 @@ export class Aumt extends Component<AumtProps, AumtState> {
                                 <MainAdminLazyWrapper></MainAdminLazyWrapper> :
                                 <div>
                                   You are not authorised to access this page.
+                                </div>
+                            }
+                          </Route>
+                          <Route path="/account">
+                            {
+                              this.state.authedUser ?
+                                <AccountLazyWrapper></AccountLazyWrapper> :
+                                <div>
+                                  You do not have an account yet. Please join.
                                 </div>
                             }
                           </Route>
