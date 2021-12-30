@@ -83,7 +83,7 @@ class Signups extends Component<SignupProps, SignupState> {
     handleNewForms = (forms: AumtWeeklyTraining[]) => {
         this.setState({
             forms: forms,
-            noFormText: forms.length ? '' : 'There are no active signup forms at this time. If there is a training next week, signups open Sunday.'
+            noFormText: forms.length ? '' : 'Weekly training slots will open on Sundays, if there are trainings next week.'
         })
     }
     componentWillUnmount = () => {

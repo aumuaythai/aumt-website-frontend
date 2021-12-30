@@ -9,6 +9,7 @@ import EventsWrapper from './Content/events/EventsWrapper'
 import {Faq} from './Content/info/Faq'
 import {Merch} from './Content/info/Merch'
 import { MainJoin } from './Content/join/MainJoin'
+import { Account } from './Content/account/Account'
 import { ErrorBoundary } from './Content/error/ErrorBoundary'
 import './Aumt.css'
 import DB from '../services/db'
@@ -183,6 +184,20 @@ export class Aumt extends Component<AumtProps, AumtState> {
                                 <MainAdminLazyWrapper></MainAdminLazyWrapper> :
                                 <div>
                                   You are not authorised to access this page.
+                                </div>
+                            }
+                          </Route>
+                          <Route path="/account">
+                            {
+                              this.state.authedUser ?
+                                <Account
+                                 clubSignupSem={this.state.clubSignupSem}
+                              loadingAuthedUser={this.state.loadingAuthedUser}
+                              clubSignupStatus={this.state.clubSignupStatus}
+                              authedUser={this.state.authedUser}
+                              authedUserId={this.state.authedUserId}></Account> :
+                                <div>
+                                  You do not have an account yet. Please join.
                                 </div>
                             }
                           </Route>

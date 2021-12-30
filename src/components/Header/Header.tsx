@@ -39,7 +39,7 @@ class Header extends Component<HeaderProps, HeaderState> {
                     <Link to='/'><img className='logoImg' src={"./logorectangle.png"} alt=""/></Link>
                 </div>
                 <div className="topMenuContainer">
-                    <TopMenu isAdmin={this.props.isAdmin}></TopMenu>
+                    <TopMenu isAdmin={this.props.isAdmin} authedUser={this.props.authedUser}></TopMenu>
                 </div>
                 <div className="socialsContainer">
                     {

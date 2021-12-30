@@ -4,7 +4,10 @@ import {Menu} from 'antd';
 import {DownOutlined} from '@ant-design/icons'
 import './TopMenu.css'
 
+import { AumtMember } from '../../types'
+
 export interface TopMenuProps extends RouteComponentProps {
+  authedUser: AumtMember | null
   isAdmin: boolean
 }
 
@@ -39,7 +42,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
 
     setStateFromPathChange = (windowPath: string) => {
         const pathname = windowPath.split('/')[1]
-        const menuPages = ['About', 'Signups', 'Events', 'Join', 'FAQ', 'Team', 'Admin']
+        const menuPages = ['About', 'Signups', 'Events', 'Join', 'FAQ', 'Team', 'Admin', 'Account']
         for (const page of menuPages) {
           if (page.toLowerCase() === pathname.toLowerCase()) {
             this.setState({
@@ -86,14 +89,18 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
             </Menu.Item>
           ) : null}
           <Menu.Item key="Signups">
-            <Link to='/signups'>Sign-ups</Link>
+            <Link to='/signups'>Weekly Trainings</Link>
           </Menu.Item>
           <Menu.Item key="Events">
-            <Link to='/events'>Events</Link>
+            <Link to='/events'>Join Events</Link>
           </Menu.Item>
-          <Menu.Item key="Join">
-            <Link to='/join'>Join</Link>
-          </Menu.Item>
+          {this.props.authedUser ?
+            <Menu.Item key="Account">
+              <Link to='/account'>My Account</Link>
+            </Menu.Item>
+          : <Menu.Item key="Join">
+            <Link to='/join'>Create Account</Link>
+          </Menu.Item>}
         </Menu.SubMenu>
       </Menu>
     )
@@ -121,14 +128,18 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
           </Menu.Item>
         </Menu.SubMenu>
         <Menu.Item key="Signups">
-          <Link to='/signups'>Sign-ups</Link>
+          <Link to='/signups'>Weekly Trainings</Link>
         </Menu.Item>
         <Menu.Item key="Events">
-          <Link to='/events'>Events</Link>
+          <Link to='/events'>Join Events</Link>
         </Menu.Item>
-        <Menu.Item key="Join">
-          <Link to='/join'>Join</Link>
-        </Menu.Item>
+        {this.props.authedUser ?
+            <Menu.Item key="Account">
+              <Link to='/account'>My Account</Link>
+            </Menu.Item>
+          : <Menu.Item key="Join">
+            <Link to='/join'>Create Account</Link>
+          </Menu.Item>}
         {this.props.isAdmin ?
             <Menu.Item key="Admin">
               <Link to='/admin'>Admin</Link>
