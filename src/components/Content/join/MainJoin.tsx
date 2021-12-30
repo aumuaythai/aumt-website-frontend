@@ -48,7 +48,18 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
                 </p>
                 </div>
             )
+        } else {
+            lines.push(
+                <div>
+                    <h1>Our records show you have paid</h1>
+                    <p className='joinAccountLine'>
+                        You can now signup to our <a href="/signups">weekly training</a> sessions.
+                    </p>
+                </div>
+            )
         }
+
+
         if (this.props.clubSignupStatus === 'open') {
             lines.push(
                 <p key='1'>

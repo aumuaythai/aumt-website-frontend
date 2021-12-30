@@ -89,17 +89,17 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
             </Menu.Item>
           ) : null}
           <Menu.Item key="Signups">
-            <Link to='/signups'>Sign-ups</Link>
+            <Link to='/signups'>Weekly Trainings</Link>
           </Menu.Item>
           <Menu.Item key="Events">
-            <Link to='/events'>Events</Link>
+            <Link to='/events'>Join Events</Link>
           </Menu.Item>
           {this.props.authedUser ?
             <Menu.Item key="Account">
-              <Link to='/account'>Account</Link>
+              <Link to='/account'>My Account</Link>
             </Menu.Item>
           : <Menu.Item key="Join">
-            <Link to='/join'>Join</Link>
+            <Link to='/join'>Create Account</Link>
           </Menu.Item>}
         </Menu.SubMenu>
       </Menu>
@@ -128,17 +128,17 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
           </Menu.Item>
         </Menu.SubMenu>
         <Menu.Item key="Signups">
-          <Link to='/signups'>Sign-ups</Link>
+          <Link to='/signups'>Weekly Trainings</Link>
         </Menu.Item>
         <Menu.Item key="Events">
-          <Link to='/events'>Events</Link>
+          <Link to='/events'>Join Events</Link>
         </Menu.Item>
         {this.props.authedUser ?
             <Menu.Item key="Account">
-              <Link to='/account'>Account</Link>
+              <Link to='/account'>My Account</Link>
             </Menu.Item>
           : <Menu.Item key="Join">
-            <Link to='/join'>Join</Link>
+            <Link to='/join'>Create Account</Link>
           </Menu.Item>}
         {this.props.isAdmin ?
             <Menu.Item key="Admin">
