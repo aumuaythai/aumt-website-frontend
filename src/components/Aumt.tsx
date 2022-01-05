@@ -13,6 +13,7 @@ import { Account } from './Content/account/Account'
 import { ErrorBoundary } from './Content/error/ErrorBoundary'
 import './Aumt.css'
 import DB from '../services/db'
+import Analytics from '../services/analytics'
 import FirebaseUtil from '../services/firebase.util'
 import { AumtMember } from '../types';
 
@@ -59,7 +60,11 @@ export class Aumt extends Component<AumtProps, AumtState> {
           clubSignupStatus: 'loading',
           clubSignupSem: 'loading'
         }
+        
         FirebaseUtil.initialize(this.authStateChange)
+
+        Analytics.initialize();
+
         DB.initialize()
         DB.getClubConfig()
           .then((config) => {
