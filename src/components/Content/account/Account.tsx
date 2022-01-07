@@ -39,6 +39,10 @@ interface AccountState {
     currentECNumber: string
     currentECRelationship: string
     saving: boolean
+    editPersonal: boolean
+    editUniversity: boolean
+    editMembership: boolean
+    editEC: boolean
 }
 
 export class Account extends Component<AccountProps, AccountState> {
@@ -63,6 +67,10 @@ export class Account extends Component<AccountProps, AccountState> {
             currentECNumber: props.authedUser.EmergencyContactNumber,
             currentECRelationship: props.authedUser.EmergencyContactRelationship,
             saving: false,
+            editPersonal: false,
+            editUniversity: false,
+            editMembership: false,
+            editEC: false
         }
     }
 
@@ -197,6 +205,22 @@ export class Account extends Component<AccountProps, AccountState> {
             })
     }
 
+    editPersonalChange = (toggle: boolean) => {
+        this.setState({ ...this.state, editPersonal: toggle })
+    }
+
+    editMembershipChange = (toggle: boolean) => {
+        this.setState({ ...this.state, editMembership: toggle })
+    }
+
+    editECChange = (toggle: boolean) => {
+        this.setState({ ...this.state, editEC: toggle })
+    }
+
+    editUniversityChange = (toggle: boolean) => {
+        this.setState({ ...this.state, editUniversity: toggle })
+    }
+
     render() {
         if (this.props.authedUser) {
             return (
@@ -205,10 +229,25 @@ export class Account extends Component<AccountProps, AccountState> {
                 <h1>Account Settings</h1>
                 <p>Here you can edit and update you details. You can also upgrade your membership between semesters.</p>
                 
-                <List header="Membership" bordered className='listContainer'>
+                <List header="Membership" footer={
+                    <div className='listFooter'>
+                        {this.state.editMembership ? 
+                        <>
+                            <Button onClick={this.onSaveClick}>
+                                <span>Save</span>
+                            </Button>
+                            <Button onClick={e => this.editMembershipChange(false)}>
+                                <span>Cancel</span>
+                            </Button>
+                        </> : 
+                        <Button onClick={e => this.editMembershipChange(true)}>
+                            <span>Edit</span>
+                        </Button>}
+                    </div>
+                } bordered className='listContainer'>
                     <List.Item>
                         <span>Type: </span>
-                        <Radio.Group value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
+                        <Radio.Group disabled value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
                             <Radio.Button value="S1">Semester 1</Radio.Button>
                             <Radio.Button value="S2">Semester 2</Radio.Button>
                             <Radio.Button value="FY">Full Year</Radio.Button>
@@ -220,11 +259,22 @@ export class Account extends Component<AccountProps, AccountState> {
                     </List.Item>
                 </List>
 
-                <List header="Personal" bordered className="listContainer">
+                <List header="Personal" footer={
+                    <div className='listFooter'>
+                        <Button>
+                            <span>Edit</span>
+                        </Button>
+                        <Button onClick={this.onSaveClick}>
+                            <span>Save</span>
+                        </Button>
+                        <Button>
+                            <span>Cancel</span>
+                        </Button>
+                    </div>
+                } bordered className="listContainer">
                     <List.Item>
                         <span>First:</span>
                         <Input disabled className='memberEditInput' value={this.state.currentFirstName} onChange={e => this.onFirstNameChange(e.target.value)} />
-                        <FormOutlined />
                     </List.Item>
                     <List.Item>
                         <span>Last:</span>
@@ -240,7 +290,19 @@ export class Account extends Component<AccountProps, AccountState> {
                     </List.Item>
                 </List>
 
-                <List header="University" bordered className="listContainer">
+                <List header="University" footer={
+                    <div className='listFooter'>
+                        <Button>
+                            <span>Edit</span>
+                        </Button>
+                        <Button onClick={this.onSaveClick}>
+                            <span>Save</span>
+                        </Button>
+                        <Button>
+                            <span>Cancel</span>
+                        </Button>
+                    </div>
+                } bordered className="listContainer">
                     <List.Item>
                         <span>UoA Student:</span>
                         <Radio.Group value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
@@ -261,7 +323,19 @@ export class Account extends Component<AccountProps, AccountState> {
                         </>) : null}
                 </List>
 
-                <List header="Emergency Contact" bordered className='listContainer'>
+                <List header="Emergency Contact" footer={
+                    <div className='listFooter'>
+                        <Button>
+                            <span>Edit</span>
+                        </Button>
+                        <Button onClick={this.onSaveClick}>
+                            <span>Save</span>
+                        </Button>
+                        <Button>
+                            <span>Cancel</span>
+                        </Button>
+                    </div>
+                } bordered className='listContainer'>
                     <List.Item>
                         <span>Name: </span> 
                         <Input className='memberEditInput' value={this.state.currentECName} onChange={e => this.onECNameChange(e.target.value)} />

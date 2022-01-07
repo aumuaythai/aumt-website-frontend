@@ -8,3 +8,7 @@
 .listContainer {
     margin-top: 20px;
 }
+
+.listFooter {
+    display: flex;
+}
