@@ -57,7 +57,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             currentTrainingId: '',
             loadingTraining: false,
             semester: '',
-            paymentLock: false,
+            paymentLock: true,
         }
     }
     populateWeeklyDefaults = () => {
