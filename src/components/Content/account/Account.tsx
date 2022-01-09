@@ -291,8 +291,8 @@ export class Account extends Component<AccountProps, AccountState> {
                             {this.state.currentMembership === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
                             as the reference.
                             Membership is 
-                            {this.state.currentMembership === 'FY' ? ' $90 for the full year' : ''}
                             {this.state.currentMembership === 'S1' ? ' $50 for the semester ': ''}
+                            {this.state.currentMembership === 'FY' ? ' $90 for the full year' : ''}
                             {this.state.currentMembership === 'S2' ? ' $50 for the semester ': ''}
                             {this.state.currentMembership === 'SS' ? ' $30 for summer school ': ''}
                             and should be paid with your full name as the reference to: 06-0158-0932609-00
