@@ -178,7 +178,10 @@ export class Account extends Component<AccountProps, AccountState> {
             paymentType: this.state.currentPaymentType
         }
 
-        // Additional backup check if the user has changed membership and make damn sure they are set to not paid.
+        /**
+         * Additional backup check if the user has changed membership
+         * we make damn sure they are set to 'not paid'.
+         */ 
         if (this.state.currentMembership !== this.originalState.currentMembership) {
             this.setState({ ...this.state, currentPaid: 'No' });
         }
