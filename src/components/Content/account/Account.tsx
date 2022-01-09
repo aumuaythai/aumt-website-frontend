@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 
 import { AumtMember } from '../../../types';
 
-import { Button, Input, notification, List, Radio } from 'antd';
-import { FormOutlined } from '@ant-design/icons'
+import { Button, Input, notification, List, Radio, Spin } from 'antd';
 
 import './Account.css'
 
@@ -46,6 +45,9 @@ interface AccountState {
 }
 
 export class Account extends Component<AccountProps, AccountState> {
+
+    private originalState: AccountState;
+
     constructor(props: AccountProps) {
         super(props)
         this.state = {
@@ -71,7 +73,9 @@ export class Account extends Component<AccountProps, AccountState> {
             editUniversity: false,
             editMembership: false,
             editEC: false
-        }
+        };
+
+        this.originalState = {...this.state};
     }
 
     componentDidUpdate = (prevProps: AccountProps) => {
@@ -122,7 +126,7 @@ export class Account extends Component<AccountProps, AccountState> {
     }  
     onMembershipChange = (membership: 'S1' | 'S2' | 'FY' | 'SS') => {
         let newMembership: 'S1' | 'S2' | 'FY' | 'SS' = membership
-        this.setState({ ...this.state, currentMembership: newMembership })
+        this.setState({ ...this.state, currentMembership: newMembership, currentPaid: 'No' })
     }
     onInterestedInCampChange = (interested: 'Yes' | 'No') => {
         this.setState({ ...this.state, currentInterestedInCamp: interested })
@@ -173,6 +177,11 @@ export class Account extends Component<AccountProps, AccountState> {
             timeJoinedMs: this.props.authedUser.timeJoinedMs,
             paymentType: this.state.currentPaymentType
         }
+
+        // Additional backup check if the user has changed membership and make damn sure they are set to not paid.
+        if (this.state.currentMembership !== this.originalState.currentMembership) {
+            this.setState({ ...this.state, currentPaid: 'No' });
+        }
         
         const errorStr = Validator.createAumtMember(member)
         if (typeof (errorStr) === 'string') {
@@ -183,11 +192,12 @@ export class Account extends Component<AccountProps, AccountState> {
         }
         
         this.setState({ ...this.state, saving: true })
-        
         db.setMember(this.props.authedUserId, member)
             .then(() => {
                 this.setState({ ...this.state, saving: false })
-                notification.success({ message: 'Saved' })
+                this.setState({ ...this.state, editPersonal: false, editMembership: false, editEC: false, editUniversity: false })
+                this.originalState = { ...this.state };
+                notification.success({ message: 'Details updated' })
             })
             .catch((err) => {
                 notification.error({ message: 'Could not save member' + err.toString() })
@@ -207,18 +217,22 @@ export class Account extends Component<AccountProps, AccountState> {
 
     editPersonalChange = (toggle: boolean) => {
         this.setState({ ...this.state, editPersonal: toggle })
+        if (!toggle) this.setState({ ...this.originalState })
     }
 
     editMembershipChange = (toggle: boolean) => {
         this.setState({ ...this.state, editMembership: toggle })
+        if (!toggle) this.setState({ ...this.originalState })
     }
 
     editECChange = (toggle: boolean) => {
         this.setState({ ...this.state, editEC: toggle })
+        if (!toggle) this.setState({ ...this.originalState })
     }
 
     editUniversityChange = (toggle: boolean) => {
         this.setState({ ...this.state, editUniversity: toggle })
+        if (!toggle) this.setState({ ...this.originalState })
     }
 
     render() {
@@ -227,85 +241,133 @@ export class Account extends Component<AccountProps, AccountState> {
             <div className="accountContainer">
 
                 <h1>Account Settings</h1>
-                <p>Here you can edit and update you details. You can also upgrade your membership between semesters.</p>
+                <p>
+                    Here you can edit and update your details by clicking on the 'Edit' button for each section. 
+                    In the membership section you can change your membership at the beginning of a new semester 
+                    when signups for it opens.
+                </p>
                 
                 <List header="Membership" footer={
                     <div className='listFooter'>
                         {this.state.editMembership ? 
                         <>
-                            <Button onClick={this.onSaveClick}>
-                                <span>Save</span>
+                            <Button danger type="primary" onClick={e => this.editMembershipChange(false)}>
+                                Cancel
                             </Button>
-                            <Button onClick={e => this.editMembershipChange(false)}>
-                                <span>Cancel</span>
-                            </Button>
+                            {this.state.saving ? 
+                            <Spin /> : 
+                            <Button type="primary" onClick={this.onSaveClick}>
+                                Save
+                            </Button>}
                         </> : 
                         <Button onClick={e => this.editMembershipChange(true)}>
-                            <span>Edit</span>
+                            Edit
                         </Button>}
                     </div>
                 } bordered className='listContainer'>
                     <List.Item>
-                        <span>Type: </span>
-                        <Radio.Group disabled value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
-                            <Radio.Button value="S1">Semester 1</Radio.Button>
-                            <Radio.Button value="S2">Semester 2</Radio.Button>
-                            <Radio.Button value="FY">Full Year</Radio.Button>
-                            <Radio.Button value="SS">Summer School</Radio.Button>
-                        </Radio.Group>
+                        <span>Current:
+                            <b>
+                                {this.state.currentMembership === 'S1' ? ' Semester 1' : ''}
+                                {this.state.currentMembership === 'S2' ? ' Semester 2' : ''}
+                                {this.state.currentMembership === 'SS' ? ' Summer School' : ''}
+                                {this.state.currentMembership === 'FY' ? ' Full Year (Sem 1 and Sem 2)' : ''}
+                            </b>
+                        </span>
                     </List.Item>
                     <List.Item>
-                        <span>Status: {this.state.currentPaid === "Yes" ? "Paid" : "Not paid"}</span>
+                        <span>Status: <b>{this.state.currentPaid === "Yes" ? "Paid" : "Not paid"}</b></span>
+                    </List.Item>
+                    {this.state.currentPaid === "No" ?
+                    <List.Item>
+                        <p className='joinAccountLine'>
+                            *If paying by Bank Transfer, include your 'NAME' and
+                            {this.state.currentMembership === 'S1' ? ` 'AUMTS1' (for one semester) ` : ''}
+                            {this.state.currentMembership === 'FY' ? ` 'AUMTFY' (for full year) ` : ''}
+                            {this.state.currentMembership === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                            {this.state.currentMembership === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
+                            as the reference.
+                            Membership is 
+                            {this.state.currentMembership === 'FY' ? ' $90 for the full year' : ''}
+                            {this.state.currentMembership === 'S1' ? ' $50 for the semester ': ''}
+                            {this.state.currentMembership === 'S2' ? ' $50 for the semester ': ''}
+                            {this.state.currentMembership === 'SS' ? ' $30 for summer school ': ''}
+                            and should be paid with your full name as the reference to: 06-0158-0932609-00
+                            <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button>
+                        </p>
+                    </List.Item> : null}
+                    <List.Item>
+                        <span>Update membership options:</span>
+                        <Radio.Group buttonStyle="solid" disabled={!this.state.editMembership} value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
+                            {this.props.clubSignupSem === 'SS' ? 
+                            <Radio.Button value="SS">Summer School</Radio.Button> : null}
+                            {this.props.clubSignupSem === 'S1' ? 
+                            <>
+                                <Radio.Button value="FY">Full Year</Radio.Button>
+                                <Radio.Button value="S1">Semester 1</Radio.Button>
+                            </> : null}
+                            {this.props.clubSignupSem === 'S2' ? 
+                            <Radio.Button value="S2">Semester 2</Radio.Button> : null}
+                        </Radio.Group>
                     </List.Item>
                 </List>
 
                 <List header="Personal" footer={
                     <div className='listFooter'>
-                        <Button>
-                            <span>Edit</span>
-                        </Button>
-                        <Button onClick={this.onSaveClick}>
-                            <span>Save</span>
-                        </Button>
-                        <Button>
-                            <span>Cancel</span>
-                        </Button>
+                        {this.state.editPersonal ? 
+                        <>
+                            <Button type="primary" danger onClick={e => this.editPersonalChange(false)}>
+                                Cancel
+                            </Button>
+                            {this.state.saving ? 
+                            <Spin /> : 
+                            <Button type="primary" onClick={this.onSaveClick}>
+                                Save
+                            </Button>}
+                        </> : 
+                        <Button onClick={e => this.editPersonalChange(true)}>
+                            Edit
+                        </Button>}
                     </div>
                 } bordered className="listContainer">
                     <List.Item>
                         <span>First:</span>
-                        <Input disabled className='memberEditInput' value={this.state.currentFirstName} onChange={e => this.onFirstNameChange(e.target.value)} />
+                        <Input disabled={!this.state.editPersonal} className='memberEditInput' value={this.state.currentFirstName} onChange={e => this.onFirstNameChange(e.target.value)} />
                     </List.Item>
                     <List.Item>
                         <span>Last:</span>
-                        <Input className='memberEditInput' value={this.state.currentLastName} onChange={e => this.onLastNameChange(e.target.value)} />
+                        <Input disabled={!this.state.editPersonal} className='memberEditInput' value={this.state.currentLastName} onChange={e => this.onLastNameChange(e.target.value)} />
                     </List.Item>
                     <List.Item>
                         <span>Preferred:</span>
-                        <Input className='memberEditInput' value={this.state.currentPreferredName} onChange={e => this.onPreferredNameChange(e.target.value)} />
+                        <Input disabled={!this.state.editPersonal} className='memberEditInput' value={this.state.currentPreferredName} onChange={e => this.onPreferredNameChange(e.target.value)} />
                     </List.Item>
                     <List.Item>
-                        <span>Email:</span>
-                        <Input className='memberEditInput' value={this.state.currentEmail} onChange={e => this.onEmailChange(e.target.value)} />
+                        <span>Email: {this.state.currentEmail}</span>
                     </List.Item>
                 </List>
 
                 <List header="University" footer={
                     <div className='listFooter'>
-                        <Button>
-                            <span>Edit</span>
-                        </Button>
-                        <Button onClick={this.onSaveClick}>
-                            <span>Save</span>
-                        </Button>
-                        <Button>
-                            <span>Cancel</span>
-                        </Button>
+                        {this.state.editUniversity ? 
+                        <>
+                            <Button type="primary" danger onClick={e => this.editUniversityChange(false)}>
+                                Cancel
+                            </Button>
+                            {this.state.saving ? 
+                            <Spin /> : 
+                            <Button type="primary" onClick={this.onSaveClick}>
+                                Save
+                            </Button>}
+                        </> : 
+                        <Button onClick={e => this.editUniversityChange(true)}>
+                            Edit
+                        </Button>}
                     </div>
                 } bordered className="listContainer">
                     <List.Item>
                         <span>UoA Student:</span>
-                        <Radio.Group value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
+                        <Radio.Group disabled={!this.state.editUniversity} value={this.state.currentIsUoaStudent} onChange={e => this.onIsUoaChange(e.target.value)}>
                             <Radio.Button value="Yes">Yes</Radio.Button>
                             <Radio.Button value="No">No</Radio.Button>
                         </Radio.Group>
@@ -314,39 +376,44 @@ export class Account extends Component<AccountProps, AccountState> {
                         (<>
                             <List.Item>
                                 <span>UPI:</span>
-                                <Input className='memberEditInput' value={this.state.currentUpi} onChange={e => this.onUpiChange(e.target.value)} />
+                                <Input disabled={!this.state.editUniversity} className='memberEditInput' value={this.state.currentUpi} onChange={e => this.onUpiChange(e.target.value)} />
                             </List.Item>
                             <List.Item>
                                 <span>Student Id:</span>
-                                <Input className='memberEditInput' value={this.state.currentStudentId} onChange={e => this.onStudentIdChange(e.target.value)} />
+                                <Input disabled={!this.state.editUniversity} className='memberEditInput' value={this.state.currentStudentId} onChange={e => this.onStudentIdChange(e.target.value)} />
                             </List.Item>
                         </>) : null}
                 </List>
 
                 <List header="Emergency Contact" footer={
                     <div className='listFooter'>
-                        <Button>
-                            <span>Edit</span>
-                        </Button>
-                        <Button onClick={this.onSaveClick}>
-                            <span>Save</span>
-                        </Button>
-                        <Button>
-                            <span>Cancel</span>
-                        </Button>
+                        {this.state.editEC ? 
+                        <>
+                            <Button type="primary" danger onClick={e => this.editECChange(false)}>
+                                Cancel
+                            </Button>
+                            {this.state.saving ? 
+                            <Spin /> : 
+                            <Button type="primary" onClick={this.onSaveClick}>
+                                Save
+                            </Button>}
+                        </> : 
+                        <Button onClick={e => this.editECChange(true)}>
+                            Edit
+                        </Button>}
                     </div>
                 } bordered className='listContainer'>
                     <List.Item>
                         <span>Name: </span> 
-                        <Input className='memberEditInput' value={this.state.currentECName} onChange={e => this.onECNameChange(e.target.value)} />
+                        <Input disabled={!this.state.editEC} className='memberEditInput' value={this.state.currentECName} onChange={e => this.onECNameChange(e.target.value)} />
                     </List.Item>
                     <List.Item>
-                        <span>Number: {this.state.currentPaid}</span>
-                        <Input className='memberEditInput' value={this.state.currentECNumber} onChange={e => this.onECNumberChange(e.target.value)} />
+                        <span>Number: </span>
+                        <Input disabled={!this.state.editEC} className='memberEditInput' value={this.state.currentECNumber} onChange={e => this.onECNumberChange(e.target.value)} />
                     </List.Item>
                     <List.Item>
-                        <span>Relationship</span>
-                        <Input className='memberEditInput' value={this.state.currentECRelationship} onChange={e => this.onECRelationChange(e.target.value)} />
+                        <span>Relationship: </span>
+                        <Input disabled={!this.state.editEC} className='memberEditInput' value={this.state.currentECRelationship} onChange={e => this.onECRelationChange(e.target.value)} />
                     </List.Item>
                 </List>
 

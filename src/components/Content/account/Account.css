@@ -12,3 +12,7 @@
 .listFooter {
     display: flex;
 }
+
+Button { 
+    margin-right: 10px;
+}
