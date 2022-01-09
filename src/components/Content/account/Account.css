@@ -1,4 +1,18 @@
 .accountContainer {
-    margin: auto;
-    max-width: 600px;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 20px;
+}
+
+.listContainer {
+    margin-top: 20px;
+}
+
+.listFooter {
+    display: flex;
+}
+
+Button { 
+    margin-right: 10px;
 }

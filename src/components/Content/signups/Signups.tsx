@@ -100,7 +100,6 @@ class Signups extends Component<SignupProps, SignupState> {
             <div className='signupsContainer'>
                 {this.state.forms
                     .map((form) => {
-                        console.log(form);
                         if (!form.openToPublic) {
                             if (!this.props.authedUserId) {
                                 return (
