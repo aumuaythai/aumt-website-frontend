@@ -30,8 +30,13 @@ interface CreateTrainingState {
 }
 
 const DEFAULT_TRAINING_LIMIT = 30
-const TRAINING_0_OPENS_DATE = new Date(2020, 6, 19, 1, 0, 0)
-const TRAINING_0_CLOSES_DATE = new Date(2020, 6, 24, 20, 30, 0)
+
+const CURRENT_YEAR = new Date().getFullYear();
+const TRAINING_0_OPENS_DATE = new Date(CURRENT_YEAR, 1, 27, 0, 0, 0)
+const TRAINING_0_CLOSES_DATE = new Date(CURRENT_YEAR, 2, 4, 20, 30, 0)
+
+const MILLISECONDS_DAY = 1000 * 60 * 60 * 24;
+const MILLISECONDS_WEEK = MILLISECONDS_DAY * 7;
 
 const TRAINING_DEFAULT_NOTES = `### Rules/Etiquette
 1.    Keep the training area free until your session starts.
@@ -62,28 +67,35 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
     }
     populateWeeklyDefaults = () => {
         // assume semester breaks at week 6
-        const actualWeek = this.state.currentPopulateWeekValue > 6 ? this.state.currentPopulateWeekValue + 2 : this.state.currentPopulateWeekValue
+        const weekMuliplier = this.state.currentPopulateWeekValue > 5 ? this.state.currentPopulateWeekValue + 2 : this.state.currentPopulateWeekValue
         
-        const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * actualWeek))
-        const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (1000 * 60 * 60 * 24 * 7 * actualWeek))
-        const dateThursday = new Date(newOpens.getTime() + (1000 * 60 * 60 * 24 * 4))
-        const dateFriday = new Date(newOpens.getTime() + (1000 * 60 * 60 * 24 * 5))
-        const dateStrThu = `${dateThursday.getDate()}/${dateThursday.getMonth() + 1}`
+        console.log(TRAINING_0_OPENS_DATE);
+        console.log(new Date(TRAINING_0_OPENS_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier)));
+
+        const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier))
+        const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier))
+        
+        const dateMonday = new Date(newOpens.getTime() + MILLISECONDS_DAY);
+        const dateFriday = new Date(newOpens.getTime() + MILLISECONDS_DAY * 5);
+        const dateStrMon = `${dateMonday.getDate()}/${dateFriday.getMonth() + 1}`
         const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
-        const currentSessions = [
+        
+        const title = `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrMon}-${dateStrFri}`;
+
+        const sessions = [
             this.createSession(`Thursday 6:30 (Beginners)`, 0),
             this.createSession(`Thursday 7:30 (Advanced)`, 1),
             this.createSession(`Friday 6:30 (Beginners)`, 2),
             this.createSession(`Friday 7:30 (Beginners)`, 3),
-
         ]
+
         this.setState({
             ...this.state,
             currentOpens: newOpens,
             currentCloses: newCloses,
-            currentTitle: `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrThu}-${dateStrFri}`,
+            currentTitle: title,
             currentNotes: TRAINING_DEFAULT_NOTES,
-            currentSessions
+            currentSessions: sessions
         })
     }
     componentDidMount = () => {
