@@ -450,7 +450,7 @@ class MemberDashboard extends Component<MemberDashboardProps, MemberDashboardSta
                             <div className="memberDetailsCloseIcon"><CloseCircleOutlined onClick={this.exitAddMember} /></div>
                             <div className="clearBoth"></div>
                             <div className="joinFormAdminContainer">
-                                <JoinForm clubSignupSem={null} isAdmin={true}></JoinForm>
+                                <JoinForm clubConfig={null} isAdmin={true}></JoinForm>
                             </div>
                         </div>
                     </Route>

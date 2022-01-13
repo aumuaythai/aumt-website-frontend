@@ -4,14 +4,14 @@ import { QuestionCircleOutlined } from '@ant-design/icons'
 import './JoinForm.css'
 import { FormInstance } from 'antd/lib/form';
 import DataFormatterUtil from '../../../services/data.util'
-import { AumtMember } from '../../../types';
+import { AumtMember, ClubConfig } from '../../../types';
 import FirebaseUtil from '../../../services/firebase.util';
 import db from '../../../services/db';
 import validator from '../../../services/validator';
 
 interface JoinFormProps {
     isAdmin: boolean
-    clubSignupSem: 'S1' | 'S2' | null | 'SS'
+    clubConfig: ClubConfig | null 
 }
 
 interface JoinFormState {
@@ -22,13 +22,16 @@ interface JoinFormState {
 export class JoinForm extends Component<JoinFormProps, JoinFormState> {
     private formRef = React.createRef<FormInstance>();
     private currentYear = new Date().getFullYear()
+
     private verticalRadioStyle = {
         display: 'block'
     }
+
     private alignInputLayout = {
         labelCol: {span: 7},
         wrapperCol: {span: 17}
     }
+
     constructor(props: JoinFormProps) {
         super(props)
         this.state = {
@@ -36,6 +39,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             submitting: false
         }
     }
+
     private onSubmitFail = (obj: any) => {
         const {errorFields} = obj
         if (errorFields && errorFields.length) {
@@ -55,7 +59,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             EmergencyContactNumber,
             EmergencyContactRelationship,
             Paid: paid = 'No',
-            Membership: membership = this.props.clubSignupSem,
+            Membership: membership = this.props.clubConfig?.clubSignupSem,
             upi,
             studentId,
             email,
@@ -153,22 +157,22 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                     <h2>
                         AUMT {this.currentYear} 
                         <b>
-                            {this.props.clubSignupSem === 'S2' ? ' Semester 2 ' : ''}
-                            {this.props.clubSignupSem === 'SS' ? ' Summer School ' : ''}
+                            {this.props.clubConfig?.clubSignupSem === 'S2' ? ' Semester 2 ' : ''}
+                            {this.props.clubConfig?.clubSignupSem === 'SS' ? ' Summer School ' : ''}
                         </b>
                         Club Sign-ups
                     </h2>
                     <p>
                         Membership is 
-                        {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
-                        {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
-                        {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''} 
+                        {this.props.clubConfig?.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
+                        {this.props.clubConfig?.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
+                        {this.props.clubConfig?.clubSignupSem === 'SS' ? ' $30 for summer school ': ''} 
                         and includes a training session each week!
 
                         Please pay membership fees to the account below and add your NAME and 
-                        {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
-                        {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
-                        {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
+                        {this.props.clubConfig?.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
+                        {this.props.clubConfig?.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                        {this.props.clubConfig?.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
                         as the reference.
                     </p>
                     <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
@@ -288,7 +292,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         </Form.Item>
                         }
                         <h3 className='formSectionHeader'>Payment</h3>
-                        {(this.props.clubSignupSem === 'S1' || this.props.isAdmin) ? 
+                        {(this.props.clubConfig?.clubSignupSem === 'S1' || this.props.isAdmin) ? 
                         <Form.Item name='Membership' rules={[{ required: true }]} label='Membership Duration'>
                             <Radio.Group buttonStyle="solid" name="MembershipRadio">
                                 <Radio.Button value={'S1'}>Semester 1</Radio.Button>
@@ -322,14 +326,14 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <div>
                             <p>
                                 If paying by Bank Transfer, include your 'NAME' and
-                                {this.props.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
-                                {this.props.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
-                                {this.props.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
+                                {this.props.clubConfig?.clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
+                                {this.props.clubConfig?.clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
+                                {this.props.clubConfig?.clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
                                 as the reference.
                                 Membership is 
-                                {this.props.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
-                                {this.props.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
-                                {this.props.clubSignupSem === 'SS' ? ' $30 for summer school ': ''}
+                                {this.props.clubConfig?.clubSignupSem === 'S1' ? ' $50 for the semester or $90 for the year ': ''}
+                                {this.props.clubConfig?.clubSignupSem === 'S2' ? ' $50 for the semester ': ''}
+                                {this.props.clubConfig?.clubSignupSem === 'SS' ? ' $30 for summer school ': ''}
                                 . Please make your payment to the following account:
                             </p>
                             <p className='joinAccountLine'>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
