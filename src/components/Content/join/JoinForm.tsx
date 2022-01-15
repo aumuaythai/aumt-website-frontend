@@ -592,14 +592,11 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             <Radio.Group
                                 buttonStyle="solid"
                                 name="PaymentRadio"
+                                onChange={(e) => this.forceUpdate()}
                             >
-                                <Radio.Button value={"Bank Transfer"}>
-                                    Bank Transfer
-                                </Radio.Button>
+                                <Radio.Button value={"Bank Transfer"}>Bank Transfer (Best)</Radio.Button>
                                 <Radio.Button value={"Cash"}>Cash</Radio.Button>
-                                <Radio.Button value={"Other"}>
-                                    Other
-                                </Radio.Button>
+                                <Radio.Button value={"Other"}>Other</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
 
@@ -621,11 +618,12 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             </Form.Item>
                         ) : null}
 
+                        {console.log(this.formRef.current?.getFieldValue("Payment"))}
 
-                        {!this.props.isAdmin ? (
+                        {!this.props.isAdmin && this.formRef.current?.getFieldValue("Payment") === "Bank Transfer" ? (
                             <div>
                                 <p>
-                                    If paying by Bank Transfer, include your
+                                    If paying by <b>Bank Transfer</b>, include your
                                     'NAME' and
                                     {this.props.clubConfig?.clubSignupSem ===
                                     "S1"
@@ -669,6 +667,26 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <p>
                                     Once the committee receives your payment,
                                     you will be able to sign up for trainings!
+                                </p>
+                            </div>
+                        ) : null}
+
+                        {!this.props.isAdmin && this.formRef.current?.getFieldValue("Payment") === "Cash" ? (
+                            <div>
+                                <p>
+                                    If paying by <b>Cash</b>, please contact us via our Facebook or Email. We will sign
+                                    you up manually to the first training session of your choice. There you can pay 
+                                    cash to one of our friendly execs. Once we process your cash payment, you 
+                                    will unlock access to future trainings and signup by youself.
+                                </p>
+                            </div>
+                        ) : null}
+
+                        {!this.props.isAdmin && this.formRef.current?.getFieldValue("Payment") === "Other" ? (
+                            <div>
+                                <p>
+                                    If paying by <b>Other</b> methods, please contact us via our Facebook or Email,
+                                    so we can discuss your method of payment.
                                 </p>
                             </div>
                         ) : null}
