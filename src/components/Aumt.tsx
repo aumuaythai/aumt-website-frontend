@@ -167,7 +167,8 @@ export class Aumt extends Component<AumtProps, AumtState> {
                               paid={this.state.authedUser?.paid === 'Yes'}
                               authedUserId={this.state.authedUserId}
                               clubSignupSem={this.state.clubSignupSem}
-                              authedUser={this.state.authedUser}></SignupsLazyWrapper>
+                              authedUser={this.state.authedUser}
+                              clubConfig={this.state.clubConfig}></SignupsLazyWrapper>
                           </Route>
                           <Route path="/events">
                             {/* {this.state.authedUser ?  */}
@@ -202,7 +203,8 @@ export class Aumt extends Component<AumtProps, AumtState> {
                               loadingAuthedUser={this.state.loadingAuthedUser}
                               clubSignupStatus={this.state.clubSignupStatus}
                               authedUser={this.state.authedUser}
-                              authedUserId={this.state.authedUserId}></Account> :
+                              authedUserId={this.state.authedUserId}
+                              clubConfig={this.state.clubConfig}></Account> :
                                 <div>
                                   You do not have an account yet. Please join.
                                 </div>

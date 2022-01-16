@@ -6,6 +6,7 @@ import './MainJoin.css'
 import { AumtMember, ClubConfig } from '../../../types'
 import FirebaseUtil from '../../../services/firebase.util'
 import dataUtil from '../../../services/data.util'
+import BankPaymentInstructions from '../../utility/BankPaymentInstructions';
 
 interface MainJoinProps {
     authedUser: AumtMember | null
@@ -30,33 +31,13 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
     }
 
     getExtraResultContent = () => {
-        const clubSignupSem = this.props.clubConfig?.clubSignupSem;
-        const summerSchoolFee = this.props.clubConfig?.summerSchoolFee;
-        const semesterOneFee = this.props.clubConfig?.semesterOneFee;
-        const semesterTwoFee = this.props.clubConfig?.semesterTwoFee;
-        const fullYearFee = this.props.clubConfig?.fullYearFee;
-        const bankAccountNumber = this.props.clubConfig?.bankAccountNumber;
-
         const lines: JSX.Element[] = []
         if (this.props.authedUser?.paid === 'No') {
             lines.push(
-                <div>
+            <div>
                 <h1>However, membership payment pending</h1>
-                <p className='joinAccountLine'>
-                    If paying by Bank Transfer, include your 'NAME' and
-                    {clubSignupSem === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
-                    {clubSignupSem === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
-                    {clubSignupSem === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
-                    as the reference.
-                    Membership is 
-                    {clubSignupSem === 'S1' ? ` $${semesterOneFee} for the semester or $${fullYearFee} for the year `: ''}
-                    {clubSignupSem === 'S2' ? ` $${semesterTwoFee} for the semester `: ''}
-                    {clubSignupSem === 'SS' ? ` $${summerSchoolFee} for summer school ` : ''}
-                    and should be paid with your full name as the reference to: {bankAccountNumber}
-                    <Button type='link' onClick={e => this.copyText(`${bankAccountNumber}`)}>Copy Account Number</Button>
-                </p>
-                </div>
-            )
+                <BankPaymentInstructions targetSemester={this.props.clubConfig?.clubSignupSem} clubConfig={this.props.clubConfig} />
+            </div>)
         } else {
             lines.push(
                 <div>

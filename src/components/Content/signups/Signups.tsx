@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
-import {Spin, notification, Button, Divider } from 'antd'
+import {Spin, notification, Divider } from 'antd'
 import './Signups.css'
 import { SignupForm } from './SignupForm'
-import { AumtWeeklyTraining, AumtMember } from '../../../types'
+import { AumtWeeklyTraining, AumtMember, ClubConfig } from '../../../types'
 import db from '../../../services/db'
 import DataFormatterUtil from '../../../services/data.util'
+import BankPaymentInstructions from '../../utility/BankPaymentInstructions'
 
 
 interface SignupProps {
@@ -13,6 +14,7 @@ interface SignupProps {
     authedUserId: string | null
     paid: boolean
     clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
+    clubConfig: ClubConfig | null
 }
 
 interface SignupState {
@@ -138,20 +140,9 @@ class Signups extends Component<SignupProps, SignupState> {
                                     <div key={form.trainingId} className='signupsNotPaidContainer'>
                                         <h2>{form.title}</h2>
                                         <p>Our records show you have not paid the membership fee for this semester - once you do, you can sign up to trainings!</p>
-                                        <p>
-                                            Membership is 
-                                            {form.semester === 'S1' ? ' $50 for the semester 1 or $90 for the year ': ''}
-                                            {form.semester === 'S2' ? ' $50 for the semester 2 ': ''}
-                                            {form.semester === 'SS' ? ' $30 for summer school ': ''} 
-                                            and includes a training session each week!
+                                        
+                                        <BankPaymentInstructions targetSemester={form.semester} clubConfig={this.props.clubConfig}/>
 
-                                            Please pay membership fees to the account below and add your NAME and 
-                                            {form.semester === 'S1' ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) ` : ''}
-                                            {form.semester === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
-                                            {form.semester === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
-                                            as the reference.
-                                        </p>
-                                        <p>06-0158-0932609-00 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                                         <Divider/>
 
                                         <h3>This Week Only</h3>
