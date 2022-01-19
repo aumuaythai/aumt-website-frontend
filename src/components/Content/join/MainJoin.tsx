@@ -6,7 +6,7 @@ import './MainJoin.css'
 import { AumtMember, ClubConfig } from '../../../types'
 import FirebaseUtil from '../../../services/firebase.util'
 import dataUtil from '../../../services/data.util'
-import BankPaymentInstructions from '../../utility/BankPaymentInstructions';
+import PaymentInstructions from '../../utility/PaymentInstructions';
 
 interface MainJoinProps {
     authedUser: AumtMember | null
@@ -36,7 +36,7 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
             lines.push(
             <div>
                 <h1>However, membership payment pending</h1>
-                <BankPaymentInstructions targetSemester={this.props.clubConfig?.clubSignupSem} clubConfig={this.props.clubConfig} />
+                <PaymentInstructions membershipType={this.props.authedUser.membership} paymentType={this.props.authedUser.paymentType} clubConfig={this.props.clubConfig} />
             </div>)
         } else {
             lines.push(

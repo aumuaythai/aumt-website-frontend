@@ -17,7 +17,7 @@ import { AumtMember, ClubConfig } from "../../../types";
 import FirebaseUtil from "../../../services/firebase.util";
 import db from "../../../services/db";
 import validator from "../../../services/validator";
-import BankPaymentInstructions from "../../utility/BankPaymentInstructions";
+import PaymentInstructions from "../../utility/PaymentInstructions";
 
 interface JoinFormProps {
     isAdmin: boolean;
@@ -34,11 +34,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
     private currentYear = new Date().getFullYear();
 
     private clubSignupSem = this.props.clubConfig?.clubSignupSem;
-    private semesterOneFee = this.props.clubConfig?.semesterOneFee;
-    private semesterTwoFee = this.props.clubConfig?.semesterTwoFee;
-    private summerSchoolFee = this.props.clubConfig?.summerSchoolFee;
-    private fullYearFee = this.props.clubConfig?.fullYearFee;
-    private bankAccountNumber = this.props.clubConfig?.bankAccountNumber;
 
     private verticalRadioStyle = {
         display: "block",
@@ -55,7 +50,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             currentExperienceInMuayThai: "",
             submitting: false,
         };
-    };
+    }
 
     private onSubmitFail = (obj: any) => {
         const { errorFields } = obj;
@@ -80,7 +75,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             EmergencyContactNumber,
             EmergencyContactRelationship,
             Paid: paid = "No",
-            Membership: membership = this.props.clubConfig?.clubSignupSem,
+            Membership: membership,
             upi,
             studentId,
             email,
@@ -226,9 +221,14 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             Club Sign-ups
                         </h2>
 
-                        <BankPaymentInstructions targetSemester={this.clubSignupSem} clubConfig={this.props.clubConfig}/>
+                        <p>
+                            Welcome to AUMT! We look forward to you being a part of our club. 
+                            Please fill in the form below to create an account. Your account will enable
+                            you to sign up to future training sessions and join events. Please contact us if
+                            you have any questions.
+                        </p>
 
-                        <h3>AGREEMENT:</h3>
+                        <h3 className="formSectionHeader">Agreement:</h3>
                         <p>
                             I understand that by filling out and submitting this
                             form, I am partaking in the club activities at my
@@ -239,7 +239,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             is the sole responsibility of the member and is not
                             the responsibility of the club or training facility.
                         </p>
-
                     </div>
                 ) : (
                     <div>
@@ -269,6 +268,53 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 </Radio.Group>
                             </Form.Item>
                         ) : null}
+
+                        <div>
+                            <h3 className="formSectionHeader">Login Details</h3>
+                            {!this.props.isAdmin ? (
+                                <p>
+                                    This is your account to sign in to this site
+                                    for trainings and events. Your email here
+                                    will be used both as your username for the
+                                    account and as a point of contact for club
+                                    announcements and invitations. You can reset
+                                    your password at any time.
+                                </p>
+                            ) : null}
+                        </div>
+
+                        <Form.Item
+                            {...this.alignInputLayout}
+                            rules={[{ required: true }]}
+                            name="email"
+                            label="Email"
+                        >
+                            <Input className="joinFormInput" type="email" />
+                        </Form.Item>
+
+                        {!this.props.isAdmin ? (
+                            <Form.Item
+                                {...this.alignInputLayout}
+                                rules={[{ required: true }]}
+                                name="password"
+                                label="Password"
+                            >
+                                <Input.Password className="joinFormInput" />
+                            </Form.Item>
+                        ) : (
+                            <Form.Item
+                                {...this.alignInputLayout}
+                                rules={[{ required: true }]}
+                                name="uid"
+                                label="UID"
+                                help="Found in the Firebase Authentication section"
+                            >
+                                <Input
+                                    placeholder="See NOTE TO ADMIN"
+                                    className="joinFormInput"
+                                />
+                            </Form.Item>
+                        )}
 
                         <h3 className="formSectionHeader">Personal Details</h3>
                         <Form.Item
@@ -311,7 +357,9 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             />
                         </Form.Item>
 
-                        <h3 className="formSectionHeader">University Details</h3>
+                        <h3 className="formSectionHeader">
+                            University Details
+                        </h3>
                         <Form.Item
                             name="UoaStudent"
                             rules={[{ required: true }]}
@@ -355,7 +403,9 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             </div>
                         ) : null}
 
-                        <h3 className="formSectionHeader">Muay Thai Experience</h3>
+                        <h3 className="formSectionHeader">
+                            Muay Thai Experience
+                        </h3>
                         <Form.Item
                             rules={[{ required: true }]}
                             name="Experience"
@@ -428,7 +478,9 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             </Radio.Group>
                         </Form.Item>
 
-                        <h3 className="formSectionHeader">Emergency Contact Details</h3>
+                        <h3 className="formSectionHeader">
+                            Emergency Contact Details
+                        </h3>
                         <Form.Item
                             {...this.alignInputLayout}
                             rules={[{ required: true }]}
@@ -454,100 +506,44 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             <Input className="joinFormInput" />
                         </Form.Item>
 
-                        <h3 className="formSectionHeader">Socials</h3>
-                        <p>
-                            Like our facebook page, Auckland University Muay
-                            Thai, for all important info and announcements.
-                        </p>
+                        <h3 className="formSectionHeader">Payment</h3>
                         <Form.Item
-                            name="FacebookAccount"
+                            name="Membership"
                             rules={[{ required: true }]}
-                            label="Do you have a Facebook account?"
+                            label="Membership Duration"
                         >
-                            <Radio.Group name="HasFacebookRadio">
-                                <Radio value={"Yes"}>Yes</Radio>
-                                <Radio value={"No"}>No</Radio>
+                            <Radio.Group
+                                buttonStyle="solid"
+                                name="MembershipRadio"
+                                value={this.props.clubConfig?.clubSignupSem}
+                            >
+                                {this.props.clubConfig?.clubSignupSem ===
+                                "S1" ? (
+                                    <>
+                                        <Radio.Button value={"S1"}>
+                                            Semester 1 Only
+                                        </Radio.Button>
+                                        <Radio.Button value={"FY"}>
+                                            Full Year (Semester 1 and 2)
+                                        </Radio.Button>
+                                    </>
+                                ) : null}
+
+                                {this.props.clubConfig?.clubSignupSem ===
+                                "SS" ? (
+                                    <Radio.Button value={"SS"}>
+                                        Summer School Only
+                                    </Radio.Button>
+                                ) : null}
+                                
+                                {this.props.clubConfig?.clubSignupSem ===
+                                "S2" ? (
+                                    <Radio.Button value={"S2"}>
+                                        Semester 2 Only
+                                    </Radio.Button>
+                                ) : null}
                             </Radio.Group>
                         </Form.Item>
-
-                        <div>
-                            <h3 className="formSectionHeader">Account</h3>
-                            {!this.props.isAdmin ? (
-                                <p>
-                                    This is your account to sign in to this site
-                                    for trainings and events. Your email here
-                                    will be used both as your username for the
-                                    account and as a point of contact for club
-                                    announcements and invitations. You can reset
-                                    your password at any time.
-                                </p>
-                            ) : null}
-                        </div>
-
-                        <Form.Item
-                            {...this.alignInputLayout}
-                            rules={[{ required: true }]}
-                            name="email"
-                            label="Email"
-                        >
-                            <Input className="joinFormInput" type="email" />
-                        </Form.Item>
-
-                        {!this.props.isAdmin ? (
-                            <Form.Item
-                                {...this.alignInputLayout}
-                                rules={[{ required: true }]}
-                                name="password"
-                                label="Password"
-                            >
-                                <Input.Password className="joinFormInput" />
-                            </Form.Item>
-                        ) : (
-                            <Form.Item
-                                {...this.alignInputLayout}
-                                rules={[{ required: true }]}
-                                name="uid"
-                                label="UID"
-                                help="Found in the Firebase Authentication section"
-                            >
-                                <Input
-                                    placeholder="See NOTE TO ADMIN"
-                                    className="joinFormInput"
-                                />
-                            </Form.Item>
-                        )}
-
-                        <h3 className="formSectionHeader">Payment</h3>
-                        {this.props.clubConfig?.clubSignupSem === "S1" ||
-                        this.props.isAdmin ? (
-                            <Form.Item
-                                name="Membership"
-                                rules={[{ required: true }]}
-                                label="Membership Duration"
-                            >
-                                <Radio.Group
-                                    buttonStyle="solid"
-                                    name="MembershipRadio"
-                                >
-                                    <Radio.Button value={"S1"}>
-                                        Semester 1
-                                    </Radio.Button>
-                                    {this.props.isAdmin ? (
-                                        <>
-                                            <Radio.Button value={"S2"}>
-                                                Semester 2
-                                            </Radio.Button>
-                                            <Radio.Button value={"SS"}>
-                                                Summer School
-                                            </Radio.Button>
-                                        </>
-                                    ) : null}
-                                    <Radio.Button value={"FY"}>
-                                        Full Year
-                                    </Radio.Button>
-                                </Radio.Group>
-                            </Form.Item>
-                        ) : null}
 
                         <Form.Item
                             name="Payment"
@@ -559,9 +555,13 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 name="PaymentRadio"
                                 onChange={(e) => this.forceUpdate()}
                             >
-                                <Radio.Button value={"Bank Transfer"}>Bank Transfer (Best)</Radio.Button>
+                                <Radio.Button value={"Bank Transfer"}>
+                                    Bank Transfer (Best)
+                                </Radio.Button>
                                 <Radio.Button value={"Cash"}>Cash</Radio.Button>
-                                <Radio.Button value={"Other"}>Other</Radio.Button>
+                                <Radio.Button value={"Other"}>
+                                    Other
+                                </Radio.Button>
                             </Radio.Group>
                         </Form.Item>
 
@@ -583,30 +583,44 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             </Form.Item>
                         ) : null}
 
-                        {console.log(this.formRef.current?.getFieldValue("Payment"))}
+                        {console.log(
+                            this.formRef.current?.getFieldValue("Payment")
+                        )}
 
-                        {!this.props.isAdmin && this.formRef.current?.getFieldValue("Payment") === "Bank Transfer" ? (
-                            <BankPaymentInstructions targetSemester={this.props.clubConfig?.clubSignupSem} clubConfig={this.props.clubConfig} />
+                        {!this.props.isAdmin &&
+                        this.formRef.current?.getFieldValue("Payment") ===
+                            "Bank Transfer" ? (
+                            <PaymentInstructions
+                                clubConfig={this.props.clubConfig}
+                                paymentType="Bank Transfer"
+                                membershipType={
+                                    this.props.clubConfig?.clubSignupSem
+                                }
+                            />
                         ) : null}
 
-                        {!this.props.isAdmin && this.formRef.current?.getFieldValue("Payment") === "Cash" ? (
-                            <div>
-                                <p>
-                                    If paying by <b>Cash</b>, please contact us via our Facebook or Email. We will sign
-                                    you up manually to the first training session of your choice. There you can pay 
-                                    cash to one of our friendly execs. Once we process your cash payment, you 
-                                    will unlock access to future trainings and signup by youself.
-                                </p>
-                            </div>
+                        {!this.props.isAdmin &&
+                        this.formRef.current?.getFieldValue("Payment") ===
+                            "Cash" ? (
+                            <PaymentInstructions
+                                clubConfig={this.props.clubConfig}
+                                paymentType="Cash"
+                                membershipType={
+                                    this.props.clubConfig?.clubSignupSem
+                                }
+                            />
                         ) : null}
 
-                        {!this.props.isAdmin && this.formRef.current?.getFieldValue("Payment") === "Other" ? (
-                            <div>
-                                <p>
-                                    If paying by <b>Other</b> methods, please contact us via our Facebook or Email,
-                                    so we can discuss your method of payment.
-                                </p>
-                            </div>
+                        {!this.props.isAdmin &&
+                        this.formRef.current?.getFieldValue("Payment") ===
+                            "Other" ? (
+                            <PaymentInstructions
+                                clubConfig={this.props.clubConfig}
+                                paymentType="Other"
+                                membershipType={
+                                    this.props.clubConfig?.clubSignupSem
+                                }
+                            />
                         ) : null}
 
                         <Form.Item>
@@ -620,7 +634,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 Submit
                             </Button>
                         </Form.Item>
-
                     </Form>
                 </div>
             </div>

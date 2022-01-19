@@ -10,7 +10,7 @@ import dataUtil from '../../../services/data.util'
 import FirebaseUtil from '../../../services/firebase.util'
 import db from '../../../services/db'
 import Validator from '../../../services/validator'
-import BankPaymentInstructions from '../../utility/BankPaymentInstructions';
+import PaymentInstructions from '../../utility/PaymentInstructions';
 
 interface AccountProps {
     authedUser: AumtMember
@@ -283,10 +283,6 @@ export class Account extends Component<AccountProps, AccountState> {
                     <List.Item>
                         <span>Status: <b>{this.state.currentPaid === "Yes" ? "Paid" : "Not paid"}</b></span>
                     </List.Item>
-                    {this.state.currentPaid === "No" ?
-                    <List.Item>
-                        <BankPaymentInstructions targetSemester={this.state.currentMembership} clubConfig={this.props.clubConfig} />
-                    </List.Item> : null}
                     <List.Item>
                         <span>Update membership options:</span>
                         <Radio.Group buttonStyle="solid" disabled={!this.state.editMembership} value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
@@ -301,6 +297,18 @@ export class Account extends Component<AccountProps, AccountState> {
                             <Radio.Button value="S2">Semester 2</Radio.Button> : null}
                         </Radio.Group>
                     </List.Item>
+                    <List.Item>
+                        <span>Payment Type</span>
+                        <Radio.Group buttonStyle="solid" disabled={!this.state.editMembership} value={this.state.currentPaymentType} onChange={e => this.onPaymentTypeChange(e.target.value)}>
+                            <Radio.Button value="Bank Transfer">Bank Transfer</Radio.Button>
+                            <Radio.Button value="Cash">Cash</Radio.Button>
+                            <Radio.Button value="Other">Other</Radio.Button>
+                        </Radio.Group>
+                    </List.Item>
+                    {this.state.currentPaid === "No" ?
+                    <List.Item>
+                        <PaymentInstructions membershipType={this.state.currentMembership} paymentType={this.state.currentPaymentType} clubConfig={this.props.clubConfig} />
+                    </List.Item> : null}
                 </List>
 
                 <List header="Personal" footer={

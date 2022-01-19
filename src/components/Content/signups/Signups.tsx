@@ -6,8 +6,6 @@ import { SignupForm } from './SignupForm'
 import { AumtWeeklyTraining, AumtMember, ClubConfig } from '../../../types'
 import db from '../../../services/db'
 import DataFormatterUtil from '../../../services/data.util'
-import BankPaymentInstructions from '../../utility/BankPaymentInstructions'
-
 
 interface SignupProps {
     authedUser: AumtMember | null
@@ -141,8 +139,6 @@ class Signups extends Component<SignupProps, SignupState> {
                                         <h2>{form.title}</h2>
                                         <p>Our records show you have not paid the membership fee for this semester - once you do, you can sign up to trainings!</p>
                                         
-                                        <BankPaymentInstructions targetSemester={form.semester} clubConfig={this.props.clubConfig}/>
-
                                         <Divider/>
 
                                         <h3>This Week Only</h3>
