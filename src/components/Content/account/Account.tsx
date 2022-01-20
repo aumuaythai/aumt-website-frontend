@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { AumtMember } from '../../../types';
+import { AumtMember, ClubConfig } from '../../../types';
 
 import { Button, Input, notification, List, Radio, Spin } from 'antd';
 
@@ -10,6 +10,7 @@ import dataUtil from '../../../services/data.util'
 import FirebaseUtil from '../../../services/firebase.util'
 import db from '../../../services/db'
 import Validator from '../../../services/validator'
+import PaymentInstructions from '../../utility/PaymentInstructions';
 
 interface AccountProps {
     authedUser: AumtMember
@@ -17,6 +18,7 @@ interface AccountProps {
     loadingAuthedUser: boolean
     clubSignupStatus: 'open' | 'closed' | 'loading'
     clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
+    clubConfig: ClubConfig | null
 };
 
 interface AccountState {
@@ -185,7 +187,7 @@ export class Account extends Component<AccountProps, AccountState> {
         if (this.state.currentMembership !== this.originalState.currentMembership) {
             this.setState({ ...this.state, currentPaid: 'No' });
         }
-        
+
         const errorStr = Validator.createAumtMember(member)
         if (typeof (errorStr) === 'string') {
             return notification.error({ message: errorStr })
@@ -201,10 +203,19 @@ export class Account extends Component<AccountProps, AccountState> {
                 this.setState({ ...this.state, editPersonal: false, editMembership: false, editEC: false, editUniversity: false })
                 this.originalState = { ...this.state };
                 notification.success({ message: 'Details updated' })
+
+                // Update props because website doesn't refresh.
+                this.updateAuthedUserProps(member);
             })
             .catch((err) => {
                 notification.error({ message: 'Could not save member' + err.toString() })
             })
+    }
+
+    updateAuthedUserProps = (member: AumtMember) => {
+        Object.keys(this.props.authedUser).forEach((key) => {
+            this.props.authedUser[key] = member[key];  
+        });
     }
 
     copyText = (text: string) => {
@@ -281,24 +292,6 @@ export class Account extends Component<AccountProps, AccountState> {
                     <List.Item>
                         <span>Status: <b>{this.state.currentPaid === "Yes" ? "Paid" : "Not paid"}</b></span>
                     </List.Item>
-                    {this.state.currentPaid === "No" ?
-                    <List.Item>
-                        <p className='joinAccountLine'>
-                            *If paying by Bank Transfer, include your 'NAME' and
-                            {this.state.currentMembership === 'S1' ? ` 'AUMTS1' (for one semester) ` : ''}
-                            {this.state.currentMembership === 'FY' ? ` 'AUMTFY' (for full year) ` : ''}
-                            {this.state.currentMembership === 'S2' ? ` 'AUMTS2' (for one semester) ` : ''}
-                            {this.state.currentMembership === 'SS' ? ` 'AUMTSS' (for summer school) ` : ''}
-                            as the reference.
-                            Membership is 
-                            {this.state.currentMembership === 'S1' ? ' $50 for the semester ': ''}
-                            {this.state.currentMembership === 'FY' ? ' $90 for the full year' : ''}
-                            {this.state.currentMembership === 'S2' ? ' $50 for the semester ': ''}
-                            {this.state.currentMembership === 'SS' ? ' $30 for summer school ': ''}
-                            and should be paid with your full name as the reference to: 06-0158-0932609-00
-                            <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button>
-                        </p>
-                    </List.Item> : null}
                     <List.Item>
                         <span>Update membership options:</span>
                         <Radio.Group buttonStyle="solid" disabled={!this.state.editMembership} value={this.state.currentMembership} onChange={e => this.onMembershipChange(e.target.value)}>
@@ -313,6 +306,18 @@ export class Account extends Component<AccountProps, AccountState> {
                             <Radio.Button value="S2">Semester 2</Radio.Button> : null}
                         </Radio.Group>
                     </List.Item>
+                    <List.Item>
+                        <span>Payment Type</span>
+                        <Radio.Group buttonStyle="solid" disabled={!this.state.editMembership} value={this.state.currentPaymentType} onChange={e => this.onPaymentTypeChange(e.target.value)}>
+                            <Radio.Button value="Bank Transfer">Bank Transfer</Radio.Button>
+                            <Radio.Button value="Cash">Cash</Radio.Button>
+                            <Radio.Button value="Other">Other</Radio.Button>
+                        </Radio.Group>
+                    </List.Item>
+                    {this.state.currentPaid === "No" ?
+                    <List.Item>
+                        <PaymentInstructions membershipType={this.state.currentMembership} paymentType={this.state.currentPaymentType} clubConfig={this.props.clubConfig} />
+                    </List.Item> : null}
                 </List>
 
                 <List header="Personal" footer={

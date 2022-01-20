@@ -15,7 +15,7 @@ import './Aumt.css'
 import DB from '../services/db'
 import Analytics from '../services/analytics'
 import FirebaseUtil from '../services/firebase.util'
-import { AumtMember } from '../types';
+import { AumtMember, ClubConfig } from '../types';
 
 const MainAdminLazyWrapper = (
   lazy(() => (
@@ -46,6 +46,7 @@ export interface AumtState {
     authedUserId: string
     clubSignupStatus: 'open' | 'closed' | 'loading'
     clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
+    clubConfig: ClubConfig | null
 }
 
 export class Aumt extends Component<AumtProps, AumtState> {
@@ -58,7 +59,8 @@ export class Aumt extends Component<AumtProps, AumtState> {
           userIsAdmin: false,
           authedUserId: '',
           clubSignupStatus: 'loading',
-          clubSignupSem: 'loading'
+          clubSignupSem: 'loading',
+          clubConfig: null
         }
         
         FirebaseUtil.initialize(this.authStateChange)
@@ -71,7 +73,8 @@ export class Aumt extends Component<AumtProps, AumtState> {
             this.setState({
               ...this.state,
               clubSignupStatus: config.clubSignupStatus,
-              clubSignupSem: config.clubSignupSem
+              clubSignupSem: config.clubSignupSem,
+              clubConfig: {...config}
             })
           })
           .catch((err) => {
@@ -164,7 +167,8 @@ export class Aumt extends Component<AumtProps, AumtState> {
                               paid={this.state.authedUser?.paid === 'Yes'}
                               authedUserId={this.state.authedUserId}
                               clubSignupSem={this.state.clubSignupSem}
-                              authedUser={this.state.authedUser}></SignupsLazyWrapper>
+                              authedUser={this.state.authedUser}
+                              clubConfig={this.state.clubConfig}></SignupsLazyWrapper>
                           </Route>
                           <Route path="/events">
                             {/* {this.state.authedUser ?  */}
@@ -177,11 +181,10 @@ export class Aumt extends Component<AumtProps, AumtState> {
                           </Route>
                           <Route path="/join">
                             <MainJoin
-                              clubSignupSem={this.state.clubSignupSem}
                               loadingAuthedUser={this.state.loadingAuthedUser}
-                              clubSignupStatus={this.state.clubSignupStatus}
                               authedUser={this.state.authedUser}
-                              authedUserId={this.state.authedUserId}></MainJoin>
+                              authedUserId={this.state.authedUserId}
+                              clubConfig={this.state.clubConfig}></MainJoin>
                           </Route>
                           <Route path="/admin">
                             {
@@ -200,7 +203,8 @@ export class Aumt extends Component<AumtProps, AumtState> {
                               loadingAuthedUser={this.state.loadingAuthedUser}
                               clubSignupStatus={this.state.clubSignupStatus}
                               authedUser={this.state.authedUser}
-                              authedUserId={this.state.authedUserId}></Account> :
+                              authedUserId={this.state.authedUserId}
+                              clubConfig={this.state.clubConfig}></Account> :
                                 <div>
                                   You do not have an account yet. Please join.
                                 </div>
