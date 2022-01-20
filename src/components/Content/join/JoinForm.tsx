@@ -404,6 +404,34 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         ) : null}
 
                         <h3 className="formSectionHeader">
+                            Emergency Contact Details
+                        </h3>
+                        <Form.Item
+                            {...this.alignInputLayout}
+                            rules={[{ required: true }]}
+                            name="EmergencyContactName"
+                            label="Name"
+                        >
+                            <Input className="joinFormInput" />
+                        </Form.Item>
+                        <Form.Item
+                            {...this.alignInputLayout}
+                            rules={[{ required: true }]}
+                            name="EmergencyContactNumber"
+                            label="Phone Number"
+                        >
+                            <Input className="joinFormInput" type="tel" />
+                        </Form.Item>
+                        <Form.Item
+                            {...this.alignInputLayout}
+                            rules={[{ required: true }]}
+                            name="EmergencyContactRelationship"
+                            label="Relationship"
+                        >
+                            <Input className="joinFormInput" />
+                        </Form.Item>
+
+                        <h3 className="formSectionHeader">
                             Muay Thai Experience
                         </h3>
                         <Form.Item
@@ -478,35 +506,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             </Radio.Group>
                         </Form.Item>
 
-                        <h3 className="formSectionHeader">
-                            Emergency Contact Details
-                        </h3>
-                        <Form.Item
-                            {...this.alignInputLayout}
-                            rules={[{ required: true }]}
-                            name="EmergencyContactName"
-                            label="Name"
-                        >
-                            <Input className="joinFormInput" />
-                        </Form.Item>
-                        <Form.Item
-                            {...this.alignInputLayout}
-                            rules={[{ required: true }]}
-                            name="EmergencyContactNumber"
-                            label="Phone Number"
-                        >
-                            <Input className="joinFormInput" type="tel" />
-                        </Form.Item>
-                        <Form.Item
-                            {...this.alignInputLayout}
-                            rules={[{ required: true }]}
-                            name="EmergencyContactRelationship"
-                            label="Relationship"
-                        >
-                            <Input className="joinFormInput" />
-                        </Form.Item>
-
-                        <h3 className="formSectionHeader">Payment</h3>
+                        <h3 className="formSectionHeader">Membership Payment</h3>
                         <Form.Item
                             name="Membership"
                             rules={[{ required: true }]}
