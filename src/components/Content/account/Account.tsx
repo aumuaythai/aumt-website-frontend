@@ -187,7 +187,7 @@ export class Account extends Component<AccountProps, AccountState> {
         if (this.state.currentMembership !== this.originalState.currentMembership) {
             this.setState({ ...this.state, currentPaid: 'No' });
         }
-        
+
         const errorStr = Validator.createAumtMember(member)
         if (typeof (errorStr) === 'string') {
             return notification.error({ message: errorStr })
@@ -203,10 +203,19 @@ export class Account extends Component<AccountProps, AccountState> {
                 this.setState({ ...this.state, editPersonal: false, editMembership: false, editEC: false, editUniversity: false })
                 this.originalState = { ...this.state };
                 notification.success({ message: 'Details updated' })
+
+                // Update props because website doesn't refresh.
+                this.updateAuthedUserProps(member);
             })
             .catch((err) => {
                 notification.error({ message: 'Could not save member' + err.toString() })
             })
+    }
+
+    updateAuthedUserProps = (member: AumtMember) => {
+        Object.keys(this.props.authedUser).forEach((key) => {
+            this.props.authedUser[key] = member[key];  
+        });
     }
 
     copyText = (text: string) => {
