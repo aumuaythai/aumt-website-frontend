@@ -1,0 +1,16 @@
+.clubSettingsContainer {
+    text-align: center;
+    margin: 0 auto;
+    text-align: left;
+    width: 640px;
+}
+
+.listContainer {
+    margin-top: 20px;
+}
+
+@media(max-width: 1180px) {
+    .clubSettingsContainer {
+        width: 100%;
+    }
+}

@@ -87,7 +87,7 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
      * @param windowPath the current window path.
      */
     setStateFromPathChange = (windowPath: string) => {
-        
+
         // Defaults to trainings page.
         let currentSelectedAdmin = "trainings";
         if (
