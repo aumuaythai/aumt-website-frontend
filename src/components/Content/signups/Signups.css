@@ -13,7 +13,8 @@
     text-align: justify;
 }
 .signupsNotPaidContainer {
-    max-width: 400px;
+    max-width: 420px;
+    padding: 20px;
     margin: 0 auto;
     text-align: left;
 }
