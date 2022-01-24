@@ -1,0 +1,17 @@
+.clubSettingsContainer {
+    text-align: center;
+    margin: 0 auto;
+    text-align: left;
+    padding-bottom: 40px;
+    width: 640px;
+}
+
+.listContainer {
+    margin: 20px 0;
+}
+
+@media(max-width: 1180px) {
+    .clubSettingsContainer {
+        width: 100%;
+    }
+}

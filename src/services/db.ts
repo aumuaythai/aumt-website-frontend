@@ -64,6 +64,14 @@ class DB {
             })
     }
 
+    public setClubConfig = (config: ClubConfig): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object');
+        return this.db
+            .collection('config')
+            .doc('config')
+            .set(config)
+    }
+
     public setClubJoinForm = (open: boolean): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db
