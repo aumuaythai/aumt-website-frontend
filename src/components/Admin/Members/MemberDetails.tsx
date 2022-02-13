@@ -11,6 +11,7 @@ import db from '../../../services/db'
 import DataFormatterUtil from '../../../services/data.util'
 import Validator from '../../../services/validator'
 import moment from 'moment'
+import Functions from '../../../services/functions'
 
 interface MemberDetailsProps extends RouteComponentProps {
     member: TableDataLine
@@ -142,11 +143,20 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     }
     onRemoveClick = () => {
         this.setState({ ...this.state, removing: true })
+        
+        // Remove user from database.
         db.removeMember(this.props.member.key)
             .then(() => {
-                this.setState({ ...this.state, removing: false })
-                notification.success({ message: `${this.state.currentFirstName} ${this.state.currentLastName} removed. Please also remove login credentials for ${this.state.currentEmail} in the Firebase Authentication section` })
-                this.props.history.push('/admin/members')
+                // If successfull then remove suser from auth.
+                Functions.removeMember()({uid: this.props.member.key})
+                    .then(result => {
+                        // Finally remove user from state.
+                        this.setState({ ...this.state, removing: false })
+                        notification.success({ message: `${this.state.currentFirstName} ${this.state.currentLastName} removed. ` })
+                        this.props.history.push('/admin/members')
+                        console.log(result.data.message);
+                    })
+                    .catch(error => console.log(error));
             })
             .catch((err) => {
                 this.setState({ ...this.state, removing: false })

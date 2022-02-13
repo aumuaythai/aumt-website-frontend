@@ -1,20 +1,42 @@
 const functions = require("firebase-functions");
+const admin = require("firebase-admin");
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-
-exports.helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
+admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+    databaseURL: "https://aumt-website.firebaseio.com",
 });
 
-// TODO: Authentication
-// Solution #1: callable function, spread context object and see if admin.
-// Pit falls: some god hacker can mutate admin field and bypass check.
+exports.helloWorld = functions.https.onRequest((request, response) => {
+    functions.logger.info("Hello logs!", { structuredData: true });
+    response.send("Hello from Firebase!");
+});
 
-// Solution #2: callable function, set customer user claims.
-// Pit falls: will require modifying existing admins. UI dashboard will
-// need to be created to see admins as there is no way of finding out
+exports.isAdmin = functions.https.onCall(async (data, context) => {
+    if (isAdmin(data, context)) {
+        return { message: "You are an admin" };
+    } else {
+        return { message: "You are not an admin" };
+    }
+});
 
-// Solution #3: callable function / http REST, database lookup
-// Pit falls: will require looking up db everytime might slow in future.
+exports.removeUser = functions.https.onCall(async (data, context) => {
+    if (isAdmin(data, context)) {
+        try {
+            await admin.auth().deleteUser(data.uid);
+            return { message: `User ${data.uid} deleted from auth` };
+        } catch (error) {
+            return { message: `User ${data.uid} could not be deleted from auth` };
+        }
+    } else {
+        return { message: "Non-admins cannot make this request" };
+    }
+});
+
+const isAdmin = async (data, context) => {
+    try {
+        await admin.firestore().collection("admin").doc(context.auth.uid).get();
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
