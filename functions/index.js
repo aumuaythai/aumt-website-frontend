@@ -11,7 +11,7 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
     response.send("Hello from Firebase!");
 });
 
-exports.isAdmin = functions.https.onCall(async (data, context) => {
+exports.isAdmin = functions.https.onCall((data, context) => {
     if (isAdmin(data, context)) {
         return { message: "You are an admin" };
     } else {
@@ -19,24 +19,34 @@ exports.isAdmin = functions.https.onCall(async (data, context) => {
     }
 });
 
-exports.removeUser = functions.https.onCall(async (data, context) => {
+exports.removeUser = functions.https.onCall((data, context) => {
     if (isAdmin(data, context)) {
-        try {
-            await admin.auth().deleteUser(data.uid);
-            return { message: `User ${data.uid} deleted from auth` };
-        } catch (error) {
-            return { message: `User ${data.uid} could not be deleted from auth` };
-        }
+        admin
+            .auth()
+            .deleteUser(data.uid)
+            .then((result) => {
+                return { message: `User ${data.uid} deleted successfully from auth` };
+            })
+            .catch((error) => {
+                return { message: `Error deleting user ${data.uid} from auth` };
+            });
     } else {
         return { message: "Non-admins cannot make this request" };
     }
 });
 
-const isAdmin = async (data, context) => {
-    try {
-        await admin.firestore().collection("admin").doc(context.auth.uid).get();
-        return true;
-    } catch (error) {
-        return false;
-    }
+const isAdmin = (data, context) => {
+    admin
+        .firestore()
+        .collection("admin")
+        .doc(context.auth.uid)
+        .get()
+        .then((document) => {
+            if (document.exists) return true;
+            else return false;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
 };
