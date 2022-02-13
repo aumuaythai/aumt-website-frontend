@@ -21,11 +21,13 @@ exports.isAdmin = functions.https.onCall((data, context) => {
 
 exports.removeUser = functions.https.onCall((data, context) => {
     if (isAdmin(data, context)) {
-        admin
+        return admin
             .auth()
             .deleteUser(data.uid)
             .then((result) => {
-                return { message: `User ${data.uid} deleted successfully from auth` };
+                return {
+                    message: `User ${data.uid} deleted successfully from auth`,
+                };
             })
             .catch((error) => {
                 return { message: `Error deleting user ${data.uid} from auth` };
@@ -35,7 +37,7 @@ exports.removeUser = functions.https.onCall((data, context) => {
     }
 });
 
-const isAdmin = (data, context) => {
+const isAdmin = async (data, context) => {
     admin
         .firestore()
         .collection("admin")
