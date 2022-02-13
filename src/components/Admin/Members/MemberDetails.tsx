@@ -148,13 +148,13 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
         db.removeMember(this.props.member.key)
             .then(() => {
                 // If successfull then remove user from auth.
-                Functions.removeMember(this.props.member.key)
+                Functions.removeUser(this.props.member.key)
                     .then(result => {
                         // Finally remove user from state.
                         this.setState({ ...this.state, removing: false })
                         notification.success({ message: `${this.state.currentFirstName} ${this.state.currentLastName} removed. ` })
                         this.props.history.push('/admin/members')
-                        
+
                         console.log(result.data.message);
                     })
                     .catch(error => console.log(error));

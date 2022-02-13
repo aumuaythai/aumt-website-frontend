@@ -13,7 +13,7 @@ class Functions {
         }
     }
 
-    public removeMember(uid: string): Promise<HttpsCallableResult> {
+    public removeUser(uid: string): Promise<HttpsCallableResult> {
         if (!this.functions) return Promise.reject("No db object");
         const call = this.functions.httpsCallable("removeUser");
         return call({ uid: uid });
