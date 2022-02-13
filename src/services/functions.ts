@@ -8,7 +8,10 @@ class Functions {
 
     public initialize() {
         if (!this.functions) {
-            firebase.functions().useEmulator("localhost", 5001);
+            // Uncomment this if testing emulator:
+            // firebase.functions().useEmulator("localhost", 5001);
+            
+            firebase.functions();
             this.functions = firebase.functions();
         }
     }
