@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build": "react-app-rewired build",
-    "deploy": "firebase deploy",
+    "deploy": "firebase deploy --only hosting",
     "eject": "react-app-rewired eject",
     "guides": "for i in guides/*.md ; do markdown-pdf $i; done",
     "start": "react-app-rewired start",

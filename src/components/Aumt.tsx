@@ -15,6 +15,7 @@ import './Aumt.css'
 import DB from '../services/db'
 import Analytics from '../services/analytics'
 import FirebaseUtil from '../services/firebase.util'
+import Functions from '../services/functions'
 import { AumtMember, ClubConfig } from '../types';
 
 const MainAdminLazyWrapper = (
@@ -63,11 +64,12 @@ export class Aumt extends Component<AumtProps, AumtState> {
           clubConfig: null
         }
         
+        // Initilize firebase products.
         FirebaseUtil.initialize(this.authStateChange)
-
         Analytics.initialize();
-
+        Functions.initialize();
         DB.initialize()
+
         DB.getClubConfig()
           .then((config) => {
             this.setState({

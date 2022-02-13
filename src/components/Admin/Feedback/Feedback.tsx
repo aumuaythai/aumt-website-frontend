@@ -57,8 +57,8 @@ export class Feedback extends Component<FeedbackProps, FeedbackState> {
                     return (
                         <div key={form.trainingId}>
                             <h3>{form.title}</h3>
-                            {feedback.length ? feedback.map((line) => {
-                                return <p>{line}</p>
+                            {feedback.length ? feedback.map((line, index) => {
+                                return <p key={index}>{line}</p>
                             }) : <p>No Feedback</p>}
                             <Divider/>
                         </div>
