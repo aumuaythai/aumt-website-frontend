@@ -11,16 +11,19 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
     response.send("Hello from Firebase!");
 });
 
-exports.isAdmin = functions.https.onCall((data, context) => {
-    if (isAdmin(data, context)) {
+exports.checkUserIsAdmin = functions.https.onCall(async (data, context) => {
+	const isAdmin = await checkIsAdmin(context);
+	console.log(isAdmin);
+    if (isAdmin) {
         return { message: "You are an admin" };
     } else {
         return { message: "You are not an admin" };
     }
 });
 
-exports.removeUser = functions.https.onCall((data, context) => {
-    if (isAdmin(data, context)) {
+exports.removeUser = functions.https.onCall(async (data, context) => {
+	const isAdmin = await checkIsAdmin(context);
+    if (isAdmin) {
         return admin
             .auth()
             .deleteUser(data.uid)
@@ -37,15 +40,19 @@ exports.removeUser = functions.https.onCall((data, context) => {
     }
 });
 
-const isAdmin = async (data, context) => {
-    admin
+const checkIsAdmin = async (context) => {
+    return admin
         .firestore()
         .collection("admin")
         .doc(context.auth.uid)
         .get()
         .then((document) => {
-            if (document.exists) return true;
-            else return false;
+            if (document.exists) {
+				console.log(document.id);
+				return true;
+			} else {
+            	return false;
+			}
         })
         .catch((error) => {
             console.log(error);
