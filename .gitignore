@@ -29,6 +29,8 @@ yarn-error.log*
 .firebase
 .eslintcache
 
+firebase-debug.log
+
 # guides
 guides/*.pdf
 
