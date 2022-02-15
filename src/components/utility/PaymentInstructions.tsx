@@ -70,7 +70,7 @@ export default class PaymentInstructions extends Component<
                     If paying by <b>Cash</b>, please contact us via our Facebook or Email. We will sign
                     you up manually to the first training session of your choice. There you can pay 
                     cash to one of our friendly execs. Once we process your cash payment, you 
-                    will unlock access to future trainings and signup by youself. Membership is
+                    will unlock access to future trainings and signup by yourself. Membership is
                     {this.props.membershipType === "S1"
                             ? ` $${this.props.clubConfig?.semesterOneFee} for the semester or $${this.props.clubConfig?.fullYearFee} for the year `
                             : ""}
