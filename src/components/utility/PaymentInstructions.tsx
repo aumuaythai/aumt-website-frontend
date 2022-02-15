@@ -29,7 +29,7 @@ export default class PaymentInstructions extends Component<
                         ? ` 'AUMTS1' (for one semester) or AUMTFY (for one year) `
                         : ""}
                     {this.props.membershipType === "FY"
-                        ? ` AUMTFY (for one year) `
+                        ? ` 'AUMTFY' (for one year) `
                         : ""}
                     {this.props.membershipType === "S2"
                         ? ` 'AUMTS2' (for one semester) `

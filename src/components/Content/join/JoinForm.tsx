@@ -211,6 +211,9 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <h2>
                             AUMT {this.currentYear}
                             <b>
+                                {this.clubSignupSem === "S1"
+                                    ? " Semester 1 "
+                                    : ""}
                                 {this.clubSignupSem === "S2"
                                     ? " Semester 2 "
                                     : ""}

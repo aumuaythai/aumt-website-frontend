@@ -127,8 +127,12 @@ export class Account extends Component<AccountProps, AccountState> {
         this.setState({ ...this.state, currentStudentId: newId })
     }  
     onMembershipChange = (membership: 'S1' | 'S2' | 'FY' | 'SS') => {
-        let newMembership: 'S1' | 'S2' | 'FY' | 'SS' = membership
-        this.setState({ ...this.state, currentMembership: newMembership, currentPaid: 'No' })
+        let newMembership: 'S1' | 'S2' | 'FY' | 'SS' = membership;
+        if (newMembership === this.originalState.currentMembership) {
+            this.setState({ ...this.state, currentMembership: newMembership,  currentPaid: this.originalState.currentPaid, editMembership: false });
+        } else {
+            this.setState({ ...this.state, currentMembership: newMembership, currentPaid: 'No' });
+        }
     }
     onInterestedInCampChange = (interested: 'Yes' | 'No') => {
         this.setState({ ...this.state, currentInterestedInCamp: interested })

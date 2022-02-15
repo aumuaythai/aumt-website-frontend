@@ -49,7 +49,7 @@ export class About extends Component {
                         <div className="listContainer">
                             <ul>
                                 <li>
-                                    Trainings consist of up to 30 members with 5-7 trainers.
+                                    Trainings consist of up to 30 members with a few trainers.
                                     This ratio allows for lots of personal feedback from several skilled fighters, resulting in easy learning and quick improvement for members of all skill levels.
                                 </li>
                                 <li>
@@ -90,7 +90,7 @@ export class About extends Component {
                                 Though often we will have dinner and drinks, we’ll also make sure to accommodate those who prefer not to spend or drink as much.
                                 </li>
                                 <li>
-                                Past events have included a scavenger hunt in albert park (with prizes), a pub quiz, and most importantly our Muay Thai retreat that will be held in semester 2.
+                                Past events have included a scavenger hunt in Albert Park (with prizes), a Wine and Paint night, and most importantly our Annual Muay Thai retreat.
                                 </li>
                             </ul>
                         </div>
@@ -103,9 +103,9 @@ export class About extends Component {
                     <p>Check out our <Link to='/faq'>FAQ</Link> page or contact the committee at
                     <a href='mailto:uoamuaythai@gmail.com'> uoamuaythai@gmail.com </a>
                     or through
-                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtFb}>facebook</Button>
+                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtFb}>Facebook</Button>
                     or
-                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtInsta}>instagram</Button>.
+                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtInsta}>Instagram</Button>.
                     </p>
                 </div>
             </div>
