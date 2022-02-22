@@ -21,12 +21,18 @@
 }
 .personContainer {
     height: 100%;
-    width: 300px;
+    width: 250px;
     display: inline-block;
     margin: 0 auto 40px 0;
 }
+
+.headshot:hover {
+    transition-duration: 0.4s ease-in-out;
+    height: 250px;
+}
 .headshot {
-    height: 240px;
+    transition: all 0.25s ease-in-out;
+    height: 140px;
 }
 .aboutText:hover {
     opacity: 1;
@@ -56,6 +62,9 @@
     }
     .mainRow .headshot {
         height:350px;
+    }
+    .mainRow .headshot:hover {
+        height:400px;
     }
     .imgContainer {
         height: 350px;
