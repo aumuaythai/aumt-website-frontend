@@ -61,12 +61,12 @@ Pictured above: the current committee after a productive meeting.
 
                     <div className='imgRow'>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Louise.jpg" alt="Louise Miao"/>
+                            <img className='headshot' src="./photos/Committee/Louise.jpg" alt="Louise Miao"/>
                             <h3 className="name">Louise Miao</h3>
                             <p>President</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Henry.jpg" alt="Henry Gann"/>
+                            <img className='headshot' src="./photos/Committee/Henry.jpg" alt="Henry Gann"/>
                             <h3 className="name">Henry Gann</h3>
                             <p>Vice President</p>
                         </div>
@@ -74,52 +74,52 @@ Pictured above: the current committee after a productive meeting.
 
                     <div className='imgRow'>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Hazen.jpg" alt="Hazen Mahon"/>
+                            <img className='headshot' src="./photos/Committee/Hazen.jpg" alt="Hazen Mahon"/>
                             <h3 className="name">Hazen Mahon</h3>
                             <p>Secretary</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Violet.jpg" alt="Violet Liu"/>
+                            <img className='headshot' src="./photos/Committee/Violet.jpg" alt="Violet Liu"/>
                             <h3 className="name">Violet Liu</h3>
                             <p>Events Officer</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Josh.jpg" alt="Joshua Anto"/>
+                            <img className='headshot' src="./photos/Committee/Josh.jpg" alt="Joshua Anto"/>
                             <h3 className="name">Joshua Anto</h3>
                             <p>Events Officer</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Jasim.jpg" alt="Jasim Janah"/>
+                            <img className='headshot' src="./photos/Committee/Jasim.jpg" alt="Jasim Janah"/>
                             <h3 className="name">Jasim Janah</h3>
                             <p>Treasurer</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/David.jpg" alt="David Lun"/>
+                            <img className='headshot' src="./photos/Committee/David.jpg" alt="David Lun"/>
                             <h3 className="name">David Lun</h3>
                             <p>Treasurer</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Jeremie.jpg" alt="Jeremie Lee"/>
+                            <img className='headshot' src="./photos/Committee/Jeremie.jpg" alt="Jeremie Lee"/>
                             <h3 className="name">Jeremie Lee</h3>
                             <p>Public Relations</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Ted.jpg" alt="Ted Wu"/>
+                            <img className='headshot' src="./photos/Committee/Ted.jpg" alt="Ted Wu"/>
                             <h3 className="name">Ted Wu</h3>
                             <p>Public Relations</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Chalu.jpg" alt="Chalu Jugo"/>
+                            <img className='headshot' src="./photos/Committee/Chalu.jpg" alt="Chalu Jugo"/>
                             <h3 className="name">Chalu Jugo</h3>
                             <p>Marketing</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Ryan.jpg" alt="Romulo Buenafe"/>
+                            <img className='headshot' src="./photos/Committee/Ryan.jpg" alt="Romulo Buenafe"/>
                             <h3 className='name'>Romulo Buenafe</h3>
                             <p>Web Dev</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Matthew.jpg" alt="Matthew Ouyang"/>
+                            <img className='headshot' src="./photos/Committee/Matthew.jpg" alt="Matthew Ouyang"/>
                             <h3 className='name'>Matthew Ouyang</h3>
                             <p>Web Dev</p>
                         </div>
@@ -131,7 +131,7 @@ Pictured above: the current committee after a productive meeting.
                 <h1>Trainers</h1>
                     <div className='imgRow'>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/committee/Victor.jpg" alt="Victor Ng"/>
+                            <img className='headshot' src="./photos/Committee/Victor.jpg" alt="Victor Ng"/>
                             <h3 className='name'>Victor Ng</h3>
                             <p>Head Trainer</p>
                         </div>
