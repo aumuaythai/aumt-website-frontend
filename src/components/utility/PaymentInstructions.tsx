@@ -51,6 +51,7 @@ export default class PaymentInstructions extends Component<
                         ? ` $${this.props.clubConfig?.summerSchoolFee} for summer school `
                         : ""}
                     and should be paid with your full name as the reference to:
+                    <div style={{'textAlign': 'center'}}>
                     {" " + this.props.clubConfig?.bankAccountNumber}
                     <Button
                         type="link"
@@ -62,6 +63,10 @@ export default class PaymentInstructions extends Component<
                     >
                         Copy Account Number
                     </Button>
+                    </div>
+                    
+                    NOTE: It may take some time for our treasurer to process your payment. Do not worry if 
+                    your payment status does not immediate take effect. If you have any questions, please contact us.
                 </p>
                 ) : null}
 
