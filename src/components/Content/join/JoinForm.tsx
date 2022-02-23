@@ -492,13 +492,13 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                         <h3 className="formSectionHeader">Camp Interest</h3>
                         <p>
                             Every year AUMT hosts its legendary camp: a few days
-                            training and hanging out with fellow members at a
-                            remote location TBD
+                            training and hanging out with fellow members. This will be held at
+                            Omori lodge, 22nd to 25th April.
                         </p>
                         <Form.Item
                             name="interestedInCamp"
                             rules={[{ required: true }]}
-                            label="Would you be interested in an AUMT camp?"
+                            label="Would you be interested in the AUMT camp?"
                         >
                             <Radio.Group
                                 buttonStyle="solid"
