@@ -278,7 +278,7 @@ export class Account extends Component<AccountProps, AccountState> {
                                 Save
                             </Button>}
                         </> : 
-                        <Button onClick={e => this.editMembershipChange(true)}>
+                        <Button type="primary" onClick={e => this.editMembershipChange(true)}>
                             Edit
                         </Button>}
                     </div>
@@ -337,7 +337,7 @@ export class Account extends Component<AccountProps, AccountState> {
                                 Save
                             </Button>}
                         </> : 
-                        <Button onClick={e => this.editPersonalChange(true)}>
+                        <Button type="primary" onClick={e => this.editPersonalChange(true)}>
                             Edit
                         </Button>}
                     </div>
@@ -372,7 +372,7 @@ export class Account extends Component<AccountProps, AccountState> {
                                 Save
                             </Button>}
                         </> : 
-                        <Button onClick={e => this.editUniversityChange(true)}>
+                        <Button type="primary" onClick={e => this.editUniversityChange(true)}>
                             Edit
                         </Button>}
                     </div>
@@ -410,7 +410,7 @@ export class Account extends Component<AccountProps, AccountState> {
                                 Save
                             </Button>}
                         </> : 
-                        <Button onClick={e => this.editECChange(true)}>
+                        <Button type="primary" onClick={e => this.editECChange(true)}>
                             Edit
                         </Button>}
                     </div>

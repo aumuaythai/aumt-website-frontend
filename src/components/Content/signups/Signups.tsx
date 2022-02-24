@@ -133,6 +133,14 @@ class Signups extends Component<SignupProps, SignupState> {
                                             openToPublic={form.openToPublic}/>
                                     </div>
                                 );
+                            } else if (this.props.authedUser 
+                                && ((this.props.authedUser.membership === 'FY' && form.semester === 'SS') || (this.props.authedUser.membership !== 'FY' && this.props.authedUser.membership !== form.semester))) {
+                                return (
+                                    <div key={form.trainingId} className='signupsNotPaidContainer'>
+                                        <h2>{form.title}</h2>
+                                        <p>Your membership is out of date, please update it by going to the <Link to="/account">My Account</Link> tab.</p>
+                                    </div>
+                                );
                             } else {
                                 return (
                                     <div key={form.trainingId} className='signupsNotPaidContainer'>
