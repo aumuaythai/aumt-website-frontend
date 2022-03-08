@@ -4,9 +4,9 @@ AUMT aims to introduce the UoA community to the art of Muay Thai. Run by a passi
 Our website serves as a membership registration, signups and membership managment tool all in one. We are committed to staying up to date with the latest web technologies to provide the best experience to our members. 
 
 # Key Features
-- Membership registration
-- Weekly training and event signups
-- Plenty of admin features for managing users
+- Membership registration.
+- Weekly training and event signups.
+- Plenty of admin features for managing users.
 
 # Technologies
 - [Reactjs](https://reactjs.org/) with typescript
