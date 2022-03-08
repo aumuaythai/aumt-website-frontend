@@ -1,7 +1,7 @@
 # AUMT website
 AUMT aims to introduce the UoA community to the art of Muay Thai. Run by a passionate group of Muay Thai enthusiasts, we organise sessions where members can learn more about the sport and pick up some self-defence skills in a safe, supportive environment. 
 
-Our website serves as a membership registration, signups and membership managment tool all in one. We are committed to staying up to date with the latest web technologies to provide the best experience to our members. 
+Our website serves as a membership registration, signups and membership managment tool all in one. We are committed to staying up to date with the latest web technologies to provide the best experience to our members.
 
 # Key Features
 - Membership registration.
