@@ -9,10 +9,10 @@ Our website serves as a membership registration, signups and membership managmen
 - Plenty of admin features for managing users.
 
 # Technologies
-- [Reactjs](https://reactjs.org/) with typescript
-- [Ant design](https://ant.design/) UI framework
-- [Recharts](https://recharts.org/) graph library
-- [Firebase](https://firebase.google.com/) database and hosting
+- [Reactjs](https://reactjs.org/) with typescript.
+- [Ant design](https://ant.design/) UI framework.
+- [Recharts](https://recharts.org/) graph library.
+- [Firebase](https://firebase.google.com/) database and hosting.
 
 # Contributors
 Thank you to all the [developers](https://github.com/aumuaythai/aumt-website-frontend/graphs/contributors) that continue making the AUMT website great. Special thanks especially to [Alex](https://github.com/alkerway) for starting it all.
