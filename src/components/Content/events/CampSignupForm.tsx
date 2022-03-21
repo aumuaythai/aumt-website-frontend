@@ -26,11 +26,8 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
             currentStay: ''
         }
     }
+    
     onSubmit = (vals: any) => {
-        const daysStaying = vals.daysStaying === 'Other' ? this.state.currentStay : vals.daysStaying
-        if (!daysStaying) {
-            return notification.error({message: 'Please specify your planned length of stay'})
-        }
         const submitObj: AumtCampSignupData = {
             name: vals.name || '',
             email: vals.email || '',
@@ -41,7 +38,7 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
             dietaryRequirements: vals.dietaryRequirements || '',
             medicalInfo: vals.medicalInfo || '',
             hasFirstAid: vals.hasFirstAid || false,
-            daysStaying: daysStaying,
+            daysStaying: "full",
             driverLicenseClass: vals.license || '',
             insuranceDescription: vals.insuranceDescription || '',
             carModel: vals.carModel || '',
@@ -49,12 +46,7 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
         }
         this.props.onSubmit(submitObj)
     }
-    onLengthStayChange = (stay: string) => {
-        this.setState({
-            ...this.state,
-            currentStay: stay
-        })
-    }
+
     render() {
         return (
             <div className='campSignupFormContainer'>
@@ -98,16 +90,7 @@ export class CampSignupForm extends Component<CampSignupFormProps, CampSignupFor
                                     <Radio.Button value={false}>No</Radio.Button>
                                 </Radio.Group>
                             </Form.Item>
-                            <Form.Item label='Planned Length of Stay' name='daysStaying' rules={[{required: true, message: 'Length of Stay Required'}]}>
-                                <Radio.Group name='lengthOfStayRadio'>
-                                    <Radio value="4 days (27th-30th)">4 days (27th-30th)</Radio>
-                                    <Radio value="3 days (27th-29th)">3 days (27th-29th)</Radio>
-                                    <Radio value="3 days (28th-30th)">3 days (28th-30th)</Radio>
-                                    <Radio value="Other">Other
-                                        <Input onChange={e => this.onLengthStayChange(e.target.value)} placeholder='Please specify' style={{width: 150}}/>
-                                    </Radio>
-                                </Radio.Group>
-                            </Form.Item>
+                            
                             <h4 className='eventSignupFormSectionHead'>Driving (optional)</h4>
                             <p>If selected as a driver, you won't need to pay for fuel - we will reimburse any fuel costs.</p>
                             <Form.Item name='license' label='License Class'>
