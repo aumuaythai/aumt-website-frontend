@@ -237,8 +237,8 @@ export class Event extends Component<EventProps, EventState> {
                                 (!this.props.authedUser && !this.props.event.signups.openToNonMembers) ? 
                                 <div>
                                     <p>You must <Link to={`/login?from=/events/${this.props.event.urlPath}`}> log in </Link> to reserve your place.</p>
-                                    <h4>Not a member?</h4>
-                                    <p>Message the AUMT committee, they can save you a spot!</p>
+                                    <h4>Don't have an account?</h4>
+                                    <p>Please create a free <Link to={`/join`}>account</Link> with us. Once you do you can signup to this event.</p>
                                 </div>
                                 :
                                 this.props.event.signups.limit && (this.props.event.signups.limit <= Object.keys(this.props.event.signups.members).length) ?
