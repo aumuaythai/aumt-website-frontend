@@ -306,7 +306,7 @@ export class Account extends Component<AccountProps, AccountState> {
                                 <Radio.Button value="FY">Full Year</Radio.Button>
                                 <Radio.Button value="S1">Semester 1</Radio.Button>
                             </> : null}
-                            {this.props.clubSignupSem === 'S2' ? 
+                            {this.props.clubSignupSem === 'S2' && !(this.state.currentMembership === 'FY' && this.state.currentPaid === 'Yes') ? 
                             <Radio.Button value="S2">Semester 2</Radio.Button> : null}
                         </Radio.Group>
                     </List.Item>
