@@ -65,7 +65,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
     private onSubmit = (values: any) => {
         const {
             UoaStudent: isUoAStudent,
-            interestedInCamp,
+            interestedInCamp = "No",
             ReturningMember: isReturningMember,
             FirstName: firstName,
             LastName: lastName,
@@ -489,7 +489,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                             </Radio.Group>
                         </Form.Item>
 
-                        <h3 className="formSectionHeader">Camp Interest</h3>
+                        {/* <h3 className="formSectionHeader">Camp Interest</h3>
                         <p>
                             Every year AUMT hosts its legendary camp: a few days
                             training and hanging out with fellow members. This will be held at
@@ -507,7 +507,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                                 <Radio.Button value={"Yes"}>Yes</Radio.Button>
                                 <Radio.Button value={"No"}>No</Radio.Button>
                             </Radio.Group>
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <h3 className="formSectionHeader">Membership Payment</h3>
                         <Form.Item
