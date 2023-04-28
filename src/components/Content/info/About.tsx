@@ -101,9 +101,9 @@ export class About extends Component {
                     <h3 className='aboutSectionHead'>Want to know more?</h3>
                     <p>Check out our <Link to='/faq'>FAQ</Link> page or contact the committee at
                     <a href='mailto:uoamuaythai@gmail.com'> uoamuaythai@gmail.com </a>
-                    or through
-                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtFb}>Facebook</Button>
-                    or
+                    or through&nbsp;
+                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtFb}>Facebook </Button>
+                    &nbsp;or&nbsp;
                     <Button className='aboutInlineLink' type='link' onClick={Links.openAumtInsta}>Instagram</Button>.
                     </p>
                 </div>

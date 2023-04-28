@@ -26,7 +26,7 @@ export class Faq extends Component {
                         Advanced is at 5:30pm on Thursdays.  
                     </p>
                     <p>
-                        Trainings are located at  <span className='socialLink' onClick={this.mapClick}>492 Queen Street</span>
+                        Trainings are located at&nbsp;<span className='socialLink' onClick={this.mapClick}>492 Queen Street</span>
 
                     </p>
                     <iframe title="Training Location" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d633.4536252469256!2d174.76206034919215!3d-36.856698459636775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d0d47bb9877fca5%3A0x70e64b98b3aeed38!2sThe%20Hawks&#39;%20Nest%20Gym!5e0!3m2!1sen!2snz!4v1644916967606!5m2!1sen!2snz" loading="lazy" />
@@ -76,9 +76,10 @@ export class Faq extends Component {
                         A: The committee members will be more than happy to answer if you approach them at trainings or events or email them at
                         <a href='mailto:uoamuaythai@gmail.com'> uoamuaythai@gmail.com, </a>
                         otherwise you can message our&nbsp;
-                        <span className='socialLink' onClick={this.fbClick}>facebook</span>
+                        <span className='socialLink' onClick={this.fbClick}>Facebook</span>
                         &nbsp;or&nbsp;
-                        <span className='socialLink' onClick={this.igClick}>instagram page.</span>
+                        <span className='socialLink' onClick={this.igClick}>Instagram</span>
+                        &nbsp;page
                     </p>
                     <Divider/>
                 </div>
