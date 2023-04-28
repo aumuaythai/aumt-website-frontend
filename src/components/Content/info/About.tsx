@@ -12,7 +12,7 @@ export class About extends Component {
                     Welcome to Auckland University Muay Thai
                 </h1>
                 <div className="groupHeaderContainer">
-                    <img src="./photos/content/group1.jpg" alt="group" className='absoluteResponsiveImg'/>
+                    <img src="./photos/content/group2.jpg" alt="group" className='absoluteResponsiveImg'/>
                 </div>
                 <div className="introContainer">
                     <h3 className='aboutSectionHead'>AUMT aims to introduce the UoA community to the art of Muay Thai.</h3>
@@ -58,8 +58,7 @@ export class About extends Component {
                                     while also allowing for fitness and fun for those who aren’t as interested in sparring.
                                 </li>
                                 <li>
-                                    Trainings are held on Thursdays and Fridays to try and best accommodate everyone's schedules.
-                                    Each day has an hour slot for beginner and advanced so members can sign up for whenever suits.
+                                    Trainings are held on Wednesdays, Thursdays and Fridays to try and best accommodate everyone's schedules.
                                 </li>
                             </ul>
                         </div>
@@ -102,9 +101,9 @@ export class About extends Component {
                     <h3 className='aboutSectionHead'>Want to know more?</h3>
                     <p>Check out our <Link to='/faq'>FAQ</Link> page or contact the committee at
                     <a href='mailto:uoamuaythai@gmail.com'> uoamuaythai@gmail.com </a>
-                    or through
-                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtFb}>Facebook</Button>
-                    or
+                    or through&nbsp;
+                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtFb}>Facebook </Button>
+                    &nbsp;or&nbsp;
                     <Button className='aboutInlineLink' type='link' onClick={Links.openAumtInsta}>Instagram</Button>.
                     </p>
                 </div>

@@ -1,13 +1,15 @@
 .introContainer {
-    text-align:left;
+    text-align: left;
     padding: 40px;
     max-width: 850px;
     margin: 0 auto;
 }
+
 .introTitle {
     font-size: 4vw;
     font-weight: bolder;
 }
+
 .groupHeaderContainer {
     width: 100%;
     position: relative;
@@ -15,6 +17,7 @@
     /* (height / width * 100%) */
     padding-top: calc(1843 / 4450 * 100%);
 }
+
 .absoluteResponsiveImg {
     width: 100%;
     position: absolute;
@@ -22,35 +25,44 @@
     left: 0;
     height: auto;
 }
+
 .aboutRightImageContainer {
     float: right;
     width: 50%;
 }
+
 .clearBoth {
     clear: both;
 }
+
 .introStr {
     font-size: 1.5vw;
 }
+
 .aboutSectionHead {
     font-size: 25px;
 }
+
 .listContainer {
     font-size: 1vw;
 }
+
 .aboutDescription {
     width: 30%;
     float: right;
     text-align: left;
     padding: 0 40px;
 }
+
 .aboutDescriptionImg {
     width: 70%;
     float: right;
 }
+
 .aboutDescriptionImgElement {
     width: 100%;
 }
+
 .whatIsMuayThaiPhotoWrapper {
     width: 100%;
     position: relative;
@@ -58,6 +70,7 @@
     /* (height / width * 100%) */
     padding-top: calc(350.19 / 913.5 * 100%);
 }
+
 .aboutTrainingsPhotoWrapper {
     width: 100%;
     position: relative;
@@ -65,6 +78,7 @@
     /* (height / width * 100%) */
     padding-top: calc(2 / 3 * 100%);
 }
+
 .eventsPhotoWrapper {
     width: 100%;
     position: relative;
@@ -72,20 +86,26 @@
     /* (height / width * 100%) */
     padding-top: calc(509 / 1000 * 100%);
 }
+
 .aboutDivider {
     margin: 40px 0;
 }
+
 .aboutDescriptionRow {
     padding: 40px 0;
 }
+
 .floatLeft {
     float: left;
 }
+
 .aboutFooterNotes {
     padding: 40px;
 }
+
 .aboutInlineLink {
-    padding: 0 3px;
+    padding: 0;
+    margin: 0;
 }
 
 @media(max-width: 1217px) {
@@ -93,29 +113,36 @@
         width: 100%;
         float: none
     }
+
     .aboutDescription {
         float: none;
-        text-align:left;
+        text-align: left;
         padding: 40px;
         width: unset;
         max-width: 750px;
         margin: 30px auto;
     }
+
     .introStr {
         font-size: 16px;
     }
+
     .introTitle {
         font-size: 25px;
     }
+
     .aboutDivider {
         display: none;
     }
+
     .listContainer {
         font-size: 16px;
     }
+
     .aboutDescriptionRow {
         padding: 20px 0;
     }
+
     .aboutFooterNotes {
         text-align: left;
     }
