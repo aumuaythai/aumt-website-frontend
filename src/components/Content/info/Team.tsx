@@ -118,7 +118,7 @@ Pictured above: the current committee after a productive meeting.
                             <p>Events</p>
                         </div>
                         <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Grant.jpg" alt="Grant Liu"/>
+                            <img className='headshot' src="./photos/Committee/grant.jpg" alt="Grant Liu"/>
                             <h3 className='name'>Grant Liu</h3>
                             <p>Web Dev</p>
                         </div>
