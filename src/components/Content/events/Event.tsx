@@ -35,7 +35,7 @@ interface EventState {
 export class Event extends Component<EventProps, EventState> {
     constructor(props: EventProps) {
         super(props)
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const dateString = this.props.event.date.toLocaleDateString(undefined, options)
         const isAm = this.props.event.date.getHours() <= 12
         const displayTime = `${this.props.event.date.getHours() % 12}:${('0' + String(this.props.event.date.getMinutes())).slice(-2)} ${isAm ? 'AM' : 'PM'}`

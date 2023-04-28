@@ -23,7 +23,7 @@ class EventsList extends Component<EventListProps, EventListState> {
         }
         return (<div className='eventsListContainer'>
             {this.props.events.map((event) => {
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 const dateString = event.date.toLocaleDateString(undefined, options)
                 return (
                     <div className='eventPreviewContainer' key={event.id} onClick={e => this.onEventClick(event.urlPath)}>
@@ -35,9 +35,9 @@ class EventsList extends Component<EventListProps, EventListState> {
                         </div>
                         <Divider></Divider>
                         <div className='eventPreviewBody'>
-                            <p className="eventPreviewDescription">
+                            <div className="eventPreviewDescription">
                                 <RenderMarkdown source={event.description}></RenderMarkdown>
-                            </p>
+                            </div>
                         </div>
                     </div>
                 )

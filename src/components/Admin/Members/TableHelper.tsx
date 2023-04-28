@@ -174,7 +174,8 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                 header: true,
                 complete: (papaData) => {
                     const {data, errors} = papaData
-                    const members: Record<string, AumtMember> = data.reduce((memberObj: Record<string, AumtMember>, line: any, idx) => {
+                    const initialObj: Record<string, AumtMember> = {}
+                    const members: Record<string, AumtMember> = data.reduce<Record<string, AumtMember>>((memberObj: Record<string, AumtMember>, line: any, idx) => {
                         const error = errors.find(e => e.row === idx)
                         if (error) {
                             errorsFound.push(`ERROR - Removed member ${idx + 1} - ${error.message}`)
@@ -191,7 +192,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
                         }
                         memberObj[line.key] = aumtMember
                         return memberObj
-                    }, {})
+                    }, initialObj)
                     return resolve({
                         members,
                         errors: errorsFound,

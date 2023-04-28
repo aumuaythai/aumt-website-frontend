@@ -36,3 +36,5 @@ guides/*.pdf
 
 # vscode
 .vscode/
+
+serviceAccountKey.json
