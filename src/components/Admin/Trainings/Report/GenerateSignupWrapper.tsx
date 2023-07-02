@@ -60,7 +60,7 @@ class GenerateSignupWrapper extends Component<GenerateSignupWrapperProps, Genera
                         <Button className='downloadSignup' type='primary' shape='round' onClick={this.onDownloadClick}>Download</Button>
                     </div>
                 }>
-                    <Button type='link'>Generate Signup Sheet</Button>
+                    <Button type='primary'>Generate Signup Sheet</Button>
                 </Popover>
     )}
 }

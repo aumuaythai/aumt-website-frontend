@@ -10,22 +10,53 @@ import dataUtil from './data.util'
 
 
 class PdfUtil {
-    public createSignupPdf = (trainings: AumtWeeklyTraining, selected: string[]) => {
-        // const doc = createPdf(this.getTrainingDocDefinition(trainings) as TDocumentDefinition, null, {
-        //     Roboto: {
-        //       normal: 'Roboto-Regular.ttf',
-        //       bold: 'Roboto-Medium.ttf',
-        //       italics: 'Roboto-Italic.ttf',
-        //       bolditalics: 'Roboto-MediumItalic.ttf'
-        //     },
-        //     Courier: {
-        //       normal: 'Courier',
-        //       bold: 'Courier-Bold',
-        //       italics: 'Courier-Oblique',
-        //       bolditalics: 'Courier-BoldOblique'
-        //     },
-        //   }, vfsFonts.pdfMake.vfs)
-        // doc.download('aumt_training_report.pdf')
+    public createSignupPdf = (training: AumtWeeklyTraining, selected: string[]) => {
+        const doc = createPdf(this.getSignupDocDefinition(training, selected) as TDocumentDefinition, null, {
+            Roboto: {
+                normal: 'Roboto-Regular.ttf',
+                bold: 'Roboto-Medium.ttf',
+                italics: 'Roboto-Italic.ttf',
+                bolditalics: 'Roboto-MediumItalic.ttf'
+            },
+            Courier: {
+                normal: 'Courier',
+                bold: 'Courier-Bold',
+                italics: 'Courier-Oblique',
+                bolditalics: 'Courier-BoldOblique'
+            },
+        }, vfsFonts.pdfMake.vfs)
+        doc.download('signup.pdf')
+    }
+
+    private getSignupDocDefinition = (training: AumtWeeklyTraining, selected: string[]) => {
+        const content = []
+        Object.values(training.sessions).filter(session => selected.includes(session.sessionId)).sort((a, b) => a.position - b.position).forEach((session) => {
+            content.push({ text: session.title, style: 'subHeader', alignment: 'left' })
+            const body = []
+            Object.values(session.members).forEach((member) => {
+                body.push([
+                    { text: member.name, style: 'tableText' },
+                    { text: '', style: 'tableText' }
+                ])
+            })
+            const widths = ['auto', 20]
+            content.push({
+                table: {
+                    widths,
+                    body
+                },
+            } as any)
+        })
+        const docDefinition = {
+            content,
+            styles: {
+                subHeader: { fontSize: 20, bold: false, margin: [0, 10, 0, 10] },
+                tableHeader: { fontSize: 12, bold: true },
+                tableText: { fontSize: 8, margin: [0, 2, 0, 2] },
+                sessionInfoLine: { margin: [0, 7, 0, 7] }
+            },
+        }
+        return docDefinition
     }
 
     public createTrainingPdf = (trainings: AumtWeeklyTraining[]) => {
