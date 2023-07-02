@@ -2,3 +2,8 @@
     text-align: center;
     width: 150px;
 }
+
+.ant-checkbox-group {
+    display: flex;
+    flex-direction: column;
+}

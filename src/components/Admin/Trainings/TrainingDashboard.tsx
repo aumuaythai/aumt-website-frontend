@@ -12,6 +12,7 @@ import GenerateReportWrapper from './Report/GenerateReportWrapper'
 import db from '../../../services/db'
 import AdminStore from '../AdminStore'
 import dataUtil from '../../../services/data.util'
+import GenerateSignupWrapper from './Report/GenerateSignupWrapper'
 
 
 interface TrainingDashboardProps {
@@ -169,7 +170,8 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                                 this.state.currentForm.title.slice(0,37) + '...' :
                                 this.state.currentForm.title)
                             : ''} <DownOutlined /></Button>
-                        </Dropdown>
+                        </Dropdown> 
+                        {this.state.currentForm ?<GenerateSignupWrapper form={this.state.currentForm}></GenerateSignupWrapper> : <></>}
                         <GenerateReportWrapper forms={this.state.allForms}></GenerateReportWrapper>
                         <div className="clearBoth"></div>
                     </div>

@@ -45,7 +45,10 @@ class GenerateReportWrapper extends Component<GenerateReportWrapperProps, Genera
                     }>
                     <GenerateReportLazyWrapper forms={this.props.forms}></GenerateReportLazyWrapper>
                 </Suspense>
-                : <Button className='exportAllButton' type='link' onClick={this.onGenerateClick}>Generate Report</Button>
+                : 
+                <>
+                    <Button className='exportAllButton' type='link' onClick={this.onGenerateClick}>Generate Report</Button>
+                </>
     }
 }
 

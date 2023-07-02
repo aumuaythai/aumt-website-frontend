@@ -17,7 +17,7 @@ class GenerateReport extends Component<GenerateReportProps, GenerateReportState>
     }
     render() {
         return (
-            <Button className='exportAllButton' type='link' onClick={this.onExportClick}>Download Report</Button>
+                <Button className='exportAllButton' type='link' onClick={this.onExportClick}>Download Report</Button>
         )
     }
 }
