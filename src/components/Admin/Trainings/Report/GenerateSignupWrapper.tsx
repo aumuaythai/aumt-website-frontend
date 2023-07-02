@@ -1,10 +1,9 @@
-import React, {Component} from 'react'
+import React, {Component,lazy, Suspense} from 'react'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
-import {Button, Checkbox, Popover } from 'antd'
+import {Button, Checkbox, Popover, Spin} from 'antd'
 import './GenerateReportWrapper.css'
 import { AumtWeeklyTraining } from '../../../../types'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import pdfUtil from '../../../../services/pdf.util'
 
 
 interface GenerateSignupWrapperProps extends RouteComponentProps {
@@ -18,7 +17,11 @@ interface GenerateSignupWrapperState {
 
 // This class exists because the pdfmake bundle is huge.
 // It is loaded lazily only when needed, via code splitting
-
+const GenerateSignupLazyWrapper = (
+    lazy(() => (
+      import('./GenerateSignup' /* webpackChunkName: "report-wrapper" */)
+    ))
+  )
 
 class GenerateSignupWrapper extends Component<GenerateSignupWrapperProps, GenerateSignupWrapperState> {
     constructor(props: GenerateSignupWrapperProps) {
@@ -30,9 +33,18 @@ class GenerateSignupWrapper extends Component<GenerateSignupWrapperProps, Genera
         console.log('props', this.props)
     }
 
-    onDownloadClick = () => {
-        pdfUtil.createSignupPdf(this.props.form,this.state.checkedList as string[])
+    
+
+    onGenerateClick = () => {
+        if (this.state.checkedList.length === 0) {
+            return
+        }
+        this.setState({
+            ...this.state,
+            showDownloadSignup: true
+        })
     }
+    
 
     onChange = (checkedValues: CheckboxValueType[]) => {
         console.log('checked = ', checkedValues);
@@ -43,6 +55,7 @@ class GenerateSignupWrapper extends Component<GenerateSignupWrapperProps, Genera
     };
     
     render() {
+        
         return(
                 <Popover placement = "leftTop" trigger='click' content={
                     <div>
@@ -57,7 +70,20 @@ class GenerateSignupWrapper extends Component<GenerateSignupWrapperProps, Genera
                                     return x})}
                             onChange={this.onChange}
                         />
-                        <Button className='downloadSignup' type='primary' shape='round' onClick={this.onDownloadClick}>Download</Button>
+                    <div>
+                        {this.state.showDownloadSignup ?
+                            <Suspense fallback={
+                                <div className='generateReportWrapperSuspense'>
+                                    <Spin className='reportWrapperLoadingSpin'/>
+                                </div>
+                                }>
+                                <GenerateSignupLazyWrapper form={this.props.form} checkedList={this.state.checkedList as string[]}></GenerateSignupLazyWrapper>
+                            </Suspense>
+                            : 
+                            <Button className='downloadSignup' type='primary' shape='round' onClick={this.onGenerateClick}>Generate Signups</Button>
+                        }
+                    </div>
+                    
                     </div>
                 }>
                     <Button type='primary'>Generate Signup Sheet</Button>

@@ -172,7 +172,6 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                             : ''} <DownOutlined /></Button>
                         </Dropdown> 
                         {this.state.currentForm ?<GenerateSignupWrapper form={this.state.currentForm}></GenerateSignupWrapper> : <></>}
-                        <GenerateReportWrapper forms={this.state.allForms}></GenerateReportWrapper>
                         <div className="clearBoth"></div>
                     </div>
                 <div className="trainingDashboardContentContainer">
@@ -203,6 +202,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                             }>
                                 <Button type='link'>Download...</Button>
                             </Popover>
+                            <GenerateReportWrapper forms={this.state.allForms}></GenerateReportWrapper>
                         </h2>
                         <div className="manageTrainingsComponentWrapper">
                             <ManageTrainings

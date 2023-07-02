@@ -18,7 +18,7 @@ class GenerateSignup extends Component<GenerateSignupProps, GenerateSignupState>
     }
     render() {
         return (
-                <Button className='exportAllButton' type='link' onClick={this.onExportClick}>Download Signup</Button>
+                <Button className='downloadSignup' type='primary' shape='round' onClick={this.onExportClick}>Download Signups</Button>
         )
     }
 }
