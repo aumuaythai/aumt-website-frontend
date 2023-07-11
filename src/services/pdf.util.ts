@@ -11,6 +11,7 @@ import dataUtil from './data.util'
 
 class PdfUtil {
     public createSignupPdf = (training: AumtWeeklyTraining, selected: string[]) => {
+
         const doc = createPdf(this.getSignupDocDefinition(training, selected) as TDocumentDefinition, null, {
             Roboto: {
                 normal: 'Roboto-Regular.ttf',
@@ -25,39 +26,69 @@ class PdfUtil {
                 bolditalics: 'Courier-BoldOblique'
             },
         }, vfsFonts.pdfMake.vfs)
-        doc.download('signup.pdf')
+        const docName = `${training.title.replace(/ /g, '_')}_signups.pdf`
+        doc.download(docName)
     }
 
     private getSignupDocDefinition = (training: AumtWeeklyTraining, selected: string[]) => {
-        const content = []
+        const content = [];
+        content.push({ text: training.title, style: 'header', alignment: 'center' });
         Object.values(training.sessions).filter(session => selected.includes(session.sessionId)).sort((a, b) => a.position - b.position).forEach((session) => {
-            content.push({ text: session.title, style: 'subHeader', alignment: 'left' })
-            const body = []
-            Object.values(session.members).forEach((member) => {
-                body.push([
-                    { text: member.name, style: 'tableText' },
-                    { text: '', style: 'tableText' }
-                ])
-            })
-            const widths = ['auto', 20]
+            content.push({ text: session.title, style: 'subHeader', alignment: 'left' });
+            const body = [];
+            const members = Object.values(session.members);
+            const columnCount = members.length > 15 ? 2 : 1; // Determine the number of columns based on the member count
+
+            const columnWidths = [];
+            for (let i = 0; i < columnCount; i++) {
+                columnWidths.push('auto', 40);
+            }
+
+            for (let i = 0; i < members.length; i += columnCount) {
+                const row = [];
+                for (let j = i; j < i + columnCount; j++) {
+                    const member = members[j];
+                    if (member) {
+                        row.push(
+                            { text: member.name, style: 'tableText' },
+                            { text: '', style: 'tableText' }
+                        );
+                    } else {
+                        row.push(
+                            { text: '', style: 'tableText' },
+                            { text: '', style: 'tableText' }
+                        );
+                    }
+                }
+
+                body.push(row);
+            }
+
             content.push({
                 table: {
-                    widths,
-                    body
+                    widths: columnWidths,
+                    body,
                 },
-            } as any)
-        })
+            } as any);
+        });
+
         const docDefinition = {
             content,
             styles: {
-                subHeader: { fontSize: 20, bold: false, margin: [0, 10, 0, 10] },
+                header: { fontSize: 25, bold: true, margin: [0, 5, 0, 5] },
+                subHeader: { fontSize: 20, bold: false, margin: [0, 5, 0, 5] },
                 tableHeader: { fontSize: 12, bold: true },
-                tableText: { fontSize: 8, margin: [0, 2, 0, 2] },
+                tableText: { fontSize: 11, margin: [0, 2, 0, 2] },
                 sessionInfoLine: { margin: [0, 7, 0, 7] }
             },
-        }
-        return docDefinition
-    }
+        };
+        return docDefinition;
+    };
+
+
+
+
+
 
     public createTrainingPdf = (trainings: AumtWeeklyTraining[]) => {
         const doc = createPdf(this.getTrainingDocDefinition(trainings) as TDocumentDefinition, null, {

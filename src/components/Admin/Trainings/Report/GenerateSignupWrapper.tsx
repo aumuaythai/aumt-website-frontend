@@ -30,7 +30,6 @@ class GenerateSignupWrapper extends Component<GenerateSignupWrapperProps, Genera
             showDownloadSignup: false,
             checkedList: []
         }
-        console.log('props', this.props)
     }
 
     
@@ -47,7 +46,6 @@ class GenerateSignupWrapper extends Component<GenerateSignupWrapperProps, Genera
     
 
     onChange = (checkedValues: CheckboxValueType[]) => {
-        console.log('checked = ', checkedValues);
         this.setState({
             ...this.state,
             checkedList: checkedValues,
@@ -86,7 +84,7 @@ class GenerateSignupWrapper extends Component<GenerateSignupWrapperProps, Genera
                     
                     </div>
                 }>
-                    <Button type='primary'>Generate Signup Sheet</Button>
+                    <Button type='primary'>Generate Signup Sheet &gt; </Button>
                 </Popover>
     )}
 }
