@@ -32,7 +32,7 @@ interface CreateTrainingState {
 const DEFAULT_TRAINING_LIMIT = 30
 
 const CURRENT_YEAR = new Date().getFullYear();
-const TRAINING_0_OPENS_DATE = new Date(CURRENT_YEAR, 6, 17, 0, 0, 0)
+const TRAINING_0_OPENS_DATE = new Date(CURRENT_YEAR, 6, 16, 0, 0, 0)
 const TRAINING_0_CLOSES_DATE = new Date(CURRENT_YEAR, 6, 21, 20, 30, 0)
 
 const MILLISECONDS_DAY = 1000 * 60 * 60 * 24;

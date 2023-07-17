@@ -76,7 +76,7 @@ class PdfUtil {
             content,
             styles: {
                 header: { fontSize: 25, bold: true, margin: [0, 5, 0, 5] },
-                subHeader: { fontSize: 20, bold: false, margin: [0, 5, 0, 5] },
+                subHeader: { fontSize: 20, bold: false, margin: [0, 15, 0, 5] },
                 tableHeader: { fontSize: 12, bold: true },
                 tableText: { fontSize: 11, margin: [0, 2, 0, 2] },
                 sessionInfoLine: { margin: [0, 7, 0, 7] }
