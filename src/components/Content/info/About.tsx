@@ -58,7 +58,7 @@ export class About extends Component {
                                     while also allowing for fitness and fun for those who aren’t as interested in sparring.
                                 </li>
                                 <li>
-                                    Trainings are held on Wednesdays, Thursdays and Fridays to try and best accommodate everyone's schedules.
+                                    Trainings are held on Tuesdays, Wednesdays, Thursdays and Fridays to try and best accommodate everyone's schedules.
                                 </li>
                             </ul>
                         </div>
