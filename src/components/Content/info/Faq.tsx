@@ -20,13 +20,15 @@ export class Faq extends Component {
                 <div className="questionContainer">
                     <p className="question">Q: When and where are trainings?</p>
                     <p className="answer">
-                    A:
-                    We run beginners trainings at 4:30pm on Wednesdays and Thursdays, as well as 7:30pm on Fridays.
-                        Intermediate is at 6:30pm on Fridays.
-                        Advanced is at 5:30pm on Thursdays.  
+                    A: Training times:
+                    <ul>
+                        <li>Beginner: 4:30pm Wednesday, 4:30pm Thursday, 7:30pm Friday</li>
+                        <li>Intermediate: 4:30pm Tuesday, 6:30pm Friday</li>
+                        <li>Advanced: 5:30pm Thursday</li>
+                    </ul>
                     </p>
                     <p>
-                        Trainings are located at&nbsp;<span className='socialLink' onClick={this.mapClick}>492 Queen Street</span>
+                        Trainings are located a The Hawks Nest Gym,&nbsp;<span className='socialLink' onClick={this.mapClick}> 492 Queen Street</span>
 
                     </p>
                     <iframe title="Training Location" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d633.4536252469256!2d174.76206034919215!3d-36.856698459636775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d0d47bb9877fca5%3A0x70e64b98b3aeed38!2sThe%20Hawks&#39;%20Nest%20Gym!5e0!3m2!1sen!2snz!4v1644916967606!5m2!1sen!2snz" loading="lazy" />

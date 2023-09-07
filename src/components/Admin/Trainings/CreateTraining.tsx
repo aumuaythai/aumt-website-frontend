@@ -29,7 +29,6 @@ interface CreateTrainingState {
     paymentLock: boolean
 }
 
-const DEFAULT_TRAINING_LIMIT = 30
 
 const CURRENT_YEAR = new Date().getFullYear();
 const TRAINING_0_OPENS_DATE = new Date(CURRENT_YEAR, 6, 16, 0, 0, 0)
@@ -83,11 +82,12 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         const title = `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrMon}-${dateStrFri}`;
 
         const sessions = [
-            this.createSession(`Wednesday 4:30 (Beginners)`, 0),
-            this.createSession(`Thursday 4:30 (Beginners)`, 1),
-            this.createSession(`Thursday 5:30 (Advanced)`, 2),
-            this.createSession(`Friday 6:30 (Intermediate)`, 3),
-            this.createSession(`Friday 7:30 (Beginners)`, 4),
+            this.createSession(`Tuesday 4:30 (Intermediate`, 30 ,0),
+            this.createSession(`Wednesday 4:30 (Beginners)`, 30, 1),
+            this.createSession(`Thursday 4:30 (Beginners)`, 30, 2),
+            this.createSession(`Thursday 5:30 (Advanced)`, 15, 3),
+            this.createSession(`Friday 6:30 (Intermediate)`, 15, 4),
+            this.createSession(`Friday 7:30 (Beginners)`, 30, 5),
         ]
 
         this.setState({
@@ -223,9 +223,9 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         })
 
     }
-    createSession = (sessionTitle: string, position: number) => {
+    createSession = (sessionTitle: string, limit: number,position: number) => {
         const newSession: AumtTrainingSession = {
-            limit: DEFAULT_TRAINING_LIMIT,
+            limit: limit,
             sessionId: this.generateSessionId(10),
             title: sessionTitle,
             position,
@@ -236,7 +236,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         return newSession
     }
     onAddSessionClick = () => {
-        const newSession = this.createSession('', this.state.currentSessions.length)
+        const newSession = this.createSession('', 30,this.state.currentSessions.length)
 
         this.setState({
             ...this.state,
