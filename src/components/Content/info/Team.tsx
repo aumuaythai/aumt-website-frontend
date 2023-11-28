@@ -57,85 +57,12 @@ Pictured above: the current committee after a productive meeting.
                     </div>
                 <Divider/> */}
                 <div className="teamGroup">
-                    <h1>AUMT Committee 2023</h1>
+                    <h1>AUMT Committee</h1>
 
                     <div className='imgRow'>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Ted.jpg" alt="Ted Wu"/>
-                            <h3 className="name">Ted Wu</h3>
-                            <p>President</p>
-                        </div>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/David.jpg" alt="David Lun"/>
-                            <h3 className="name">David Lun</h3>
-                            <p>Vice President</p>
-                        </div>
-                    </div>
-
-                    <div className='imgRow'>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Hazen.jpg" alt="Hazen Mahon"/>
-                            <h3 className="name">Hazen Mahon</h3>
-                            <p>Secretary</p>
-                        </div>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Margaret.jpg" alt="Margaret Chen"/>
-                            <h3 className="name">Margaret Chen</h3>
-                            <p>Secretary</p>
-                        </div>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Thamaru.jpg" alt="Thamaru Alagiyawanna"/>
-                            <h3 className="name">Thamaru Alagiyawanna</h3>
-                            <p>Treasurer</p>
-                        </div>
-                    </div>
-                    <div id="imgRow">
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Jeremie.jpg" alt="Jeremie Lee"/>
-                            <h3 className="name">Jeremie Lee</h3>
-                            <p>Public Relations</p>
-                        </div>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Thomas.jpeg" alt="Thomas Zhang"/>
-                            <h3 className="name">Thomas Zhang</h3>
-                            <p>Public Relations</p>
-                        </div>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Beatriz.png" alt="Beatriz Cruz"/>
-                            <h3 className="name">Beatriz Cruz</h3>
-                            <p>Public Relations</p>
-                        </div>
-                    </div>
-                    <div id="imgRow">
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Yazi.jpg" alt="Yazi Ali"/>
-                            <h3 className='name'>Yazi Ali</h3>
-                            <p>Events</p>
-                        </div>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Te Aria.jpg" alt="Te Aria Jackson"/>
-                            <h3 className="name">Te Aria Jackson</h3>
-                            <p>Events</p>
-                        </div>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/grant.jpg" alt="Grant Liu"/>
-                            <h3 className='name'>Grant Liu</h3>
-                            <p>Web Dev</p>
-                        </div>
+                       coming soon!
                     </div>
                 </div>
-
-                <Divider></Divider>
-
-                <h1>Trainers</h1>
-                    <div className='imgRow'>
-                        <div className='personContainer'>
-                            <img className='headshot' src="./photos/Committee/Victor.jpg" alt="Victor Ng"/>
-                            <h3 className='name'>Victor Ng</h3>
-                            <p>Head Trainer</p>
-                        </div>
-                </div>
-
             </div>
         )
     }
