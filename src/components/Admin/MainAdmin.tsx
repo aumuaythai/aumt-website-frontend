@@ -25,6 +25,7 @@ import { CommitteeApps } from "./CommitteeApps/CommitteeApps";
 import { AumtEvent, AumtWeeklyTraining } from "../../types";
 
 import AdminStore from "./AdminStore";
+import TrainingAttendance from "./Trainings/TrainingAttendance";
 
 const MemberDashboardLazyWrapper = lazy(
     () =>
@@ -267,6 +268,10 @@ class MainAdmin extends Component<MainAdminProps, MainAdminState> {
                                 </div>
                             </div>
                         </Route>
+
+                        <Route path="/admin/attendance/:id" component={TrainingAttendance}/>
+                            
+
 
                         <Route path="/admin/editevent/:eventId">
                             <div className="mainAdminCreateFormContainer">

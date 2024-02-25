@@ -1,4 +1,4 @@
-import React, {Component, ReactText} from 'react'
+import React, { Component, ReactText } from 'react'
 import { Link } from 'react-router-dom'
 import { Spin, Button, Menu, Dropdown, notification, Popover } from 'antd'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
@@ -44,14 +44,14 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
     }
     componentDidUpdate = (prevProps: TrainingDashboardProps, prevState: TrainingDashboardState) => {
         if (this.props.forms !== prevProps.forms) {
-            this.setState({...this.state, loadingForms: false}, () => {
+            this.setState({ ...this.state, loadingForms: false }, () => {
                 this.handleNewForms(this.props.forms)
             })
         }
     }
     componentDidMount = () => {
         if (!this.props.forms.length) {
-            this.setState({...this.state, loadingForms: true})
+            this.setState({ ...this.state, loadingForms: true })
             AdminStore.requestTrainings()
         } else {
             this.handleNewForms(this.props.forms)
@@ -63,7 +63,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         }).slice()
         const currentTime = new Date()
         let currentForm = sortedForms[sortedForms.length - 1]
-        for (let i = 0; i < sortedForms.length; i ++) {
+        for (let i = 0; i < sortedForms.length; i++) {
             if (sortedForms[i].opens < currentTime) {
                 currentForm = sortedForms[i]
                 break
@@ -75,16 +75,16 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         }, () => {
             const currentFormInNewForms = forms.find(f => f.trainingId === this.state.currentForm?.trainingId)
             if (!currentFormInNewForms) {
-                this.onFormSelect({key: currentForm.trainingId})
+                this.onFormSelect({ key: currentForm.trainingId })
             } else if (currentFormInNewForms) {
-                this.onFormSelect({key: currentFormInNewForms.trainingId})
+                this.onFormSelect({ key: currentFormInNewForms.trainingId })
             }
         })
     }
     onClickTraining = (trainingId: string) => {
-        this.onFormSelect({key: trainingId})
+        this.onFormSelect({ key: trainingId })
     }
-    onFormSelect = (event: {key: ReactText}) => {
+    onFormSelect = (event: { key: ReactText }) => {
         const selectedForm = this.state.allForms.find(f => f.trainingId === event.key)
         if (selectedForm) {
             this.setState({
@@ -105,18 +105,18 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
             Object.keys(form.sessions).forEach((sessionId) => {
                 const session = form.sessions[sessionId]
                 lines.push([form.trainingId,
-                    `"${form.title}"`,
-                    form.opens.getTime(),
-                    form.closes.getTime(),
-                    `"${form.notes}"`,
-                    form.openToPublic ? 'Yes' : 'No',
-                    `"${form.feedback.join('%%')}"`,
-                    `${sessionId}`,
-                    `"${session.title}"`,
-                    session.limit,
-                    session.position
-                    ].join(','))
-                })
+                `"${form.title}"`,
+                form.opens.getTime(),
+                form.closes.getTime(),
+                `"${form.notes}"`,
+                form.openToPublic ? 'Yes' : 'No',
+                `"${form.feedback.join('%%')}"`,
+                `${sessionId}`,
+                `"${session.title}"`,
+                session.limit,
+                session.position
+                ].join(','))
+            })
         })
         dataUtil.downloadCsv('trainings', lines.join('\n'))
     }
@@ -143,10 +143,10 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                 {this.state.allForms.map((form) => {
                     return (
                         <Menu.Item key={form.trainingId}>
-                            {form.title.length > 50 && window.innerWidth < 600 ? form.title.slice(0,47) + '...' : form.title}
+                            {form.title.length > 50 && window.innerWidth < 600 ? form.title.slice(0, 47) + '...' : form.title}
                         </Menu.Item>
-                        )
-                    })
+                    )
+                })
                 }
             </Menu>
         )
@@ -156,43 +156,46 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
         return (
             <div className="trainingDashboardContainer">
                 <div className="weeklyStatSelectorContainer">
-                        {/* <Button onClick={this.signMockData}>Mock Data</Button> */}
-                        <Link to='/admin/createtraining' className='trainingDashboardCreateButton'>
-                            <Button type='primary' shape='round' size='large'>
-                                Create Training <PlusOutlined />
-                            </Button>
-                        </Link>
-                        <Dropdown className='trainingDashboardFormSelector'
-                            trigger={['click']}
-                            overlay={this.getFormsDropdown}>
-                            <Button size='large'>{this.state.currentForm && this.state.currentForm.title ? 
+                    {/* <Button onClick={this.signMockData}>Mock Data</Button> */}
+                    <Link to='/admin/createtraining' className='trainingDashboardCreateButton'>
+                        <Button type='primary' shape='round' size='large'>
+                            Create Training <PlusOutlined />
+                        </Button>
+                    </Link>
+                    <Dropdown className='trainingDashboardFormSelector'
+                        trigger={['click']}
+                        overlay={this.getFormsDropdown}>
+                        <Button size='large'>{this.state.currentForm && this.state.currentForm.title ?
                             (this.state.currentForm.title.length > 40 && window.innerWidth < 600 ?
-                                this.state.currentForm.title.slice(0,37) + '...' :
+                                this.state.currentForm.title.slice(0, 37) + '...' :
                                 this.state.currentForm.title)
                             : ''} <DownOutlined /></Button>
-                        </Dropdown> 
-                        {this.state.currentForm ?<GenerateSignupWrapper form={this.state.currentForm}></GenerateSignupWrapper> : <></>}
-                        <div className="clearBoth"></div>
-                    </div>
+                    </Dropdown>
+                    {this.state.currentForm ? <GenerateSignupWrapper form={this.state.currentForm}></GenerateSignupWrapper> : <></>}
+                    <Link to={`/admin/attendance/${this.state.currentForm ? this.state.currentForm.trainingId : null}`} >
+                        <Button type='primary' size='large'>Attendance</Button>
+                    </Link>
+                    <div className="clearBoth"></div>
+                </div>
                 <div className="trainingDashboardContentContainer">
                     <div className="weekStatsContainer trainingDashboardSection">
                         <h2 className="sectionHeader">Weekly Stats</h2>
                         <WeekStats loadingForms={this.state.loadingForms} form={this.state.currentForm}></WeekStats>
                     </div>
                     <div className="editMembersContainer trainingDashboardSection">
-                    <h2 className="sectionHeader">Edit Members</h2>
+                        <h2 className="sectionHeader">Edit Members</h2>
                         {this.state.loadingForms ?
                             <div>Loading current forms <Spin /></div> :
                             this.state.currentForm ?
-                            <EditSignups form={this.state.currentForm}></EditSignups> :
-                            <p>No Form Selected</p>
+                                <EditSignups form={this.state.currentForm}></EditSignups> :
+                                <p>No Form Selected</p>
                         }
                     </div>
                     <div className="clearBoth"></div>
                     <div className="manageTrainingsWrapper trainingDashboardSection">
                         <h2 className="sectionHeader">Manage {this.state.allForms.length || ''} Trainings
                             <Link to='/admin/createtraining'>
-                                <Button className='manageTrainingsAddButton' shape='round' ><PlusOutlined/></Button>
+                                <Button className='manageTrainingsAddButton' shape='round' ><PlusOutlined /></Button>
                             </Link>
                             <Popover trigger='click' content={
                                 <div>
@@ -209,7 +212,7 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                                 trainings={this.state.allForms}
                                 loadingTrainings={this.state.loadingForms}
                                 onTrainingClick={this.onClickTraining}
-                                ></ManageTrainings>
+                            ></ManageTrainings>
                         </div>
                     </div>
                     <div className="yearStatsWrapper trainingDashboardSection">

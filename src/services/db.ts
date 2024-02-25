@@ -2,13 +2,15 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { AumtMember, AumtWeeklyTraining, AumtTrainingSession, AumtEvent, AumtMembersObj, ClubConfig, AumtEventSignupData, AumtCommitteeApp } from '../types';
 import validator from './validator';
+import { log } from 'console';
 
 
 const TRAINING_DB_PATH = 'weekly_trainings'
+const TRAINING_ATTENDANCE_DB_PATH = 'training_attendance'
 const MEMBER_DB_PATH = 'members'
 
 class DB {
-    private db: firebase.firestore.Firestore |  null = null;
+    private db: firebase.firestore.Firestore | null = null;
     private listeners: Record<string, Function> = {}
 
     public initialize = () => {
@@ -49,7 +51,7 @@ class DB {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection(MEMBER_DB_PATH)
             .doc(userId)
-            .update({emailVerified})
+            .update({ emailVerified })
     }
 
     public getClubConfig = (): Promise<ClubConfig> => {
@@ -60,7 +62,7 @@ class DB {
             .get()
             .then((doc) => {
                 const data: any = doc.data()
-                return {...data}
+                return { ...data }
             })
     }
 
@@ -156,7 +158,7 @@ class DB {
                         [uid]: signupData
                     }
                 }
-            }, {merge: true})
+            }, { merge: true })
     }
 
     public confirmMemberEventSignup = (eventId: string, uid: string, confirmed: boolean, waitlist?: boolean) => {
@@ -171,7 +173,7 @@ class DB {
                         }
                     }
                 }
-            }, {merge: true})
+            }, { merge: true })
     }
 
     public removeMemberFromEvent = (uid: string, eventId: string, waitlist?: boolean) => {
@@ -184,7 +186,7 @@ class DB {
                         [uid]: firebase.firestore.FieldValue.delete()
                     }
                 }
-            }, {merge: true})
+            }, { merge: true })
     }
 
     public getAllEvents = (): Promise<AumtEvent[]> => {
@@ -248,38 +250,38 @@ class DB {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection(MEMBER_DB_PATH)
             .doc(memberId)
-            .update({paid: newPaid})
+            .update({ paid: newPaid })
     }
 
     public updateMembership = (memberId: string, newMembership: 'S1' | 'S2' | 'FY' | 'SS'): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         return this.db.collection(MEMBER_DB_PATH)
             .doc(memberId)
-            .update({membership: newMembership})
+            .update({ membership: newMembership })
     }
 
     public getOpenForms = (): Promise<AumtWeeklyTraining[]> => {
-            if (!this.db) return Promise.reject('No db object')
-            const currentDate = new Date()
-            return this.db.collection(TRAINING_DB_PATH)
-                .where('closes', '>=', currentDate)
-                .get()
-                .then((querySnapshot) => {
-                    const trainings: AumtWeeklyTraining[] = []
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data()
-                        // can't do where('opens', '<', currentDate) in firestore db so have to here
-                        if (data.opens.seconds * 1000 <= currentDate.getTime()) {
-                            const weeklyTraining = this.docToForm(data)
-                            trainings.push(weeklyTraining)
-                        }
-                    })
-                    return trainings
+        if (!this.db) return Promise.reject('No db object')
+        const currentDate = new Date()
+        return this.db.collection(TRAINING_DB_PATH)
+            .where('closes', '>=', currentDate)
+            .get()
+            .then((querySnapshot) => {
+                const trainings: AumtWeeklyTraining[] = []
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data()
+                    // can't do where('opens', '<', currentDate) in firestore db so have to here
+                    if (data.opens.seconds * 1000 <= currentDate.getTime()) {
+                        const weeklyTraining = this.docToForm(data)
+                        trainings.push(weeklyTraining)
+                    }
                 })
+                return trainings
+            })
     }
 
     public setMember = (memberId: string, memberData: AumtMember): Promise<void> => {
-        if (!this.db) return Promise.reject('No db object') 
+        if (!this.db) return Promise.reject('No db object')
         return this.db.collection(MEMBER_DB_PATH)
             .doc(memberId)
             .set(memberData)
@@ -328,6 +330,64 @@ class DB {
             })
     }
 
+    public checkTrainingAttendanceExists = async (formId: string, sessionId: string): Promise<boolean> => {
+        if (!this.db) return false;
+        const doc = await this.db.collection(TRAINING_ATTENDANCE_DB_PATH)
+            .doc(formId)
+            .get();
+        const docData = doc.data();
+        if (doc.exists && docData) {
+            return !!docData.sessions[sessionId];
+        }
+        return false;
+    }
+
+
+    public createTrainingAttendance = async (formId: string, sessionId: string): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection(TRAINING_ATTENDANCE_DB_PATH)
+            .doc(formId)
+            .set({
+                sessions: {
+                    [sessionId]: {
+                        members: []
+                    }
+                }
+            }, { merge: true })
+    }
+
+    public getTrainingAttendance = async (formId: string, sessionId: string): Promise<string[]> => {
+        if (!this.db) return null
+        if (!await this.checkTrainingAttendanceExists(formId, sessionId)) {
+            await this.createTrainingAttendance(formId, sessionId);
+            return [];
+        }
+        const doc = await this.db.collection(TRAINING_ATTENDANCE_DB_PATH)
+            .doc(formId)
+            .get()
+
+        const docData = doc.data()
+        if (doc.exists && docData) {
+            return docData.sessions[sessionId].members
+        }
+        throw new Error('Form does not exist')
+
+
+    }
+
+    public setMemberTrainingAttendance = (formId: string, sessionId: string, memberId: string, attended: string[]): Promise<void> => {
+        if (!this.db) return Promise.reject('No db object')
+        return this.db.collection(TRAINING_ATTENDANCE_DB_PATH)
+            .doc(formId)
+            .set({
+                sessions: {
+                    [sessionId]: {
+                        members: attended
+                    }
+                }
+            }, { merge: true })
+    }
+
     public removeMemberFromForm = (userId: string, formId: string, sessionIds: string[]): Promise<void> => {
         if (!this.db) return Promise.reject('No db object')
         const sessionObj = {}
@@ -342,7 +402,7 @@ class DB {
             .doc(formId)
             .set({
                 sessions: sessionObj
-            }, {merge: true})
+            }, { merge: true })
     }
 
     public signUserUp = (userId: string,
@@ -352,40 +412,40 @@ class DB {
         sessionIds: string[],
         feedback: string,
         prevSessionIds: string[]): Promise<void> => {
-            if (!this.db) return Promise.reject('No db object')
-            const sessionObj = {}
-            sessionIds.forEach((sessionId) => {
-                (sessionObj as any)[sessionId] = {
+        if (!this.db) return Promise.reject('No db object')
+        const sessionObj = {}
+        sessionIds.forEach((sessionId) => {
+            (sessionObj as any)[sessionId] = {
+                members: {
+                    [userId]: {
+                        name: displayName,
+                        timeAdded
+                    }
+                }
+            }
+        })
+        const removeSessions = prevSessionIds.filter((sId) => !sessionIds.includes(sId))
+        if (removeSessions.length) {
+            removeSessions.forEach((sId) => {
+                (sessionObj as any)[sId] = {
                     members: {
-                        [userId]: {
-                            name: displayName,
-                            timeAdded
-                        }
+                        [userId]: firebase.firestore.FieldValue.delete()
                     }
                 }
             })
-            const removeSessions = prevSessionIds.filter((sId) => !sessionIds.includes(sId))
-            if (removeSessions.length) {
-                removeSessions.forEach((sId) => {
-                    (sessionObj as any)[sId] = {
-                        members: {
-                            [userId]: firebase.firestore.FieldValue.delete()
-                        }
-                    }
-                })
+        }
+        let mergeObj = {
+            sessions: sessionObj
+        }
+        if (feedback) {
+            (mergeObj as any) = {
+                ...mergeObj,
+                feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
             }
-            let mergeObj = {
-                sessions: sessionObj
-            }
-            if (feedback) {
-                (mergeObj as any) = {
-                    ...mergeObj,
-                    feedback: firebase.firestore.FieldValue.arrayUnion(feedback)
-                }
-            }
-            return this.db.collection(TRAINING_DB_PATH)
-                .doc(formId)
-                .set(mergeObj, {merge: true})
+        }
+        return this.db.collection(TRAINING_DB_PATH)
+            .doc(formId)
+            .set(mergeObj, { merge: true })
     }
 
     public formatMembers = () => {
@@ -393,13 +453,13 @@ class DB {
         // const experiences = ['Cash', 'Bank Transfer']
         return this.db.collection('members')
             .get()
-            // .then((querySnapshot) => {
-            //     querySnapshot.forEach((doc) => {
-            //         // doc.ref.update({
-                        
-            //         // })
-            //     })
-            // })
+        // .then((querySnapshot) => {
+        //     querySnapshot.forEach((doc) => {
+        //         // doc.ref.update({
+
+        //         // })
+        //     })
+        // })
     }
 
     public listenToOneTraining = (formId: string, callback: (formId: string, training: AumtWeeklyTraining) => void): string => {
@@ -475,7 +535,7 @@ class DB {
             delete this.listeners[listenerId]
         }
     }
-    
+
     private getRandomDate = (start: Date, end: Date) => {
         return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
     }
@@ -483,7 +543,7 @@ class DB {
     private getListenerId = () => {
         const chars = 'weyuiopasdhjklzxcvbnm1234567890'
         let id = ''
-        for (let i = 0; i < 10; i ++) {
+        for (let i = 0; i < 10; i++) {
             id += chars[Math.floor(Math.random() * chars.length)]
         }
         return id
@@ -517,7 +577,7 @@ class DB {
     }
 
     private formToDoc = (form: AumtWeeklyTraining) => {
-        const sessions: AumtTrainingSession[] =  []
+        const sessions: AumtTrainingSession[] = []
         Object.values(form.sessions).forEach((session: AumtTrainingSession) => {
             sessions.push(session)
         })
@@ -529,7 +589,7 @@ class DB {
 
     private docToMember = (docData: any): AumtMember => {
         const member = validator.createAumtMember(docData)
-        if (typeof(member) === 'string') {
+        if (typeof (member) === 'string') {
             throw new Error(`Could not read member. Reason: ${member}, Data: ${JSON.stringify(docData)}`)
         }
         return member
