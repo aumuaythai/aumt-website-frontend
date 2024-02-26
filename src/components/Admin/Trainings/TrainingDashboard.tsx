@@ -172,9 +172,10 @@ export class TrainingDashboard extends Component<TrainingDashboardProps, Trainin
                             : ''} <DownOutlined /></Button>
                     </Dropdown>
                     {this.state.currentForm ? <GenerateSignupWrapper form={this.state.currentForm}></GenerateSignupWrapper> : <></>}
-                    <Link to={`/admin/attendance/${this.state.currentForm ? this.state.currentForm.trainingId : null}`} >
+                    {this.state.currentForm ? <Link to={`/admin/attendance/${this.state.currentForm ? this.state.currentForm.trainingId : null}`} >
                         <Button type='primary' size='large'>Attendance</Button>
-                    </Link>
+                    </Link> : <></>}
+
                     <div className="clearBoth"></div>
                 </div>
                 <div className="trainingDashboardContentContainer">
