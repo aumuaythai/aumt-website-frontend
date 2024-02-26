@@ -65,7 +65,7 @@ class TrainingAttendance extends Component<TrainingAttendanceProps, TrainingAtte
     }
 
     render() {
-        const { training, trainingSession } = this.state; // Access the training object from state
+        const { training, trainingSession } = this.state;
 
         let sessions: AumtTrainingSession[] = []
 
@@ -94,7 +94,7 @@ class TrainingAttendance extends Component<TrainingAttendanceProps, TrainingAtte
                         </select>
 
                         <div className="memberCheckboxContainer">
-                            {trainingSession &&
+                            {trainingSession && this.state.showList &&
                                 Object.keys(trainingSession.members)
                                     .sort((a, b) =>
                                         trainingSession.members[a].name.split(" ").pop().toLowerCase()
@@ -112,6 +112,12 @@ class TrainingAttendance extends Component<TrainingAttendanceProps, TrainingAtte
                                             </div>
                                         )
                                     })}
+                        </div>
+
+                        <div className="attendanceCount">
+                            {trainingSession && this.state.showList && (
+                                <p>{this.state.currentMembers.length} / {Object.keys(trainingSession.members).length} </p>
+                            )}
                         </div>
                     </div>
                 )}

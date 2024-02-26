@@ -31,3 +31,8 @@ select {
     box-sizing: border-box;
     padding: 5px;
 }
+
+.attendanceCount {
+    padding-top: 10px;
+    font-size: 20px;
+}
