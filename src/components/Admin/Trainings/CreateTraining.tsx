@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import { Button, Input, InputNumber, DatePicker, notification, Radio, Spin } from 'antd'
 import moment from 'moment'
-import { MinusCircleOutlined} from '@ant-design/icons'
+import { MinusCircleOutlined } from '@ant-design/icons'
 import './CreateTraining.css'
 import { MarkdownEditor } from '../../utility/MarkdownEditor'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
@@ -10,7 +10,7 @@ import AdminStore from '../AdminStore'
 import db from '../../../services/db'
 
 
-interface CreateTrainingProps extends RouteComponentProps {}
+interface CreateTrainingProps extends RouteComponentProps { }
 
 interface CreateTrainingState {
     currentTitle: string
@@ -31,8 +31,8 @@ interface CreateTrainingState {
 
 
 const CURRENT_YEAR = new Date().getFullYear();
-const TRAINING_0_OPENS_DATE = new Date(CURRENT_YEAR, 6, 16, 0, 0, 0)
-const TRAINING_0_CLOSES_DATE = new Date(CURRENT_YEAR, 6, 21, 20, 30, 0)
+const TRAINING_0_OPENS_DATE = new Date(CURRENT_YEAR, 1, 18, 0, 0, 0)
+const TRAINING_0_CLOSES_DATE = new Date(CURRENT_YEAR, 1, 23, 20, 30, 0)
 
 const MILLISECONDS_DAY = 1000 * 60 * 60 * 24;
 const MILLISECONDS_WEEK = MILLISECONDS_DAY * 7;
@@ -67,22 +67,22 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
     populateWeeklyDefaults = () => {
         // assume semester breaks at week 6
         const weekMuliplier = this.state.currentPopulateWeekValue > 5 ? this.state.currentPopulateWeekValue + 2 : this.state.currentPopulateWeekValue
-        
+
         console.log(TRAINING_0_OPENS_DATE);
         console.log(new Date(TRAINING_0_OPENS_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier)));
 
         const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier))
         const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier))
-        
+
         const dateMonday = new Date(newOpens.getTime() + MILLISECONDS_DAY);
         const dateFriday = new Date(newOpens.getTime() + MILLISECONDS_DAY * 5);
         const dateStrMon = `${dateMonday.getDate()}/${dateFriday.getMonth() + 1}`
         const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
-        
+
         const title = `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrMon}-${dateStrFri}`;
 
         const sessions = [
-            this.createSession(`Tuesday 4:30 (Intermediate)`, 30 ,0),
+            this.createSession(`Tuesday 4:30 (Intermediate)`, 30, 0),
             this.createSession(`Wednesday 4:30 (Beginners)`, 30, 1),
             this.createSession(`Thursday 4:30 (Beginners)`, 30, 2),
             this.createSession(`Thursday 5:30 (Advanced)`, 15, 3),
@@ -130,7 +130,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                     })
                 })
                 .catch((err) => {
-                    notification.error({message: 'Error getting training by id: ' + paths[editTrainingIdx + 1] + ', redirecting to dashboard'})
+                    notification.error({ message: 'Error getting training by id: ' + paths[editTrainingIdx + 1] + ', redirecting to dashboard' })
                     this.setState({
                         ...this.state,
                         loadingTraining: false
@@ -145,13 +145,13 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
     generateSessionId = (length: number) => {
         const digits = '1234567890qwertyuiopasdfghjklzxcvbnm'
         let id = ''
-        for (let i = 0; i < length; i ++) {
+        for (let i = 0; i < length; i++) {
             id += digits[Math.floor(Math.random() * digits.length)]
         }
         return id
     }
     onPopulateWeekChange = (n: string | number | undefined) => {
-        this.setState({...this.state, currentPopulateWeekValue: Number(n) || 1})
+        this.setState({ ...this.state, currentPopulateWeekValue: Number(n) || 1 })
     }
     onOpenDateChange = (d: Date | undefined) => {
         if (d) {
@@ -200,7 +200,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             })
         }
     }
-    onSessionLimitChange=  (limit: string | number | undefined, sessionId: string) => {
+    onSessionLimitChange = (limit: string | number | undefined, sessionId: string) => {
         if (typeof limit === 'number') {
             this.state.currentSessions.forEach((s) => {
                 if (s.sessionId === sessionId) {
@@ -223,7 +223,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         })
 
     }
-    createSession = (sessionTitle: string, limit: number,position: number) => {
+    createSession = (sessionTitle: string, limit: number, position: number) => {
         const newSession: AumtTrainingSession = {
             limit: limit,
             sessionId: this.generateSessionId(10),
@@ -236,7 +236,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         return newSession
     }
     onAddSessionClick = () => {
-        const newSession = this.createSession('', 30,this.state.currentSessions.length)
+        const newSession = this.createSession('', 30, this.state.currentSessions.length)
 
         this.setState({
             ...this.state,
@@ -263,10 +263,10 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             })
             return
         } else if (!this.state.currentSessions.length) {
-            notification.error({message: 'There must be at least one session option'})
+            notification.error({ message: 'There must be at least one session option' })
             return
         } else if (this.state.currentSessions.find(s => !s.title)) {
-            notification.error({message: 'All session options must have a title'})
+            notification.error({ message: 'All session options must have a title' })
             return
         } else if (this.state.semester === '') {
             notification.error({
@@ -295,31 +295,31 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
             semester: this.state.semester,
             paymentLock: this.state.paymentLock
         })
-        .then(() => {
-            this.setState({
-                ...this.state,
-                isSubmitting: false,
+            .then(() => {
+                this.setState({
+                    ...this.state,
+                    isSubmitting: false,
+                })
+                notification.success({
+                    message: 'Training Saved'
+                })
+                this.props.history.push('/admin')
             })
-            notification.success({
-                message: 'Training Saved'
+            .catch((err) => {
+                this.setState({
+                    ...this.state,
+                    isSubmitting: false
+                })
+                notification.error({ message: 'Error submitting form to database: ' + err })
             })
-            this.props.history.push('/admin')
-        })
-        .catch((err) => {
-            this.setState({
-                ...this.state,
-                isSubmitting: false
-            })
-            notification.error({message: 'Error submitting form to database: ' + err})
-        })
     }
     render() {
         if (this.state.loadingTraining) {
-            return <Spin/>
+            return <Spin />
         }
         return (
             <div className='createTrainingContainer'>
-                <span>Use weekly training template for week: </span><InputNumber onChange={this.onPopulateWeekChange} className='populateInput' defaultValue={1} min={1}/><Button onClick={this.populateWeeklyDefaults}>Populate</Button>
+                <span>Use weekly training template for week: </span><InputNumber onChange={this.onPopulateWeekChange} className='populateInput' defaultValue={1} min={1} /><Button onClick={this.populateWeeklyDefaults}>Populate</Button>
                 <h4 className='formSectionTitle'>Title</h4>
                 <Input placeholder="Form Title" value={this.state.currentTitle} onChange={e => this.onTrainingTitleChange(e.target.value)}></Input>
                 <div>
@@ -338,7 +338,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                     </Radio.Group>
                 </div>
                 <h4 className='formSectionTitle'>Sessions</h4>
-                Members can sign up to <InputNumber value={this.state.currentSignupMaxSessions} onChange={this.onSignupMaxSessionsChange} className='createTrainingMaxSessionInput' defaultValue={1} min={1}/> session(s).
+                Members can sign up to <InputNumber value={this.state.currentSignupMaxSessions} onChange={this.onSignupMaxSessionsChange} className='createTrainingMaxSessionInput' defaultValue={1} min={1} /> session(s).
                 <div className="sessionSection">
                     <div className='addSessionButton'>
                         <Button onClick={this.onAddSessionClick}>Add Session +</Button>
@@ -350,9 +350,9 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                                     value={session.title}
                                     className='sessionTitleInput'
                                     placeholder="Session Title (e.g. Thursday 6:30 Beginners)"
-                                    onChange={e => this.onSessionTitleChange(e.target.value, session.sessionId)}/>
-                                Limit:<InputNumber min={0} defaultValue={session.limit} onChange={e=>this.onSessionLimitChange(e, session.sessionId)}/>
-                                <MinusCircleOutlined onClick={e=>this.onRemoveSessionClick(session.sessionId)} className='minusIcon' />
+                                    onChange={e => this.onSessionTitleChange(e.target.value, session.sessionId)} />
+                                Limit:<InputNumber min={0} defaultValue={session.limit} onChange={e => this.onSessionLimitChange(e, session.sessionId)} />
+                                <MinusCircleOutlined onClick={e => this.onRemoveSessionClick(session.sessionId)} className='minusIcon' />
                             </div>
                         )
                     })}
@@ -376,7 +376,7 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
                     <MarkdownEditor
                         onChange={this.onNotesChange}
                         value={this.state.currentNotes}
-                        ></MarkdownEditor>
+                    ></MarkdownEditor>
                 </div>
                 <div className='submitTrainingContainer'>
                     <Button
