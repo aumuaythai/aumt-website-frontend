@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
-import { Button, Result, Divider, notification} from 'antd'
+import { Button, Result, Divider, notification } from 'antd'
 import moment from 'moment'
 import './Event.css'
 import { AumtEvent, AumtMember, LicenseClasses, AumtCampSignupData } from '../../../types'
@@ -37,8 +37,8 @@ export class Event extends Component<EventProps, EventState> {
         super(props)
         const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const dateString = this.props.event.date.toLocaleDateString(undefined, options)
-        const isAm = this.props.event.date.getHours() <= 12
-        const displayTime = `${this.props.event.date.getHours() % 12}:${('0' + String(this.props.event.date.getMinutes())).slice(-2)} ${isAm ? 'AM' : 'PM'}`
+        const isAm = this.props.event.date.getHours() <= 11
+        const displayTime = `${this.props.event.date.getHours() <= 12 ? (this.props.event.date.getHours()) : (this.props.event.date.getHours() - 12)}:${('0' + String(this.props.event.date.getMinutes())).slice(-2)} ${isAm ? 'AM' : 'PM'}`
         const signupInfo = this.getSignupInfo()
         const waitlistedInfo = this.getWaitlistedInfo()
         this.state = {
@@ -83,13 +83,13 @@ export class Event extends Component<EventProps, EventState> {
         const displayName = this.props.authedUser ? `${this.props.authedUser.firstName} ${this.props.authedUser.lastName}` : signupData?.name
         const email = this.props.authedUser ? this.props.authedUser.email : signupData?.email
         if (!displayName || !email) {
-            notification.error({message: 'Name and email required'})
+            notification.error({ message: 'Name and email required' })
             return
         }
         if (!isWaitlist) {
-            this.setState({...this.state, reservingSpot: true })
+            this.setState({ ...this.state, reservingSpot: true })
         } else {
-            this.setState({...this.state, waitlistingMember: true})
+            this.setState({ ...this.state, waitlistingMember: true })
         }
         const confirmed = this.props.event.signups?.needAdminConfirm ? false : true
         db.signUpToEvent(this.props.event.id,
@@ -103,7 +103,7 @@ export class Event extends Component<EventProps, EventState> {
             , isWaitlist)
             .then(() => {
                 if (isWaitlist) {
-                    this.setState({...this.state, waitlisted: true})
+                    this.setState({ ...this.state, waitlisted: true })
                 } else {
                     this.setState({
                         ...this.state,
@@ -113,10 +113,10 @@ export class Event extends Component<EventProps, EventState> {
                 }
             })
             .catch((err) => {
-                notification.error({message: 'Error signing up to event: ' + err.toString()})
+                notification.error({ message: 'Error signing up to event: ' + err.toString() })
             })
             .finally(() => {
-                this.setState({...this.state, reservingSpot: false, waitlistingMember: false})
+                this.setState({ ...this.state, reservingSpot: false, waitlistingMember: false })
             })
     }
     copyText = (text: string) => {
@@ -142,7 +142,7 @@ export class Event extends Component<EventProps, EventState> {
         return ''
     }
     onWithdrawClick = () => {
-        this.setState({...this.state, withdrawingSpot: true})
+        this.setState({ ...this.state, withdrawingSpot: true })
         const firebaseUid = firebaseUtil.getCurrentUid()
         db.removeMemberFromEvent(firebaseUid || this.generateMockUid(), this.props.event.id)
             .then(() => {
@@ -156,13 +156,14 @@ export class Event extends Component<EventProps, EventState> {
                 })
             })
             .catch((err) => {
-                notification.error({message: 'Error withdrawing from event: ' + err.toString()})
+                notification.error({ message: 'Error withdrawing from event: ' + err.toString() })
             })
             .finally(() => {
-                this.setState({...this.state, withdrawingSpot: false})
+                this.setState({ ...this.state, withdrawingSpot: false })
             })
     }
     render() {
+        console.log(this.state.displayTime)
         return (
             <div className='eventContainer'>
                 <div className="eventHeader">
@@ -180,48 +181,48 @@ export class Event extends Component<EventProps, EventState> {
                         <ClockCircleOutlined /> {this.state.displayTime}
                     </div>
                     <div className="detail locationDetail">
-                        <HomeOutlined/> {this.props.event.locationLink ?
-                        <a href={this.props.event.locationLink} target='_blank' rel='noopener noreferrer'>
-                            {this.props.event.location}
-                        </a>
-                        : this.props.event.location}
+                        <HomeOutlined /> {this.props.event.locationLink ?
+                            <a href={this.props.event.locationLink} target='_blank' rel='noopener noreferrer'>
+                                {this.props.event.location}
+                            </a>
+                            : this.props.event.location}
                     </div>
-                    {this.props.event.fbLink ? 
+                    {this.props.event.fbLink ?
                         <div className="detail fbLinkDetail">
                             <FacebookOutlined /> <a href={this.props.event.fbLink} target='_blank' rel="noopener noreferrer">{this.props.event.fbLink}</a>
                         </div>
-                    : null}
+                        : null}
                 </div>
-                <Divider/>
+                <Divider />
                 <div className="eventDescriptionContainer">
                     <RenderMarkdown source={this.props.event.description}></RenderMarkdown>
                 </div>
-                <Divider/>
+                <Divider />
                 {(() => {
                     if (this.props.event.signups) {
-                        const {signups} = this.props.event
+                        const { signups } = this.props.event
                         if (this.state.signedUp) {
                             return <div>
                                 <Result
-                                status='success'
-                                title='You are signed up'
-                                subTitle={!this.state.confirmedSignUp ?
-                                    'Once the committee receives your payment, your spot will be fully reserved' :
-                                    this.props.event.signups.needAdminConfirm ? 'Our records show you have paid, your spot is confirmed' : ''}
-                                    extra={this.state.confirmedSignUp ? [] : 
+                                    status='success'
+                                    title='You are signed up'
+                                    subTitle={!this.state.confirmedSignUp ?
+                                        'Once the committee receives your payment, your spot will be fully reserved' :
+                                        this.props.event.signups.needAdminConfirm ? 'Our records show you have paid, your spot is confirmed' : ''}
+                                    extra={this.state.confirmedSignUp ? [] :
                                         [
                                             <p key='xtra' className='joinAccountLine'>The fee is $155 for AUMT members (includes petrol) or $175 for Non-members (includes petrol) and should be paid with your FULL NAME as the reference to: 06-0158-0932609-00
-                                            <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                                                <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                                         ]
                                     }
-                                    >
+                                >
                                 </Result>
                                 <Button
                                     type='link'
                                     loading={this.state.withdrawingSpot}
                                     onClick={this.onWithdrawClick}>Withdraw Signup</Button>
-                                </div>
-                        } 
+                            </div>
+                        }
                         if (this.state.waitlisted) {
                             return <div>
                                 <p>You are currently {this.getWaitlistPosition() || ''} on the event waitlist.</p>
@@ -232,46 +233,46 @@ export class Event extends Component<EventProps, EventState> {
                             {signups.opens > new Date() ?
                                 <div>Signups will open {moment(signups.opens).format('MMMM Do')}</div>
                                 : signups.closes < new Date() ?
-                                <div>Signups have closed!</div>
-                                :
-                                (!this.props.authedUser && !this.props.event.signups.openToNonMembers) ? 
-                                <div>
-                                    <p>You must <Link to={`/login?from=/events/${this.props.event.urlPath}`}> log in </Link> to reserve your place.</p>
-                                    <h4>Don't have an account?</h4>
-                                    <p>Please create a free <Link to={`/join`}>account</Link> with us. Once you do you can signup to this event.</p>
-                                </div>
-                                :
-                                this.props.event.signups.limit && (this.props.event.signups.limit <= Object.keys(this.props.event.signups.members).length) ?
-                                <div>
-                                    <h4>Signups are currently full</h4>
-                                    <p className='eventWaitlistInfoText'>Fill out the form below to join the waitlist and the committee will message you if a spot opens.</p>
-                                        <CampSignupForm
-                                            isCamp={this.props.event.signups.isCamp}
-                                            includeNameAndEmail={!this.props.authedUser}
-                                            isWaitlist={true}
-                                            onSubmit={(data) => this.onSignupFormSubmit(true, data)}
-                                            submitting={this.state.waitlistingMember}></CampSignupForm>
-                                </div>
-                                :
-                                <div>
-                                    <h2>Signups</h2>
-                                    {this.props.event.signups.isCamp ? 
-                                        <CampSignupForm
-                                            isCamp={this.props.event.signups.isCamp}
-                                            includeNameAndEmail={!this.props.authedUser}
-                                            isWaitlist={false}
-                                            onSubmit={(data) => this.onSignupFormSubmit(false, data)}
-                                            submitting={this.state.reservingSpot}></CampSignupForm>
+                                    <div>Signups have closed!</div>
                                     :
-                                    <Button
-                                        loading={this.state.reservingSpot}
-                                        type='primary'
-                                        block
-                                        className='reserveEventSpotButton'
-                                        onClick={e => this.onSignupFormSubmit(false)}>Reserve a Spot</Button>
-                                    }
-                                </div>
-                                }
+                                    (!this.props.authedUser && !this.props.event.signups.openToNonMembers) ?
+                                        <div>
+                                            <p>You must <Link to={`/login?from=/events/${this.props.event.urlPath}`}> log in </Link> to reserve your place.</p>
+                                            <h4>Don't have an account?</h4>
+                                            <p>Please create a free <Link to={`/join`}>account</Link> with us. Once you do you can signup to this event.</p>
+                                        </div>
+                                        :
+                                        this.props.event.signups.limit && (this.props.event.signups.limit <= Object.keys(this.props.event.signups.members).length) ?
+                                            <div>
+                                                <h4>Signups are currently full</h4>
+                                                <p className='eventWaitlistInfoText'>Fill out the form below to join the waitlist and the committee will message you if a spot opens.</p>
+                                                <CampSignupForm
+                                                    isCamp={this.props.event.signups.isCamp}
+                                                    includeNameAndEmail={!this.props.authedUser}
+                                                    isWaitlist={true}
+                                                    onSubmit={(data) => this.onSignupFormSubmit(true, data)}
+                                                    submitting={this.state.waitlistingMember}></CampSignupForm>
+                                            </div>
+                                            :
+                                            <div>
+                                                <h2>Signups</h2>
+                                                {this.props.event.signups.isCamp ?
+                                                    <CampSignupForm
+                                                        isCamp={this.props.event.signups.isCamp}
+                                                        includeNameAndEmail={!this.props.authedUser}
+                                                        isWaitlist={false}
+                                                        onSubmit={(data) => this.onSignupFormSubmit(false, data)}
+                                                        submitting={this.state.reservingSpot}></CampSignupForm>
+                                                    :
+                                                    <Button
+                                                        loading={this.state.reservingSpot}
+                                                        type='primary'
+                                                        block
+                                                        className='reserveEventSpotButton'
+                                                        onClick={e => this.onSignupFormSubmit(false)}>Reserve a Spot</Button>
+                                                }
+                                            </div>
+                            }
                         </div>
                     } else {
                         return ''
