@@ -205,16 +205,10 @@ export class Event extends Component<EventProps, EventState> {
                             return <div>
                                 <Result
                                     status='success'
-                                    title='You are signed up'
+                                    title='Thank you for signing up!'
                                     subTitle={!this.state.confirmedSignUp ?
-                                        'Once the committee receives your payment, your spot will be fully reserved' :
+                                        'We will contact you when your spot is confirmed' :
                                         this.props.event.signups.needAdminConfirm ? 'Our records show you have paid, your spot is confirmed' : ''}
-                                    extra={this.state.confirmedSignUp ? [] :
-                                        [
-                                            <p key='xtra' className='joinAccountLine'>Bank transfer with your FULL NAME as reference to: 06-0158-0932609-00
-                                                <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
-                                        ]
-                                    }
                                 >
                                 </Result>
                                 <Button
