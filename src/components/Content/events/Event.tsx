@@ -211,7 +211,7 @@ export class Event extends Component<EventProps, EventState> {
                                         this.props.event.signups.needAdminConfirm ? 'Our records show you have paid, your spot is confirmed' : ''}
                                     extra={this.state.confirmedSignUp ? [] :
                                         [
-                                            <p key='xtra' className='joinAccountLine'>The fee is $155 for AUMT members (includes petrol) or $175 for Non-members (includes petrol) and should be paid with your FULL NAME as the reference to: 06-0158-0932609-00
+                                            <p key='xtra' className='joinAccountLine'>Bank transfer with your FULL NAME as reference to: 06-0158-0932609-00
                                                 <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
                                         ]
                                     }
