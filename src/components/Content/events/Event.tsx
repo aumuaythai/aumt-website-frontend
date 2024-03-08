@@ -209,6 +209,12 @@ export class Event extends Component<EventProps, EventState> {
                                     subTitle={!this.state.confirmedSignUp ?
                                         'Once the committee receives your payment, your spot will be fully reserved' :
                                         this.props.event.signups.needAdminConfirm ? 'Our records show you have paid, your spot is confirmed' : ''}
+                                    extra={this.state.confirmedSignUp ? [] :
+                                        [
+                                            <p key='xtra' className='joinAccountLine'>The fee is $155 for AUMT members (includes petrol) or $175 for Non-members (includes petrol) and should be paid with your FULL NAME as the reference to: 06-0158-0932609-00
+                                                <Button type='link' onClick={e => this.copyText('06-0158-0932609-00')}>Copy Account Number</Button></p>
+                                        ]
+                                    }
                                 >
                                 </Result>
                                 <Button
