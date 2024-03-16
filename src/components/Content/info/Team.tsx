@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Divider} from 'antd'
+import React, { Component } from 'react'
+import { Divider } from 'antd'
 import './Team.css'
 // import { CommitteeApplicationForm } from './CommitteeApplicationForm'
 // import { RenderMarkdown } from '../../utility/RenderMarkdown'
@@ -46,7 +46,7 @@ Pictured above: the current committee after a productive meeting.
     render() {
         return (
             <div className='teamContainer'>
-                    {/* <div>
+                {/* <div>
                         <h1>Applications</h1>
                         <div className='committeeApplicationsContainer'>
                             <RenderMarkdown source={this.committeeAppMd}></RenderMarkdown>
@@ -58,10 +58,54 @@ Pictured above: the current committee after a productive meeting.
                 <Divider/> */}
                 <div className="teamGroup">
                     <h1>AUMT Committee</h1>
+                    <div className='imgRow'>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/beatriz.png" alt="Beatriz" />
+                        </div>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/thomas.png" alt="Thomas" />
+                        </div>
+                    </div>
 
                     <div className='imgRow'>
-                       coming soon!
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/Emma.png" alt="Emma" />
+                        </div>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/Horia.png" alt="Horia" />
+                        </div>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/Grant.png" alt="Grant" />
+                        </div>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/Ted.png" alt="Ted" />
+                        </div>
                     </div>
+
+                    <div className='imgRow'>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/maxine.png" alt="Maxine" />
+                        </div>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/amos.png" alt="Amos" />
+                        </div>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/tearia.png" alt="Te Aria" />
+                        </div>
+                    </div>
+
+                    <div className='imgRow'>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/jeremie.png" alt="Jeremie" />
+                        </div>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/yang.png" alt="Yang" />
+                        </div>
+                        <div className="personContainer">
+                            <img className='headshot' src="./photos/Committee/ava.png" alt="Ava" />
+                        </div>
+                    </div>
+
                 </div>
             </div>
         )

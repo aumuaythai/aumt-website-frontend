@@ -4,13 +4,13 @@
 
 .imgRow {
     margin-bottom: 50px;
-    max-width: 1250px;
+    max-width: 1500px;
     margin: 0 auto;
 }
 
 .personContainer {
     height: 100%;
-    width: 250px;
+    width: 350px;
     display: inline-block;
     margin: 10px;
     background-color: #ffffff;
@@ -20,12 +20,12 @@
 }
 
 .personContainer:hover {
-    transform: scale(1.25);
+    transform: scale(1.15);
 }
 
 .headshot {
     transition: all 0.25s ease-in-out;
-    height: 200px;
+    height: 300px;
 }
 
 .name {
