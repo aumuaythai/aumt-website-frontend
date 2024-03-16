@@ -69,16 +69,16 @@ Pictured above: the current committee after a productive meeting.
 
                     <div className='imgRow'>
                         <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/Emma.png" alt="Emma" />
+                            <img className='headshot' src="./photos/Committee/emma.png" alt="Emma" />
                         </div>
                         <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/Horia.png" alt="Horia" />
+                            <img className='headshot' src="./photos/Committee/horia.png" alt="Horia" />
                         </div>
                         <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/Grant.png" alt="Grant" />
+                            <img className='headshot' src="./photos/Committee/grant.png" alt="Grant" />
                         </div>
                         <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/Ted.png" alt="Ted" />
+                            <img className='headshot' src="./photos/Committee/ted.png" alt="Ted" />
                         </div>
                     </div>
 
