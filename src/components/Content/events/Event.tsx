@@ -207,7 +207,7 @@ export class Event extends Component<EventProps, EventState> {
                                     status='success'
                                     title='Thank you for signing up!'
                                     subTitle={!this.state.confirmedSignUp ?
-                                        'We will contact you with payment details when your spot is confirmed' :
+                                        'Once the committee recieves your payment, you spot will be fully reserved' :
                                         this.props.event.signups.needAdminConfirm ? 'Our records show you have paid, your spot is confirmed' : ''}
                                 >
                                 </Result>
