@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'Joyride';
+  src: url(assets/fonts/JoyrideEXT.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Lacuna';
+  src: url(assets/fonts/Lacuna.otf) format('opentype');
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Joyride', sans-serif;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
