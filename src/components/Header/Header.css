@@ -2,6 +2,7 @@
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding-left: 20px;
 }
 .imageContainer {
@@ -47,13 +48,9 @@
         display: none;
     }
     .topMenuContainer {
-        float: left;
         width: 113px;
-        padding-left: 10px;
     }
     .socialsContainer {
-        width: calc(100% - 113px);
-        float: right;
         text-align: right;
         padding-right: 10px;
     }

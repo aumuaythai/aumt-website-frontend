@@ -55,7 +55,6 @@ class Header extends Component<HeaderProps, HeaderState> {
                         <span className="socialIcon" onClick={this.igClick}><InstagramFilled/></span>
                     </div>
                 </div>
-                <div className="clearBoth"></div>
             </div>
           );
     }
