@@ -6,7 +6,8 @@ export class Merch extends Component {
     render() {
         return (
             <div className="merchContainer">
-                <h1 className = "header">Merchandise</h1>
+              Coming soon...
+                {/* <h1 className = "header">Merchandise</h1>
         
                 <div className = "imgcontainer">
                     <img className='photoshoot' src="./photos/Merch/merchLeft.jpg" alt="Showing off the AUMT shirt and shorts"/>
@@ -40,7 +41,7 @@ export class Merch extends Component {
                         <p className = "plainText">These shorts allow for good range of motion and are made of a nylon and polyester blend which is ideal for training </p>
                         <p className = "plainText">Available in sizes S-XXXXL</p>
                     </div>
-                </div>
+                </div> */}
             </div>
             
         )
