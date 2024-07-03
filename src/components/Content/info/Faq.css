@@ -1,22 +1,38 @@
 .faqContainer {
     text-align: left;
-    max-width: 580px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 0 10px;
+    padding-bottom: 100px;
+
+}
+
+.faqTitle{
+  width: 100%;
+  text-align: center;
 }
 .questionContainer {
     margin: 0 auto;
+    max-width: 800px;
 }
 .question {
     font-weight: bold;
 }
-.answer {
-    /* font-style: italic; */
-}
+
 .socialLink {
     color: #008080;
     cursor: pointer;
     text-decoration: underline;
+}
+
+.thickDivider{
+  background-color: black;
+  width: 100%;
+  height: 5px;
+}
+.bottomContainer {
+    margin-top: 20px;
+    text-align: center;
 }
 
 iframe {
