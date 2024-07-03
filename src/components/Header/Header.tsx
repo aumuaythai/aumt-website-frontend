@@ -36,7 +36,7 @@ class Header extends Component<HeaderProps, HeaderState> {
         return (
             <div className="headerContainer">
                 <div className="imageContainer">
-                    <Link to='/'><img className='logoImg' src={"./logorectangle.png"} alt=""/></Link>
+                    <Link to='/'><img className='logoImg' src={"logos/AUMTLogo.png"} alt=""/></Link>
                 </div>
                 <div className="topMenuContainer">
                     <TopMenu isAdmin={this.props.isAdmin} authedUser={this.props.authedUser}></TopMenu>
