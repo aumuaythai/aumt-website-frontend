@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Joyride';
-  src: url(assets/fonts/JoyrideEXT.ttf) format('truetype');
+  src: url(assets/fonts/JoyrideSTD.ttf) format('truetype');
 }
 
 @font-face {
@@ -24,4 +24,30 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.ant-btn-link{
+  color:black !important;
+}
+.ant-menu-item, .ant-dropdown-menu-item{
+  font-family: 'Joyride', sans-serif !important;
+  border-bottom: none !important;
+  padding: 0 10px !important;
+}
+.ant-menu-item-selected {
+  background-color: transparent!important;
+}
+.ant-menu-item-selected a{
+  color: rgba(17,56,141,1) !important;
+  border-bottom: none !important;
+  font-family: 'Joyride', sans-serif !important;
+}
+.ant-menu-item-active {
+  background-color: rgba(17,56,141,0.1) !important;
+  color:rgba(17,56,141,1) !important;
+  border-bottom: none !important;
+}
+
+.ant-menu-item-active a{
+  color:rgba(17,56,141,1) !important;
 }

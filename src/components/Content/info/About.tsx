@@ -9,7 +9,7 @@ export class About extends Component {
         return (
             <div className='aboutContainer'>
                 <h1 className="introTitle">
-                    Welcome to Auckland University Muay Thai
+                    Welcome to <br/>Auckland University Muay Thai
                 </h1>
                 <div className="groupHeaderContainer">
                     <img src="./photos/content/group2.jpg" alt="group" className='absoluteResponsiveImg'/>

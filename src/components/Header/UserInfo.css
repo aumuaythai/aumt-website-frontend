@@ -1,5 +1,5 @@
 .marqueeContainer {
-    max-width: 63px;
+    max-width: 100px;
     display: inline-block;
     padding-right: 5px;
 }

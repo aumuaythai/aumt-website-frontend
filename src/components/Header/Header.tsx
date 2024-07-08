@@ -48,7 +48,7 @@ class Header extends Component<HeaderProps, HeaderState> {
                                 <UserInfo authedUser={this.props.authedUser}>
                                 </UserInfo>
                             </span> :
-                            <Button><Link to={`/login?from=${this.currentPathname}`}>Sign In</Link></Button>
+                            <div className='loginButton'><Link to={`/login?from=${this.currentPathname}`}>Sign In</Link></div>
                     }
                     <div className="socialIconContainer">
                         <span className="socialIcon" onClick={this.fbClick}><FacebookFilled/></span>
