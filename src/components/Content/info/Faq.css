@@ -40,6 +40,14 @@ iframe {
     height: 400px;
 }
 
+.answer a{
+  color: #11388d;
+}
+
+.bottomContainer a, .bottomContainer button{
+  color: #11388d !important;
+}
+
 @media(max-width: 1180px) {
     iframe {
         height: 300px;

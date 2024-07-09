@@ -202,9 +202,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 const label = (
                     <span key={session.title} className="optionLine">
                         <Tooltip title={isFull ? 'Class full' : ''} placement='left'>
-                            <span className='signupFormSessionTitle'>{session.title}
-                                {this.state.signedUpOptions.includes(session.sessionId) ? <CheckSquareTwoTone className='signedUpOptionCheck' twoToneColor="#52c41a" /> : null}
-                            </span>
+                            <span className='signupFormSessionTitle'>{session.title}</span>
                             {spotsLeft <= SPOTS_TAG_LIMIT ? 
                             <Tag className='spotsLeftTag' color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>
                             : ''}
@@ -215,7 +213,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     label,
                     value: session.sessionId,
                     disabled: isFull,
-                    style: {width: '100%','marginRight':0}
+                    style: {width: '100%','marginRight':0, backgroundColor: (this.state.signedUpOptions.includes(session.sessionId)) ? '#1ac4a7' : isFull ? '#f9f9f9' : '#dddddd', padding:'10px 20px', margin:'5px 0'}
                 }
             })
     }
@@ -259,7 +257,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     type='primary'
                     size='large'
                     loading={this.state.submittingState}
-                    onClick={this.onSubmitClick}>Submit</Button>
+                    onClick={this.onSubmitClick}>SIGN UP TO CLASS</Button>
                 {this.props.authedUserId ?
                 <Button disabled={!this.state.signedUpOptions.length} type='link' className='signupFormRemove' onClick={this.onRemoveClick} block>
                     {this.state.removingState ? <span><Spin className='signupFormRemoveLoadingIcon'/> </span>: ''} Remove Signup{this.state.signedUpOptions.length > 1 ? 's' : ''}

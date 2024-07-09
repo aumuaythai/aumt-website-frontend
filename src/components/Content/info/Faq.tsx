@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Divider } from 'antd';
+import { Button, Divider } from 'antd';
 import { Links } from '../../../services/links';
 import './Faq.css';
 import db from '../../../services/db';
@@ -76,7 +76,7 @@ export class Faq extends Component<{}, FaqState> {
                     <p className="question">Q: How do we transfer money to AUMT for events or memberships?</p>
                     <p className="answer">
                     A: For online baking, our bank account is {this.state.clubConfig?.bankAccountNumber}.
-                    <br/>For cash payments, message us and let us know you want to pay in cash. We will arrange the payment with yo
+                    <br/>For cash payments, message us and let us know you want to pay in cash. We will arrange the payment with you
                     </p>
                     <Divider />
                 </div>
@@ -100,9 +100,12 @@ export class Faq extends Component<{}, FaqState> {
 
                 <div className="bottomContainer">
                   <h2>Have more questions?</h2>
-                  <p>
-                  Get in touch through uoamuaythai@gmail.com or Instagram/Facebook!
-
+                  <p>Get in touch through
+                    <a href='mailto:uoamuaythai@gmail.com'> uoamuaythai@gmail.com </a>
+                    or&nbsp;
+                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtFb}>Facebook </Button>
+                    /
+                    <Button className='aboutInlineLink' type='link' onClick={Links.openAumtInsta}>Instagram</Button>.
                   </p>
                 </div>
                 

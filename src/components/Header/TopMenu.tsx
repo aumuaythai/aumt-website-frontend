@@ -118,7 +118,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
 
   mobileMenu = () => {
     return (
-      <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode='horizontal'>
+      <Menu style={{textAlign: 'center', border:'none'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode='horizontal'>
         <Menu.SubMenu title={
             <>
             Menu <DownOutlined className='menuDownIcon' />
@@ -167,7 +167,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
 
   desktopMenu = () => {
     return (
-      <Menu style={{textAlign: 'center', borderBottom:'none'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
+      <Menu style={{textAlign: 'center', border:'none'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
         <Menu.SubMenu title={
             <>
             About <DownOutlined className='menuDownIcon' />
