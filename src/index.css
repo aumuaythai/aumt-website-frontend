@@ -34,6 +34,11 @@ code {
   border-bottom: none !important;
   padding: 0 10px !important;
 }
+
+.ant-menu-submenu-title{
+  font-family: 'Joyride', sans-serif !important;
+
+}
 .ant-menu-item-selected {
   background-color: transparent!important;
 }
