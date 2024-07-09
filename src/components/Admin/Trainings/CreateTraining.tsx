@@ -74,10 +74,10 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier))
         const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier))
 
-        const dateMonday = new Date(newOpens.getTime() + MILLISECONDS_DAY);
-        const dateFriday = new Date(newOpens.getTime() + MILLISECONDS_DAY * 5);
-        const dateStrMon = `${dateMonday.getDate()}/${dateFriday.getMonth() + 1}`
-        const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
+        // const dateMonday = new Date(newOpens.getTime() + MILLISECONDS_DAY);
+        // const dateFriday = new Date(newOpens.getTime() + MILLISECONDS_DAY * 5);
+        // const dateStrMon = `${dateMonday.getDate()}/${dateFriday.getMonth() + 1}`
+        // const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
 
         const title = `Week ${this.state.currentPopulateWeekValue} Training Signups`;
 

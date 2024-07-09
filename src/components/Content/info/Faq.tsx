@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Divider } from 'antd';
 import { Links } from '../../../services/links';
 import './Faq.css';

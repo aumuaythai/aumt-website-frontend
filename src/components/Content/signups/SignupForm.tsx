@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {Spin, Checkbox, Button, Alert, Tooltip, Input, Tag } from 'antd'
-import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';

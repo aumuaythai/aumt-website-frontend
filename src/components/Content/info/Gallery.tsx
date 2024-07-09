@@ -1,18 +1,10 @@
 import React, {Component} from 'react'
 import './Gallery.css'
-import { Carousel, Image } from 'antd';
+import { Carousel } from 'antd';
 import 'antd/dist/antd.css';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 
 
-const contentStyle: React.CSSProperties = {
-  margin: 0,
-  height: '160px',
-  color: '#fff',
-  lineHeight: '160px',
-  textAlign: 'center',
-  background: '#364d79',
-};
 export class Gallery extends Component {
 
     render() {
