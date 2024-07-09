@@ -132,76 +132,14 @@
 }
 
 
-.absoluteResponsiveImg {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: auto;
-}
 
-.aboutRightImageContainer {
-    float: right;
-    width: 50%;
-}
-
-
-.listContainer {
-    font-size: 1vw;
-}
-
-.aboutDescription {
-    width: 30%;
-    float: right;
-    text-align: left;
-    padding: 0 40px;
-}
-
-.aboutDescriptionImg {
-    width: 70%;
-    float: right;
-}
-
-.aboutDescriptionImgElement {
-    width: 100%;
-}
-
-.whatIsMuayThaiPhotoWrapper {
-    width: 100%;
-    position: relative;
-    height: 0;
-    /* (height / width * 100%) */
-    padding-top: calc(350.19 / 913.5 * 100%);
-}
-
-.aboutTrainingsPhotoWrapper {
-    width: 100%;
-    position: relative;
-    height: 0;
-    /* (height / width * 100%) */
-    padding-top: calc(2 / 3 * 100%);
-}
-
-.eventsPhotoWrapper {
-    width: 100%;
-    position: relative;
-    height: 0;
-    /* (height / width * 100%) */
-    padding-top: calc(509 / 1000 * 100%);
-}
-
-
-
-.aboutDescriptionRow {
-    padding: 40px 0;
-}
-
-.floatLeft {
-    float: left;
-}
 
 .aboutFooterNotes {
     padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .aboutInlineLink {

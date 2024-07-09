@@ -128,6 +128,9 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
               <Menu.Item key="About">
                 <Link to='/'>Club Info</Link>
               </Menu.Item>
+              <Menu.Item key="Gallery">
+                <Link to='/gallery'>Gallery</Link>
+              </Menu.Item>
               <Menu.Item key="Team">
                 <Link to='/team'>Our Team</Link>
               </Menu.Item>
@@ -172,6 +175,9 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
           }>
           <Menu.Item key="About" >
             <Link to='/'>Club Info</Link>
+          </Menu.Item>
+          <Menu.Item key="Gallery">
+            <Link to='/gallery'>Gallery</Link>
           </Menu.Item>
           <Menu.Item key="Team">
             <Link to='/team'>Our Team</Link>
