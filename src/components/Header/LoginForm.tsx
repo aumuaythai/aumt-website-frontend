@@ -18,7 +18,7 @@ export interface LoginState {
     errorCode: string
 }
 
-const logoUrl = './logorectangle.png'
+const logoUrl = './logos/AUMTLogo.png'
 
 export class LoginForm extends Component<LoginProps, LoginState> {
     private emailInput: Input | null = null;

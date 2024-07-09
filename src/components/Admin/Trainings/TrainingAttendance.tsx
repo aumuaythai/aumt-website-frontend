@@ -77,7 +77,7 @@ class TrainingAttendance extends Component<TrainingAttendanceProps, TrainingAtte
 
 
         return (
-            <div>
+            <div style={{marginTop: '30px'}}>
                 <Link to={`/admin`}>
                     <Button className='backButton'>Back</Button>
                 </Link>
