@@ -1,17 +1,59 @@
-import React, {Component} from 'react'
+import React, {Component, useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import {Button } from 'antd'
 import './About.css'
 import { Links } from '../../../services/links'
 
 export class About extends Component {
+    HoverImage = ({ defaultImage, hoverImage, alt, className }) => {
+      const [isActive, setIsActive] = useState(false);
+      const [isMobile, setIsMobile] = useState(false);
+
+      useEffect(() => {
+        const checkMobile = () => {
+          setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+      }, []);
+
+      const handleMouseEnter = () => {
+        if (!isMobile) setIsActive(true);
+      };
+
+      const handleMouseLeave = () => {
+        if (!isMobile) setIsActive(false);
+      };
+
+      const handleClick = () => {
+        if (isMobile) setIsActive(!isActive);
+      };
+    
+      return (
+        <img
+          src={isActive ? hoverImage : defaultImage}
+          alt={alt}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleClick}
+          className={className}
+        />
+      );
+    };
     render() {
         return (
             <div className='aboutContainer'>
                 <h1 className="introTitle">
                     WELCOME TO <br/>AUCKLAND UNIVERSITY MUAY THAI
                 </h1>
-                <img src="./photos/content/Landing.jpg" alt="group" className="landingImg"/>
+                <this.HoverImage 
+                  defaultImage="/photos/content/Landing_Coloured.jpg"
+                  hoverImage="/photos/content/Landing.jpg"
+                  alt="landing image"
+                  className={"landingImg"}
+                />
                 <div className="introContainer">
                     <h3 className='aboutSectionHead'>AUMT INTODUCES STUDENTS TO THE ART OF MUAY THAI</h3>
                     <p>
@@ -66,7 +108,12 @@ export class About extends Component {
                         <button className="boldBtn orange"><a href='/signups'>SIGN UP TO TRAINING</a>  </button>
                       </div>
                     </div>
-                    <img  className="aboutSectionImg" src="./photos/content/Trainings.jpg" alt="" />
+                    <this.HoverImage 
+                      defaultImage="/photos/content/Trainings_Coloured.jpg"
+                      hoverImage="/photos/content/Trainings.jpg"
+                      alt="landing image"
+                      className={"aboutSectionImg"}
+                    />
                   </div>
                   
 
@@ -76,7 +123,12 @@ export class About extends Component {
                 <div className='aboutSection'>
                   <h2 className='aboutSectionHeader'><span className='lacuna'> Social</span>  <br/> EVENTS</h2>
                   <div className='aboutSectionBody'>
-                    <img  className="aboutSectionImg" src="./photos/content/Events.jpg" alt="" />
+                    <this.HoverImage 
+                        defaultImage="/photos/content/Events_Coloured.jpg"
+                        hoverImage="/photos/content/Events.jpg"
+                        alt="landing image"
+                        className={"aboutSectionImg"}
+                    />
                     <div className='aboutSectionDescription'>
                       <p>
                         The social events planned by our committee gives our members a chance to bond outside of the gym. <br/>
