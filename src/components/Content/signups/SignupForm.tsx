@@ -6,6 +6,7 @@ import db from '../../../services/db';
 import { CheckboxOptionType } from 'antd/lib/checkbox';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { RenderMarkdown } from '../../utility/RenderMarkdown';
+import { CheckSquareTwoTone } from '@ant-design/icons'
 
 export interface SignupFormProps {
     title: string
@@ -201,7 +202,9 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                 const label = (
                     <span key={session.title} className="optionLine">
                         <Tooltip title={isFull ? 'Class full' : ''} placement='left'>
-                            <span className='signupFormSessionTitle'>{session.title}</span>
+                            <span className='signupFormSessionTitle'>{session.title}
+                                {this.state.signedUpOptions.includes(session.sessionId) ? <CheckSquareTwoTone className='signedUpOptionCheck' twoToneColor="#52c41a" /> : null}
+                            </span>
                             {spotsLeft <= SPOTS_TAG_LIMIT ? 
                             <Tag className='spotsLeftTag' color={spotsLeft === 0 ? 'error' : spotsLeft < 10 ? 'warning': 'blue'}>{spotsLeft} spots left</Tag>
                             : ''}
