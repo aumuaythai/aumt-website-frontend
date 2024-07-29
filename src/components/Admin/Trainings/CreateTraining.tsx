@@ -31,18 +31,18 @@ interface CreateTrainingState {
 
 
 const CURRENT_YEAR = new Date().getFullYear();
-const TRAINING_0_OPENS_DATE = new Date(CURRENT_YEAR, 1, 18, 0, 0, 0)
-const TRAINING_0_CLOSES_DATE = new Date(CURRENT_YEAR, 1, 23, 20, 30, 0)
+const TRAINING_0_OPENS_DATE = new Date(CURRENT_YEAR, 6, 7, 0, 0, 0)
+const TRAINING_0_CLOSES_DATE = new Date(CURRENT_YEAR, 6, 12, 20, 30, 0)
 
 const MILLISECONDS_DAY = 1000 * 60 * 60 * 24;
 const MILLISECONDS_WEEK = MILLISECONDS_DAY * 7;
 
-const TRAINING_DEFAULT_NOTES = `### Rules/Etiquette
+const TRAINING_DEFAULT_NOTES = `RULES/ETIQUETTE
 1.    Keep the training area free until your session starts.
-2.    Remove shoes and socks before entering the gym mats.
-3.   Let your trainer know if you need to leave early or take a rest due to injury/medical reasons/overtraining.
-4.   Wipe inside and outside of gloves and shins pads using provided wipes at the end of class
-5.   Put ALL training pads back after use.`
+2.    No shoes on the mat
+3.    Let the trainer know if you need to leave early or take a rest due to injury, medical reasons, etc.
+4.    Wipe inside and outside of gear using provided wipes at the end of class.
+5.    Put ALL training gear back in its designated place after use.`
 
 class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState> {
     constructor(props: CreateTrainingProps) {
@@ -74,20 +74,19 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         const newOpens = new Date(TRAINING_0_OPENS_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier))
         const newCloses = new Date(TRAINING_0_CLOSES_DATE.getTime() + (MILLISECONDS_WEEK * weekMuliplier))
 
-        const dateMonday = new Date(newOpens.getTime() + MILLISECONDS_DAY);
-        const dateFriday = new Date(newOpens.getTime() + MILLISECONDS_DAY * 5);
-        const dateStrMon = `${dateMonday.getDate()}/${dateFriday.getMonth() + 1}`
-        const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
+        // const dateMonday = new Date(newOpens.getTime() + MILLISECONDS_DAY);
+        // const dateFriday = new Date(newOpens.getTime() + MILLISECONDS_DAY * 5);
+        // const dateStrMon = `${dateMonday.getDate()}/${dateFriday.getMonth() + 1}`
+        // const dateStrFri = `${dateFriday.getDate()}/${dateFriday.getMonth() + 1}`
 
-        const title = `Week ${this.state.currentPopulateWeekValue} Training Signups ${dateStrMon}-${dateStrFri}`;
+        const title = `Week ${this.state.currentPopulateWeekValue} Training Signups`;
 
         const sessions = [
-            this.createSession(`Tuesday 4:30 (Intermediate)`, 30, 0),
-            this.createSession(`Wednesday 4:30 (Beginners)`, 30, 1),
-            this.createSession(`Thursday 4:30 (Beginners)`, 30, 2),
-            this.createSession(`Thursday 5:30 (Advanced)`, 15, 3),
-            this.createSession(`Friday 6:30 (Intermediate)`, 15, 4),
-            this.createSession(`Friday 7:30 (Beginners)`, 30, 5),
+            this.createSession(`Monday 6:30 (Womens Beginners)`, 40, 0),
+            this.createSession(`Tuesday 4:30 (Intermediate)`, 40, 1),
+            this.createSession(`Wednesday 4:30 (Beginners)`, 40, 2),
+            this.createSession(`Thursday 4:30 (Beginners)`, 40, 3),
+            this.createSession(`Friday 7:30 (Beginners)`, 40, 4),
         ]
 
         this.setState({

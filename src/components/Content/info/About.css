@@ -1,106 +1,145 @@
-.introContainer {
-    text-align: left;
-    padding: 40px;
-    max-width: 850px;
-    margin: 0 auto;
+.aboutContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 5px;
 }
+
 
 .introTitle {
-    font-size: 4vw;
-    font-weight: bolder;
+  font-size: 2.5vw;
+  line-height: 90%;
+}
+.introContainer {
+  padding: 40px 0 10px 0;
+  margin: 0 auto;
 }
 
-.groupHeaderContainer {
-    width: 100%;
-    position: relative;
-    height: 0;
-    /* (height / width * 100%) */
-    padding-top: calc(1843 / 4450 * 100%);
-}
 
-.absoluteResponsiveImg {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: auto;
-}
+.landingImg{
+  width: 100%;
+  height: 600px;
+  object-fit:cover;
 
-.aboutRightImageContainer {
-    float: right;
-    width: 50%;
-}
-
-.clearBoth {
-    clear: both;
 }
 
 .introStr {
-    font-size: 1.5vw;
+  font-size: 1vw;
 }
 
 .aboutSectionHead {
-    font-size: 25px;
+  font-size: 25px;
 }
 
-.listContainer {
-    font-size: 1vw;
+.btnContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0 30px 0;
+  width:100%;
+  max-width: 1000px;
+  gap:10px;
+
+}
+.boldBtn{
+  font-family: 'Joyride' !important;
+  font-size: 20px;
+  padding: 10px 30px;
+  text-align: center;
+  border:none;
+  cursor:pointer;
+  margin:0;
 }
 
-.aboutDescription {
-    width: 30%;
-    float: right;
-    text-align: left;
-    padding: 0 40px;
+.teal{
+  background-color: #1ac4a7;
+  flex-grow: 1;
+
+}
+.yellow{
+  background-color: #fbe74a;
 }
 
-.aboutDescriptionImg {
-    width: 70%;
-    float: right;
+.orange{
+  background-color: #f48c05;
+}
+.pink{
+  background-color: #ff0c51;
 }
 
-.aboutDescriptionImgElement {
-    width: 100%;
+.invert{
+  color: white;
+  background-color: black;
 }
 
-.whatIsMuayThaiPhotoWrapper {
-    width: 100%;
-    position: relative;
-    height: 0;
-    /* (height / width * 100%) */
-    padding-top: calc(350.19 / 913.5 * 100%);
+.membershipBtn{
+  font-size: 30px;
+  flex-grow: 1;
 }
 
-.aboutTrainingsPhotoWrapper {
-    width: 100%;
-    position: relative;
-    height: 0;
-    /* (height / width * 100%) */
-    padding-top: calc(2 / 3 * 100%);
-}
-
-.eventsPhotoWrapper {
-    width: 100%;
-    position: relative;
-    height: 0;
-    /* (height / width * 100%) */
-    padding-top: calc(509 / 1000 * 100%);
-}
 
 .aboutDivider {
-    margin: 40px 0;
+  width:100%;
+  max-width: 1200px;
+  height: 5px;
+  background-color: #000;
 }
 
-.aboutDescriptionRow {
-    padding: 40px 0;
+.aboutSection{
+  padding: 50px 0;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.aboutSectionHeader{
+  line-height: 80%;
+  font-size:25px;
 }
 
-.floatLeft {
-    float: left;
+.lacuna{
+  font-family: 'Lacuna', sans-serif;
+  font-size: 50px;
 }
+
+.aboutSectionBody{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0px;
+}
+.aboutSectionDescription{
+  width: 50%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.aboutSectionDescription p{
+  padding: 0 20px;
+}
+.aboutSectionImg{
+  width: 50%;
+}
+
+.aboutFooterNotes a, .aboutFooterNotes button{
+  color: #11388d !important;
+}
+
+
+
 
 .aboutFooterNotes {
     padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .aboutInlineLink {
@@ -123,6 +162,18 @@
         margin: 30px auto;
     }
 
+    .aboutSectionBody{
+      flex-direction: column;
+      padding: 0 20px;
+    }
+    .aboutSectionDescription{
+      width: 100%;
+    
+    }
+    .aboutSectionImg{
+      width: 100%;
+    }
+
     .introStr {
         font-size: 16px;
     }
@@ -131,8 +182,13 @@
         font-size: 25px;
     }
 
-    .aboutDivider {
-        display: none;
+    .btnContainer{
+      flex-direction: column;
+    }
+
+    .boldBtn{
+      width:100%;
+      max-width: 500px;
     }
 
     .listContainer {

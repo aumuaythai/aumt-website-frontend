@@ -1,10 +1,66 @@
 import React, { Component, ReactText } from 'react'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
-import {Menu} from 'antd';
+import { Menu as BaseMenu } from 'antd';
+import styled from 'styled-components'
 import {DownOutlined} from '@ant-design/icons'
 import './TopMenu.css'
 
 import { AumtMember } from '../../types'
+
+
+export const Menu = styled(BaseMenu)`
+
+  .ant-menu-item{
+    border-bottom: none !important;
+    padding: 0 10px !important;
+  }
+
+  .ant-menu-item-selected a{
+    color: rgba(17,56,141,1) !important;
+    border-bottom: none !important;
+    font-family: 'Joyride', sans-serif !important;
+  }
+  .ant-menu-item-active {
+    background-color: rgba(17,56,141,0.1) !important;
+    color:rgba(17,56,141,1) !important;
+    border-bottom: none !important;
+  }
+
+  .ant-menu-item-active a{
+    color:rgba(17,56,141,1) !important;
+  }
+
+  .ant-menu-submenu{
+    border-bottom: none !important;
+  }
+  .ant-menu-submenu-title{    
+    padding: 0 10px !important;
+  }
+  }
+  .ant-menu-submenu-active> .ant-menu-submenu-title{
+    background-color: rgba(17,56,141,0.1) !important;
+    color: rgba(17,56,141,1) !important;
+  }
+  .ant-menu-submenu-selected> .ant-menu-submenu-title{
+    color: rgba(17,56,141,1) !important;
+  }
+
+  ant-menu-submenu-title:hover {
+    background-color: rgba(17,56,141,0.1) !important;
+    color:rgba(17,56,141,1) !important;
+    border-bottom: none !important;
+  }
+
+  &.ant-menu-submenu-active .ant-menu-submenu-title {
+    background-color: rgba(17,56,141,0.1) !important;
+    .ant-typography {
+      color: WHITE;
+    }
+  }
+
+
+  
+`;
 
 export interface TopMenuProps extends RouteComponentProps {
   authedUser: AumtMember | null
@@ -62,7 +118,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
 
   mobileMenu = () => {
     return (
-      <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode='horizontal'>
+      <Menu style={{textAlign: 'center', border:'none'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode='horizontal'>
         <Menu.SubMenu title={
             <>
             Menu <DownOutlined className='menuDownIcon' />
@@ -71,6 +127,9 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
             <Menu.SubMenu title='About'>
               <Menu.Item key="About">
                 <Link to='/'>Club Info</Link>
+              </Menu.Item>
+              <Menu.Item key="Gallery">
+                <Link to='/gallery'>Gallery</Link>
               </Menu.Item>
               <Menu.Item key="Team">
                 <Link to='/team'>Our Team</Link>
@@ -108,14 +167,17 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
 
   desktopMenu = () => {
     return (
-      <Menu style={{textAlign: 'center'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
+      <Menu style={{textAlign: 'center', border:'none'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
         <Menu.SubMenu title={
             <>
             About <DownOutlined className='menuDownIcon' />
             </>
           }>
-          <Menu.Item key="About">
+          <Menu.Item key="About" >
             <Link to='/'>Club Info</Link>
+          </Menu.Item>
+          <Menu.Item key="Gallery">
+            <Link to='/gallery'>Gallery</Link>
           </Menu.Item>
           <Menu.Item key="Team">
             <Link to='/team'>Our Team</Link>
@@ -127,7 +189,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
             <Link to='/merch'>Merch</Link>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.Item key="Signups">
+        <Menu.Item key="Signups" >
           <Link to='/signups'>Weekly Trainings</Link>
         </Menu.Item>
         <Menu.Item key="Events">
@@ -137,11 +199,11 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
             <Menu.Item key="Account">
               <Link to='/account'>My Account</Link>
             </Menu.Item>
-          : <Menu.Item key="Join">
+          : <Menu.Item key="Join" >
             <Link to='/join'>Create Account</Link>
           </Menu.Item>}
         {this.props.isAdmin ?
-            <Menu.Item key="Admin">
+            <Menu.Item key="Admin" >
               <Link to='/admin'>Admin</Link>
             </Menu.Item>
           : null}

@@ -4,6 +4,10 @@
     align-items: center;
     justify-content: space-between;
     padding-left: 20px;
+    margin-bottom: 10px;
+    font-family: 'Joyride', sans-serif;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: normal;
 }
 .imageContainer {
     width: 155px;
@@ -13,19 +17,21 @@
     width: 100%;
 }
 .topMenuContainer {
-    width: calc(100% - 310px);
+    flex-grow: 1;
     float: left;
     text-align: center;
 }
 .socialsContainer {
-    width: 155px;
-    float: left;
+    display: flex;
+    padding-right: 10px;
+    align-items: center;
+    height: 50px;
 }
 .socialIconContainer {
-    display: inline;
+    display: flex;
     font-size: 18px;
     cursor: pointer;
-    color: maroon;
+    color: black;
     line-height: 50px;
 }
 .socialIcon {
@@ -43,13 +49,26 @@
     cursor: pointer;
 }
 
+.loginButton{
+  border: none;
+  margin: 0;
+  height: 100%;
+  background-color: #999999;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.loginButton:hover{
+  border: none;
+  height: 100%;
+}
+
 @media only screen and (max-width: 600px) {
     .imageContainer {
         display: none;
     }
-    .topMenuContainer {
-        width: 113px;
-    }
+
     .socialsContainer {
         text-align: right;
         padding-right: 10px;

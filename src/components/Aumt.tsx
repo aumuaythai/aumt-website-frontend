@@ -8,6 +8,7 @@ import { About } from './Content/info/About'
 import EventsWrapper from './Content/events/EventsWrapper'
 import { Faq } from './Content/info/Faq'
 import { Merch } from './Content/info/Merch'
+import { Gallery } from './Content/info/Gallery'
 import { MainJoin } from './Content/join/MainJoin'
 import { Account } from './Content/account/Account'
 import { ErrorBoundary } from './Content/error/ErrorBoundary'
@@ -160,6 +161,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                     </Route>
                     <Route path="/merch">
                       <Merch></Merch>
+                    </Route>
+                    <Route path="/gallery">
+                      <Gallery></Gallery>
                     </Route>
                     <Route path="/signup">
                       <Redirect to="/signups" />

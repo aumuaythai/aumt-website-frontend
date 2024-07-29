@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Divider } from 'antd'
 import './Team.css'
 // import { CommitteeApplicationForm } from './CommitteeApplicationForm'
 // import { RenderMarkdown } from '../../utility/RenderMarkdown'

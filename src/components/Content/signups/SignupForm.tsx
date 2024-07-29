@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 import {Spin, Checkbox, Button, Alert, Tooltip, Input, Tag } from 'antd'
-import { CheckSquareTwoTone } from '@ant-design/icons'
 import './SignupForm.css'
 import { AumtTrainingSession } from '../../../types'
 import db from '../../../services/db';
 import { CheckboxOptionType } from 'antd/lib/checkbox';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { RenderMarkdown } from '../../utility/RenderMarkdown';
+import { CheckSquareTwoTone } from '@ant-design/icons'
 
 export interface SignupFormProps {
     title: string
@@ -215,7 +215,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     label,
                     value: session.sessionId,
                     disabled: isFull,
-                    style: {width: '100%','marginRight':0}
+                    style: {width: '100%','marginRight':0, backgroundColor: (this.state.signedUpOptions.includes(session.sessionId)) ? '#1ac4a7' : isFull ? '#f9f9f9' : '#dddddd', padding:'10px 20px', margin:'5px 0'}
                 }
             })
     }
@@ -259,7 +259,7 @@ export class SignupForm extends Component<SignupFormProps, SignupFormState> {
                     type='primary'
                     size='large'
                     loading={this.state.submittingState}
-                    onClick={this.onSubmitClick}>Submit</Button>
+                    onClick={this.onSubmitClick}>SIGN UP TO CLASS</Button>
                 {this.props.authedUserId ?
                 <Button disabled={!this.state.signedUpOptions.length} type='link' className='signupFormRemove' onClick={this.onRemoveClick} block>
                     {this.state.removingState ? <span><Spin className='signupFormRemoveLoadingIcon'/> </span>: ''} Remove Signup{this.state.signedUpOptions.length > 1 ? 's' : ''}

@@ -1,3 +1,5 @@
+
+
 .spotsLeft {
     color: rgba(255, 0, 0, 0.7);
 }
@@ -59,7 +61,14 @@
 }
 .signedUpOptionCheck {
     margin-left: 10px;
+    font-size: 150%;
+    vertical-align: middle;
+    
 }
 .interSemCollatedSelect {
     width: 100%;
+}
+
+.signupFormButton{
+  font-family: 'Joyride', sans-serif;
 }
