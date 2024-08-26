@@ -82,11 +82,10 @@ class CreateTraining extends Component<CreateTrainingProps, CreateTrainingState>
         const title = `Week ${this.state.currentPopulateWeekValue} Training Signups`;
 
         const sessions = [
-            this.createSession(`Monday 6:30 (Womens Beginners)`, 40, 0),
-            this.createSession(`Tuesday 4:30 (Intermediate)`, 40, 1),
-            this.createSession(`Wednesday 4:30 (Beginners)`, 40, 2),
-            this.createSession(`Thursday 4:30 (Beginners)`, 40, 3),
-            this.createSession(`Friday 7:30 (Beginners)`, 40, 4),
+            this.createSession(`Tuesday 4:30 (Intermediate)`, 40, 0),
+            this.createSession(`Wednesday 4:30 (Beginners)`, 40, 1),
+            this.createSession(`Thursday 4:30 (Beginners)`, 40, 2),
+            this.createSession(`Friday 7:30 (Intermediate)`, 40, 3),
         ]
 
         this.setState({
