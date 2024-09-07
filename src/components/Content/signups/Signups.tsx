@@ -100,13 +100,11 @@ class Signups extends Component<SignupProps, SignupState> {
               <p>Weekly training signups will open on Sundays on this page</p>
               <p>The current training schedule is:</p>
               <ul className="scheduleList">
-                <li><b>Monday 6:30PM</b> Womens Beginner* </li>
                 <li><b>Tuesday 4:30PM</b> Intermediate</li> 
                 <li><b>Wednesday 4:30PM</b> Beginner </li>
                 <li><b>Thursday 4:30PM</b> Beginner </li>
-                <li><b>Friday 7:30PM</b> Beginner </li>
+                <li><b>Friday 7:30PM</b> Intermediate </li>
               </ul>
-              <em>*Womens Beginner sessions will run from Week 2 - Week 6</em>
             </div>)
         }
         return (
