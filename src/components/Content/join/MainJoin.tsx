@@ -112,24 +112,24 @@ export class MainJoin extends Component<MainJoinProps, MainJoinState> {
       )
     }
 
-    // if (this.props.clubConfig.clubSignupStatus === 'closed') {
-    //   return (
-    //     <div>
-    //       Signups are closed until the next semester starts. Follow us on
-    //       <a
-    //         href="https://www.instagram.com/aumuaythai/"
-    //         target="_blank"
-    //         rel="noopener noreferrer"
-    //       >
-    //         {' '}
-    //         Instagram{' '}
-    //       </a>
-    //       or
-    //       <a href="https://www.facebook.com/aumuaythai/"> Facebook </a>
-    //       for announcements.
-    //     </div>
-    //   )
-    // }
+    if (this.props.clubConfig.clubSignupStatus === 'closed') {
+      return (
+        <div>
+          Signups are closed until the next semester starts. Follow us on
+          <a
+            href="https://www.instagram.com/aumuaythai/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {' '}
+            Instagram{' '}
+          </a>
+          or
+          <a href="https://www.facebook.com/aumuaythai/"> Facebook </a>
+          for announcements.
+        </div>
+      )
+    }
 
     return (
       <div>

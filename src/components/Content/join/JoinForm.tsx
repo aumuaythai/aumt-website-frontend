@@ -5,6 +5,7 @@ import {
   Form,
   Input,
   Radio,
+  Select,
   Tooltip,
   message,
   notification,
@@ -29,6 +30,31 @@ interface JoinFormState {
   otherGender: string
   submitting: boolean
 }
+
+const ETHNICITIES = [
+  'New Zealand European',
+  'Māori',
+  'Chinese',
+  'Indian',
+  'Korean',
+  'British and Irish',
+  'African',
+  'Pasifika',
+  'Australian',
+  'Cambodian',
+  'Dutch',
+  'Filipino',
+  'German',
+  'Greek',
+  'Italian',
+  'Japanese',
+  'Latin American/Hispanic',
+  'Middle Eastern',
+  'Sri Lankan',
+  'Thai',
+  'Vietnamese',
+  'Other',
+]
 
 export class JoinForm extends Component<JoinFormProps, JoinFormState> {
   private formRef = React.createRef<FormInstance>()
@@ -72,6 +98,8 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
       FirstName: firstName,
       LastName: lastName,
       PreferredName: preferredName = '',
+      Ethnicity: ethnicity,
+      Gender: gender,
       Experience: initialExperience,
       EmergencyContactName,
       EmergencyContactNumber,
@@ -90,6 +118,8 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
       firstName,
       lastName,
       preferredName,
+      ethnicity,
+      gender,
       email,
       isUoAStudent,
       upi,
@@ -352,7 +382,11 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               rules={[{ required: true }]}
               {...this.alignInputLayout}
             >
-              <Input className="joinFormInput" />
+              <Select>
+                {ETHNICITIES.map((ethnicity) => (
+                  <Select.Option value={ethnicity}>{ethnicity}</Select.Option>
+                ))}
+              </Select>
             </Form.Item>
 
             <Form.Item
