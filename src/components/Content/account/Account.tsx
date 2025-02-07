@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { AumtMember, ClubConfig } from '../../../types'
 
-import { Button, Input, List, notification, Radio, Spin } from 'antd'
+import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 
 import './Account.css'
 
@@ -11,6 +11,7 @@ import db from '../../../services/db'
 import FirebaseUtil from '../../../services/firebase.util'
 import Validator from '../../../services/validator'
 import PaymentInstructions from '../../utility/PaymentInstructions'
+import { ETHNICITIES } from '../join/JoinForm'
 
 interface AccountProps {
   authedUser: AumtMember
@@ -120,6 +121,12 @@ export class Account extends Component<AccountProps, AccountState> {
   }
   onEmailChange = (newEmail: string) => {
     this.setState({ ...this.state, currentEmail: newEmail })
+  }
+  onEthnicityChange = (newEthnicity: string) => {
+    this.setState({ ...this.state, currentEthnicity: newEthnicity })
+  }
+  onGenderChange = (newGender: string) => {
+    this.setState({ ...this.state, currentGender: newGender })
   }
   onIsUoaChange = (isUoa: 'Yes' | 'No') => {
     this.setState({ ...this.state, currentIsUoaStudent: isUoa })
@@ -279,6 +286,7 @@ export class Account extends Component<AccountProps, AccountState> {
   }
 
   render() {
+    console.log(this.state.currentGender)
     if (this.props.authedUser) {
       return (
         <div className="accountContainer">
@@ -458,6 +466,33 @@ export class Account extends Component<AccountProps, AccountState> {
             </List.Item>
             <List.Item>
               <span>Email: {this.state.currentEmail}</span>
+            </List.Item>
+            <List.Item>
+              <span>Ethnicity:</span>
+              <Select
+                disabled={!this.state.editPersonal}
+                value={this.state.currentEthnicity}
+                onChange={(value) => this.onEthnicityChange(value)}
+                className="dropdown"
+              >
+                {ETHNICITIES.map((ethnicity) => (
+                  <Select.Option value={ethnicity}>{ethnicity}</Select.Option>
+                ))}
+              </Select>
+            </List.Item>
+            <List.Item>
+              <span>Gender:</span>
+              <Radio.Group
+                name="GenderRadio"
+                value={this.state.currentGender}
+                disabled={!this.state.editPersonal}
+                onChange={(v) => this.onGenderChange(v.target.value)}
+              >
+                <Radio value={'Male'}>Male</Radio>
+                <Radio value={'Female'}>Female</Radio>
+                <Radio value={'Non-binary'}>Non-binary</Radio>
+                <Radio value={'Prefer not to say'}>Prefer not to say</Radio>
+              </Radio.Group>
             </List.Item>
           </List>
 

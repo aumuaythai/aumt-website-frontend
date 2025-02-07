@@ -27,11 +27,10 @@ interface JoinFormProps {
 
 interface JoinFormState {
   currentExperienceInMuayThai: string
-  otherGender: string
   submitting: boolean
 }
 
-const ETHNICITIES = [
+export const ETHNICITIES = [
   'New Zealand European',
   'Māori',
   'Chinese',
@@ -75,7 +74,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
     super(props)
     this.state = {
       currentExperienceInMuayThai: '',
-      otherGender: '',
       submitting: false,
     }
   }
@@ -400,7 +398,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 onChange={(v) =>
                   this.setState({
                     ...this.state,
-                    otherGender: v.target.value,
                   })
                 }
               >
@@ -410,17 +407,8 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 <Radio style={this.verticalRadioStyle} value={'Female'}>
                   Female
                 </Radio>
-                <Radio style={this.verticalRadioStyle} value={'Other'}>
-                  Other
-                  {this.state.otherGender === 'Other' ? (
-                    <Input
-                      className="joinFormInput"
-                      style={{
-                        width: 100,
-                        marginLeft: 10,
-                      }}
-                    />
-                  ) : null}
+                <Radio style={this.verticalRadioStyle} value={'Non-binary'}>
+                  Non-binary
                 </Radio>
                 <Radio
                   style={this.verticalRadioStyle}
