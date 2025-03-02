@@ -157,9 +157,9 @@ export class Aumt extends Component<AumtProps, AumtState> {
                     <Route path="/about">
                       <Redirect to="/" />
                     </Route>
-                    <Route path="/team">
+                    {/* <Route path="/team">
                       <TeamLazyWrapper></TeamLazyWrapper>
-                    </Route>
+                    </Route> */}
                     <Route path="/faq">
                       <Faq></Faq>
                     </Route>

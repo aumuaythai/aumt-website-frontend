@@ -1,12 +1,11 @@
+import { DownOutlined } from '@ant-design/icons'
+import { Menu as BaseMenu } from 'antd'
 import React, { Component, ReactText } from 'react'
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
-import { Menu as BaseMenu } from 'antd';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
-import {DownOutlined} from '@ant-design/icons'
 import './TopMenu.css'
 
 import { AumtMember } from '../../types'
-
 
 export const Menu = styled(BaseMenu)`
 
@@ -60,7 +59,7 @@ export const Menu = styled(BaseMenu)`
 
 
   
-`;
+`
 
 export interface TopMenuProps extends RouteComponentProps {
   authedUser: AumtMember | null
@@ -68,98 +67,115 @@ export interface TopMenuProps extends RouteComponentProps {
 }
 
 export interface TopMenuState {
-    current: string
+  current: string
 }
 
 class TopMenu extends Component<TopMenuProps, TopMenuState> {
-    private unlisten: null | Function = null;
-    constructor(props: TopMenuProps) {
-        super(props)
-        this.state = {
-            current: 'About'
-        }
-        this.unlisten = null
+  private unlisten: null | Function = null
+  constructor(props: TopMenuProps) {
+    super(props)
+    this.state = {
+      current: 'About',
     }
+    this.unlisten = null
+  }
 
-    componentDidMount = () => {
-        this.setStateFromPathChange(window.location.pathname)
-        this.unlisten = this.props.history.listen(this.onRouteChange);
+  componentDidMount = () => {
+    this.setStateFromPathChange(window.location.pathname)
+    this.unlisten = this.props.history.listen(this.onRouteChange)
+  }
+
+  componentWillUnmount = () => {
+    if (this.unlisten) {
+      this.unlisten()
     }
+  }
 
-    componentWillUnmount = () => {
-      if (this.unlisten) {
-        this.unlisten()
+  onRouteChange = (location: any, action: string) => {
+    this.setStateFromPathChange(location.pathname)
+  }
+
+  setStateFromPathChange = (windowPath: string) => {
+    const pathname = windowPath.split('/')[1]
+    const menuPages = [
+      'About',
+      'Signups',
+      'Events',
+      'Join',
+      'FAQ',
+      'Team',
+      'Admin',
+      'Account',
+    ]
+    for (const page of menuPages) {
+      if (page.toLowerCase() === pathname.toLowerCase()) {
+        this.setState({
+          current: page,
+        })
+        return
       }
     }
+    this.setState({ current: 'About' })
+  }
 
-    onRouteChange = (location: any, action: string) => {
-        this.setStateFromPathChange(location.pathname)
-    }
-
-    setStateFromPathChange = (windowPath: string) => {
-        const pathname = windowPath.split('/')[1]
-        const menuPages = ['About', 'Signups', 'Events', 'Join', 'FAQ', 'Team', 'Admin', 'Account']
-        for (const page of menuPages) {
-          if (page.toLowerCase() === pathname.toLowerCase()) {
-            this.setState({
-              current: page
-            })
-            return
-          }
-        }
-        this.setState({current: 'About'})
-    }
-
-  handleClick = (e: {key: ReactText}) => {
+  handleClick = (e: { key: ReactText }) => {
     this.setState({
       current: String(e.key),
-    });
-  };
+    })
+  }
 
   mobileMenu = () => {
     return (
-      <Menu style={{textAlign: 'center', border:'none'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode='horizontal'>
-        <Menu.SubMenu title={
+      <Menu
+        style={{ textAlign: 'center', border: 'none' }}
+        onClick={this.handleClick}
+        selectedKeys={[this.state.current]}
+        mode="horizontal"
+      >
+        <Menu.SubMenu
+          title={
             <>
-            Menu <DownOutlined className='menuDownIcon' />
+              Menu <DownOutlined className="menuDownIcon" />
             </>
-          }>
-            <Menu.SubMenu title='About'>
-              <Menu.Item key="About">
-                <Link to='/'>Club Info</Link>
-              </Menu.Item>
-              <Menu.Item key="Gallery">
-                <Link to='/gallery'>Gallery</Link>
-              </Menu.Item>
-              <Menu.Item key="Team">
-                <Link to='/team'>Our Team</Link>
-              </Menu.Item>
-              <Menu.Item key="FAQ">
-                <Link to='/faq'>FAQ</Link>
-              </Menu.Item>
-              <Menu.Item key="Merch">
-                <Link to='/merch'>Merch</Link>
+          }
+        >
+          <Menu.SubMenu title="About">
+            <Menu.Item key="About">
+              <Link to="/">Club Info</Link>
             </Menu.Item>
-            </Menu.SubMenu>
-            {this.props.isAdmin ?
-          (
+            <Menu.Item key="Gallery">
+              <Link to="/gallery">Gallery</Link>
+            </Menu.Item>
+            {/* <Menu.Item key="Team">
+                <Link to='/team'>Our Team</Link>
+              </Menu.Item> */}
+            <Menu.Item key="FAQ">
+              <Link to="/faq">FAQ</Link>
+            </Menu.Item>
+            <Menu.Item key="Merch">
+              <Link to="/merch">Merch</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
+          {this.props.isAdmin ? (
             <Menu.Item key="Admin">
-              <Link to='/admin'>Admin</Link>
+              <Link to="/admin">Admin</Link>
             </Menu.Item>
           ) : null}
           <Menu.Item key="Signups">
-            <Link to='/signups'>Weekly Trainings</Link>
+            <Link to="/signups">Weekly Trainings</Link>
           </Menu.Item>
           <Menu.Item key="Events">
-            <Link to='/events'>Join Events</Link>
+            <Link to="/events">Join Events</Link>
           </Menu.Item>
-          {this.props.authedUser ?
+          {this.props.authedUser ? (
             <Menu.Item key="Account">
-              <Link to='/account'>My Account</Link>
+              <Link to="/account">My Account</Link>
             </Menu.Item>
-          : <Menu.Item key="Join">
-            <Link to='/join'>Create Account</Link>
-          </Menu.Item>}
+          ) : (
+            <Menu.Item key="Join">
+              <Link to="/join">Create Account</Link>
+            </Menu.Item>
+          )}
         </Menu.SubMenu>
       </Menu>
     )
@@ -167,48 +183,57 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
 
   desktopMenu = () => {
     return (
-      <Menu style={{textAlign: 'center', border:'none'}} onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
-        <Menu.SubMenu title={
+      <Menu
+        style={{ textAlign: 'center', border: 'none' }}
+        onClick={this.handleClick}
+        selectedKeys={[this.state.current]}
+        mode="horizontal"
+      >
+        <Menu.SubMenu
+          title={
             <>
-            About <DownOutlined className='menuDownIcon' />
+              About <DownOutlined className="menuDownIcon" />
             </>
-          }>
-          <Menu.Item key="About" >
-            <Link to='/'>Club Info</Link>
+          }
+        >
+          <Menu.Item key="About">
+            <Link to="/">Club Info</Link>
           </Menu.Item>
           <Menu.Item key="Gallery">
-            <Link to='/gallery'>Gallery</Link>
+            <Link to="/gallery">Gallery</Link>
           </Menu.Item>
-          <Menu.Item key="Team">
+          {/* <Menu.Item key="Team">
             <Link to='/team'>Our Team</Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="FAQ">
-            <Link to='/faq'>FAQ</Link>
+            <Link to="/faq">FAQ</Link>
           </Menu.Item>
           <Menu.Item key="Merch">
-            <Link to='/merch'>Merch</Link>
+            <Link to="/merch">Merch</Link>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.Item key="Signups" >
-          <Link to='/signups'>Weekly Trainings</Link>
+        <Menu.Item key="Signups">
+          <Link to="/signups">Weekly Trainings</Link>
         </Menu.Item>
         <Menu.Item key="Events">
-          <Link to='/events'>Join Events</Link>
+          <Link to="/events">Join Events</Link>
         </Menu.Item>
-        {this.props.authedUser ?
-            <Menu.Item key="Account">
-              <Link to='/account'>My Account</Link>
-            </Menu.Item>
-          : <Menu.Item key="Join" >
-            <Link to='/join'>Create Account</Link>
-          </Menu.Item>}
-        {this.props.isAdmin ?
-            <Menu.Item key="Admin" >
-              <Link to='/admin'>Admin</Link>
-            </Menu.Item>
-          : null}
+        {this.props.authedUser ? (
+          <Menu.Item key="Account">
+            <Link to="/account">My Account</Link>
+          </Menu.Item>
+        ) : (
+          <Menu.Item key="Join">
+            <Link to="/join">Create Account</Link>
+          </Menu.Item>
+        )}
+        {this.props.isAdmin ? (
+          <Menu.Item key="Admin">
+            <Link to="/admin">Admin</Link>
+          </Menu.Item>
+        ) : null}
       </Menu>
-    );
+    )
   }
   render() {
     if (window.innerWidth < 600) {
