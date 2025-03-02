@@ -1,45 +1,37 @@
-import React, { lazy, Component, Suspense } from 'react'
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { notification, Spin } from 'antd'
 import firebase from 'firebase/app'
-import Header from './Header/Header'
-import { LoginForm } from './Header/LoginForm'
-import { About } from './Content/info/About'
-import EventsWrapper from './Content/events/EventsWrapper'
-import { Faq } from './Content/info/Faq'
-import { Merch } from './Content/info/Merch'
-import { Gallery } from './Content/info/Gallery'
-import { MainJoin } from './Content/join/MainJoin'
-import { Account } from './Content/account/Account'
-import { ErrorBoundary } from './Content/error/ErrorBoundary'
-import './Aumt.css'
-import DB from '../services/db'
+import React, { Component, lazy, Suspense } from 'react'
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import Analytics from '../services/analytics'
+import DB from '../services/db'
 import FirebaseUtil from '../services/firebase.util'
 import Functions from '../services/functions'
-import { AumtMember, ClubConfig } from '../types';
+import { AumtMember, ClubConfig } from '../types'
+import './Aumt.css'
+import { Account } from './Content/account/Account'
+import { ErrorBoundary } from './Content/error/ErrorBoundary'
+import EventsWrapper from './Content/events/EventsWrapper'
+import { About } from './Content/info/About'
+import { Faq } from './Content/info/Faq'
+import { Gallery } from './Content/info/Gallery'
+import { Merch } from './Content/info/Merch'
+import { MainJoin } from './Content/join/MainJoin'
+import Header from './Header/Header'
+import { LoginForm } from './Header/LoginForm'
 
-const MainAdminLazyWrapper = (
-  lazy(() => (
-    import('./Admin/MainAdmin' /* webpackChunkName: "main-admin" */)
-  ))
+const MainAdminLazyWrapper = lazy(
+  () => import('./Admin/MainAdmin' /* webpackChunkName: "main-admin" */)
 )
 
-const TeamLazyWrapper = (
-  lazy(() => (
-    import('./Content/info/Team' /* webpackChunkName: "team" */)
-  ))
+const TeamLazyWrapper = lazy(
+  () => import('./Content/info/Team' /* webpackChunkName: "team" */)
 )
 
-const SignupsLazyWrapper = (
-  lazy(() => (
-    import('./Content/signups/Signups' /* webpackChunkName: "signups" */)
-  ))
+const SignupsLazyWrapper = lazy(
+  () => import('./Content/signups/Signups' /* webpackChunkName: "signups" */)
 )
 
-export interface AumtProps {
-
-}
+export interface AumtProps {}
 
 export interface AumtState {
   loadingAuthedUser: boolean
@@ -62,13 +54,13 @@ export class Aumt extends Component<AumtProps, AumtState> {
       authedUserId: '',
       clubSignupStatus: 'loading',
       clubSignupSem: 'loading',
-      clubConfig: null
+      clubConfig: null,
     }
 
     // Initilize firebase products.
     FirebaseUtil.initialize(this.authStateChange)
-    Analytics.initialize();
-    Functions.initialize();
+    Analytics.initialize()
+    Functions.initialize()
     DB.initialize()
 
     DB.getClubConfig()
@@ -77,11 +69,13 @@ export class Aumt extends Component<AumtProps, AumtState> {
           ...this.state,
           clubSignupStatus: config.clubSignupStatus,
           clubSignupSem: config.clubSignupSem,
-          clubConfig: { ...config }
+          clubConfig: { ...config },
         })
       })
       .catch((err) => {
-        notification.error({ message: 'Failed to get website config: ' + err.toString() })
+        notification.error({
+          message: 'Failed to get website config: ' + err.toString(),
+        })
       })
   }
 
@@ -93,25 +87,26 @@ export class Aumt extends Component<AumtProps, AumtState> {
             ...this.state,
             authedUser: userInfo,
             loadingAuthedUser: false,
-            authedUserId: fbUser.uid
+            authedUserId: fbUser.uid,
           })
           return DB.getIsAdmin(fbUser.uid)
         })
         .then((isAdmin: boolean) => {
           this.setState({
             ...this.state,
-            userIsAdmin: isAdmin
+            userIsAdmin: isAdmin,
           })
         })
         .catch((err) => {
           if (err === 'No User for uid') {
             notification.error({
               message: 'Error logging in',
-              description: 'User is registered but not in database! Message the AUMT team on facebook as this should not happen :)'
+              description:
+                'User is registered but not in database! Message the AUMT team on facebook as this should not happen :)',
             })
           } else {
             notification.error({
-              message: `Error logging in: ${err}`
+              message: `Error logging in: ${err}`,
             })
           }
           this.setState({
@@ -119,7 +114,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
             authedUser: null,
             authedUserId: '',
             loadingAuthedUser: false,
-            userIsAdmin: false
+            userIsAdmin: false,
           })
           return FirebaseUtil.signOut()
         })
@@ -132,7 +127,7 @@ export class Aumt extends Component<AumtProps, AumtState> {
         authedUser: null,
         authedUserId: '',
         loadingAuthedUser: false,
-        userIsAdmin: false
+        userIsAdmin: false,
       })
     }
   }
@@ -146,18 +141,27 @@ export class Aumt extends Component<AumtProps, AumtState> {
               <LoginForm></LoginForm>
             </Route>
             <Route path="/*">
-              <Header authedUser={this.state.authedUser} isAdmin={this.state.userIsAdmin}></Header>
+              <Header
+                authedUser={this.state.authedUser}
+                isAdmin={this.state.userIsAdmin}
+              ></Header>
               <ErrorBoundary>
-                <Suspense fallback={<div><Spin /></div>}>
+                <Suspense
+                  fallback={
+                    <div>
+                      <Spin />
+                    </div>
+                  }
+                >
                   <Switch>
                     <Route path="/about">
-                      <Redirect to='/' />
+                      <Redirect to="/" />
                     </Route>
                     <Route path="/team">
                       <TeamLazyWrapper></TeamLazyWrapper>
                     </Route>
                     <Route path="/faq">
-                      <Faq ></Faq>
+                      <Faq></Faq>
                     </Route>
                     <Route path="/merch">
                       <Merch></Merch>
@@ -174,11 +178,14 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         authedUserId={this.state.authedUserId}
                         clubSignupSem={this.state.clubSignupSem}
                         authedUser={this.state.authedUser}
-                        clubConfig={this.state.clubConfig}></SignupsLazyWrapper>
+                        clubConfig={this.state.clubConfig}
+                      ></SignupsLazyWrapper>
                     </Route>
                     <Route path="/events">
                       {/* {this.state.authedUser ?  */}
-                      <EventsWrapper authedUser={this.state.authedUser}></EventsWrapper>
+                      <EventsWrapper
+                        authedUser={this.state.authedUser}
+                      ></EventsWrapper>
                       {/* : 
                             <div>
                               You must <Link to='/login?from=/events'> log in </Link> to view events.
@@ -190,37 +197,42 @@ export class Aumt extends Component<AumtProps, AumtState> {
                         loadingAuthedUser={this.state.loadingAuthedUser}
                         authedUser={this.state.authedUser}
                         authedUserId={this.state.authedUserId}
-                        clubConfig={this.state.clubConfig}></MainJoin>
+                        clubConfig={this.state.clubConfig}
+                      ></MainJoin>
                     </Route>
                     <Route path="/admin">
-                      {
-                        this.state.userIsAdmin ?
-                          <MainAdminLazyWrapper></MainAdminLazyWrapper> :
-                          <div>
-                            You are not authorised to access this page.
-                          </div>
-                      }
+                      {this.state.userIsAdmin ? (
+                        <MainAdminLazyWrapper></MainAdminLazyWrapper>
+                      ) : (
+                        <div>You are not authorised to access this page.</div>
+                      )}
                     </Route>
                     <Route path="/account">
-                      {
-                        this.state.authedUser ?
-                          <Account
-                            clubSignupSem={this.state.clubSignupSem}
-                            loadingAuthedUser={this.state.loadingAuthedUser}
-                            clubSignupStatus={this.state.clubSignupStatus}
-                            authedUser={this.state.authedUser}
-                            authedUserId={this.state.authedUserId}
-                            clubConfig={this.state.clubConfig}></Account> :
-                          <div>
-                            You do not have an account yet. Please join.
-                          </div>
-                      }
+                      {this.state.authedUser ? (
+                        <Account
+                          clubSignupSem={this.state.clubSignupSem}
+                          loadingAuthedUser={this.state.loadingAuthedUser}
+                          clubSignupStatus={this.state.clubSignupStatus}
+                          authedUser={this.state.authedUser}
+                          authedUserId={this.state.authedUserId}
+                          clubConfig={this.state.clubConfig}
+                        ></Account>
+                      ) : (
+                        <div>You do not have an account yet. Please join.</div>
+                      )}
                     </Route>
                     <Route path="/penis">
-                      <img className='headshotheadshot' src="./photos/tom.jpg" alt="Tom Haliday" />
+                      <img
+                        className="headshotheadshot"
+                        src="./photos/tom.jpg"
+                        alt="Tom Haliday"
+                      />
                     </Route>
                     <Route path="/">
-                      <About></About>
+                      <About
+                        semesterFee={this.state.clubConfig?.semesterOneFee}
+                        fullYearFee={this.state.clubConfig?.fullYearFee}
+                      />
                     </Route>
                   </Switch>
                 </Suspense>
@@ -229,6 +241,6 @@ export class Aumt extends Component<AumtProps, AumtState> {
           </Switch>
         </BrowserRouter>
       </div>
-    );
+    )
   }
 }
