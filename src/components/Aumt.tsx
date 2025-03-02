@@ -23,9 +23,9 @@ const MainAdminLazyWrapper = lazy(
   () => import('./Admin/MainAdmin' /* webpackChunkName: "main-admin" */)
 )
 
-const TeamLazyWrapper = lazy(
-  () => import('./Content/info/Team' /* webpackChunkName: "team" */)
-)
+// const TeamLazyWrapper = lazy(
+//   () => import('./Content/info/Team' /* webpackChunkName: "team" */)
+// )
 
 const SignupsLazyWrapper = lazy(
   () => import('./Content/signups/Signups' /* webpackChunkName: "signups" */)
