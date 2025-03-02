@@ -114,16 +114,16 @@ class Signups extends Component<SignupProps, SignupState> {
           <p>The current training schedule is:</p>
           <ul className="scheduleList">
             <li>
-              <b>Tuesday 4:30PM</b> Beginner
+              <b>Tuesday 4:30PM</b> Beginners
             </li>
             <li>
-              <b>Wednesday 5:30PM</b> Women's Beginner{' '}
+              <b>Wednesday 5:30PM</b> Women's Beginners{' '}
             </li>
             <li>
-              <b>Thursday 4:30PM</b> Beginner{' '}
+              <b>Thursday 4:30PM</b> Beginners{' '}
             </li>
             <li>
-              <b>Friday 7:30PM</b> Intermediate{' '}
+              <b>Friday 6:30PM</b> Intermediate{' '}
             </li>
           </ul>
         </div>
