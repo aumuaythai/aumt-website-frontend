@@ -98,15 +98,22 @@ export class About extends Component<AboutProps> {
             <span className="lacuna"> Membership</span> <br /> Price
           </h2>
           <div className="btnContainer">
-            <button className="boldBtn yellow membershipBtn">
-              1 SEMESTER <br /> ${this.props.semesterFee}
-            </button>
-            <button className="boldBtn yellow membershipBtn">
-              FULL YEAR <br /> ${this.props.fullYearFee}
-            </button>
-            <button className="boldBtn invert membershipBtn">
-              1 OFF CLASS* <br /> $10
-            </button>
+            <div className="boldBtn yellow membershipBtn">
+              <div>1 SEMESTER</div>
+              <div>${this.props.semesterFee}</div>
+            </div>
+            <div className="yellow membershipBtn boldBtn">
+              <div>FULL YEAR</div>
+              <div>
+                <span className="originalPrice">$140</span> $
+                {this.props.fullYearFee}
+              </div>
+              <div className="saleMessage">Club Expo sale, ends Sunday!</div>
+            </div>
+            <div className="boldBtn invert membershipBtn">
+              <div>1 OFF CLASS*</div>
+              <div>$10</div>
+            </div>
           </div>
           <p>
             An AUMT membership gives you access to an 1 hour/1 class per week
