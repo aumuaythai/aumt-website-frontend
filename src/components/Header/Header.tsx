@@ -1,61 +1,63 @@
-import React, { Component } from 'react'
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
-import TopMenu from './TopMenu'
-import {UserInfo} from './UserInfo'
+import React from 'react'
+import { Link, RouteComponentProps, useLocation } from 'react-router-dom'
 import { Links } from '../../services/links'
-import './Header.css'
 import { AumtMember } from '../../types'
+import './Header.css'
+import TopMenu from './TopMenu'
+import { UserInfo } from './UserInfo'
 
 export interface HeaderProps extends RouteComponentProps {
-    authedUser: AumtMember | null
-    isAdmin: boolean
+  authedUser: AumtMember | null
+  isAdmin: boolean
 }
 
-export interface HeaderState {
-}
+export interface HeaderState {}
 
-class Header extends Component<HeaderProps, HeaderState> {
-    private routeChangeListener: null | Function = null
-    private currentPathname: string = window.location.pathname
-    componentDidMount = () => {
-        this.routeChangeListener = this.props.history.listen(this.onRouteChange);
-    }
-    onRouteChange = (location: any, action: string) => {
-        this.currentPathname = location.pathname || '/' 
-    }
-    fbClick = () => {
-        Links.openAumtFb()
-    }
-    igClick = () => {
-        Links.openAumtInsta()
-    }
-    render() {
-        return (
-            <div className="headerContainer">
-                <div className="imageContainer">
-                    <Link to='/'><img className='logoImg' src={"logos/AUMTLogo.png"} alt=""/></Link>
-                </div>
-                <div className="topMenuContainer">
-                    <TopMenu isAdmin={this.props.isAdmin} authedUser={this.props.authedUser}></TopMenu>
-                </div>
-                <div className="socialsContainer">
-                    {
-                        this.props.authedUser ?
-                            <span className='headerNameSpan'>
-                                <UserInfo authedUser={this.props.authedUser}>
-                                </UserInfo>
-                            </span> :
-                            <div className='loginButton'><Link to={`/login?from=${this.currentPathname}`}>Sign In</Link></div>
-                    }
-                    <div className="socialIconContainer">
-                        <span className="socialIcon" onClick={this.fbClick}><FacebookFilled/></span>
-                        <span className="socialIcon" onClick={this.igClick}><InstagramFilled/></span>
-                    </div>
-                </div>
-            </div>
-          );
-    }
+export default function Header(props: HeaderProps) {
+  const currentPathname: string = window.location.pathname
+
+  const location = useLocation()
+  const pathname = location.pathname
+
+  const fbClick = () => {
+    Links.openAumtFb()
+  }
+
+  const igClick = () => {
+    Links.openAumtInsta()
+  }
+
+  return (
+    <div className="headerContainer">
+      <div className="imageContainer">
+        <Link to="/">
+          <img className="logoImg" src={'logos/AUMTLogo.png'} alt="" />
+        </Link>
+      </div>
+      <div className="topMenuContainer">
+        <TopMenu isAdmin={props.isAdmin} authedUser={props.authedUser} />
+      </div>
+      <div className="socialsContainer">
+        {props.authedUser ? (
+          <span className="headerNameSpan">
+            <UserInfo authedUser={props.authedUser}></UserInfo>
+          </span>
+        ) : (
+          <div className="loginButton">
+            <Link to={`/login?from=${currentPathname}`}>Sign In</Link>
+          </div>
+        )}
+        <div className="socialIconContainer">
+          <span className="socialIcon" onClick={fbClick}>
+            <FacebookFilled />
+          </span>
+          <span className="socialIcon" onClick={igClick}>
+            <InstagramFilled />
+          </span>
+        </div>
+      </div>
+    </div>
+  )
 }
-export default withRouter(Header)
