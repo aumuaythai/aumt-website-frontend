@@ -1,3 +1,13 @@
-#root, .App {
-    height: 100%
+#root,
+.App {
+  height: 100%;
+}
+
+.App {
+  text-align: center;
+}
+
+a,
+a:hover {
+  color: inherit;
 }
