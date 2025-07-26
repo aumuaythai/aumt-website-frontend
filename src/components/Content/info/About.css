@@ -1,11 +1,10 @@
-.aboutContainer{
+.aboutContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 5px;
+  padding: 20px 0px;
 }
-
 
 .introTitle {
   font-size: 2.5vw;
@@ -16,12 +15,10 @@
   margin: 0 auto;
 }
 
-
-.landingImg{
+.landingImg {
   width: 100%;
   height: 600px;
-  object-fit:cover;
-
+  object-fit: cover;
 }
 
 .introStr {
@@ -32,61 +29,58 @@
   font-size: 25px;
 }
 
-.btnContainer{
+.btnContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px 0 30px 0;
-  width:100%;
+  width: 100%;
   max-width: 1000px;
-  gap:10px;
-
+  gap: 10px;
 }
-.boldBtn{
+.boldBtn {
   font-family: 'Joyride' !important;
   font-size: 20px;
   padding: 10px 30px;
   text-align: center;
-  border:none;
-  cursor:pointer;
-  margin:0;
+  border: none;
+  cursor: pointer;
+  margin: 0;
 }
 
-.teal{
+.teal {
   background-color: #1ac4a7;
   flex-grow: 1;
-
 }
-.yellow{
+.yellow {
   background-color: #fbe74a;
 }
 
-.orange{
+.orange {
   background-color: #f48c05;
 }
-.pink{
+.pink {
   background-color: #ff0c51;
 }
 
-.invert{
+.invert {
   color: white;
   background-color: black;
 }
 
-.membershipBtn{
+.membershipBtn {
   font-size: 30px;
   flex-grow: 1;
 }
 
-
 .aboutDivider {
-  width:100%;
+  width: 100%;
   max-width: 1200px;
   height: 5px;
   background-color: #000;
 }
 
-.aboutSection{
+.aboutSection {
   padding: 50px 0;
   width: 100%;
   max-width: 1200px;
@@ -94,24 +88,24 @@
   flex-direction: column;
   align-items: center;
 }
-.aboutSectionHeader{
+.aboutSectionHeader {
   line-height: 80%;
-  font-size:25px;
+  font-size: 25px;
 }
 
-.lacuna{
+.lacuna {
   font-family: 'Lacuna', sans-serif;
   font-size: 50px;
 }
 
-.aboutSectionBody{
+.aboutSectionBody {
   width: 100%;
   display: flex;
   justify-content: space-between;
   gap: 20px;
   padding: 20px 0px;
 }
-.aboutSectionDescription{
+.aboutSectionDescription {
   width: 50%;
   text-align: left;
   display: flex;
@@ -120,86 +114,83 @@
   align-items: center;
 }
 
-.aboutSectionDescription p{
+.aboutSectionDescription p {
   padding: 0 20px;
 }
-.aboutSectionImg{
+.aboutSectionImg {
   width: 50%;
 }
 
-.aboutFooterNotes a, .aboutFooterNotes button{
+.aboutFooterNotes a,
+.aboutFooterNotes button {
   color: #11388d !important;
 }
 
-
-
-
 .aboutFooterNotes {
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .aboutInlineLink {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
-@media(max-width: 1217px) {
-    .aboutDescriptionImg {
-        width: 100%;
-        float: none
-    }
+@media (max-width: 1217px) {
+  .aboutDescriptionImg {
+    width: 100%;
+    float: none;
+  }
 
-    .aboutDescription {
-        float: none;
-        text-align: left;
-        padding: 40px;
-        width: unset;
-        max-width: 750px;
-        margin: 30px auto;
-    }
+  .aboutDescription {
+    float: none;
+    text-align: left;
+    padding: 40px;
+    width: unset;
+    max-width: 750px;
+    margin: 30px auto;
+  }
 
-    .aboutSectionBody{
-      flex-direction: column;
-      padding: 0 20px;
-    }
-    .aboutSectionDescription{
-      width: 100%;
-    
-    }
-    .aboutSectionImg{
-      width: 100%;
-    }
+  .aboutSectionBody {
+    flex-direction: column;
+    padding: 0 20px;
+  }
+  .aboutSectionDescription {
+    width: 100%;
+  }
+  .aboutSectionImg {
+    width: 100%;
+  }
 
-    .introStr {
-        font-size: 16px;
-    }
+  .introStr {
+    font-size: 16px;
+  }
 
-    .introTitle {
-        font-size: 25px;
-    }
+  .introTitle {
+    font-size: 25px;
+  }
 
-    .btnContainer{
-      flex-direction: column;
-    }
+  .btnContainer {
+    flex-direction: column;
+  }
 
-    .boldBtn{
-      width:100%;
-      max-width: 500px;
-    }
+  .boldBtn {
+    width: 100%;
+    max-width: 500px;
+  }
 
-    .listContainer {
-        font-size: 16px;
-    }
+  .listContainer {
+    font-size: 16px;
+  }
 
-    .aboutDescriptionRow {
-        padding: 20px 0;
-    }
+  .aboutDescriptionRow {
+    padding: 20px 0;
+  }
 
-    .aboutFooterNotes {
-        text-align: left;
-    }
+  .aboutFooterNotes {
+    text-align: left;
+  }
 }

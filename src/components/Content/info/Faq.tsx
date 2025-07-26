@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
 import { Button, Divider } from 'antd';
-import { Links } from '../../../services/links';
-import './Faq.css';
+import React, { Component } from 'react';
 import db from '../../../services/db';
+import { Links } from '../../../services/links';
 import { ClubConfig } from '../../../types/ClubConfig';
+import './Faq.css';
 
 interface FaqState {
     clubConfig: ClubConfig | null;
