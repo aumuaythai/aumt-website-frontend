@@ -1,6 +1,6 @@
 import { notification, Spin } from 'antd'
 import firebase from 'firebase/app'
-import React, { Component, lazy, Suspense } from 'react'
+import React, { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import Analytics from '../services/analytics'
 import DB from '../services/db'
@@ -31,71 +31,49 @@ const SignupsLazyWrapper = lazy(
   () => import('./Content/signups/Signups' /* webpackChunkName: "signups" */)
 )
 
-export interface AumtProps {}
+export default function Aumt() {
+  const [authedUser, setAuthedUser] = React.useState<AumtMember | null>(null)
+  const [userIsAdmin, setUserIsAdmin] = React.useState(false)
+  const [authedUserId, setAuthedUserId] = React.useState('')
+  const [clubSignupStatus, setClubSignupStatus] = React.useState<
+    'open' | 'closed' | 'loading'
+  >('loading')
+  const [clubSignupSem, setClubSignupSem] = React.useState<
+    'S1' | 'S2' | 'loading' | 'SS'
+  >('loading')
+  const [clubConfig, setClubConfig] = React.useState<ClubConfig | null>(null)
 
-export interface AumtState {
-  loadingAuthedUser: boolean
-  authedUser: AumtMember | null
-  userIsAdmin: boolean
-  authedUserId: string
-  clubSignupStatus: 'open' | 'closed' | 'loading'
-  clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
-  clubConfig: ClubConfig | null
-}
+  const loadingAuthedUser = !!authedUser
 
-export class Aumt extends Component<AumtProps, AumtState> {
-  constructor(props: AumtProps) {
-    super(props)
-    const authedUser = null
-    this.state = {
-      authedUser,
-      loadingAuthedUser: true,
-      userIsAdmin: false,
-      authedUserId: '',
-      clubSignupStatus: 'loading',
-      clubSignupSem: 'loading',
-      clubConfig: null,
-    }
-
-    // Initilize firebase products.
-    FirebaseUtil.initialize(this.authStateChange)
+  useEffect(() => {
+    FirebaseUtil.initialize(authStateChange)
     Analytics.initialize()
     Functions.initialize()
     DB.initialize()
 
     DB.getClubConfig()
       .then((config) => {
-        this.setState({
-          ...this.state,
-          clubSignupStatus: config.clubSignupStatus,
-          clubSignupSem: config.clubSignupSem,
-          clubConfig: { ...config },
-        })
+        setClubSignupStatus(config.clubSignupStatus)
+        setClubSignupSem(config.clubSignupSem)
+        setClubConfig(config)
       })
       .catch((err) => {
         notification.error({
           message: 'Failed to get website config: ' + err.toString(),
         })
       })
-  }
+  }, [])
 
-  private authStateChange = (fbUser: firebase.User | null) => {
+  function authStateChange(fbUser: firebase.User | null) {
     if (fbUser) {
       DB.getUserInfo(fbUser)
         .then((userInfo: AumtMember) => {
-          this.setState({
-            ...this.state,
-            authedUser: userInfo,
-            loadingAuthedUser: false,
-            authedUserId: fbUser.uid,
-          })
+          setAuthedUser(userInfo)
+          setAuthedUserId(fbUser.uid)
           return DB.getIsAdmin(fbUser.uid)
         })
         .then((isAdmin: boolean) => {
-          this.setState({
-            ...this.state,
-            userIsAdmin: isAdmin,
-          })
+          setUserIsAdmin(isAdmin)
         })
         .catch((err) => {
           if (err === 'No User for uid') {
@@ -109,138 +87,117 @@ export class Aumt extends Component<AumtProps, AumtState> {
               message: `Error logging in: ${err}`,
             })
           }
-          this.setState({
-            ...this.state,
-            authedUser: null,
-            authedUserId: '',
-            loadingAuthedUser: false,
-            userIsAdmin: false,
-          })
+          setAuthedUser(null)
+          setAuthedUserId('')
+          setUserIsAdmin(false)
           return FirebaseUtil.signOut()
         })
         .catch((err) => {
           notification.error({ message: `error with email verified ${err}` })
         })
     } else {
-      this.setState({
-        ...this.state,
-        authedUser: null,
-        authedUserId: '',
-        loadingAuthedUser: false,
-        userIsAdmin: false,
-      })
+      setAuthedUser(null)
+      setAuthedUserId('')
+      setUserIsAdmin(false)
     }
   }
 
-  render() {
-    return (
-      <div className="App">
-        <BrowserRouter>
-          <Switch>
-            <Route path="/login">
-              <LoginForm></LoginForm>
-            </Route>
-            <Route path="/*">
-              <Header
-                authedUser={this.state.authedUser}
-                isAdmin={this.state.userIsAdmin}
-              ></Header>
-              <ErrorBoundary>
-                <Suspense
-                  fallback={
-                    <div>
-                      <Spin />
-                    </div>
-                  }
-                >
-                  <Switch>
-                    <Route path="/about">
-                      <Redirect to="/" />
-                    </Route>
-                    {/* <Route path="/team">
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <Switch>
+          <Route path="/login">
+            <LoginForm></LoginForm>
+          </Route>
+          <Route path="/*">
+            <Header authedUser={authedUser} isAdmin={userIsAdmin}></Header>
+            <ErrorBoundary>
+              <Suspense
+                fallback={
+                  <div>
+                    <Spin />
+                  </div>
+                }
+              >
+                <Switch>
+                  <Route path="/about">
+                    <Redirect to="/" />
+                  </Route>
+                  {/* <Route path="/team">
                       <TeamLazyWrapper></TeamLazyWrapper>
                     </Route> */}
-                    <Route path="/faq">
-                      <Faq></Faq>
-                    </Route>
-                    <Route path="/merch">
-                      <Merch></Merch>
-                    </Route>
-                    <Route path="/gallery">
-                      <Gallery></Gallery>
-                    </Route>
-                    <Route path="/signup">
-                      <Redirect to="/signups" />
-                    </Route>
-                    <Route path="/signups">
-                      <SignupsLazyWrapper
-                        paid={this.state.authedUser?.paid === 'Yes'}
-                        authedUserId={this.state.authedUserId}
-                        clubSignupSem={this.state.clubSignupSem}
-                        authedUser={this.state.authedUser}
-                        clubConfig={this.state.clubConfig}
-                      ></SignupsLazyWrapper>
-                    </Route>
-                    <Route path="/events">
-                      {/* {this.state.authedUser ?  */}
-                      <EventsWrapper
-                        authedUser={this.state.authedUser}
-                      ></EventsWrapper>
-                      {/* : 
-                            <div>
-                              You must <Link to='/login?from=/events'> log in </Link> to view events.
-                            </div>
-                            } */}
-                    </Route>
-                    <Route path="/join">
-                      <MainJoin
-                        loadingAuthedUser={this.state.loadingAuthedUser}
-                        authedUser={this.state.authedUser}
-                        authedUserId={this.state.authedUserId}
-                        clubConfig={this.state.clubConfig}
-                      ></MainJoin>
-                    </Route>
-                    <Route path="/admin">
-                      {this.state.userIsAdmin ? (
-                        <MainAdminLazyWrapper></MainAdminLazyWrapper>
-                      ) : (
-                        <div>You are not authorised to access this page.</div>
-                      )}
-                    </Route>
-                    <Route path="/account">
-                      {this.state.authedUser ? (
-                        <Account
-                          clubSignupSem={this.state.clubSignupSem}
-                          loadingAuthedUser={this.state.loadingAuthedUser}
-                          clubSignupStatus={this.state.clubSignupStatus}
-                          authedUser={this.state.authedUser}
-                          authedUserId={this.state.authedUserId}
-                          clubConfig={this.state.clubConfig}
-                        ></Account>
-                      ) : (
-                        <div>You do not have an account yet. Please join.</div>
-                      )}
-                    </Route>
-                    <Route path="/penis">
-                      <img
-                        className="headshotheadshot"
-                        src="./photos/tom.jpg"
-                        alt="Tom Haliday"
-                      />
-                    </Route>
-                    <Route path="/">
-                      <About
-                        semesterFee={this.state.clubConfig?.semesterOneFee}
-                        fullYearFee={this.state.clubConfig?.fullYearFee}
-                      />
-                    </Route>
-                  </Switch>
-                </Suspense>
-              </ErrorBoundary>
-            </Route>
-          </Switch>
-        </BrowserRouter>
-      </div>
-    )
-  }
+                  <Route path="/faq">
+                    <Faq></Faq>
+                  </Route>
+                  <Route path="/merch">
+                    <Merch></Merch>
+                  </Route>
+                  <Route path="/gallery">
+                    <Gallery></Gallery>
+                  </Route>
+                  <Route path="/signup">
+                    <Redirect to="/signups" />
+                  </Route>
+                  <Route path="/signups">
+                    <SignupsLazyWrapper
+                      paid={authedUser?.paid === 'Yes'}
+                      authedUserId={authedUserId}
+                      clubSignupSem={clubSignupSem}
+                      authedUser={authedUser}
+                      clubConfig={clubConfig}
+                    ></SignupsLazyWrapper>
+                  </Route>
+                  <Route path="/events">
+                    <EventsWrapper authedUser={authedUser}></EventsWrapper>
+                  </Route>
+                  <Route path="/join">
+                    <MainJoin
+                      loadingAuthedUser={loadingAuthedUser}
+                      authedUser={authedUser}
+                      authedUserId={authedUserId}
+                      clubConfig={clubConfig}
+                    ></MainJoin>
+                  </Route>
+                  <Route path="/admin">
+                    {userIsAdmin ? (
+                      <MainAdminLazyWrapper></MainAdminLazyWrapper>
+                    ) : (
+                      <div>You are not authorised to access this page.</div>
+                    )}
+                  </Route>
+                  <Route path="/account">
+                    {authedUser ? (
+                      <Account
+                        clubSignupSem={clubSignupSem}
+                        loadingAuthedUser={loadingAuthedUser}
+                        clubSignupStatus={clubSignupStatus}
+                        authedUser={authedUser}
+                        authedUserId={authedUserId}
+                        clubConfig={clubConfig}
+                      ></Account>
+                    ) : (
+                      <div>You do not have an account yet. Please join.</div>
+                    )}
+                  </Route>
+                  <Route path="/penis">
+                    <img
+                      className="headshotheadshot"
+                      src="./photos/tom.jpg"
+                      alt="Tom Haliday"
+                    />
+                  </Route>
+                  <Route path="/">
+                    <About
+                      semesterFee={clubConfig?.semesterOneFee}
+                      fullYearFee={clubConfig?.fullYearFee}
+                    />
+                  </Route>
+                </Switch>
+              </Suspense>
+            </ErrorBoundary>
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </div>
+  )
 }
