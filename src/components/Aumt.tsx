@@ -1,6 +1,6 @@
 import { notification, Spin } from 'antd'
 import firebase from 'firebase/app'
-import React, { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import Analytics from '../services/analytics'
 import DB from '../services/db'

@@ -1,40 +1,24 @@
 {
   "name": "aumt",
-  "version": "0.1.0",
   "private": true,
-  "homepage": "",
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "build": "react-app-rewired build",
-    "deploy": "firebase deploy --only hosting",
-    "eject": "react-app-rewired eject",
-    "guides": "for i in guides/*.md ; do markdown-pdf $i; done",
-    "start": "react-app-rewired start",
-    "test": "react-app-rewired test"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.0.0",
     "antd": "~4.9.4",
     "firebase": "~8.2.0",
     "marked": "^1.2.7",
+    "moment": "^2.30.1",
     "papaparse": "^5.3.0",
     "pdfmake": "^0.1.68",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-hook-form": "^7.61.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.2.0",
@@ -43,26 +27,28 @@
     "zod": "^4.0.10"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.6",
-    "@testing-library/react": "^11.2.2",
-    "@testing-library/user-event": "^12.6.0",
-    "@types/jest": "^26.0.19",
+    "@eslint/js": "^9.30.1",
     "@types/marked": "^1.2.1",
     "@types/node": "^14.14.14",
     "@types/papaparse": "^5.2.4",
-    "@types/react": "^16.12.0",
-    "@types/react-dom": "^16.0.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "@types/react-highlight-words": "^0.16.1",
     "@types/react-router-dom": "^5.1.6",
     "@types/recharts": "^1.8.18",
+    "@vitejs/plugin-react-swc": "^3.10.2",
     "babel-plugin-import": "^1.13.3",
-    "customize-cra": "^1.0.0",
+    "eslint": "^9.30.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
     "firebase-admin": "^9.4.2",
+    "globals": "^16.3.0",
     "less": "^3.13.0",
     "less-loader": "^7.1.0",
     "markdown-pdf": "^10.0.0",
-    "react-app-rewired": "^2.1.5",
-    "source-map-explorer": "^2.5.1",
-    "typescript": "^5.0.4"
-  }
+    "typescript": "^5.0.4",
+    "typescript-eslint": "^8.35.1",
+    "vite": "^7.0.4"
+  },
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
 }

@@ -1,6 +1,5 @@
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
-import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Links } from '../../services/links'
 import { AumtMember } from '../../types'

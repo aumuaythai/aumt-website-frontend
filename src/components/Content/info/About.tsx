@@ -75,12 +75,12 @@ export class About extends Component<AboutProps> {
           </p>
         </div>
         <div className="btnContainer">
-          <button className="boldBtn teal">
-            <a href="/signups">TRAININGS</a>{' '}
-          </button>
-          <button className="boldBtn teal">
-            <a href="/events">EVENTS</a>{' '}
-          </button>
+          <Link to="/signups" className="boldBtn teal">
+            TRAININGS
+          </Link>
+          <Link to="/events" className="boldBtn teal">
+            EVENTS
+          </Link>
         </div>
         <div className="introContainer">
           <h3 className="aboutSectionHead">WHAT IS MUAY THAI?</h3>
@@ -142,9 +142,9 @@ export class About extends Component<AboutProps> {
                 <br />
               </p>
               <div className="btnContainer">
-                <button className="boldBtn orange">
-                  <a href="/signups">SIGN UP TO TRAINING</a>{' '}
-                </button>
+                <Link to="/signups" className="boldBtn orange">
+                  SIGN UP TO TRAINING
+                </Link>
               </div>
             </div>
             <this.HoverImage
@@ -185,9 +185,9 @@ export class About extends Component<AboutProps> {
               </p>
 
               <div className="btnContainer">
-                <button className="boldBtn pink">
-                  <a href="/events">JOIN EVENTS</a>{' '}
-                </button>
+                <Link to="/events" className="boldBtn pink">
+                  JOIN EVENTS
+                </Link>
               </div>
             </div>
           </div>
