@@ -1,6 +1,6 @@
 import { notification, Spin } from 'antd'
 import firebase from 'firebase/app'
-import React, { lazy, Suspense, useEffect } from 'react'
+import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import Analytics from '../services/analytics'
 import DB from '../services/db'
@@ -32,16 +32,16 @@ const SignupsLazyWrapper = lazy(
 )
 
 export default function Aumt() {
-  const [authedUser, setAuthedUser] = React.useState<AumtMember | null>(null)
-  const [userIsAdmin, setUserIsAdmin] = React.useState(false)
-  const [authedUserId, setAuthedUserId] = React.useState('')
-  const [clubSignupStatus, setClubSignupStatus] = React.useState<
+  const [authedUser, setAuthedUser] = useState<AumtMember | null>(null)
+  const [userIsAdmin, setUserIsAdmin] = useState(false)
+  const [authedUserId, setAuthedUserId] = useState('')
+  const [clubSignupStatus, setClubSignupStatus] = useState<
     'open' | 'closed' | 'loading'
   >('loading')
-  const [clubSignupSem, setClubSignupSem] = React.useState<
+  const [clubSignupSem, setClubSignupSem] = useState<
     'S1' | 'S2' | 'loading' | 'SS'
   >('loading')
-  const [clubConfig, setClubConfig] = React.useState<ClubConfig | null>(null)
+  const [clubConfig, setClubConfig] = useState<ClubConfig | null>(null)
 
   const loadingAuthedUser = !!authedUser
 
