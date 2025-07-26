@@ -14,7 +14,6 @@ import EventsWrapper from './Content/events/EventsWrapper'
 import { About } from './Content/info/About'
 import { Faq } from './Content/info/Faq'
 import { Gallery } from './Content/info/Gallery'
-import { Merch } from './Content/info/Merch'
 import { MainJoin } from './Content/join/MainJoin'
 import Header from './Header/Header'
 import { LoginForm } from './Header/LoginForm'
@@ -128,9 +127,6 @@ export default function Aumt() {
                     </Route> */}
                   <Route path="/faq">
                     <Faq></Faq>
-                  </Route>
-                  <Route path="/merch">
-                    <Merch></Merch>
                   </Route>
                   <Route path="/gallery">
                     <Gallery></Gallery>
