@@ -1,14 +1,14 @@
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import React from 'react'
-import { Link, RouteComponentProps, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Links } from '../../services/links'
 import { AumtMember } from '../../types'
 import './Header.css'
 import TopMenu from './TopMenu'
 import { UserInfo } from './UserInfo'
 
-export interface HeaderProps extends RouteComponentProps {
+export interface HeaderProps {
   authedUser: AumtMember | null
   isAdmin: boolean
 }
@@ -28,7 +28,7 @@ export default function Header(props: HeaderProps) {
   }
 
   return (
-    <div className="headerContainer">
+    <header className="headerContainer">
       <div className="imageContainer">
         <Link to="/">
           <img className="logoImg" src={'logos/AUMTLogo.png'} alt="" />
@@ -56,6 +56,6 @@ export default function Header(props: HeaderProps) {
           </span>
         </div>
       </div>
-    </div>
+    </header>
   )
 }

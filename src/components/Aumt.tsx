@@ -109,7 +109,7 @@ export default function Aumt() {
             <LoginForm></LoginForm>
           </Route>
           <Route path="/*">
-            <Header authedUser={authedUser} isAdmin={userIsAdmin}></Header>
+            <Header authedUser={authedUser} isAdmin={userIsAdmin} />
             <ErrorBoundary>
               <Suspense
                 fallback={
