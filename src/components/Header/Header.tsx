@@ -16,8 +16,6 @@ export interface HeaderProps extends RouteComponentProps {
 export interface HeaderState {}
 
 export default function Header(props: HeaderProps) {
-  const currentPathname: string = window.location.pathname
-
   const location = useLocation()
   const pathname = location.pathname
 
@@ -46,7 +44,7 @@ export default function Header(props: HeaderProps) {
           </span>
         ) : (
           <div className="loginButton">
-            <Link to={`/login?from=${currentPathname}`}>Sign In</Link>
+            <Link to={`/login?from=${pathname}`}>Sign In</Link>
           </div>
         )}
         <div className="socialIconContainer">
