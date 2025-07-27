@@ -7,11 +7,18 @@ import { AumtMember } from '../../types'
 import './TopMenu.css'
 
 export const Menu = styled(BaseMenu)`
-
   .ant-menu-item{
     border-bottom: none !important;
     padding: 0 10px !important;
   }
+
+  .ant-menu-item::after {
+    display: none;
+  }    
+
+  .ant-menu-submenu::after {
+    display: none;
+  }    
 
   .ant-menu-item-selected a{
     color: rgba(17,56,141,1) !important;
@@ -55,9 +62,6 @@ export const Menu = styled(BaseMenu)`
       color: WHITE;
     }
   }
-
-
-  
 `
 
 export interface TopMenuProps extends RouteComponentProps {
