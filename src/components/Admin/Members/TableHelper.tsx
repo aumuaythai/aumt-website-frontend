@@ -1,19 +1,26 @@
 import { CopyOutlined, FormOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, notification, Popconfirm, Tooltip } from 'antd'
+import {
+  Button,
+  Input,
+  InputRef,
+  notification,
+  Popconfirm,
+  Tooltip,
+} from 'antd'
 import { TableCurrentDataSource } from 'antd/lib/table/interface'
 import moment from 'moment'
 import PapaParse from 'papaparse'
-import React, { Component } from 'react'
+import React, { Component, createRef, RefObject } from 'react'
+import {
+  default as DataFormatterUtil,
+  default as dataUtil,
+} from '../../../services/data.util'
 import db from '../../../services/db'
 import Validator from '../../../services/validator'
 import { AumtMember, AumtMembersObj } from '../../../types'
 import { Marquee } from '../../utility/Marquee'
 import './TableHelper.css'
 
-import {
-  default as DataFormatterUtil,
-  default as dataUtil,
-} from '../../../services/data.util'
 export type TableDataLine = AumtMember & { key: string; tableName: string }
 export type TableColumn = any
 
@@ -34,8 +41,11 @@ interface TableHelperState {
 }
 
 export class TableHelper extends Component<TableHelperProps, TableHelperState> {
+  private searchInputRef: RefObject<InputRef>
+
   constructor(props: TableHelperProps) {
     super(props)
+    this.searchInputRef = createRef()
     this.state = {
       searchText: '',
       searchedColumn: '',
@@ -48,8 +58,6 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
       currentTableLines: 0,
     }
   }
-
-  private searchInput: Input | null = null
 
   copyText = (text: string) => {
     DataFormatterUtil.copyText(text)
@@ -147,9 +155,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={(node) => {
-            this.searchInput = node
-          }}
+          ref={this.searchInputRef}
           placeholder={`Search ${dataIndex}`}
           value={fns.selectedKeys[0]}
           onChange={(e) =>
@@ -202,7 +208,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     },
     onFilterDropdownVisibleChange: (visible: boolean) => {
       if (visible) {
-        setTimeout(() => this.searchInput?.select())
+        setTimeout(() => this.searchInputRef.current.select())
       }
     },
   })

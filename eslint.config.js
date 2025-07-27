@@ -20,7 +20,8 @@ export default tseslint.config([
       globals: globals.browser,
     },
     rules: {
-      '@typescript-eslin/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
 ])

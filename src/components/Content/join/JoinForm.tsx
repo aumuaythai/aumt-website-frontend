@@ -598,16 +598,14 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               </Radio.Group>
             </Form.Item>
 
-            {this.props.isAdmin ? (
+            {this.props.isAdmin && (
               <Form.Item name="Paid" rules={[{ required: true }]} label="Paid?">
                 <Radio.Group buttonStyle="solid" name="PaidRadio">
                   <Radio.Button value={'Yes'}>Yes</Radio.Button>
                   <Radio.Button value={'No'}>No</Radio.Button>
                 </Radio.Group>
               </Form.Item>
-            ) : null}
-
-            {console.log(this.formRef.current?.getFieldValue('Payment'))}
+            )}
 
             {!this.props.isAdmin &&
             this.formRef.current?.getFieldValue('Payment') ===
