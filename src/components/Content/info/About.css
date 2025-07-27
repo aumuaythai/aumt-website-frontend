@@ -194,3 +194,7 @@
     text-align: left;
   }
 }
+
+.weekly-trainings__image {
+  width: 50%;
+}
