@@ -11,6 +11,9 @@ importers:
       '@ant-design/icons':
         specifier: ^6.0.0
         version: 6.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@firebase/functions-types':
+        specifier: ^0.6.3
+        version: 0.6.3
       antd:
         specifier: ~4.9.4
         version: 4.9.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -84,9 +87,6 @@ importers:
       '@vitejs/plugin-react-swc':
         specifier: ^3.11.0
         version: 3.11.0(vite@7.0.6(@types/node@14.18.63)(less@3.13.1))
-      babel-plugin-import:
-        specifier: ^1.13.8
-        version: 1.13.8
       eslint:
         specifier: ^9.32.0
         version: 9.32.0
@@ -1218,6 +1218,9 @@ packages:
   '@firebase/functions-types@0.4.0':
     resolution: {integrity: sha512-3KElyO3887HNxtxNF1ytGFrNmqD+hheqjwmT3sI09FaDCuaxGbOnsXAXH2eQ049XRXw9YQpHMgYws/aUNgXVyQ==}
 
+  '@firebase/functions-types@0.6.3':
+    resolution: {integrity: sha512-EZoDKQLUHFKNx6VLipQwrSMh01A1SaL3Wg6Hpi//x6/fJ6Ee4hrAeswK99I5Ht8roiniKHw4iO0B1Oxj5I4plg==}
+
   '@firebase/functions@0.6.2':
     resolution: {integrity: sha512-f+NxRd0k5RBPZUPj8lykeNMku8TpJTgZaRd3T6cXb8HbmSg/VY7uxQSGOXe11X2gSv/TvcwTQttViFzRMDs7CQ==}
     peerDependencies:
@@ -2331,9 +2334,6 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
       webpack: '>=2'
-
-  babel-plugin-import@1.13.8:
-    resolution: {integrity: sha512-36babpjra5m3gca44V6tSTomeBlPA7cHUynrE2WiQIm3rEGD9xy28MKsx5IdO45EbnpJY7Jrgd00C6Dwt/l/2Q==}
 
   babel-plugin-istanbul@5.2.0:
     resolution: {integrity: sha512-5LphC0USA8t4i1zCtjbbNb6jJj/9+X6P37Qfirc/70EQ34xKlMW+a1RHGwxGI+SwWpNwZ27HqvzAobeqaXwiZw==}
@@ -9625,6 +9625,8 @@ snapshots:
 
   '@firebase/functions-types@0.4.0': {}
 
+  '@firebase/functions-types@0.6.3': {}
+
   '@firebase/functions@0.6.2(@firebase/app-types@0.6.1)(@firebase/app@0.6.15)':
     dependencies:
       '@firebase/app': 0.6.15
@@ -10979,12 +10981,6 @@ snapshots:
       mkdirp: 0.5.6
       pify: 4.0.1
       webpack: 4.41.0
-
-  babel-plugin-import@1.13.8:
-    dependencies:
-      '@babel/helper-module-imports': 7.27.1
-    transitivePeerDependencies:
-      - supports-color
 
   babel-plugin-istanbul@5.2.0:
     dependencies:

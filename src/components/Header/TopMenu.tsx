@@ -1,11 +1,10 @@
 import { DownOutlined } from '@ant-design/icons'
 import { Menu as BaseMenu } from 'antd'
-import React, { Component, ReactText } from 'react'
+import { Component, Key } from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import styled from 'styled-components'
-import './TopMenu.css'
-
 import { AumtMember } from '../../types'
+import './TopMenu.css'
 
 export const Menu = styled(BaseMenu)`
 
@@ -118,7 +117,7 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
     this.setState({ current: 'About' })
   }
 
-  handleClick = (e: { key: ReactText }) => {
+  handleClick = (e: { key: Key }) => {
     this.setState({
       current: String(e.key),
     })
