@@ -130,7 +130,10 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
   mobileMenu = () => {
     return (
       <Menu
-        style={{ textAlign: 'center', border: 'none' }}
+        style={{
+          textAlign: 'center',
+          border: 'none',
+        }}
         onClick={this.handleClick}
         selectedKeys={[this.state.current]}
         mode="horizontal"
@@ -184,7 +187,11 @@ class TopMenu extends Component<TopMenuProps, TopMenuState> {
   desktopMenu = () => {
     return (
       <Menu
-        style={{ textAlign: 'center', border: 'none' }}
+        style={{
+          textAlign: 'center',
+          border: 'none',
+          justifyContent: 'center',
+        }}
         onClick={this.handleClick}
         selectedKeys={[this.state.current]}
         mode="horizontal"
