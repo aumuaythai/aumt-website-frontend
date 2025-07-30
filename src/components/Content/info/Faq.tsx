@@ -16,7 +16,7 @@ export default function Faq() {
       .catch((error: any) => {
         console.error('Error fetching club configuration:', error)
       })
-  })
+  }, [])
 
   return (
     <div className="faqContainer">

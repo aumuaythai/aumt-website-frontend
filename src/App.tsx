@@ -131,7 +131,7 @@ export default function App() {
                       <TeamLazyWrapper></TeamLazyWrapper>
                     </Route> */}
                   <Route path="/faq">
-                    <Faq></Faq>
+                    <Faq />
                   </Route>
                   <Route path="/gallery">
                     <Gallery />
