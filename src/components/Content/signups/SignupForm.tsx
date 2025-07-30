@@ -2,13 +2,7 @@ import { CheckSquareTwoTone } from '@ant-design/icons'
 import { Alert, Button, Checkbox, Input, Spin, Tag, Tooltip } from 'antd'
 import { CheckboxOptionType } from 'antd/lib/checkbox'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
-import React, {
-  Component,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import db from '../../../services/db'
 import { AumtTrainingSession } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
@@ -29,24 +23,10 @@ export interface SignupFormProps {
   signupMaxSessions: number
 }
 
-interface SignupFormState {
-  currentSessionIds: string[]
-  currentFeedback: string
-  signedUpOptions: string[]
-  submittingState: boolean
-  currentDisplayName: string
-  currentMockUid: string
-  errorMessage: string
-  removingState: boolean
-}
-
 const SPOTS_TAG_LIMIT = 5 // Infinity
 
 export default function SignupForm(props: SignupFormProps) {
   const sessionHistory = useRef<string[]>([])
-  const advancedInfoText =
-    "Please make sure you have asked Victor before joining the advanced session and remember to bring a mouthguard - if one of these conditions isn't met we may stop you from training!"
-
   const prevAuthedUserId = useRef<string | null>(props.authedUserId)
 
   const [currentSessionIds, setCurrentSessionIds] = useState<string[]>([])
@@ -102,12 +82,15 @@ export default function SignupForm(props: SignupFormProps) {
     setCurrentSessionIds(ids)
     setErrorMessage('')
   }
+
   const onFeedbackChange = (feedback: string) => {
     setCurrentFeedback(feedback)
   }
+
   const onDisplayNameChange = (name: string) => {
     setCurrentDisplayName(name)
   }
+
   const generateMockUid = () => {
     const alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
     let uid = 'NONMEMBER'
@@ -116,6 +99,7 @@ export default function SignupForm(props: SignupFormProps) {
     }
     return uid
   }
+
   const onRemoveClick = () => {
     if (signedUpOptions.length && props.authedUserId) {
       setRemovingState(true)
@@ -136,6 +120,7 @@ export default function SignupForm(props: SignupFormProps) {
         })
     }
   }
+
   const onSubmitClick = () => {
     const selectedSessions = currentSessionIds
     if (selectedSessions.length === 0) {
@@ -172,6 +157,7 @@ export default function SignupForm(props: SignupFormProps) {
         setErrorMessage('Error signing up: ' + err.toString())
       })
   }
+
   const getCheckboxGroup = (
     sessions: Record<string, AumtTrainingSession>
   ): CheckboxOptionType[] => {
@@ -232,6 +218,7 @@ export default function SignupForm(props: SignupFormProps) {
         }
       })
   }
+
   return (
     <div>
       <h2 className="formTitle">{props.title}</h2>
@@ -281,7 +268,7 @@ export default function SignupForm(props: SignupFormProps) {
           type="info"
           className="signupFormInfoTextContainer"
           showIcon
-          message={advancedInfoText}
+          message="Please make sure you have asked Victor before joining the advanced session and remember to bring a mouthguard - if one of these conditions isn't met we may stop you from training!"
         ></Alert>
       ) : (
         ''
