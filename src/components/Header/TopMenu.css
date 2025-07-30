@@ -1,10 +1,45 @@
 .menuDownIcon {
-    font-size: 9px !important;
-}
-.dropdownTopMenuItem {
-    padding: 0
+  font-size: 9px !important;
 }
 
-:global(.ant-menu-item-active) {
-  background-color: rgba(17,56,141,0.1)
+.dropdownTopMenuItem {
+  padding: 0 !important;
+}
+
+.menu {
+  column-gap: 2rem;
+  border: none !important;
+  justify-content: center;
+}
+
+.menu--desktop {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .menu--mobile {
+    display: none !important;
+  }
+
+  .menu--desktop {
+    display: flex !important;
+  }
+}
+
+.ant-menu-submenu::after,
+.ant-menu-item::after {
+  display: none !important;
+}
+
+.ant-menu-item-selected,
+.ant-menu-submenu-selected {
+  background-color: rgba(17, 56, 141, 0.1) !important;
+}
+
+.ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #11388d !important;
+}
+
+.ant-menu-submenu-title {
+  padding: 0 10px !important;
 }

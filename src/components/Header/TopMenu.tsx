@@ -1,251 +1,141 @@
 import { DownOutlined } from '@ant-design/icons'
-import { Menu as BaseMenu } from 'antd'
-import { Component, Key } from 'react'
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
-import styled from 'styled-components'
+import { Menu } from 'antd'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { Link, useLocation } from 'react-router-dom'
 import { AumtMember } from '../../types'
 import './TopMenu.css'
 
-export const Menu = styled(BaseMenu)`
-  .ant-menu-item{
-    border-bottom: none !important;
-    padding: 0 10px !important;
-  }
-
-  .ant-menu-item::after {
-    display: none;
-  }    
-
-  .ant-menu-submenu::after {
-    display: none;
-  }    
-
-  .ant-menu-item-selected a{
-    color: rgba(17,56,141,1) !important;
-    border-bottom: none !important;
-    font-family: 'Joyride', sans-serif !important;
-  }
-  .ant-menu-item-active {
-    background-color: rgba(17,56,141,0.1) !important;
-    color:rgba(17,56,141,1) !important;
-    border-bottom: none !important;
-  }
-
-  .ant-menu-item-active a{
-    color:rgba(17,56,141,1) !important;
-  }
-
-  .ant-menu-submenu{
-    border-bottom: none !important;
-  }
-  .ant-menu-submenu-title{    
-    padding: 0 10px !important;
-  }
-  }
-  .ant-menu-submenu-active> .ant-menu-submenu-title{
-    background-color: rgba(17,56,141,0.1) !important;
-    color: rgba(17,56,141,1) !important;
-  }
-  .ant-menu-submenu-selected> .ant-menu-submenu-title{
-    color: rgba(17,56,141,1) !important;
-  }
-
-  ant-menu-submenu-title:hover {
-    background-color: rgba(17,56,141,0.1) !important;
-    color:rgba(17,56,141,1) !important;
-    border-bottom: none !important;
-  }
-
-  &.ant-menu-submenu-active .ant-menu-submenu-title {
-    background-color: rgba(17,56,141,0.1) !important;
-    .ant-typography {
-      color: WHITE;
-    }
-  }
-`
-
-export interface TopMenuProps extends RouteComponentProps {
+export interface TopMenuProps {
   authedUser: AumtMember | null
   isAdmin: boolean
 }
 
-export interface TopMenuState {
-  current: string
+const PathnameToKey: Record<string, string[]> = {
+  '/': ['club-info', 'about'],
+  '/gallery': ['gallery'],
+  '/faq': ['faq'],
+  '/signups': ['signups'],
+  '/events': ['events'],
+  '/join': ['join'],
+  '/account': ['account'],
+  '/admin': ['admin'],
 }
 
-class TopMenu extends Component<TopMenuProps, TopMenuState> {
-  private unlisten: null | Function = null
-  constructor(props: TopMenuProps) {
-    super(props)
-    this.state = {
-      current: 'About',
-    }
-    this.unlisten = null
-  }
+export default function TopMenu({ authedUser, isAdmin }: TopMenuProps) {
+  const location = useLocation()
+  const current = PathnameToKey[location.pathname] || ['about']
+  const sharedItems: ItemType[] = [
+    {
+      label: 'About',
+      key: 'about',
+      className: 'dropdownTopMenuItem',
+      children: [
+        {
+          label: <Link to="/">Club Info</Link>,
+          key: 'club-info',
+        },
+        {
+          label: <Link to="/gallery">Gallery</Link>,
+          key: 'gallery',
+        },
+        {
+          label: <Link to="/faq">FAQ</Link>,
+          key: 'faq',
+        },
+      ],
+    },
+    {
+      label: <Link to="/signups">Weekly Trainings</Link>,
+      key: 'signups',
+    },
+    {
+      label: <Link to="/events">Join Events</Link>,
+      key: 'events',
+    },
+  ]
 
-  componentDidMount = () => {
-    this.setStateFromPathChange(window.location.pathname)
-    this.unlisten = this.props.history.listen(this.onRouteChange)
-  }
-
-  componentWillUnmount = () => {
-    if (this.unlisten) {
-      this.unlisten()
-    }
-  }
-
-  onRouteChange = (location: any, action: string) => {
-    this.setStateFromPathChange(location.pathname)
-  }
-
-  setStateFromPathChange = (windowPath: string) => {
-    const pathname = windowPath.split('/')[1]
-    const menuPages = [
-      'About',
-      'Signups',
-      'Events',
-      'Join',
-      'FAQ',
-      'Team',
-      'Admin',
-      'Account',
-    ]
-    for (const page of menuPages) {
-      if (page.toLowerCase() === pathname.toLowerCase()) {
-        this.setState({
-          current: page,
-        })
-        return
-      }
-    }
-    this.setState({ current: 'About' })
-  }
-
-  handleClick = (e: { key: Key }) => {
-    this.setState({
-      current: String(e.key),
+  if (authedUser) {
+    sharedItems.push({
+      label: <Link to="/account">My Account</Link>,
+      key: 'account',
+    })
+  } else {
+    sharedItems.push({
+      label: <Link to="/join">Create Account</Link>,
+      key: 'join',
     })
   }
 
-  mobileMenu = () => {
-    return (
-      <Menu
-        style={{
-          textAlign: 'center',
-          border: 'none',
-        }}
-        onClick={this.handleClick}
-        selectedKeys={[this.state.current]}
-        mode="horizontal"
-      >
-        <Menu.SubMenu
-          title={
-            <>
-              Menu <DownOutlined className="menuDownIcon" />
-            </>
-          }
-        >
-          <Menu.SubMenu title="About">
-            <Menu.Item key="About">
-              <Link to="/">Club Info</Link>
-            </Menu.Item>
-            <Menu.Item key="Gallery">
-              <Link to="/gallery">Gallery</Link>
-            </Menu.Item>
-            {/* <Menu.Item key="Team">
-                <Link to='/team'>Our Team</Link>
-              </Menu.Item> */}
-            <Menu.Item key="FAQ">
-              <Link to="/faq">FAQ</Link>
-            </Menu.Item>
-          </Menu.SubMenu>
-          {this.props.isAdmin ? (
-            <Menu.Item key="Admin">
-              <Link to="/admin">Admin</Link>
-            </Menu.Item>
-          ) : null}
-          <Menu.Item key="Signups">
-            <Link to="/signups">Weekly Trainings</Link>
-          </Menu.Item>
-          <Menu.Item key="Events">
-            <Link to="/events">Join Events</Link>
-          </Menu.Item>
-          {this.props.authedUser ? (
-            <Menu.Item key="Account">
-              <Link to="/account">My Account</Link>
-            </Menu.Item>
-          ) : (
-            <Menu.Item key="Join">
-              <Link to="/join">Create Account</Link>
-            </Menu.Item>
-          )}
-        </Menu.SubMenu>
-      </Menu>
-    )
+  if (isAdmin) {
+    sharedItems.push({
+      label: <Link to="/admin">Admin</Link>,
+      key: 'admin',
+    })
   }
 
-  desktopMenu = () => {
-    return (
-      <Menu
-        style={{
-          textAlign: 'center',
-          border: 'none',
-          justifyContent: 'center',
-        }}
-        onClick={this.handleClick}
-        selectedKeys={[this.state.current]}
-        mode="horizontal"
-      >
-        <Menu.SubMenu
-          title={
-            <>
-              About <DownOutlined className="menuDownIcon" />
-            </>
-          }
-        >
-          <Menu.Item key="About">
-            <Link to="/">Club Info</Link>
-          </Menu.Item>
-          <Menu.Item key="Gallery">
-            <Link to="/gallery">Gallery</Link>
-          </Menu.Item>
-          {/* <Menu.Item key="Team">
-            <Link to='/team'>Our Team</Link>
-          </Menu.Item> */}
-          <Menu.Item key="FAQ">
-            <Link to="/faq">FAQ</Link>
-          </Menu.Item>
-        </Menu.SubMenu>
-        <Menu.Item key="Signups">
-          <Link to="/signups">Weekly Trainings</Link>
-        </Menu.Item>
-        <Menu.Item key="Events">
-          <Link to="/events">Join Events</Link>
-        </Menu.Item>
-        {this.props.authedUser ? (
-          <Menu.Item key="Account">
-            <Link to="/account">My Account</Link>
-          </Menu.Item>
-        ) : (
-          <Menu.Item key="Join">
-            <Link to="/join">Create Account</Link>
-          </Menu.Item>
-        )}
-        {this.props.isAdmin ? (
-          <Menu.Item key="Admin">
-            <Link to="/admin">Admin</Link>
-          </Menu.Item>
-        ) : null}
-      </Menu>
-    )
-  }
-  render() {
-    if (window.innerWidth < 600) {
-      return this.mobileMenu()
-    } else {
-      return this.desktopMenu()
-    }
-  }
+  return (
+    <>
+      <DesktopMenu sharedItems={sharedItems} current={current} />
+      <MobileMenu sharedItems={sharedItems} current={current} />
+    </>
+  )
 }
 
-export default withRouter(TopMenu)
+function DesktopMenu({
+  sharedItems,
+  current,
+}: {
+  sharedItems: ItemType[]
+  current: string[]
+}) {
+  const items = [...sharedItems]
+
+  // reassign to avoid mutating the original array
+  items[0] = {
+    ...items[0],
+    label: (
+      <>
+        About <DownOutlined className="menuDownIcon" />
+      </>
+    ),
+  } as ItemType
+
+  return (
+    <Menu
+      items={items}
+      selectedKeys={current}
+      mode="horizontal"
+      className="menu menu--desktop"
+    />
+  )
+}
+
+function MobileMenu({
+  sharedItems,
+  current,
+}: {
+  sharedItems: ItemType[]
+  current: string[]
+}) {
+  const items = [
+    {
+      label: (
+        <>
+          Menu <DownOutlined className="menuDownIcon" />
+        </>
+      ),
+      key: 'menu',
+      className: 'dropdownTopMenuItem',
+      children: sharedItems,
+    },
+  ]
+
+  return (
+    <Menu
+      items={items}
+      selectedKeys={current}
+      mode="horizontal"
+      className="menu menu--mobile"
+    />
+  )
+}
