@@ -38,9 +38,7 @@ export default function UserInfo(props: UserInfoProps) {
     },
   ]
 
-  const nameText = truncateName(
-    props.authedUser.preferredName || props.authedUser.firstName
-  )
+  const nameText = props.authedUser.preferredName || props.authedUser.firstName
 
   return (
     <Dropdown
@@ -49,18 +47,9 @@ export default function UserInfo(props: UserInfoProps) {
       trigger={['click', 'hover']}
     >
       <div className="userInfoContainer">
-        {nameText}
+        <div className="nameContainer">{nameText}</div>
         <DownOutlined className="topMenuDownOutlined" />
       </div>
     </Dropdown>
   )
-}
-
-function truncateName(name: string): string {
-  const MAX_LENGTH = 7
-
-  if (name.length > MAX_LENGTH) {
-    return name.substring(0, MAX_LENGTH) + '...'
-  }
-  return name
 }

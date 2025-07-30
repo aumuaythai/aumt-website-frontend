@@ -6,6 +6,13 @@
   column-gap: 10px;
 }
 
+.nameContainer {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @keyframes marquee {
   0% {
     transform: translate(0%, 0);
