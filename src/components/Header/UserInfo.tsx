@@ -1,17 +1,19 @@
 import DownOutlined from '@ant-design/icons/DownOutlined'
 import { Button, Dropdown, Menu } from 'antd'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import React, { Component } from 'react'
 import FirebaseUtil from '../../services/firebase.util'
 import { AumtMember } from '../../types'
 import { Marquee } from '../utility/Marquee'
 import { ResetPasswordLink } from './ResetLink'
 import './UserInfo.css'
+
 interface UserInfoProps {
   authedUser: AumtMember
 }
 
-export class UserInfo extends Component<UserInfoProps, object> {
-  onSignOutClick = () => {
+export default function UserInfo(props: UserInfoProps) {
+  const onSignOutClick = () => {
     FirebaseUtil.signOut()
       .then(() => {
         console.log('Signing out success')
@@ -21,35 +23,44 @@ export class UserInfo extends Component<UserInfoProps, object> {
       })
   }
 
-  private menu = (
-    <Menu>
-      <Menu.Item onClick={this.onSignOutClick}>
-        <Button type="link" className="signOutLink">
+  const items: ItemType[] = [
+    {
+      key: 'sign-out',
+      label: (
+        <Button type="link" className="signOutLink" onClick={onSignOutClick}>
           Sign Out
         </Button>
-      </Menu.Item>
-      <Menu.Item>
-        <ResetPasswordLink>Reset Password</ResetPasswordLink>
-      </Menu.Item>
-    </Menu>
+      ),
+    },
+    {
+      key: 'reset-password',
+      label: <ResetPasswordLink>Reset Password</ResetPasswordLink>,
+    },
+  ]
+
+  const nameText = truncateName(
+    props.authedUser.preferredName || props.authedUser.firstName
   )
 
-  render() {
-    const nameText =
-      this.props.authedUser.preferredName || this.props.authedUser.firstName
-    return (
-      <Dropdown
-        overlay={this.menu}
-        placement="bottomRight"
-        trigger={['click', 'hover']}
-      >
-        <div className="nameAndCaretContainer">
-          <div className="marqueeContainer">
-            <Marquee text={nameText} scroll={nameText.length >= 7}></Marquee>
-          </div>
-          <DownOutlined className="topMenuDownOutlined" />
-        </div>
-      </Dropdown>
-    )
+  return (
+    <Dropdown
+      menu={{ items }}
+      placement="bottomRight"
+      trigger={['click', 'hover']}
+    >
+      <div className="userInfoContainer">
+        {nameText}
+        <DownOutlined className="topMenuDownOutlined" />
+      </div>
+    </Dropdown>
+  )
+}
+
+function truncateName(name: string): string {
+  const MAX_LENGTH = 7
+
+  if (name.length > MAX_LENGTH) {
+    return name.substring(0, MAX_LENGTH) + '...'
   }
+  return name
 }

@@ -1,6 +1,5 @@
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { Carousel } from 'antd'
-import 'antd/dist/antd.css'
 import './Gallery.css'
 
 export default function Gallery() {

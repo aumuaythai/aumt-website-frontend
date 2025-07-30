@@ -5,14 +5,12 @@ import { Links } from '../../services/links'
 import { AumtMember } from '../../types'
 import './Header.css'
 import TopMenu from './TopMenu'
-import { UserInfo } from './UserInfo'
+import UserInfo from './UserInfo'
 
 export interface HeaderProps {
   authedUser: AumtMember | null
   isAdmin: boolean
 }
-
-export interface HeaderState {}
 
 export default function Header(props: HeaderProps) {
   const location = useLocation()
@@ -36,9 +34,7 @@ export default function Header(props: HeaderProps) {
       <TopMenu isAdmin={props.isAdmin} authedUser={props.authedUser} />
       <div className="socialsContainer">
         {props.authedUser ? (
-          <span className="headerNameSpan">
-            <UserInfo authedUser={props.authedUser}></UserInfo>
-          </span>
+          <UserInfo authedUser={props.authedUser}></UserInfo>
         ) : (
           <Link to={`/login?from=${pathname}`} className="loginButton">
             Sign In

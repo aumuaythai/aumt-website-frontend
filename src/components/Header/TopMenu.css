@@ -12,13 +12,14 @@
   justify-content: center;
   height: 100%;
   flex-grow: 1;
+  line-height: 50px !important;
 }
 
 .menu--desktop {
   display: none !important;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .menu--mobile {
     display: none !important;
   }
@@ -27,7 +28,6 @@
     display: flex !important;
   }
 }
-
 .ant-menu-submenu::after,
 .ant-menu-item::after {
   display: none !important;

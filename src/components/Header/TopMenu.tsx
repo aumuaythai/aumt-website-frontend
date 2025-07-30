@@ -90,7 +90,7 @@ function DesktopMenu({
 }) {
   const items = [...sharedItems]
 
-  // reassign to avoid mutating the original array
+  // reassign to avoid mutating the original object
   items[0] = {
     ...items[0],
     label: (

@@ -1,15 +1,15 @@
+import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, FacebookOutlined, HomeOutlined } from '@ant-design/icons'
+import { Button, Divider, notification, Result } from 'antd'
+import moment from 'moment'
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeftOutlined, CalendarOutlined, ClockCircleOutlined, HomeOutlined, FacebookOutlined } from '@ant-design/icons'
-import { Button, Result, Divider, notification } from 'antd'
-import moment from 'moment'
-import './Event.css'
-import { AumtEvent, AumtMember, LicenseClasses, AumtCampSignupData } from '../../../types'
-import firebaseUtil from '../../../services/firebase.util'
-import db from '../../../services/db'
-import { CampSignupForm } from './CampSignupForm'
 import dataUtil from '../../../services/data.util'
+import db from '../../../services/db'
+import firebaseUtil from '../../../services/firebase.util'
+import { AumtCampSignupData, AumtEvent, AumtMember, LicenseClasses } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
+import { CampSignupForm } from './CampSignupForm'
+import './Event.css'
 
 interface EventProps {
     event: AumtEvent
@@ -58,7 +58,7 @@ export class Event extends Component<EventProps, EventState> {
         }
     }
     generateMockUid = () => {
-        let alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
+        const alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
         let uid = 'NONMEMBER'
         for (let i = 0; i < 10; i++) {
             uid += alphabet[Math.floor(Math.random() * alphabet.length)]
