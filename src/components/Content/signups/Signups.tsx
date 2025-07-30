@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import db from '../../../services/db'
 import { AumtMember, AumtWeeklyTraining, ClubConfig } from '../../../types'
-import { SignupForm } from './SignupForm'
+import SignupForm from './SignupForm'
 import './Signups.css'
 
 interface SignupProps {
@@ -72,6 +72,7 @@ export default function Signups(props: SignupProps) {
       </div>
     )
   }
+
   if (!forms.length) {
     return (
       <div className="infoContainer">
@@ -94,6 +95,7 @@ export default function Signups(props: SignupProps) {
       </div>
     )
   }
+
   return (
     <div className="signupsContainer">
       {forms.map((form) => {
