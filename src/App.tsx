@@ -7,9 +7,9 @@ import './App.css'
 import Account from './components/Content/account/Account'
 import { ErrorBoundary } from './components/Content/error/ErrorBoundary'
 import EventsWrapper from './components/Content/events/EventsWrapper'
-import { About } from './components/Content/info/About'
-import { Faq } from './components/Content/info/Faq'
-import { Gallery } from './components/Content/info/Gallery'
+import About from './components/Content/info/About'
+import Faq from './components/Content/info/Faq'
+import Gallery from './components/Content/info/Gallery'
 import { MainJoin } from './components/Content/join/MainJoin'
 import Header from './components/Header/Header'
 import { LoginForm } from './components/Header/LoginForm'
@@ -111,7 +111,7 @@ export default function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/login">
-            <LoginForm></LoginForm>
+            <LoginForm />
           </Route>
           <Route path="/*">
             <Header authedUser={authedUser} isAdmin={userIsAdmin} />
@@ -134,7 +134,7 @@ export default function App() {
                     <Faq></Faq>
                   </Route>
                   <Route path="/gallery">
-                    <Gallery></Gallery>
+                    <Gallery />
                   </Route>
                   <Route path="/signup">
                     <Redirect to="/signups" />
@@ -146,10 +146,10 @@ export default function App() {
                       clubSignupSem={clubSignupSem}
                       authedUser={authedUser}
                       clubConfig={clubConfig}
-                    ></SignupsLazyWrapper>
+                    />
                   </Route>
                   <Route path="/events">
-                    <EventsWrapper authedUser={authedUser}></EventsWrapper>
+                    <EventsWrapper authedUser={authedUser} />
                   </Route>
                   <Route path="/join">
                     <MainJoin
@@ -157,11 +157,11 @@ export default function App() {
                       authedUser={authedUser}
                       authedUserId={authedUserId}
                       clubConfig={clubConfig}
-                    ></MainJoin>
+                    />
                   </Route>
                   <Route path="/admin">
                     {userIsAdmin ? (
-                      <MainAdminLazyWrapper></MainAdminLazyWrapper>
+                      <MainAdminLazyWrapper />
                     ) : (
                       <div>You are not authorised to access this page.</div>
                     )}
@@ -175,7 +175,7 @@ export default function App() {
                         authedUser={authedUser}
                         authedUserId={authedUserId}
                         clubConfig={clubConfig}
-                      ></Account>
+                      />
                     ) : (
                       <div>You do not have an account yet. Please join.</div>
                     )}
