@@ -105,7 +105,7 @@ function DesktopMenu({
       items={items}
       selectedKeys={current}
       mode="horizontal"
-      className="menu menu--desktop"
+      className="menu--desktop"
     />
   )
 }
@@ -135,7 +135,7 @@ function MobileMenu({
       items={items}
       selectedKeys={current}
       mode="horizontal"
-      className="menu menu--mobile"
+      className="menu--mobile"
     />
   )
 }

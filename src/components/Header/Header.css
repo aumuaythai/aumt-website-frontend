@@ -1,83 +1,76 @@
 .headerContainer {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 20px;
-    margin-bottom: 10px;
-    font-family: 'Joyride', sans-serif;
-    border-bottom: 1px solid #f0f0f0;
-    font-weight: normal;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  font-family: 'Joyride', sans-serif;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: normal;
+  height: 50px;
 }
 .imageContainer {
-    width: 155px;
-    float: left;
+  width: 155px;
+  float: left;
 }
 .logoImg {
-    width: 100%;
-}
-.topMenuContainer {
-    flex-grow: 1;
-    float: left;
-    text-align: center;
+  width: 100%;
 }
 .socialsContainer {
-    display: flex;
-    padding-right: 10px;
-    align-items: center;
-    height: 50px;
+  display: flex;
+  padding-right: 10px;
+  align-items: center;
+  height: 100%;
 }
 .socialIconContainer {
-    display: flex;
-    font-size: 18px;
-    cursor: pointer;
-    color: black;
-    line-height: 50px;
+  display: flex;
+  font-size: 18px;
+  cursor: pointer;
+  color: black;
 }
 .socialIcon {
-    margin-left: 11px;
+  margin-left: 11px;
 }
 .clearBoth {
-    clear: both;
+  clear: both;
 }
 .headerNameSpan {
-    max-width: 90px;
-    overflow-x: hidden;
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 8px;
-    cursor: pointer;
+  max-width: 90px;
+  overflow-x: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 8px;
+  cursor: pointer;
 }
 
-.loginButton{
-  border: none;
-  margin: 0;
+.loginButton {
   height: 100%;
-  background-color: #999999;
   display: flex;
   align-items: center;
   padding: 0 30px;
+  color: #11388d;
+  transition: ease-in-out 0.3s color, background-color 0.3s;
 }
 
-.loginButton:hover{
-  border: none;
-  height: 100%;
+.loginButton:hover {
+  background-color: rgba(17, 56, 141, 0.1);
+  color: #11388d;
 }
 
 @media only screen and (max-width: 600px) {
-    .imageContainer {
-        display: none;
-    }
-
-    .socialsContainer {
-        text-align: right;
-        padding-right: 10px;
-    }
-    .headerContainer {
-        height: 60px;
-    }
-    .headerNameSpan {
-        max-width: 160px;
-    }
-
+  .imageContainer {
+    display: none;
   }
+
+  .socialsContainer {
+    text-align: right;
+    padding-right: 10px;
+  }
+  .headerContainer {
+    height: 60px;
+  }
+  .headerNameSpan {
+    max-width: 160px;
+  }
+}

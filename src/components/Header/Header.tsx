@@ -33,18 +33,16 @@ export default function Header(props: HeaderProps) {
           <img className="logoImg" src={'logos/AUMTLogo.png'} alt="" />
         </Link>
       </div>
-      <div className="topMenuContainer">
-        <TopMenu isAdmin={props.isAdmin} authedUser={props.authedUser} />
-      </div>
+      <TopMenu isAdmin={props.isAdmin} authedUser={props.authedUser} />
       <div className="socialsContainer">
         {props.authedUser ? (
           <span className="headerNameSpan">
             <UserInfo authedUser={props.authedUser}></UserInfo>
           </span>
         ) : (
-          <div className="loginButton">
-            <Link to={`/login?from=${pathname}`}>Sign In</Link>
-          </div>
+          <Link to={`/login?from=${pathname}`} className="loginButton">
+            Sign In
+          </Link>
         )}
         <div className="socialIconContainer">
           <span className="socialIcon" onClick={fbClick}>

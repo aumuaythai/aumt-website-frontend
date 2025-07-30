@@ -6,10 +6,12 @@
   padding: 0 !important;
 }
 
-.menu {
+.ant-menu-root {
   column-gap: 2rem;
   border: none !important;
   justify-content: center;
+  height: 100%;
+  flex-grow: 1;
 }
 
 .menu--desktop {
