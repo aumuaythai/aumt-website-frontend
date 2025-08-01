@@ -1,10 +1,8 @@
 import DownOutlined from '@ant-design/icons/DownOutlined'
-import { Button, Dropdown, Menu } from 'antd'
+import { Button, Dropdown } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import React, { Component } from 'react'
 import FirebaseUtil from '../../services/firebase.util'
 import { AumtMember } from '../../types'
-import { Marquee } from '../utility/Marquee'
 import { ResetPasswordLink } from './ResetLink'
 import './UserInfo.css'
 
