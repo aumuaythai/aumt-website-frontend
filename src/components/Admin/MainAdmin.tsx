@@ -5,17 +5,10 @@ import {
 } from '@ant-design/icons'
 import { Button, Drawer, Menu } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { Component, Key, lazy, useEffect, useState } from 'react'
-import {
-  Link,
-  Route,
-  RouteComponentProps,
-  Switch,
-  withRouter,
-} from 'react-router-dom'
+import { lazy, useEffect, useState } from 'react'
+import { Link, Route, Switch, useLocation } from 'react-router-dom'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import AdminStore from './AdminStore'
-import { CommitteeApps } from './CommitteeApps/CommitteeApps'
 import CreateEvent from './Events/CreateEvent'
 import EventSignups from './Events/EventSignups'
 import { ManageEvents } from './Events/ManageEvents'
@@ -69,7 +62,7 @@ export default function MainAdmin() {
       <div className="adminContent">
         <Switch>
           <Route path="/admin/events/:id">
-            <EventSignups events={events}></EventSignups>
+            <EventSignups events={events} />
           </Route>
 
           <Route path="/admin/events">
@@ -88,24 +81,20 @@ export default function MainAdmin() {
                 </Link>
                 <div className="clearBoth"></div>
               </div>
-              <ManageEvents events={events}></ManageEvents>
+              <ManageEvents events={events} />
             </div>
           </Route>
 
           <Route path="/admin/members">
-            <MemberDashboardLazyWrapper></MemberDashboardLazyWrapper>
+            <MemberDashboardLazyWrapper />
           </Route>
 
           <Route path="/admin/feedback">
-            <Feedback forms={forms}></Feedback>
+            <Feedback forms={forms} />
           </Route>
 
           <Route path="/admin/settings">
             <ClubSettings />
-          </Route>
-
-          <Route path="/admin/committee-apps">
-            <CommitteeApps></CommitteeApps>
           </Route>
 
           <Route path="/admin/createtraining">
@@ -116,7 +105,7 @@ export default function MainAdmin() {
                 </Link>
                 Create Training
               </h2>
-              <CreateTraining></CreateTraining>
+              <CreateTraining />
             </div>
           </Route>
 
@@ -128,7 +117,7 @@ export default function MainAdmin() {
                 </Link>
                 Create Event
               </h2>
-              <CreateEvent></CreateEvent>
+              <CreateEvent />
             </div>
           </Route>
 
@@ -141,7 +130,7 @@ export default function MainAdmin() {
                   </Link>
                   Edit
                 </h2>
-                <CreateTraining></CreateTraining>
+                <CreateTraining />
               </div>
             </div>
           </Route>
@@ -157,13 +146,13 @@ export default function MainAdmin() {
                   </Link>
                   Edit Event
                 </h2>
-                <CreateEvent></CreateEvent>
+                <CreateEvent />
               </div>
             </div>
           </Route>
 
           <Route path="/admin">
-            <TrainingDashboard forms={forms}></TrainingDashboard>
+            <TrainingDashboard forms={forms} />
           </Route>
         </Switch>
       </div>
@@ -172,7 +161,8 @@ export default function MainAdmin() {
 }
 
 function AdminMenu() {
-  const [currentSelectedAdmin, setCurrentSelectedAdmin] = useState('trainings')
+  const location = useLocation()
+  const selectedKey = location.pathname.split('/')[2] || 'trainings'
 
   const items: ItemType[] = [
     {
@@ -195,21 +185,7 @@ function AdminMenu() {
       label: <Link to="/admin/settings">Settings</Link>,
       key: 'settings',
     },
-    {
-      label: <Link to="/admin/committee-apps">Committee Apps</Link>,
-      key: 'committee-apps',
-    },
   ]
 
-  function handleMenuClick(e: { key: Key }) {
-    setCurrentSelectedAdmin(String(e.key))
-  }
-
-  return (
-    <Menu
-      items={items}
-      onClick={handleMenuClick}
-      selectedKeys={[currentSelectedAdmin]}
-    />
-  )
+  return <Menu items={items} selectedKeys={[selectedKey]} />
 }
