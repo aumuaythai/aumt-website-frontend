@@ -10,20 +10,20 @@ import { Link, Route, Switch, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthProvider'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import AdminStore from './AdminStore'
-import CreateEvent from './Events/CreateEvent'
-import EventSignups from './Events/EventSignups'
-import { ManageEvents } from './Events/ManageEvents'
-import { Feedback } from './Feedback/Feedback'
+import CreateEvent from './events/CreateEvent'
+import EventSignups from './events/EventSignups'
+import { ManageEvents } from './events/ManageEvents'
+import { Feedback } from './feedback/Feedback'
 import './MainAdmin.css'
-import ClubSettings from './Settings/ClubSettings'
-import CreateTraining from './Trainings/CreateTraining'
-import TrainingAttendance from './Trainings/TrainingAttendance'
-import { TrainingDashboard } from './Trainings/TrainingDashboard'
+import ClubSettings from './settings/ClubSettings'
+import CreateTraining from './trainings/CreateTraining'
+import TrainingAttendance from './trainings/TrainingAttendance'
+import { TrainingDashboard } from './trainings/TrainingDashboard'
 
 const MemberDashboardLazyWrapper = lazy(
   () =>
     import(
-      './Members/MemberDashboard' /* webpackChunkName: "member-dashboard" */
+      './members/MemberDashboard' /* webpackChunkName: "member-dashboard" */
     )
 )
 

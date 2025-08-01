@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import DataFormatUtil from '../../../services/data.util'
 import { getAllForms } from '../../../services/db'
 import { AumtWeeklyTraining } from '../../../types'
-import SignupForm from '../../Content/signups/SignupForm'
+import SignupForm from '../../content/signups/SignupForm'
 import './MemberAttendance.css'
 import { TableDataLine } from './TableHelper'
 

@@ -32,7 +32,7 @@ import {
   unlisten,
 } from '../../../services/db'
 import { AumtMember, AumtMembersObj } from '../../../types'
-import { JoinForm } from '../../Content/join/JoinForm'
+import { JoinForm } from '../../content/join/JoinForm'
 import './MemberDashboard.css'
 import MemberDetails from './MemberDetails'
 import { TableColumn, TableDataLine, TableHelper } from './TableHelper'
