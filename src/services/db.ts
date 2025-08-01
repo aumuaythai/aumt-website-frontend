@@ -1,5 +1,4 @@
 import firebase from 'firebase/app'
-import 'firebase/firestore'
 import {
   AumtCommitteeApp,
   AumtEvent,
@@ -10,6 +9,7 @@ import {
   AumtWeeklyTraining,
   ClubConfig,
 } from '../types'
+import { db } from './firebase'
 import validator from './validator'
 
 const TRAINING_DB_PATH = 'weekly_trainings'
@@ -17,8 +17,6 @@ const TRAINING_ATTENDANCE_DB_PATH = 'training_attendance'
 const MEMBER_DB_PATH = 'members'
 
 const listeners: Record<string, Function> = {}
-
-const db = firebase.firestore()
 
 export const getUserInfo = (fbUser: firebase.User): Promise<AumtMember> => {
   if (!db) return Promise.reject('No db object')
@@ -641,7 +639,7 @@ export const docToForm = (docData: any): AumtWeeklyTraining => {
     trainingId: docData.trainingId,
     sessions: docData.sessions,
     signupMaxSessions: docData.signupMaxSessions || 1,
-    openToconst: docData.openToconst || false,
+    openToPublic: docData.openToPublic || false,
     opens: new Date(docData.opens.seconds * 1000),
     closes: new Date(docData.closes.seconds * 1000),
     notes: docData.notes.split('%%NEWLINE%%').join('\n'),

@@ -1,4 +1,9 @@
+import 'firebase/analytics'
 import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
+import 'firebase/firestore'
+import 'firebase/functions'
 
 const FIREBASE_CONFIG = {
   apiKey: import.meta.env.VITE_FB_API_KEY,
@@ -12,3 +17,7 @@ const FIREBASE_CONFIG = {
 }
 
 firebase.initializeApp(FIREBASE_CONFIG)
+export const auth = firebase.auth()
+export const functions = firebase.functions()
+export const db = firebase.firestore()
+export const analytics = firebase.analytics()

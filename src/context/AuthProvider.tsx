@@ -7,8 +7,9 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { auth, signOut } from '../services/auth'
+import { signOut } from '../services/auth'
 import { getIsAdmin, getUserInfo } from '../services/db'
+import { auth } from '../services/firebase'
 import { AumtMember } from '../types'
 
 const AuthContext = createContext<{

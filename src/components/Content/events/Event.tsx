@@ -11,7 +11,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { getCurrentUid } from '../../../services/auth'
 import dataUtil from '../../../services/data.util'
-import { signUpToEvent } from '../../../services/db'
+import { removeMemberFromEvent, signUpToEvent } from '../../../services/db'
 import {
   AumtCampSignupData,
   AumtEvent,
