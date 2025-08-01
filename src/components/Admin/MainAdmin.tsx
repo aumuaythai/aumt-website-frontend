@@ -7,6 +7,7 @@ import { Button, Drawer, Menu } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { lazy, useEffect, useState } from 'react'
 import { Link, Route, Switch, useLocation } from 'react-router-dom'
+import { useAuth } from '../../context/AuthProvider'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import AdminStore from './AdminStore'
 import CreateEvent from './Events/CreateEvent'
@@ -27,6 +28,8 @@ const MemberDashboardLazyWrapper = lazy(
 )
 
 export default function MainAdmin() {
+  const { userIsAdmin } = useAuth()
+
   const [menuOpen, setMenuOpen] = useState(false)
   const [forms, setForms] = useState<AumtWeeklyTraining[]>([])
   const [events, setEvents] = useState<AumtEvent[]>([])
@@ -37,6 +40,10 @@ export default function MainAdmin() {
       AdminStore.cleanup()
     }
   }, [])
+
+  if (!userIsAdmin) {
+    return <div>You are not authorised to access this page.</div>
+  }
 
   return (
     <div className="adminContainer">

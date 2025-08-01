@@ -1,73 +1,52 @@
 import { Alert, Spin } from 'antd'
-import React, { Component } from 'react'
-import {
-  Link,
-  Route,
-  RouteComponentProps,
-  Switch,
-  withRouter,
-} from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom'
+import { useAuth } from '../../../context/AuthProvider'
 import { getAllEvents } from '../../../services/db'
-import { AumtEvent, AumtMember } from '../../../types'
+import { AumtEvent } from '../../../types'
 import { Event } from './Event'
 import EventsList from './EventsList'
 import './EventsWrapper.css'
 
-interface EventWrapperProps extends RouteComponentProps {
-  authedUser: AumtMember | null
-}
+export default function EventsWrapperWithoutRouter() {
+  const { authedUser } = useAuth()
 
-interface EventWrapperState {
-  upcomingEvents: AumtEvent[]
-  pastEvents: AumtEvent[]
-  errorMessage: string
-  loadingEvents: boolean
-}
+  const [upcomingEvents, setUpcomingEvents] = useState<AumtEvent[]>([])
+  const [pastEvents, setPastEvents] = useState<AumtEvent[]>([])
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [loadingEvents, setLoadingEvents] = useState<boolean>(false)
 
-class EventsWrapperWithoutRouter extends Component<
-  EventWrapperProps,
-  EventWrapperState
-> {
-  constructor(props: EventWrapperProps) {
-    super(props)
-    this.state = {
-      upcomingEvents: [],
-      pastEvents: [],
-      errorMessage: '',
-      loadingEvents: false,
-    }
-  }
-  componentDidMount() {
-    this.setState({
-      ...this.state,
-      errorMessage: '',
-      loadingEvents: true,
-    })
-    getAllEvents()
-      .then((events: AumtEvent[]) => {
+  useEffect(() => {
+    async function loadEvents() {
+      try {
+        const events = await getAllEvents()
         const currentDate = new Date()
-        this.setState({
-          ...this.state,
-          errorMessage: '',
-          pastEvents: events
+        setErrorMessage('')
+        setPastEvents(
+          events
             .filter((e) => e.date < currentDate)
-            .sort((a, b) => (a.date < b.date ? 1 : -1)),
-          upcomingEvents: events
+            .sort((a, b) => (a.date < b.date ? 1 : -1))
+        )
+        setUpcomingEvents(
+          events
             .filter((e) => e.date >= currentDate)
-            .sort((a, b) => (a.date > b.date ? 1 : -1)),
-          loadingEvents: false,
-        })
-      })
-      .catch((err) => {
-        this.setState({
-          pastEvents: [],
-          upcomingEvents: [],
-          errorMessage: err.toString(),
-          loadingEvents: false,
-        })
-      })
-  }
-  renderEvent = (routerProps: RouteComponentProps) => {
+            .sort((a, b) => (a.date > b.date ? 1 : -1))
+        )
+        setLoadingEvents(false)
+      } catch (err) {
+        setPastEvents([])
+        setUpcomingEvents([])
+        setErrorMessage(err.toString())
+        setLoadingEvents(false)
+      }
+    }
+
+    setErrorMessage('')
+    setLoadingEvents(true)
+    loadEvents()
+  }, [])
+
+  const renderEvent = (routerProps: RouteComponentProps) => {
     const { eventId }: any = routerProps.match.params
     if (!eventId) {
       return (
@@ -77,13 +56,11 @@ class EventsWrapperWithoutRouter extends Component<
         </p>
       )
     }
-    const foundEvent = this.state.upcomingEvents
-      .concat(this.state.pastEvents)
+    const foundEvent = upcomingEvents
+      .concat(pastEvents)
       .find((a) => a.urlPath === eventId)
     if (foundEvent) {
-      return (
-        <Event authedUser={this.props.authedUser} event={foundEvent}></Event>
-      )
+      return <Event authedUser={authedUser} event={foundEvent}></Event>
     }
     return (
       <p>
@@ -92,52 +69,48 @@ class EventsWrapperWithoutRouter extends Component<
       </p>
     )
   }
-  render() {
-    const { path } = this.props.match
-    if (this.state.errorMessage) {
-      return <Alert message={this.state.errorMessage} type="error"></Alert>
-    } else if (this.state.loadingEvents) {
-      return (
-        <div className="retrievingEventsText">
-          Retrieving Events <Spin />
-        </div>
-      )
-    }
 
+  if (errorMessage) {
+    return <Alert message={errorMessage} type="error"></Alert>
+  } else if (loadingEvents) {
     return (
-      <div className="eventsWrapper">
-        <Switch>
-          <Route
-            path={`${path}/:eventId`}
-            render={(routerProps) => this.renderEvent(routerProps)}
-          />
-          <Route path={path}>
-            <div className="eventsListWrapper">
-              <div className="eventsListContainer upcomingEventsContainer">
-                <h2>Upcoming Events</h2>
-                {this.state.upcomingEvents.length ? (
-                  <EventsList events={this.state.upcomingEvents}></EventsList>
-                ) : (
-                  <p>
-                    There are no upcoming club events at this time. Please check
-                    our Facebook page.
-                  </p>
-                )}
-              </div>
-              <div className="eventsListContainer">
-                <h2>Past Events</h2>
-                {this.state.pastEvents.length ? (
-                  <EventsList events={this.state.pastEvents}></EventsList>
-                ) : (
-                  <p>There are no past club events up now</p>
-                )}
-              </div>
-            </div>
-          </Route>
-        </Switch>
+      <div className="retrievingEventsText">
+        Retrieving Events <Spin />
       </div>
     )
   }
-}
 
-export default withRouter(EventsWrapperWithoutRouter)
+  return (
+    <div className="eventsWrapper">
+      <Switch>
+        <Route
+          path="/events/:eventId"
+          render={(routerProps) => renderEvent(routerProps)}
+        />
+        <Route path="/events">
+          <div className="eventsListWrapper">
+            <div className="eventsListContainer upcomingEventsContainer">
+              <h2>Upcoming Events</h2>
+              {upcomingEvents.length ? (
+                <EventsList events={upcomingEvents}></EventsList>
+              ) : (
+                <p>
+                  There are no upcoming club events at this time. Please check
+                  our Facebook page.
+                </p>
+              )}
+            </div>
+            <div className="eventsListContainer">
+              <h2>Past Events</h2>
+              {pastEvents.length ? (
+                <EventsList events={pastEvents}></EventsList>
+              ) : (
+                <p>There are no past club events up now</p>
+              )}
+            </div>
+          </div>
+        </Route>
+      </Switch>
+    </div>
+  )
+}
