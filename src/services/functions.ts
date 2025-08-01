@@ -1,32 +1,19 @@
-import firebase from "firebase/app";
-import "firebase/functions";
+import { HttpsCallableResult } from '@firebase/functions-types'
+import firebase from 'firebase/app'
+import 'firebase/functions'
 
-import {HttpsCallableResult} from "@firebase/functions-types";
+export const functions = firebase.functions()
+// Uncomment if using emulator
+// .useEmulator("localhost", 5001);
 
-class Functions {
-    private functions: firebase.functions.Functions | null = null;
-
-    public initialize() {
-        if (!this.functions) {
-            // Uncomment this if testing emulator:
-            // firebase.functions().useEmulator("localhost", 5001);
-            
-            firebase.functions();
-            this.functions = firebase.functions();
-        }
-    }
-
-    public isAdmin(): Promise<HttpsCallableResult> {
-        if (!this.functions) return Promise.reject("No db object");
-        const call = this.functions.httpsCallable("checkUserIsAdmin");
-        return call({});
-    }
-
-    public removeUser(uid: string): Promise<HttpsCallableResult> {
-        if (!this.functions) return Promise.reject("No db object");
-        const call = this.functions.httpsCallable("removeUser");
-        return call({ uid: uid });
-    }
+export function isAdmin(): Promise<HttpsCallableResult> {
+  if (!this.functions) return Promise.reject('No db object')
+  const call = this.functions.httpsCallable('checkUserIsAdmin')
+  return call({})
 }
 
-export default new Functions();
+export function removeUser(uid: string): Promise<HttpsCallableResult> {
+  if (!this.functions) return Promise.reject('No db object')
+  const call = this.functions.httpsCallable('removeUser')
+  return call({ uid: uid })
+}

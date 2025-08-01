@@ -23,7 +23,14 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom'
-import db from '../../../services/db'
+import {
+  getAllMembers,
+  getClubConfig,
+  listenToMembers,
+  setClubJoinForm,
+  setClubSignupSem,
+  unlisten,
+} from '../../../services/db'
 import { AumtMember, AumtMembersObj } from '../../../types'
 import { JoinForm } from '../../Content/join/JoinForm'
 import './MemberDashboard.css'
@@ -89,7 +96,7 @@ class MemberDashboard extends Component<
     }
   }
   componentDidMount = () => {
-    db.getClubConfig().then((clubConfig) => {
+    getClubConfig().then((clubConfig) => {
       this.setState({
         ...this.state,
         clubFormLoading: false,
@@ -100,7 +107,7 @@ class MemberDashboard extends Component<
     })
   }
   componentWillUnmount = () => {
-    db.unlisten(this.state.dbListenerId)
+    unlisten(this.state.dbListenerId)
   }
   tableHelperChange = (helper: TableHelper) => {
     if (this.emptyHelper && helper) {
@@ -111,12 +118,12 @@ class MemberDashboard extends Component<
   }
   getMembers = () => {
     this.setState({ ...this.state, loadingMembers: true })
-    db.getAllMembers()
+    getAllMembers()
       .then((memberObj) => {
         this.setTableData(memberObj)
         this.setState({
           ...this.state,
-          dbListenerId: db.listenToMembers(this.onDbChange),
+          dbListenerId: listenToMembers(this.onDbChange),
         })
       })
       .catch((err) => {
@@ -150,7 +157,7 @@ class MemberDashboard extends Component<
       ...this.state,
       loadingSignupSem: true,
     })
-    db.setClubSignupSem(sem)
+    setClubSignupSem(sem)
       .then(() => {
         this.setState({
           ...this.state,
@@ -173,7 +180,7 @@ class MemberDashboard extends Component<
       ...this.state,
       clubFormLoading: true,
     })
-    db.setClubJoinForm(open)
+    setClubJoinForm(open)
       .then(() => {
         this.setState({
           ...this.state,

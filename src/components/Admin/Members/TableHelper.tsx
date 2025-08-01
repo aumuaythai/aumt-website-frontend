@@ -15,7 +15,12 @@ import {
   default as DataFormatterUtil,
   default as dataUtil,
 } from '../../../services/data.util'
-import db from '../../../services/db'
+import {
+  addMultipleMembers,
+  removeMultipleMembers,
+  updateMembership,
+  updatePaid,
+} from '../../../services/db'
 import Validator from '../../../services/validator'
 import { AumtMember, AumtMembersObj } from '../../../types'
 import { Marquee } from '../../utility/Marquee'
@@ -216,7 +221,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
   public importMembers = (
     members: Record<string, AumtMember>
   ): Promise<void> => {
-    return db.addMultipleMembers(members)
+    return addMultipleMembers(members)
   }
 
   public parseMemberFile = (
@@ -321,7 +326,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         deletingSelectedMembers: false,
       })
       const uids = this.state.currentSelectedRows.map((r) => r.key)
-      db.removeMultipleMembers(uids)
+      removeMultipleMembers(uids)
         .then(() => {
           notification.success({
             message: `Successfully removed ${uids.length} members`,
@@ -396,7 +401,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
   }
 
   public updatePaid = (line: TableDataLine, newPaid: 'Yes' | 'No') => {
-    db.updatePaid(line.key, newPaid)
+    updatePaid(line.key, newPaid)
       .then(() => {
         notification.success({
           message: `Updated Paid for ${line.firstName} to ${newPaid}`,
@@ -411,7 +416,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
     line: TableDataLine,
     newMembership: 'S1' | 'S2' | 'FY' | 'SS'
   ) => {
-    db.updateMembership(line.key, newMembership)
+    updateMembership(line.key, newMembership)
       .then(() => {
         notification.success({
           message: `Updated membership for ${line.firstName} to ${newMembership}`,

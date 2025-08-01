@@ -2,7 +2,7 @@ import UserOutlined from '@ant-design/icons/UserOutlined'
 import { Button, Input, InputRef } from 'antd'
 import React, { Component, createRef, Ref, RefObject } from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import FirebaseUtil from '../../services/firebase.util'
+import { getCurrentUser, signIn } from '../../services/auth'
 import { LoginErrorMessage } from './LoginErrorMessage'
 import './LoginForm.css'
 import { ResetPasswordLink } from './ResetLink'
@@ -30,7 +30,7 @@ export class LoginForm extends Component<LoginProps, LoginState> {
       password: '',
       errorCode: '',
       authing: false,
-      isAuthed: !!FirebaseUtil.getCurrentUser(),
+      isAuthed: !!getCurrentUser(),
     }
   }
   componentDidMount() {
@@ -58,7 +58,7 @@ export class LoginForm extends Component<LoginProps, LoginState> {
       authing: true,
       errorCode: '',
     })
-    FirebaseUtil.signIn(this.state.username, this.state.password)
+    signIn(this.state.username, this.state.password)
       .then((userInfo) => {
         this.setState({
           ...this.state,

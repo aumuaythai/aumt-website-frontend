@@ -1,7 +1,7 @@
 import DownOutlined from '@ant-design/icons/DownOutlined'
 import { Button, Dropdown } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import FirebaseUtil from '../../services/firebase.util'
+import { signOut } from '../../services/auth'
 import { AumtMember } from '../../types'
 import { ResetPasswordLink } from './ResetLink'
 import './UserInfo.css'
@@ -12,7 +12,7 @@ interface UserInfoProps {
 
 export default function UserInfo(props: UserInfoProps) {
   const onSignOutClick = () => {
-    FirebaseUtil.signOut()
+    signOut()
       .then(() => {
         console.log('Signing out success')
       })

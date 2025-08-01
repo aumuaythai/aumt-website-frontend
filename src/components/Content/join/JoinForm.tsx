@@ -12,9 +12,9 @@ import {
 } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import React, { Component } from 'react'
+import { createUser } from '../../../services/auth'
 import DataFormatterUtil from '../../../services/data.util'
-import db from '../../../services/db'
-import FirebaseUtil from '../../../services/firebase.util'
+import { setMember } from '../../../services/db'
 import validator from '../../../services/validator'
 import { AumtMember, ClubConfig } from '../../../types'
 import PaymentInstructions from '../../utility/PaymentInstructions'
@@ -149,7 +149,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
 
     if (password) {
       message.loading({ content: 'Creating User', key })
-      FirebaseUtil.createUser(email, password)
+      createUser(email, password)
         .then((userCredential) => {
           const { user } = userCredential
           if (!user) {
@@ -159,7 +159,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
         })
         .then((uid: string) => {
           message.loading({ content: 'Adding to Club', key })
-          return db.setMember(uid, member)
+          return setMember(uid, member)
         })
         .then(() => {
           message.success({
@@ -190,7 +190,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
         })
     } else if (uid) {
       message.loading({ content: 'Adding to Club', key })
-      db.setMember(uid, member)
+      setMember(uid, member)
         .then(() => {
           message.success({
             content: 'You are now part of the club!',

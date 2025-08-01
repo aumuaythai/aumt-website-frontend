@@ -1,8 +1,8 @@
 import { Button, notification, Result, Spin } from 'antd'
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { signOut } from '../../../services/auth'
 import dataUtil from '../../../services/data.util'
-import FirebaseUtil from '../../../services/firebase.util'
 import { AumtMember, ClubConfig } from '../../../types'
 import PaymentInstructions from '../../utility/PaymentInstructions'
 import { JoinForm } from './JoinForm'
@@ -15,11 +15,9 @@ interface MainJoinProps {
   clubConfig: ClubConfig | null
 }
 
-interface MainJoinState {}
-
-export class MainJoin extends Component<MainJoinProps, MainJoinState> {
+export class MainJoin extends Component<MainJoinProps> {
   onSignOutClick = () => {
-    FirebaseUtil.signOut().catch((err) => {
+    signOut().catch((err) => {
       notification.error({ message: 'Error signing out: ' + err.toString() })
     })
   }

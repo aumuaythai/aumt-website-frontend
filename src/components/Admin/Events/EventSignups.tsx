@@ -2,7 +2,7 @@ import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons'
 import { Button, Input, notification, Spin } from 'antd'
 import React, { Component } from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
-import db from '../../../services/db'
+import { signUpToEvent } from '../../../services/db'
 import { AumtCampSignupData, AumtEvent } from '../../../types'
 import { CampSignupForm } from '../../Content/events/CampSignupForm'
 import AdminStore from '../AdminStore'
@@ -119,7 +119,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
       this.setState({ ...this.state, submittingMember: true })
     }
 
-    db.signUpToEvent(
+    signUpToEvent(
       this.state.event?.id,
       this.generateMockUid(),
       Object.assign(signupData, {

@@ -1,6 +1,6 @@
 import { Button, Divider } from 'antd'
 import { useEffect, useState } from 'react'
-import db from '../../../services/db'
+import { getClubConfig } from '../../../services/db'
 import { Links } from '../../../services/links'
 import { ClubConfig } from '../../../types/ClubConfig'
 import './Faq.css'
@@ -9,7 +9,7 @@ export default function Faq() {
   const [clubConfig, setClubConfig] = useState<ClubConfig | null>(null)
 
   useEffect(() => {
-    db.getClubConfig()
+    getClubConfig()
       .then((clubConfig: ClubConfig) => {
         setClubConfig(clubConfig)
       })

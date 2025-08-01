@@ -1,7 +1,7 @@
 import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 import React, { useRef, useState } from 'react'
-import db from '../../../services/db'
-import FirebaseUtil from '../../../services/firebase.util'
+import { signOut } from '../../../services/auth'
+import { setMember } from '../../../services/db'
 import Validator from '../../../services/validator'
 import { AumtMember, ClubConfig } from '../../../types'
 import PaymentInstructions from '../../utility/PaymentInstructions'
@@ -174,7 +174,7 @@ export default function Account({
     }
 
     setState((prev) => ({ ...prev, saving: true }))
-    db.setMember(authedUserId, member)
+    setMember(authedUserId, member)
       .then(() => {
         setState((prev) => ({
           ...prev,
@@ -204,7 +204,7 @@ export default function Account({
   }
 
   function onSignOutClick() {
-    FirebaseUtil.signOut().catch((err) => {
+    signOut().catch((err) => {
       notification.error({ message: 'Error signing out: ' + err.toString() })
     })
   }

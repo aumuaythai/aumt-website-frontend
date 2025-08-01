@@ -2,7 +2,7 @@ import { EditOutlined } from '@ant-design/icons'
 import { notification, Popover, Spin, Tooltip } from 'antd'
 import React, { Component } from 'react'
 import DataFormatUtil from '../../../services/data.util'
-import db from '../../../services/db'
+import { getAllForms } from '../../../services/db'
 import { AumtWeeklyTraining } from '../../../types'
 import SignupForm from '../../Content/signups/SignupForm'
 import './MemberAttendance.css'
@@ -61,7 +61,7 @@ export class MemberAttendance extends Component<
         loadingAttendance: true,
       })
     }
-    db.getAllForms()
+    getAllForms()
       .then((forms) => {
         const attendance = DataFormatUtil.getAttendance(
           this.props.member.key,

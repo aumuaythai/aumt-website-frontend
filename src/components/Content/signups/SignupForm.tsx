@@ -3,7 +3,7 @@ import { Alert, Button, Checkbox, Input, Spin, Tag, Tooltip } from 'antd'
 import { CheckboxOptionType } from 'antd/lib/checkbox'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import db from '../../../services/db'
+import { removeMemberFromForm, signUserUp } from '../../../services/db'
 import { AumtTrainingSession } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
 import './SignupForm.css'
@@ -103,7 +103,7 @@ export default function SignupForm(props: SignupFormProps) {
   const onRemoveClick = () => {
     if (signedUpOptions.length && props.authedUserId) {
       setRemovingState(true)
-      db.removeMemberFromForm(props.authedUserId, props.id, signedUpOptions)
+      removeMemberFromForm(props.authedUserId, props.id, signedUpOptions)
         .then(() => {
           setSignedUpOptions([])
           setCurrentSessionIds([])
@@ -135,7 +135,7 @@ export default function SignupForm(props: SignupFormProps) {
 
     const uid = props.authedUserId || currentMockUid || generateMockUid()
 
-    db.signUserUp(
+    signUserUp(
       uid,
       props.displayName || currentDisplayName,
       new Date(),

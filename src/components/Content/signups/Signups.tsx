@@ -1,7 +1,11 @@
 import { Divider, Spin, notification } from 'antd'
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import db from '../../../services/db'
+import {
+  getOpenForms,
+  listenToOneTraining,
+  unlisten,
+} from '../../../services/db'
 import { AumtMember, AumtWeeklyTraining, ClubConfig } from '../../../types'
 import SignupForm from './SignupForm'
 import './Signups.css'
@@ -29,12 +33,12 @@ export default function Signups(props: SignupProps) {
 
     const setup = async () => {
       try {
-        const fetchedForms = await db.getOpenForms()
+        const fetchedForms = await getOpenForms()
         setForms(fetchedForms)
         setLoadingForms(false)
 
         dbListenerIds = fetchedForms.map((f) =>
-          db.listenToOneTraining(f.trainingId, onDbChanges)
+          listenToOneTraining(f.trainingId, onDbChanges)
         )
       } catch (err) {
         notification.error({
@@ -47,7 +51,7 @@ export default function Signups(props: SignupProps) {
     setup()
 
     return () => {
-      dbListenerIds.forEach((id) => db.unlisten(id))
+      dbListenerIds.forEach((id) => unlisten(id))
     }
   }, [])
 

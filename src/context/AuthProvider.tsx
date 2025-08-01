@@ -1,13 +1,15 @@
 import { notification } from 'antd'
-import 'antd/dist/antd.css'
 import firebase from 'firebase/app'
-import { createContext, ReactNode, useEffect, useState } from 'react'
-import Analytics from '../services/analytics'
-import DB from '../services/db'
-import FirebaseUtil from '../services/firebase.util'
-import Functions from '../services/functions'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { auth, signOut } from '../services/auth'
+import { getIsAdmin, getUserInfo } from '../services/db'
 import { AumtMember } from '../types'
-import './App.css'
 
 const AuthContext = createContext<{
   authedUser: AumtMember | null
@@ -19,16 +21,22 @@ const AuthContext = createContext<{
   authedUserId: '',
 })
 
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+
+  return context
+}
+
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [authedUser, setAuthedUser] = useState<AumtMember | null>(null)
   const [userIsAdmin, setUserIsAdmin] = useState(false)
   const [authedUserId, setAuthedUserId] = useState('')
 
   useEffect(() => {
-    FirebaseUtil.initialize(authStateChange)
-    Analytics.initialize()
-    Functions.initialize()
-    DB.initialize()
+    auth.onAuthStateChanged(authStateChange)
   }, [])
 
   async function authStateChange(fbUser: firebase.User | null) {
@@ -40,11 +48,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const userInfo: AumtMember = await DB.getUserInfo(fbUser)
+      const userInfo: AumtMember = await getUserInfo(fbUser)
       setAuthedUser(userInfo)
       setAuthedUserId(fbUser.uid)
 
-      const isAdmin: boolean = await DB.getIsAdmin(fbUser.uid)
+      const isAdmin: boolean = await getIsAdmin(fbUser.uid)
       setUserIsAdmin(isAdmin)
     } catch (err) {
       if (err === 'No User for uid') {
@@ -62,7 +70,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       setAuthedUserId('')
       setUserIsAdmin(false)
       try {
-        await FirebaseUtil.signOut()
+        await signOut()
       } catch (signOutErr) {
         notification.error({
           message: `Error signing out: ${signOutErr}`,

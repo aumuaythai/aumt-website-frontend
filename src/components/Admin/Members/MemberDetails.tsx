@@ -4,8 +4,8 @@ import moment from 'moment'
 import React, { Component } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import DataFormatterUtil from '../../../services/data.util'
-import db from '../../../services/db'
-import Functions from '../../../services/functions'
+import { removeMember, setMember } from '../../../services/db'
+import { removeUser } from '../../../services/functions'
 import Validator from '../../../services/validator'
 import { AumtMember } from '../../../types'
 import { MemberAttendance } from './MemberAttendance'
@@ -114,7 +114,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     this.setState({ ...this.state, currentStudentId: newId })
   }
   onMembershipChange = (membership: 'S1' | 'S2' | 'FY' | 'SS') => {
-    let newMembership: 'S1' | 'S2' | 'FY' | 'SS' = membership
+    const newMembership: 'S1' | 'S2' | 'FY' | 'SS' = membership
     this.setState({ ...this.state, currentMembership: newMembership })
   }
   onInterestedInCampChange = (interested: 'Yes' | 'No') => {
@@ -148,10 +148,10 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
     this.setState({ ...this.state, removing: true })
 
     // Remove user from database.
-    db.removeMember(this.props.member.key)
+    removeMember(this.props.member.key)
       .then(() => {
         // If successfull then remove user from auth.
-        Functions.removeUser(this.props.member.key)
+        removeUser(this.props.member.key)
           .then((result) => {
             // Finally remove user from state.
             this.setState({ ...this.state, removing: false })
@@ -203,7 +203,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
       })
     }
     this.setState({ ...this.state, saving: true })
-    db.setMember(this.props.member.key, member)
+    setMember(this.props.member.key, member)
       .then(() => {
         this.setState({ ...this.state, saving: false })
         notification.success({ message: 'Saved' })

@@ -10,7 +10,7 @@ import {
   notification,
 } from 'antd'
 import React, { Component, Key } from 'react'
-import db from '../../../services/db'
+import { removeMemberFromForm, signUserUp } from '../../../services/db'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 import './EditSignups.css'
 
@@ -79,9 +79,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
           [sessionId]: true,
         }),
       })
-      db.removeMemberFromForm(uidToRemove, this.props.form.trainingId, [
-        sessionId,
-      ])
+      removeMemberFromForm(uidToRemove, this.props.form.trainingId, [sessionId])
         .then(() => {
           delete this.state.selectedMembers[sessionId]
           this.setState({
@@ -117,7 +115,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         ...this.state,
         addingInProcess: { ...this.state.addingInProcess, [sessionId]: true },
       })
-      db.signUserUp(
+      signUserUp(
         this.generateMockUid(),
         name,
         new Date(),
@@ -174,7 +172,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
         [fromSession]: true,
       }),
     })
-    db.signUserUp(
+    signUserUp(
       currentUserIdSelected,
       displayName,
       timeAdded,

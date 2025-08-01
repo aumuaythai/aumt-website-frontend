@@ -3,7 +3,7 @@ import { Button, Dropdown, Menu, notification, Popover, Spin } from 'antd'
 import React, { Component, Key } from 'react'
 import { Link } from 'react-router-dom'
 import dataUtil from '../../../services/data.util'
-import db from '../../../services/db'
+import { formatMembers } from '../../../services/db'
 import { AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
 import { EditSignups } from './EditSignups'
@@ -39,7 +39,7 @@ export class TrainingDashboard extends Component<
     }
   }
   signMockData = () => {
-    db.formatMembers().then(() => {
+    formatMembers().then(() => {
       console.log('DONE')
     })
   }

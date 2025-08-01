@@ -11,7 +11,7 @@ import {
 import moment from 'moment'
 import React, { Component } from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
-import db from '../../../services/db'
+import { submitNewForm } from '../../../services/db'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 import { MarkdownEditor } from '../../utility/MarkdownEditor'
 import AdminStore from '../AdminStore'
@@ -306,7 +306,7 @@ class CreateTraining extends Component<
     this.state.currentSessions.forEach((session) => {
       sessions[session.sessionId] = session
     })
-    db.submitNewForm({
+    submitNewForm({
       title: this.state.currentTitle,
       sessions,
       signupMaxSessions: this.state.currentSignupMaxSessions,
