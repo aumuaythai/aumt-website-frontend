@@ -1,26 +1,25 @@
 import { Divider, Spin, notification } from 'antd'
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../../context/AuthProvider'
+import { useConfig } from '../../../context/ConfigProvider'
 import {
   getOpenForms,
   listenToOneTraining,
   unlisten,
 } from '../../../services/db'
-import { AumtMember, AumtWeeklyTraining, ClubConfig } from '../../../types'
+import { AumtWeeklyTraining } from '../../../types'
 import SignupForm from './SignupForm'
 import './Signups.css'
 
-interface SignupProps {
-  authedUser: AumtMember | null
-  authedUserId: string | null
-  paid: boolean
-  clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
-  clubConfig: ClubConfig | null
-}
+export default function Signups() {
+  const { authedUser, authedUserId } = useAuth()
+  const { clubSignupSem } = useConfig()
 
-export default function Signups(props: SignupProps) {
   const [forms, setForms] = React.useState<AumtWeeklyTraining[]>([])
   const [loadingForms, setLoadingForms] = React.useState<boolean>(true)
+
+  const hasPaid = authedUser?.paid === 'Yes'
 
   useEffect(() => {
     let dbListenerIds: string[] = []
@@ -56,20 +55,18 @@ export default function Signups(props: SignupProps) {
   }, [])
 
   const getDisplayName = (): string | null => {
-    if (props.authedUser) {
+    if (authedUser) {
       const displayName =
-        props.authedUser.firstName +
-        (props.authedUser.preferredName
-          ? ` "${props.authedUser.preferredName}" `
-          : ' ') +
-        props.authedUser.lastName
+        authedUser.firstName +
+        (authedUser.preferredName ? ` "${authedUser.preferredName}" ` : ' ') +
+        authedUser.lastName
       return displayName
     } else {
       return null
     }
   }
 
-  if (loadingForms || props.clubSignupSem === 'loading') {
+  if (loadingForms || clubSignupSem === 'loading') {
     return (
       <div>
         <Spin />
@@ -104,7 +101,7 @@ export default function Signups(props: SignupProps) {
     <div className="signupsContainer">
       {forms.map((form) => {
         if (!form.openToPublic) {
-          if (!props.authedUserId) {
+          if (!authedUserId) {
             return (
               <div key={form.trainingId}>
                 <h2>{form.title}</h2>
@@ -121,10 +118,10 @@ export default function Signups(props: SignupProps) {
               </div>
             )
           } else if (
-            props.authedUser &&
-            (props.authedUser.paid === 'Yes' || !form.paymentLock) &&
-            (props.authedUser.membership === form.semester ||
-              (props.authedUser.membership === 'FY' && form.semester !== 'SS'))
+            authedUser &&
+            (hasPaid || !form.paymentLock) &&
+            (authedUser.membership === form.semester ||
+              (authedUser.membership === 'FY' && form.semester !== 'SS'))
           ) {
             return (
               <div key={form.trainingId} className="formContainer">
@@ -136,14 +133,13 @@ export default function Signups(props: SignupProps) {
                   displayName={getDisplayName()}
                   showNotes={true}
                   submittingAsName={
-                    props.authedUser
-                      ? `${
-                          props.authedUser.preferredName ||
-                          props.authedUser.firstName
-                        } ${props.authedUser.lastName}`
+                    authedUser
+                      ? `${authedUser.preferredName || authedUser.firstName} ${
+                          authedUser.lastName
+                        }`
                       : ''
                   }
-                  authedUserId={props.authedUserId}
+                  authedUserId={authedUserId}
                   notes={form.notes}
                   signupMaxSessions={form.signupMaxSessions}
                   openToPublic={form.openToPublic}
@@ -151,10 +147,10 @@ export default function Signups(props: SignupProps) {
               </div>
             )
           } else if (
-            props.authedUser &&
-            ((props.authedUser.membership === 'FY' && form.semester === 'SS') ||
-              (props.authedUser.membership !== 'FY' &&
-                props.authedUser.membership !== form.semester))
+            authedUser &&
+            ((authedUser.membership === 'FY' && form.semester === 'SS') ||
+              (authedUser.membership !== 'FY' &&
+                authedUser.membership !== form.semester))
           ) {
             return (
               <div key={form.trainingId} className="signupsNotPaidContainer">
@@ -197,14 +193,13 @@ export default function Signups(props: SignupProps) {
                 displayName={getDisplayName()}
                 showNotes={true}
                 submittingAsName={
-                  props.authedUser
-                    ? `${
-                        props.authedUser.preferredName ||
-                        props.authedUser.firstName
-                      } ${props.authedUser.lastName}`
+                  authedUser
+                    ? `${authedUser.preferredName || authedUser.firstName} ${
+                        authedUser.lastName
+                      }`
                     : ''
                 }
-                authedUserId={props.authedUserId}
+                authedUserId={authedUserId}
                 notes={form.notes}
                 signupMaxSessions={form.signupMaxSessions}
                 openToPublic={form.openToPublic}

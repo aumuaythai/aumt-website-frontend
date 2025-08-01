@@ -1,5 +1,7 @@
 import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 import React, { useRef, useState } from 'react'
+import { useAuth } from '../../../context/AuthProvider'
+import { useConfig } from '../../../context/ConfigProvider'
 import { signOut } from '../../../services/auth'
 import { setMember } from '../../../services/db'
 import Validator from '../../../services/validator'
@@ -44,13 +46,10 @@ interface AccountState {
   editEC: boolean
 }
 
-export default function Account({
-  authedUser,
-  authedUserId,
-  clubSignupSem,
-  clubSignupStatus,
-  clubConfig,
-}: AccountProps) {
+export default function Account() {
+  const { authedUser, authedUserId } = useAuth()
+  const { clubConfig, clubSignupSem, clubSignupStatus } = useConfig()
+
   const originalStateRef = useRef<AccountState>({
     currentFirstName: authedUser.firstName,
     currentLastName: authedUser.lastName,
@@ -77,8 +76,8 @@ export default function Account({
     editMembership: false,
     editEC: false,
   })
-
   const originalState = originalStateRef.current
+
   const [prevAuthedUser, setPrevAuthedUser] = useState<AumtMember>(authedUser)
   const [state, setState] = useState<AccountState>(originalState)
 
@@ -230,7 +229,7 @@ export default function Account({
   }
 
   if (!authedUser) {
-    return <h1>Account Page</h1>
+    return <div>You do not have an account yet. Please join.</div>
   }
 
   return (

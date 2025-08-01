@@ -1,18 +1,16 @@
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../../context/AuthProvider'
 import { Links } from '../../services/links'
 import { AumtMember } from '../../types'
 import './Header.css'
 import TopMenu from './TopMenu'
 import UserInfo from './UserInfo'
 
-export interface HeaderProps {
-  authedUser: AumtMember | null
-  isAdmin: boolean
-}
+export default function Header() {
+  const { authedUser, userIsAdmin: isAdmin } = useAuth()
 
-export default function Header(props: HeaderProps) {
   const location = useLocation()
   const pathname = location.pathname
 
@@ -31,10 +29,10 @@ export default function Header(props: HeaderProps) {
           <img className="logoImg" src={'logos/AUMTLogo.png'} alt="" />
         </Link>
       </div>
-      <TopMenu isAdmin={props.isAdmin} authedUser={props.authedUser} />
+      <TopMenu isAdmin={isAdmin} authedUser={authedUser} />
       <div className="socialsContainer">
-        {props.authedUser ? (
-          <UserInfo authedUser={props.authedUser}></UserInfo>
+        {authedUser ? (
+          <UserInfo authedUser={authedUser}></UserInfo>
         ) : (
           <Link to={`/login?from=${pathname}`} className="loginButton">
             Sign In

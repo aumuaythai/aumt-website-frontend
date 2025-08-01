@@ -42,6 +42,8 @@ export default function ConfigProvider({ children }: { children: ReactNode }) {
       try {
         const config = await getClubConfig()
         setClubConfig(config)
+        setClubSignupStatus(config.clubSignupStatus)
+        setClubSignupSem(config.clubSignupSem)
       } catch (err) {
         notification.error({
           message: 'Failed to get website config: ' + err.toString(),

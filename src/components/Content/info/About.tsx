@@ -1,15 +1,14 @@
 import { Button } from 'antd'
-import { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { useConfig } from '../../../context/ConfigProvider'
 import { Links } from '../../../services/links'
 import './About.css'
 
-interface AboutProps {
-  semesterFee: number
-  fullYearFee: number
-}
+export default function About() {
+  const { clubConfig } = useConfig()
+  const semesterFee = clubConfig?.semesterOneFee
+  const fullYearFee = clubConfig?.fullYearFee
 
-export default function About(props: AboutProps) {
   return (
     <div className="aboutContainer">
       <h1 className="introTitle">
@@ -60,10 +59,10 @@ export default function About(props: AboutProps) {
         </h2>
         <div className="btnContainer">
           <button className="boldBtn yellow membershipBtn">
-            1 SEMESTER <br /> ${props.semesterFee}
+            1 SEMESTER <br /> ${semesterFee}
           </button>
           <button className="boldBtn yellow membershipBtn">
-            FULL YEAR <br /> ${props.fullYearFee}
+            FULL YEAR <br /> ${fullYearFee}
           </button>
           <button className="boldBtn invert membershipBtn">
             1 OFF CLASS* <br /> $10

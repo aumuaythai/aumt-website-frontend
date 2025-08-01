@@ -47,7 +47,7 @@ export default function App() {
                 <LoginForm />
               </Route>
               <Route path="/*">
-                <Header authedUser={authedUser} isAdmin={userIsAdmin} />
+                <Header />
                 <ErrorBoundary>
                   <Suspense fallback={<Spin />}>
                     <Switch>
@@ -64,13 +64,7 @@ export default function App() {
                         <Redirect to="/signups" />
                       </Route>
                       <Route path="/signups">
-                        <SignupsLazyWrapper
-                          paid={authedUser?.paid === 'Yes'}
-                          authedUserId={authedUserId}
-                          clubSignupSem={clubSignupSem}
-                          authedUser={authedUser}
-                          clubConfig={clubConfig}
-                        />
+                        <SignupsLazyWrapper />
                       </Route>
                       <Route path="/events">
                         <EventsWrapper authedUser={authedUser} />
@@ -91,20 +85,7 @@ export default function App() {
                         )}
                       </Route>
                       <Route path="/account">
-                        {authedUser ? (
-                          <Account
-                            clubSignupSem={clubSignupSem}
-                            loadingAuthedUser={loadingAuthedUser}
-                            clubSignupStatus={clubSignupStatus}
-                            authedUser={authedUser}
-                            authedUserId={authedUserId}
-                            clubConfig={clubConfig}
-                          />
-                        ) : (
-                          <div>
-                            You do not have an account yet. Please join.
-                          </div>
-                        )}
+                        <Account />
                       </Route>
                       <Route path="/penis">
                         <img
@@ -114,10 +95,7 @@ export default function App() {
                         />
                       </Route>
                       <Route path="/">
-                        <About
-                          semesterFee={clubConfig?.semesterOneFee}
-                          fullYearFee={clubConfig?.fullYearFee}
-                        />
+                        <About />
                       </Route>
                     </Switch>
                   </Suspense>
