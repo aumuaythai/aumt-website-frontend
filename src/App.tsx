@@ -118,12 +118,15 @@ export default function App() {
             <ErrorBoundary>
               <Suspense fallback={<Spin />}>
                 <Switch>
-                  <Route path="/about">
-                    <Redirect to="/" />
-                  </Route>
                   {/* <Route path="/team">
                       <TeamLazyWrapper></TeamLazyWrapper>
                     </Route> */}
+                  <Route path="/">
+                    <About
+                      semesterFee={clubConfig?.semesterOneFee}
+                      fullYearFee={clubConfig?.fullYearFee}
+                    />
+                  </Route>
                   <Route path="/faq">
                     <Faq />
                   </Route>
@@ -179,12 +182,6 @@ export default function App() {
                       className="headshotheadshot"
                       src="./photos/tom.jpg"
                       alt="Tom Haliday"
-                    />
-                  </Route>
-                  <Route path="/">
-                    <About
-                      semesterFee={clubConfig?.semesterOneFee}
-                      fullYearFee={clubConfig?.fullYearFee}
                     />
                   </Route>
                 </Switch>
