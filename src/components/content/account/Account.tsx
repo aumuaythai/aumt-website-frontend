@@ -1,235 +1,21 @@
-import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
-import React, { useRef, useState } from 'react'
+import { Button, Input, List, Radio, Spin } from 'antd'
+import { ReactNode, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { useAuth } from '../../../context/AuthProvider'
 import { useConfig } from '../../../context/ConfigProvider'
-import { signOut } from '../../../services/auth'
-import { setMember } from '../../../services/db'
-import Validator from '../../../services/validator'
-import { AumtMember, ClubConfig } from '../../../types'
+import { MembershipPeriod } from '../../../types'
 import PaymentInstructions from '../../utility/PaymentInstructions'
-import { ETHNICITIES } from '../join/JoinForm'
 import './Account.css'
 
-interface AccountProps {
-  authedUser: AumtMember
-  authedUserId: string
-  loadingAuthedUser: boolean
-  clubSignupStatus: 'open' | 'closed' | 'loading'
-  clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
-  clubConfig: ClubConfig | null
-}
+function Account() {
+  const [saving, setSaving] = useState(false)
 
-interface AccountState {
-  currentFirstName: string
-  currentLastName: string
-  currentPreferredName: string
-  currentEthnicity: string
-  currentGender: string
-  currentEmail: string
-  currentIsUoaStudent: 'Yes' | 'No'
-  currentUpi: string
-  currentStudentId: string
-  currentMembership: 'S1' | 'FY' | 'S2' | 'SS'
-  currentPaid: 'Yes' | 'No'
-  currentNotes: string
-  currentPaymentType: 'Bank Transfer' | 'Cash' | 'Other'
-  currentIsReturningMember: 'Yes' | 'No'
-  currentInterestedInCamp: 'Yes' | 'No'
-  currentInitialExperience: string
-  currentECName: string
-  currentECNumber: string
-  currentECRelationship: string
-  saving: boolean
-  editPersonal: boolean
-  editUniversity: boolean
-  editMembership: boolean
-  editEC: boolean
-}
-
-export default function Account() {
-  const { authedUser, authedUserId } = useAuth()
-  const { clubConfig, clubSignupSem, clubSignupStatus } = useConfig()
-
-  const originalStateRef = useRef<AccountState>({
-    currentFirstName: authedUser.firstName,
-    currentLastName: authedUser.lastName,
-    currentPreferredName: authedUser.preferredName,
-    currentEthnicity: authedUser.ethnicity,
-    currentGender: authedUser.gender,
-    currentEmail: authedUser.email,
-    currentIsUoaStudent: authedUser.isUoAStudent,
-    currentUpi: authedUser.upi,
-    currentStudentId: authedUser.studentId,
-    currentMembership: authedUser.membership,
-    currentPaid: authedUser.paid,
-    currentNotes: authedUser.notes,
-    currentPaymentType: authedUser.paymentType,
-    currentIsReturningMember: authedUser.isReturningMember,
-    currentInterestedInCamp: authedUser.interestedInCamp,
-    currentInitialExperience: authedUser.initialExperience,
-    currentECName: authedUser.EmergencyContactName,
-    currentECNumber: authedUser.EmergencyContactNumber,
-    currentECRelationship: authedUser.EmergencyContactRelationship,
-    saving: false,
-    editPersonal: false,
-    editUniversity: false,
-    editMembership: false,
-    editEC: false,
-  })
-  const originalState = originalStateRef.current
-
-  const [prevAuthedUser, setPrevAuthedUser] = useState<AumtMember>(authedUser)
-  const [state, setState] = useState<AccountState>(originalState)
-
-  if (prevAuthedUser !== authedUser) {
-    setPrevAuthedUser(authedUser)
-    setState((prev) => ({
-      ...prev,
-      currentFirstName: authedUser.firstName,
-      currentLastName: authedUser.lastName,
-      currentPreferredName: authedUser.preferredName,
-      currentEmail: authedUser.email,
-      currentInitialExperience: authedUser.initialExperience,
-      currentIsUoaStudent: authedUser.isUoAStudent,
-      currentUpi: authedUser.upi,
-      currentStudentId: authedUser.studentId,
-      currentMembership: authedUser.membership,
-      currentPaid: authedUser.paid,
-      currentNotes: authedUser.notes,
-      currentPaymentType: authedUser.paymentType,
-      currentIsReturningMember: authedUser.isReturningMember,
-      currentInterestedInCamp: authedUser.interestedInCamp,
-      currentECName: authedUser.EmergencyContactName,
-      currentECNumber: authedUser.EmergencyContactNumber,
-      currentECRelationship: authedUser.EmergencyContactRelationship,
-    }))
-  }
-
-  function onFormFieldChange(field: keyof AccountState, value: any) {
-    setState((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }))
-  }
-
-  function onMembershipChange(membership: 'S1' | 'S2' | 'FY' | 'SS') {
-    if (membership === originalState.currentMembership) {
-      setState((prev) => ({
-        ...prev,
-        currentMembership: membership,
-        currentPaid: originalState.currentPaid,
-        editMembership: false,
-      }))
-    } else {
-      setState((prev) => ({
-        ...prev,
-        currentMembership: membership,
-        currentPaid: 'No',
-      }))
-    }
-  }
-
-  function onSaveClick() {
-    const member: AumtMember = {
-      firstName: state.currentFirstName,
-      lastName: state.currentLastName,
-      preferredName: state.currentPreferredName,
-      ethnicity: state.currentEthnicity,
-      gender: state.currentGender,
-      email: state.currentEmail,
-      isUoAStudent: state.currentIsUoaStudent,
-      upi: state.currentUpi || '0',
-      studentId: state.currentStudentId || '0',
-      membership: state.currentMembership,
-      paid: state.currentPaid,
-      notes: state.currentNotes,
-      isReturningMember: state.currentIsReturningMember,
-      interestedInCamp: state.currentInterestedInCamp,
-      initialExperience: state.currentInitialExperience || '',
-      EmergencyContactName: state.currentECName,
-      EmergencyContactNumber: state.currentECNumber,
-      EmergencyContactRelationship: state.currentECRelationship,
-      timeJoinedMs: authedUser.timeJoinedMs,
-      paymentType: state.currentPaymentType,
-    }
-
-    /**
-     * Additional backup check if the user has changed membership
-     * we make damn sure they are set to 'not paid'.
-     */
-    if (state.currentMembership !== originalState.currentMembership) {
-      setState((prev) => ({ ...prev, currentPaid: 'No' }))
-    }
-
-    const errorStr = Validator.createAumtMember(member)
-    if (typeof errorStr === 'string') {
-      return notification.error({ message: errorStr })
-    }
-    if (authedUser.email !== state.currentEmail) {
-      notification.open({
-        message:
-          'Reminder: If you change the email here, also change it in Firebase by using the Admin SDK (see firebase user management guide)',
-      })
-    }
-
-    setState((prev) => ({ ...prev, saving: true }))
-    setMember(authedUserId, member)
-      .then(() => {
-        setState((prev) => ({
-          ...prev,
-          editPersonal: false,
-          editMembership: false,
-          editEC: false,
-          editUniversity: false,
-          saving: false,
-        }))
-        originalStateRef.current = state
-        notification.success({ message: 'Details updated' })
-
-        // Update props because website doesn't refresh.
-        updateAuthedUserProps(member)
-      })
-      .catch((err) => {
-        notification.error({
-          message: 'Could not save member' + err.toString(),
-        })
-      })
-  }
-
-  function updateAuthedUserProps(member: AumtMember) {
-    Object.keys(authedUser).forEach((key) => {
-      authedUser[key] = member[key]
-    })
-  }
-
-  function onSignOutClick() {
-    signOut().catch((err) => {
-      notification.error({ message: 'Error signing out: ' + err.toString() })
-    })
-  }
-
-  function editPersonalChange(toggle: boolean) {
-    setState((prev) => ({ ...prev, editPersonal: toggle }))
-    if (!toggle) setState(originalState)
-  }
-
-  function editMembershipChange(toggle: boolean) {
-    setState((prev) => ({ ...prev, editMembership: toggle }))
-    if (!toggle) setState(originalState)
-  }
-
-  function editECChange(toggle: boolean) {
-    setState((prev) => ({ ...prev, editEC: toggle }))
-    if (!toggle) setState(originalState)
-  }
-
-  function editUniversityChange(toggle: boolean) {
-    setState((prev) => ({ ...prev, editUniversity: toggle }))
-    if (!toggle) setState(originalState)
-  }
-
-  if (!authedUser) {
-    return <div>You do not have an account yet. Please join.</div>
+  function onSave(data) {
+    setSaving(true)
+    console.log(data)
+    setTimeout(() => {
+      setSaving(false)
+    }, 2000)
   }
 
   return (
@@ -241,350 +27,268 @@ export default function Account() {
         membership at the beginning of a new semester when signups for it opens.
       </p>
 
-      <List
-        header="Membership"
-        footer={
-          <div className="listFooter">
-            {state.editMembership ? (
-              <>
-                <Button
-                  danger
-                  type="primary"
-                  onClick={(e) => editMembershipChange(false)}
-                >
-                  Cancel
-                </Button>
-                {state.saving ? (
-                  <Spin />
-                ) : (
-                  <Button type="primary" onClick={onSaveClick}>
-                    Save
-                  </Button>
-                )}
-              </>
-            ) : (
-              <Button
-                type="primary"
-                onClick={(e) => editMembershipChange(true)}
-              >
-                Edit
-              </Button>
-            )}
-          </div>
-        }
-        bordered
-        className="listContainer"
-      >
-        <List.Item>
-          Current:
-          <b>
-            {state.currentMembership === 'S1' ? ' Semester 1' : ''}
-            {state.currentMembership === 'S2' ? ' Semester 2' : ''}
-            {state.currentMembership === 'SS' ? ' Summer School' : ''}
-            {state.currentMembership === 'FY'
-              ? ' Full Year (Sem 1 and Sem 2)'
-              : ''}
-          </b>
-        </List.Item>
-        <List.Item>
-          Status: <b>{state.currentPaid === 'Yes' ? 'Paid' : 'Not paid'}</b>
-        </List.Item>
-        <List.Item>
-          <span>Update membership options:</span>
-          <Radio.Group
-            buttonStyle="solid"
-            disabled={!state.editMembership}
-            value={state.currentMembership}
-            onChange={(e) => onMembershipChange(e.target.value)}
-          >
-            {clubSignupSem === 'SS' ? (
-              <Radio.Button value="SS">Summer School</Radio.Button>
-            ) : null}
-            {clubSignupSem === 'S1' ? (
-              <>
-                <Radio.Button value="FY">Full Year</Radio.Button>
-                <Radio.Button value="S1">Semester 1</Radio.Button>
-              </>
-            ) : null}
-            {clubSignupSem === 'S2' &&
-            !(
-              state.currentMembership === 'FY' && state.currentPaid === 'Yes'
-            ) ? (
-              <Radio.Button value="S2">Semester 2</Radio.Button>
-            ) : null}
-          </Radio.Group>
-        </List.Item>
-        <List.Item>
-          <span>Payment Type</span>
-          <Radio.Group
-            buttonStyle="solid"
-            disabled={!state.editMembership}
-            value={state.currentPaymentType}
-            onChange={(e) =>
-              onFormFieldChange('currentPaymentType', e.target.value)
-            }
-          >
-            <Radio.Button value="Bank Transfer">Bank Transfer</Radio.Button>
-            <Radio.Button value="Cash">Cash</Radio.Button>
-            <Radio.Button value="Other">Other</Radio.Button>
-          </Radio.Group>
-        </List.Item>
-        {state.currentPaid === 'No' ? (
-          <List.Item>
-            <PaymentInstructions
-              membershipType={state.currentMembership}
-              paymentType={state.currentPaymentType}
-              clubConfig={clubConfig}
-            />
-          </List.Item>
-        ) : null}
-      </List>
-
-      <List
-        header="Personal"
-        footer={
-          <div className="listFooter">
-            {state.editPersonal ? (
-              <>
-                <Button
-                  type="primary"
-                  danger
-                  onClick={(e) => editPersonalChange(false)}
-                >
-                  Cancel
-                </Button>
-                {state.saving ? (
-                  <Spin />
-                ) : (
-                  <Button type="primary" onClick={onSaveClick}>
-                    Save
-                  </Button>
-                )}
-              </>
-            ) : (
-              <Button type="primary" onClick={(e) => editPersonalChange(true)}>
-                Edit
-              </Button>
-            )}
-          </div>
-        }
-        bordered
-        className="listContainer"
-      >
-        <List.Item>
-          <span>First:</span>
-          <Input
-            disabled={!state.editPersonal}
-            className="memberEditInput"
-            value={state.currentFirstName}
-            onChange={(e) =>
-              onFormFieldChange('currentFirstName', e.target.value)
-            }
-          />
-        </List.Item>
-        <List.Item>
-          <span>Last:</span>
-          <Input
-            disabled={!state.editPersonal}
-            className="memberEditInput"
-            value={state.currentLastName}
-            onChange={(e) =>
-              onFormFieldChange('currentLastName', e.target.value)
-            }
-          />
-        </List.Item>
-        <List.Item>
-          <span>Preferred:</span>
-          <Input
-            disabled={!state.editPersonal}
-            className="memberEditInput"
-            value={state.currentPreferredName}
-            onChange={(e) =>
-              onFormFieldChange('currentPreferredName', e.target.value)
-            }
-          />
-        </List.Item>
-        <List.Item>
-          <span>Email: {state.currentEmail}</span>
-        </List.Item>
-        <List.Item>
-          <span>Ethnicity:</span>
-          <Select
-            disabled={!state.editPersonal}
-            value={state.currentEthnicity}
-            onChange={(value) => onFormFieldChange('currentEthnicity', value)}
-            className="dropdown"
-          >
-            {ETHNICITIES.map((ethnicity) => (
-              <Select.Option value={ethnicity}>{ethnicity}</Select.Option>
-            ))}
-          </Select>
-        </List.Item>
-        <List.Item>
-          <span>Gender:</span>
-          <Radio.Group
-            name="GenderRadio"
-            value={state.currentGender}
-            disabled={!state.editPersonal}
-            onChange={(e) => onFormFieldChange('currentGender', e.target.value)}
-          >
-            <Radio value={'Male'}>Male</Radio>
-            <Radio value={'Female'}>Female</Radio>
-            <Radio value={'Non-binary'}>Non-binary</Radio>
-            <Radio value={'Prefer not to say'}>Prefer not to say</Radio>
-          </Radio.Group>
-        </List.Item>
-      </List>
-
-      <List
-        header="University"
-        footer={
-          <div className="listFooter">
-            {state.editUniversity ? (
-              <>
-                <Button
-                  type="primary"
-                  danger
-                  onClick={(e) => editUniversityChange(false)}
-                >
-                  Cancel
-                </Button>
-                {state.saving ? (
-                  <Spin />
-                ) : (
-                  <Button type="primary" onClick={onSaveClick}>
-                    Save
-                  </Button>
-                )}
-              </>
-            ) : (
-              <Button
-                type="primary"
-                onClick={(e) => editUniversityChange(true)}
-              >
-                Edit
-              </Button>
-            )}
-          </div>
-        }
-        bordered
-        className="listContainer"
-      >
-        <List.Item>
-          <span>UoA Student:</span>
-          <Radio.Group
-            disabled={!state.editUniversity}
-            value={state.currentIsUoaStudent}
-            onChange={(e) =>
-              onFormFieldChange('currentIsUoaStudent', e.target.value)
-            }
-          >
-            <Radio.Button value="Yes">Yes</Radio.Button>
-            <Radio.Button value="No">No</Radio.Button>
-          </Radio.Group>
-        </List.Item>
-        {state.currentIsUoaStudent === 'Yes' ? (
-          <>
-            <List.Item>
-              <span>UPI:</span>
-              <Input
-                disabled={!state.editUniversity}
-                className="memberEditInput"
-                value={state.currentUpi}
-                onChange={(e) =>
-                  onFormFieldChange('currentUpi', e.target.value)
-                }
-              />
-            </List.Item>
-            <List.Item>
-              <span>Student Id:</span>
-              <Input
-                disabled={!state.editUniversity}
-                className="memberEditInput"
-                value={state.currentStudentId}
-                onChange={(e) =>
-                  onFormFieldChange('currentStudentId', e.target.value)
-                }
-              />
-            </List.Item>
-          </>
-        ) : null}
-      </List>
-
-      <List
-        header="Emergency Contact"
-        footer={
-          <div className="listFooter">
-            {state.editEC ? (
-              <>
-                <Button
-                  type="primary"
-                  danger
-                  onClick={(e) => editECChange(false)}
-                >
-                  Cancel
-                </Button>
-                {state.saving ? (
-                  <Spin />
-                ) : (
-                  <Button type="primary" onClick={onSaveClick}>
-                    Save
-                  </Button>
-                )}
-              </>
-            ) : (
-              <Button type="primary" onClick={(e) => editECChange(true)}>
-                Edit
-              </Button>
-            )}
-          </div>
-        }
-        bordered
-        className="listContainer"
-      >
-        <List.Item>
-          <span>Name: </span>
-          <Input
-            disabled={!state.editEC}
-            className="memberEditInput"
-            value={state.currentECName}
-            onChange={(e) => onFormFieldChange('currentECName', e.target.value)}
-          />
-        </List.Item>
-        <List.Item>
-          <span>Number: </span>
-          <Input
-            disabled={!state.editEC}
-            className="memberEditInput"
-            value={state.currentECNumber}
-            onChange={(e) =>
-              onFormFieldChange('currentECNumber', e.target.value)
-            }
-          />
-        </List.Item>
-        <List.Item>
-          <span>Relationship: </span>
-          <Input
-            disabled={!state.editEC}
-            className="memberEditInput"
-            value={state.currentECRelationship}
-            onChange={(e) =>
-              onFormFieldChange('currentECRelationship', e.target.value)
-            }
-          />
-        </List.Item>
-      </List>
-
-      <p style={{ textAlign: 'center' }}>
-        Click here to
-        <Button
-          type="link"
-          className="joinResultSignOut"
-          onClick={onSignOutClick}
-        >
-          Log out
-        </Button>
-      </p>
+      <MembershipSection saving={saving} onSave={onSave} />
+      <PersonalSection saving={saving} onSave={onSave} />
+      <UniversitySection saving={saving} onSave={onSave} />
+      <EmergencyContactSection saving={saving} onSave={onSave} />
     </main>
+  )
+}
+
+export default function AccountWrapper() {
+  const { authedUser } = useAuth()
+  if (!authedUser) {
+    return <div>You do not have an account yet. Please join.</div>
+  }
+
+  return <Account />
+}
+
+type Sectionprops = {
+  saving: boolean
+  onSave: () => void
+}
+
+const MembershipPeriodLong: Record<MembershipPeriod, string> = {
+  S1: 'Semester 1',
+  S2: 'Semester 2',
+  FY: 'Full Year (Sem 1 and Sem 2)',
+  SS: 'Summer School',
+}
+
+function MembershipSection({ saving, onSave }: Sectionprops) {
+  const { authedUser } = useAuth()
+  const { clubConfig, clubSignupSem } = useConfig()
+  const [editing, setEditing] = useState(false)
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      membership: authedUser.membership,
+      paymentType: authedUser.paymentType,
+    },
+  })
+
+  return (
+    <AccountSection
+      title="Membership"
+      saving={saving}
+      onSave={handleSubmit(onSave)}
+      editing={editing}
+      setEditing={setEditing}
+    >
+      <List.Item>
+        <span>Current</span>
+        <span className="bold">
+          {MembershipPeriodLong[authedUser.membership]}
+        </span>
+      </List.Item>
+
+      <List.Item>
+        <span>Current</span>
+        <span className="bold">
+          {authedUser.paid === 'Yes' ? 'Paid' : 'Not paid'}
+        </span>
+      </List.Item>
+
+      <List.Item>
+        <span>Update membership</span>
+        <Controller
+          control={control}
+          name="membership"
+          render={({ field: { value, onChange } }) => (
+            <Radio.Group
+              buttonStyle="solid"
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+            >
+              {clubSignupSem === 'SS' && (
+                <Radio.Button value="SS">Summer School</Radio.Button>
+              )}
+              {clubSignupSem === 'S1' && (
+                <>
+                  <Radio.Button value="FY">Full Year</Radio.Button>
+                  <Radio.Button value="S1">Semester 1</Radio.Button>
+                </>
+              )}
+              {clubSignupSem === 'S2' &&
+                !(
+                  authedUser.membership === 'FY' && authedUser.paid === 'Yes'
+                ) && <Radio.Button value="S2">Semester 2</Radio.Button>}
+            </Radio.Group>
+          )}
+        />
+      </List.Item>
+
+      <List.Item>
+        <span>Payment type</span>
+        <Controller
+          control={control}
+          name="paymentType"
+          render={({ field: { value, onChange } }) => (
+            <Radio.Group
+              buttonStyle="solid"
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+            >
+              <Radio.Button value="Bank Transfer">Bank Transfer</Radio.Button>
+              <Radio.Button value="Cash">Cash</Radio.Button>
+              <Radio.Button value="Other">Other</Radio.Button>
+            </Radio.Group>
+          )}
+        />
+      </List.Item>
+      {authedUser.paid === 'No' && (
+        <List.Item>
+          <PaymentInstructions
+            membershipType={authedUser.membership}
+            paymentType={authedUser.paymentType}
+            clubConfig={clubConfig}
+          />
+        </List.Item>
+      )}
+    </AccountSection>
+  )
+}
+
+function PersonalSection({ saving, onSave }: Sectionprops) {
+  const { authedUser } = useAuth()
+  const [editing, setEditing] = useState(false)
+
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      firstName: authedUser.firstName,
+      lastName: authedUser.lastName,
+      preferredName: authedUser.preferredName,
+      email: authedUser.email,
+      ethnicity: authedUser.ethnicity,
+      gender: authedUser.gender,
+    },
+  })
+
+  return (
+    <AccountSection
+      title="Personal"
+      saving={saving}
+      editing={editing}
+      setEditing={setEditing}
+      onSave={handleSubmit(onSave)}
+    >
+      <List.Item>
+        <span>First name</span>
+        <Input
+          disabled={!editing}
+          defaultValue={authedUser.firstName}
+          className="input"
+          {...register('firstName')}
+        />
+      </List.Item>
+      <List.Item>
+        <span>Last name</span>
+        <Input
+          disabled={!editing}
+          defaultValue={authedUser.lastName}
+          className="input"
+          {...register('lastName')}
+        />
+      </List.Item>
+      <List.Item>
+        <span>Preferred name</span>
+        <Input
+          disabled={!editing}
+          defaultValue={authedUser.preferredName}
+          className="input"
+          {...register('preferredName')}
+        />
+      </List.Item>
+      <List.Item>
+        <span>Email</span>
+        <span className="bold">{authedUser.email}</span>
+      </List.Item>
+      <List.Item>Ethnicity</List.Item>
+      <List.Item>Gender</List.Item>
+    </AccountSection>
+  )
+}
+
+function UniversitySection({ saving, onSave }: Sectionprops) {
+  const [editing, setEditing] = useState(false)
+
+  return (
+    <AccountSection
+      title="University"
+      saving={saving}
+      editing={editing}
+      setEditing={setEditing}
+      onSave={onSave}
+    >
+      <List.Item>UOA student</List.Item>
+    </AccountSection>
+  )
+}
+
+function EmergencyContactSection({ saving, onSave }: Sectionprops) {
+  const [editing, setEditing] = useState(false)
+
+  return (
+    <AccountSection
+      title="Emergency Contact"
+      saving={saving}
+      editing={editing}
+      setEditing={setEditing}
+      onSave={onSave}
+    >
+      <List.Item>Name</List.Item>
+      <List.Item>Number</List.Item>
+      <List.Item>Relationship</List.Item>
+    </AccountSection>
+  )
+}
+
+function AccountSection({
+  title,
+  saving,
+  editing,
+  children,
+  setEditing,
+  onSave,
+}: {
+  title: string
+  saving: boolean
+  editing: boolean
+  children: ReactNode
+  setEditing: (editing: boolean) => void
+  onSave: () => void
+}) {
+  return (
+    <List
+      header={title}
+      footer={
+        <div className="listFooter">
+          {editing ? (
+            <>
+              <Button danger type="primary" onClick={() => setEditing(false)}>
+                Cancel
+              </Button>
+              {saving ? (
+                <Spin />
+              ) : (
+                <Button type="primary" onClick={onSave}>
+                  Save
+                </Button>
+              )}
+            </>
+          ) : (
+            <Button type="primary" onClick={() => setEditing(true)}>
+              Edit
+            </Button>
+          )}
+        </div>
+      }
+      bordered
+      className="listContainer"
+    >
+      {children}
+    </List>
   )
 }

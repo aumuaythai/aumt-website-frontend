@@ -10,7 +10,7 @@ export interface AumtMember {
   gender: string
 
   // Membership
-  membership: 'S1' | 'S2' | 'FY' | 'SS'
+  membership: MembershipPeriod
   paymentType: 'Cash' | 'Bank Transfer' | 'Other'
   isReturningMember: 'Yes' | 'No'
   paid: 'Yes' | 'No'
@@ -29,6 +29,8 @@ export interface AumtMember {
   EmergencyContactNumber: string
   EmergencyContactRelationship: string
 }
+
+export type MembershipPeriod = 'S1' | 'S2' | 'FY' | 'SS'
 
 export interface AumtMembersObj {
   [uid: string]: AumtMember

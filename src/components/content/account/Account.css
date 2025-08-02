@@ -20,3 +20,11 @@ Button {
 .dropdown {
   width: 100%;
 }
+
+.bold {
+  font-weight: bold;
+}
+
+.input {
+  max-width: 400px;
+}
