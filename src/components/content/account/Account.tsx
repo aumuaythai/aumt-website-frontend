@@ -38,6 +38,7 @@ function Account() {
 
 export default function AccountWrapper() {
   const { authedUser } = useAuth()
+
   if (!authedUser) {
     return <div>You do not have an account yet. Please join.</div>
   }
@@ -177,29 +178,47 @@ function PersonalSection({ saving, onSave }: Sectionprops) {
     >
       <List.Item>
         <span>First name</span>
-        <Input
-          disabled={!editing}
-          defaultValue={authedUser.firstName}
-          className="input"
-          {...register('firstName')}
+        <Controller
+          name="firstName"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Input
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+              className="input"
+            />
+          )}
         />
       </List.Item>
       <List.Item>
         <span>Last name</span>
-        <Input
-          disabled={!editing}
-          defaultValue={authedUser.lastName}
-          className="input"
-          {...register('lastName')}
+        <Controller
+          name="lastName"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Input
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+              className="input"
+            />
+          )}
         />
       </List.Item>
       <List.Item>
         <span>Preferred name</span>
-        <Input
-          disabled={!editing}
-          defaultValue={authedUser.preferredName}
-          className="input"
-          {...register('preferredName')}
+        <Controller
+          name="preferredName"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Input
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+              className="input"
+            />
+          )}
         />
       </List.Item>
       <List.Item>
@@ -252,7 +271,17 @@ function PersonalSection({ saving, onSave }: Sectionprops) {
 }
 
 function UniversitySection({ saving, onSave }: Sectionprops) {
+  const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
+
+  const { control, register, handleSubmit, watch } = useForm({
+    defaultValues: {
+      isUoaStudent: authedUser.isUoAStudent,
+      upi: authedUser.upi,
+      studentId: authedUser.studentId,
+    },
+  })
+  const isUoaStudent = watch('isUoaStudent')
 
   return (
     <AccountSection
@@ -260,15 +289,75 @@ function UniversitySection({ saving, onSave }: Sectionprops) {
       saving={saving}
       editing={editing}
       setEditing={setEditing}
-      onSave={onSave}
+      onSave={handleSubmit(onSave)}
     >
-      <List.Item>UOA student</List.Item>
+      <List.Item>
+        <span>Are you a student at UoA?</span>
+        <Controller
+          name="isUoaStudent"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Radio.Group
+              disabled={!editing}
+              value={value}
+              buttonStyle="solid"
+              onChange={onChange}
+            >
+              <Radio.Button value="Yes">Yes</Radio.Button>
+              <Radio.Button value="No">No</Radio.Button>
+            </Radio.Group>
+          )}
+        />
+      </List.Item>
+      {isUoaStudent === 'Yes' && (
+        <>
+          <List.Item>
+            <span>UPI</span>
+            <Controller
+              name="upi"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  disabled={!editing}
+                  value={value}
+                  onChange={onChange}
+                  className="input"
+                />
+              )}
+            />
+          </List.Item>
+          <List.Item>
+            <span>Student ID</span>
+            <Controller
+              name="studentId"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <Input
+                  disabled={!editing}
+                  value={value}
+                  onChange={onChange}
+                  className="input"
+                />
+              )}
+            />
+          </List.Item>
+        </>
+      )}
     </AccountSection>
   )
 }
 
 function EmergencyContactSection({ saving, onSave }: Sectionprops) {
+  const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
+
+  const { control, register, handleSubmit } = useForm({
+    defaultValues: {
+      emergencyContactName: authedUser.EmergencyContactName,
+      emergencyContactNumber: authedUser.EmergencyContactNumber,
+      emergencyContactRelationship: authedUser.EmergencyContactRelationship,
+    },
+  })
 
   return (
     <AccountSection
@@ -276,11 +365,53 @@ function EmergencyContactSection({ saving, onSave }: Sectionprops) {
       saving={saving}
       editing={editing}
       setEditing={setEditing}
-      onSave={onSave}
+      onSave={handleSubmit(onSave)}
     >
-      <List.Item>Name</List.Item>
-      <List.Item>Number</List.Item>
-      <List.Item>Relationship</List.Item>
+      <List.Item>
+        <span>Name</span>
+        <Controller
+          name="emergencyContactName"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Input
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+              className="input"
+            />
+          )}
+        />
+      </List.Item>
+      <List.Item>
+        <span>Number</span>
+        <Controller
+          name="emergencyContactNumber"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Input
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+              className="input"
+            />
+          )}
+        />
+      </List.Item>
+      <List.Item>
+        <span>Relationship</span>
+        <Controller
+          name="emergencyContactRelationship"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Input
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+              className="input"
+            />
+          )}
+        />
+      </List.Item>
     </AccountSection>
   )
 }
