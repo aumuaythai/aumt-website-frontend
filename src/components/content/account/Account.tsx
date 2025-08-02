@@ -1,6 +1,8 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 import { ReactNode, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Control, Controller, useForm, UseFormWatch } from 'react-hook-form'
+import z from 'zod'
 import { useAuth } from '../../../context/AuthProvider'
 import { useConfig } from '../../../context/ConfigProvider'
 import { setMember } from '../../../services/db'
@@ -9,15 +11,54 @@ import PaymentInstructions from '../../utility/PaymentInstructions'
 import { ETHNICITIES } from '../join/JoinForm'
 import './Account.css'
 
+const accountSchema = z.object({
+  membership: z.enum(['S1', 'S2', 'FY', 'SS']),
+  paymentType: z.enum(['Cash', 'Bank Transfer', 'Other']),
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  preferredName: z.string().optional(),
+  ethnicity: z.enum(ETHNICITIES),
+  gender: z.string().min(1, 'Gender is required'),
+  isUoAStudent: z.enum(['Yes', 'No']),
+  upi: z.string().optional(),
+  studentId: z.string().optional(),
+  EmergencyContactName: z.string().min(1, 'Emergency contact name is required'),
+  EmergencyContactNumber: z
+    .string()
+    .min(1, 'Emergency contact number is required'),
+  EmergencyContactRelationship: z
+    .string()
+    .min(1, 'Emergency contact relationship is required'),
+})
+
+type Account = z.infer<typeof accountSchema>
+
 function Account() {
   const { authedUser, authedUserId } = useAuth()
   const [saving, setSaving] = useState(false)
 
-  const { control, handleSubmit } = useForm({
-    defaultValues: {},
+  const { control, watch, handleSubmit } = useForm<Account>({
+    defaultValues: {
+      membership: authedUser.membership,
+      paymentType: authedUser.paymentType,
+      firstName: authedUser.firstName,
+      lastName: authedUser.lastName,
+      preferredName: authedUser.preferredName,
+      ethnicity: authedUser.ethnicity,
+      gender: authedUser.gender,
+      isUoAStudent: authedUser.isUoAStudent,
+      upi: authedUser.upi,
+      studentId: authedUser.studentId,
+      EmergencyContactName: authedUser.EmergencyContactName,
+      EmergencyContactNumber: authedUser.EmergencyContactNumber,
+      EmergencyContactRelationship: authedUser.EmergencyContactRelationship,
+    },
+    resolver: zodResolver(accountSchema),
   })
 
-  async function onSave(data) {
+  const onSave = handleSubmit(updateMember)
+
+  async function updateMember(data: Account) {
     setSaving(true)
     const updatedMember: AumtMember = {
       ...authedUser,
@@ -25,6 +66,7 @@ function Account() {
     }
 
     try {
+      console.log(updatedMember)
       await setMember(authedUserId, updatedMember)
       notification.success({ message: 'Details updated' })
     } catch (error) {
@@ -43,10 +85,19 @@ function Account() {
         membership at the beginning of a new semester when signups for it opens.
       </p>
 
-      <MembershipSection saving={saving} onSave={onSave} />
-      <PersonalSection saving={saving} onSave={onSave} />
-      <UniversitySection saving={saving} onSave={onSave} />
-      <EmergencyContactSection saving={saving} onSave={onSave} />
+      <MembershipSection saving={saving} control={control} onSave={onSave} />
+      <PersonalSection saving={saving} control={control} onSave={onSave} />
+      <UniversitySection
+        saving={saving}
+        control={control}
+        watch={watch}
+        onSave={onSave}
+      />
+      <EmergencyContactSection
+        saving={saving}
+        control={control}
+        onSave={onSave}
+      />
     </main>
   )
 }
@@ -61,9 +112,11 @@ export default function AccountWrapper() {
   return <Account />
 }
 
-type Sectionprops = {
+type SectionProps = {
   saving: boolean
-  onSave: (data) => void
+  control: Control<Account>
+  onSave: (e?: React.BaseSyntheticEvent) => Promise<void>
+  watch?: UseFormWatch<Account>
 }
 
 const MembershipPeriodLong: Record<MembershipPeriod, string> = {
@@ -73,22 +126,16 @@ const MembershipPeriodLong: Record<MembershipPeriod, string> = {
   SS: 'Summer School',
 }
 
-function MembershipSection({ saving, onSave }: Sectionprops) {
+function MembershipSection({ saving, control, onSave }: SectionProps) {
   const { authedUser } = useAuth()
   const { clubConfig, clubSignupSem } = useConfig()
   const [editing, setEditing] = useState(false)
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      membership: authedUser.membership,
-      paymentType: authedUser.paymentType,
-    },
-  })
 
   return (
     <AccountSection
       title="Membership"
       saving={saving}
-      onSave={handleSubmit(onSave)}
+      onSave={onSave}
       editing={editing}
       setEditing={setEditing}
     >
@@ -100,7 +147,7 @@ function MembershipSection({ saving, onSave }: Sectionprops) {
       </List.Item>
 
       <List.Item>
-        <span>Current</span>
+        <span>Status</span>
         <span className="bold">
           {authedUser.paid === 'Yes' ? 'Paid' : 'Not paid'}
         </span>
@@ -168,20 +215,9 @@ function MembershipSection({ saving, onSave }: Sectionprops) {
   )
 }
 
-function PersonalSection({ saving, onSave }: Sectionprops) {
+function PersonalSection({ saving, control, onSave }: SectionProps) {
   const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
-
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      firstName: authedUser.firstName,
-      lastName: authedUser.lastName,
-      preferredName: authedUser.preferredName,
-      email: authedUser.email,
-      ethnicity: authedUser.ethnicity,
-      gender: authedUser.gender,
-    },
-  })
 
   return (
     <AccountSection
@@ -189,7 +225,7 @@ function PersonalSection({ saving, onSave }: Sectionprops) {
       saving={saving}
       editing={editing}
       setEditing={setEditing}
-      onSave={handleSubmit(onSave)}
+      onSave={onSave}
     >
       <List.Item>
         <span>First name</span>
@@ -285,18 +321,11 @@ function PersonalSection({ saving, onSave }: Sectionprops) {
   )
 }
 
-function UniversitySection({ saving, onSave }: Sectionprops) {
+function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
   const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
 
-  const { control, handleSubmit, watch } = useForm({
-    defaultValues: {
-      isUoaStudent: authedUser.isUoAStudent,
-      upi: authedUser.upi,
-      studentId: authedUser.studentId,
-    },
-  })
-  const isUoaStudent = watch('isUoaStudent')
+  const isUoaStudent = watch('isUoAStudent')
 
   return (
     <AccountSection
@@ -304,12 +333,12 @@ function UniversitySection({ saving, onSave }: Sectionprops) {
       saving={saving}
       editing={editing}
       setEditing={setEditing}
-      onSave={handleSubmit(onSave)}
+      onSave={onSave}
     >
       <List.Item>
         <span>Are you a student at UoA?</span>
         <Controller
-          name="isUoaStudent"
+          name="isUoAStudent"
           control={control}
           render={({ field: { value, onChange } }) => (
             <Radio.Group
@@ -362,17 +391,9 @@ function UniversitySection({ saving, onSave }: Sectionprops) {
   )
 }
 
-function EmergencyContactSection({ saving, onSave }: Sectionprops) {
+function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
   const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
-
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      EmergencyContactName: authedUser.EmergencyContactName,
-      EmergencyContactNumber: authedUser.EmergencyContactNumber,
-      EmergencyContactRelationship: authedUser.EmergencyContactRelationship,
-    },
-  })
 
   return (
     <AccountSection
@@ -380,7 +401,7 @@ function EmergencyContactSection({ saving, onSave }: Sectionprops) {
       saving={saving}
       editing={editing}
       setEditing={setEditing}
-      onSave={handleSubmit(onSave)}
+      onSave={onSave}
     >
       <List.Item>
         <span>Name</span>
