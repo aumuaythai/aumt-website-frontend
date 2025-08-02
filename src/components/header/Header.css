@@ -10,12 +10,14 @@
   font-weight: normal;
   height: 50px;
 }
-.imageContainer {
-  width: 155px;
-  float: left;
-}
+
 .logoImg {
-  width: 100%;
+  width: 120px;
+  transition: ease-in-out 0.15s opacity;
+}
+
+.logoImg:hover {
+  opacity: 0.8;
 }
 .socialsContainer {
   display: flex;
