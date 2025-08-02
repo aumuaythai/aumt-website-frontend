@@ -163,7 +163,7 @@ export default function About() {
             type="link"
             onClick={Links.openAumtFb}
           >
-            Facebook{' '}
+            Facebook
           </Button>
           /
           <Button

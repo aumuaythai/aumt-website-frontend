@@ -84,13 +84,16 @@ export default function Signups() {
             <b>Tuesday 4:30PM</b> Beginners
           </li>
           <li>
-            <b>Wednesday 5:30PM</b> Women's Beginners{' '}
+            <b>Wednesday 4:30PM</b> Intermediate
           </li>
           <li>
-            <b>Thursday 4:30PM</b> Beginners{' '}
+            <b>Wednesday 5:30PM</b> Women's Beginners
           </li>
           <li>
-            <b>Friday 6:30PM</b> Intermediate{' '}
+            <b>Thursday 4:30PM</b> Beginners
+          </li>
+          <li>
+            <b>Friday 6:30PM</b> Intermediate
           </li>
         </ul>
       </div>
