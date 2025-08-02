@@ -1,10 +1,11 @@
-import { Button, Input, List, Radio, Spin } from 'antd'
+import { Button, Input, List, Radio, Select, Spin } from 'antd'
 import { ReactNode, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useAuth } from '../../../context/AuthProvider'
 import { useConfig } from '../../../context/ConfigProvider'
 import { MembershipPeriod } from '../../../types'
 import PaymentInstructions from '../../utility/PaymentInstructions'
+import { ETHNICITIES } from '../join/JoinForm'
 import './Account.css'
 
 function Account() {
@@ -46,7 +47,7 @@ export default function AccountWrapper() {
 
 type Sectionprops = {
   saving: boolean
-  onSave: () => void
+  onSave: (data) => void
 }
 
 const MembershipPeriodLong: Record<MembershipPeriod, string> = {
@@ -155,7 +156,7 @@ function PersonalSection({ saving, onSave }: Sectionprops) {
   const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
 
-  const { register, handleSubmit } = useForm({
+  const { register, control, handleSubmit } = useForm({
     defaultValues: {
       firstName: authedUser.firstName,
       lastName: authedUser.lastName,
@@ -205,8 +206,47 @@ function PersonalSection({ saving, onSave }: Sectionprops) {
         <span>Email</span>
         <span className="bold">{authedUser.email}</span>
       </List.Item>
-      <List.Item>Ethnicity</List.Item>
-      <List.Item>Gender</List.Item>
+      <List.Item>
+        <span>Ethnicity</span>
+        <Controller
+          name="ethnicity"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Select
+              disabled={!editing}
+              className="dropdown"
+              value={value}
+              onChange={onChange}
+            >
+              {ETHNICITIES.map((ethnicity) => (
+                <Select.Option key={ethnicity} value={ethnicity}>
+                  {ethnicity}
+                </Select.Option>
+              ))}
+            </Select>
+          )}
+        />
+      </List.Item>
+      <List.Item>
+        <span>Gender</span>
+        <Controller
+          name="gender"
+          control={control}
+          render={({ field: { value, onChange } }) => (
+            <Radio.Group
+              name="GenderRadio"
+              disabled={!editing}
+              value={value}
+              onChange={onChange}
+            >
+              <Radio value={'Male'}>Male</Radio>
+              <Radio value={'Female'}>Female</Radio>
+              <Radio value={'Non-binary'}>Non-binary</Radio>
+              <Radio value={'Prefer not to say'}>Prefer not to say</Radio>
+            </Radio.Group>
+          )}
+        />
+      </List.Item>
     </AccountSection>
   )
 }
