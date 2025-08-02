@@ -1,22 +1,37 @@
-import { Button, Input, List, Radio, Select, Spin } from 'antd'
+import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 import { ReactNode, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useAuth } from '../../../context/AuthProvider'
 import { useConfig } from '../../../context/ConfigProvider'
-import { MembershipPeriod } from '../../../types'
+import { setMember } from '../../../services/db'
+import { AumtMember, MembershipPeriod } from '../../../types'
 import PaymentInstructions from '../../utility/PaymentInstructions'
 import { ETHNICITIES } from '../join/JoinForm'
 import './Account.css'
 
 function Account() {
+  const { authedUser, authedUserId } = useAuth()
   const [saving, setSaving] = useState(false)
 
-  function onSave(data) {
+  const { control, handleSubmit } = useForm({
+    defaultValues: {},
+  })
+
+  async function onSave(data) {
     setSaving(true)
-    console.log(data)
-    setTimeout(() => {
+    const updatedMember: AumtMember = {
+      ...authedUser,
+      ...data,
+    }
+
+    try {
+      await setMember(authedUserId, updatedMember)
+      notification.success({ message: 'Details updated' })
+    } catch (error) {
+      console.error('Error updating member:', error)
+    } finally {
       setSaving(false)
-    }, 2000)
+    }
   }
 
   return (
@@ -157,7 +172,7 @@ function PersonalSection({ saving, onSave }: Sectionprops) {
   const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
 
-  const { register, control, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       firstName: authedUser.firstName,
       lastName: authedUser.lastName,
@@ -274,7 +289,7 @@ function UniversitySection({ saving, onSave }: Sectionprops) {
   const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
 
-  const { control, register, handleSubmit, watch } = useForm({
+  const { control, handleSubmit, watch } = useForm({
     defaultValues: {
       isUoaStudent: authedUser.isUoAStudent,
       upi: authedUser.upi,
@@ -351,11 +366,11 @@ function EmergencyContactSection({ saving, onSave }: Sectionprops) {
   const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
 
-  const { control, register, handleSubmit } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
-      emergencyContactName: authedUser.EmergencyContactName,
-      emergencyContactNumber: authedUser.EmergencyContactNumber,
-      emergencyContactRelationship: authedUser.EmergencyContactRelationship,
+      EmergencyContactName: authedUser.EmergencyContactName,
+      EmergencyContactNumber: authedUser.EmergencyContactNumber,
+      EmergencyContactRelationship: authedUser.EmergencyContactRelationship,
     },
   })
 
@@ -370,7 +385,7 @@ function EmergencyContactSection({ saving, onSave }: Sectionprops) {
       <List.Item>
         <span>Name</span>
         <Controller
-          name="emergencyContactName"
+          name="EmergencyContactName"
           control={control}
           render={({ field: { value, onChange } }) => (
             <Input
@@ -385,7 +400,7 @@ function EmergencyContactSection({ saving, onSave }: Sectionprops) {
       <List.Item>
         <span>Number</span>
         <Controller
-          name="emergencyContactNumber"
+          name="EmergencyContactNumber"
           control={control}
           render={({ field: { value, onChange } }) => (
             <Input
@@ -400,7 +415,7 @@ function EmergencyContactSection({ saving, onSave }: Sectionprops) {
       <List.Item>
         <span>Relationship</span>
         <Controller
-          name="emergencyContactRelationship"
+          name="EmergencyContactRelationship"
           control={control}
           render={({ field: { value, onChange } }) => (
             <Input
