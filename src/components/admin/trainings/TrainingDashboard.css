@@ -1,6 +1,3 @@
-.manageTrainingsAddButton {
-  margin: 0 10px;
-}
 @media (max-width: 1195px) {
   .trainingDashboardSection {
     width: 100%;
@@ -9,11 +6,7 @@
   .exportAllButton {
     display: none;
   }
-  .manageTrainingsComponentWrapper {
-    max-height: unset;
-    height: unset;
-    /* height: unset; */
-  }
+
   .manageTrainingsWrapper,
   .editMembersContainer {
     height: unset;

@@ -46,7 +46,7 @@ export default function MainAdmin() {
   }
 
   return (
-    <div className="text-left flex">
+    <div className="text-left flex min-h-[calc(100vh-50px)] h-0">
       {window.innerWidth < 1180 ? (
         <div className="openMenuButton">
           <Button onClick={(e) => setMenuOpen(true)}>
@@ -62,108 +62,106 @@ export default function MainAdmin() {
           </Drawer>
         </div>
       ) : (
-        <div className="adminMenu">
+        <div className="w-40">
           <AdminMenu />
         </div>
       )}
 
-      <div className="p-3.5 h-[calc(100vh-50px)] flex-1">
-        <Switch>
-          <Route path="/admin/events/:id">
-            <EventSignups events={events} />
-          </Route>
+      <Switch>
+        <Route path="/admin/events/:id">
+          <EventSignups events={events} />
+        </Route>
 
-          <Route path="/admin/events">
-            <div className="manageEventsContainer">
-              <div className="mainAdminEventsHeader">
-                <h2 className="createEventTitle manageEventTitle">
-                  Manage Events
-                </h2>
-                <Link
-                  to="/admin/createevent"
-                  className="mainAdminCreateEventButton"
-                >
-                  <Button type="primary" size="large" shape="round">
-                    Create Event <PlusOutlined />
-                  </Button>
-                </Link>
-                <div className="clearBoth"></div>
-              </div>
-              <ManageEvents events={events} />
+        <Route path="/admin/events">
+          <div className="manageEventsContainer">
+            <div className="mainAdminEventsHeader">
+              <h2 className="createEventTitle manageEventTitle">
+                Manage Events
+              </h2>
+              <Link
+                to="/admin/createevent"
+                className="mainAdminCreateEventButton"
+              >
+                <Button type="primary" size="large" shape="round">
+                  Create Event <PlusOutlined />
+                </Button>
+              </Link>
+              <div className="clearBoth"></div>
             </div>
-          </Route>
+            <ManageEvents events={events} />
+          </div>
+        </Route>
 
-          <Route path="/admin/members">
-            <MemberDashboardLazyWrapper />
-          </Route>
+        <Route path="/admin/members">
+          <MemberDashboardLazyWrapper />
+        </Route>
 
-          <Route path="/admin/feedback">
-            <Feedback forms={forms} />
-          </Route>
+        <Route path="/admin/feedback">
+          <Feedback forms={forms} />
+        </Route>
 
-          <Route path="/admin/settings">
-            <ClubSettings />
-          </Route>
+        <Route path="/admin/settings">
+          <ClubSettings />
+        </Route>
 
-          <Route path="/admin/createtraining">
-            <div className="mainAdminCreateFormContainer">
+        <Route path="/admin/createtraining">
+          <div className="mainAdminCreateFormContainer">
+            <h2 className="createTrainingTitle">
+              <Link className="mainAdminCreateBack" to="/admin">
+                <ArrowLeftOutlined />
+              </Link>
+              Create Training
+            </h2>
+            <CreateTraining />
+          </div>
+        </Route>
+
+        <Route path="/admin/createevent">
+          <div className="mainAdminCreateFormContainer">
+            <h2 className="createTrainingTitle">
+              <Link className="mainAdminCreateBack" to="/admin/events">
+                <ArrowLeftOutlined />
+              </Link>
+              Create Event
+            </h2>
+            <CreateEvent />
+          </div>
+        </Route>
+
+        <Route path="/admin/edittraining/:trainingid">
+          <div className="mainAdminCreateFormContainer">
+            <div>
               <h2 className="createTrainingTitle">
                 <Link className="mainAdminCreateBack" to="/admin">
                   <ArrowLeftOutlined />
                 </Link>
-                Create Training
+                Edit
               </h2>
               <CreateTraining />
             </div>
-          </Route>
+          </div>
+        </Route>
 
-          <Route path="/admin/createevent">
-            <div className="mainAdminCreateFormContainer">
+        <Route path="/admin/attendance/:id" component={TrainingAttendance} />
+
+        <Route path="/admin/editevent/:eventId">
+          <div className="mainAdminCreateFormContainer">
+            <div>
               <h2 className="createTrainingTitle">
                 <Link className="mainAdminCreateBack" to="/admin/events">
                   <ArrowLeftOutlined />
                 </Link>
-                Create Event
+                Edit Event
               </h2>
               <CreateEvent />
             </div>
-          </Route>
+          </div>
+        </Route>
 
-          <Route path="/admin/edittraining/:trainingid">
-            <div className="mainAdminCreateFormContainer">
-              <div>
-                <h2 className="createTrainingTitle">
-                  <Link className="mainAdminCreateBack" to="/admin">
-                    <ArrowLeftOutlined />
-                  </Link>
-                  Edit
-                </h2>
-                <CreateTraining />
-              </div>
-            </div>
-          </Route>
-
-          <Route path="/admin/attendance/:id" component={TrainingAttendance} />
-
-          <Route path="/admin/editevent/:eventId">
-            <div className="mainAdminCreateFormContainer">
-              <div>
-                <h2 className="createTrainingTitle">
-                  <Link className="mainAdminCreateBack" to="/admin/events">
-                    <ArrowLeftOutlined />
-                  </Link>
-                  Edit Event
-                </h2>
-                <CreateEvent />
-              </div>
-            </div>
-          </Route>
-
-          <Route path="/admin">
-            <TrainingDashboard forms={forms} />
-          </Route>
-        </Switch>
-      </div>
+        <Route path="/admin">
+          <TrainingDashboard forms={forms} />
+        </Route>
+      </Switch>
     </div>
   )
 }

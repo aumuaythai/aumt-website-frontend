@@ -1,10 +1,9 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Alert, Button, Divider, Modal, notification, Spin } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { removeTraining } from '../../../services/db'
 import { AumtWeeklyTraining } from '../../../types'
-import './ManageTrainings.css'
 
 interface ManageTrainingsProps {
   onTrainingClick: (trainingId: string) => void
@@ -96,45 +95,41 @@ export class ManageTrainings extends Component<
       return <p>No Training Forms in DB</p>
     }
     return (
-      <div className="manageTrainingsContainer">
-        {this.props.trainings.map((training) => {
-          return (
-            <div className="eachTrainingManager" key={training.trainingId}>
-              <div className="trainingManageHeader">
-                <h4
-                  className="manageTrainingTitle"
-                  onClick={(e) =>
-                    this.props.onTrainingClick(training.trainingId)
-                  }
+      <ul className="mt-6 overflow-y-auto max-h-96 md:max-h-none">
+        {this.props.trainings.map((training) => (
+          <li key={training.trainingId}>
+            <div className="flex flex-1 justify-between">
+              <h4
+                onClick={(e) => this.props.onTrainingClick(training.trainingId)}
+              >
+                {training.title}
+              </h4>
+              <div>
+                <Link
+                  to={`/admin/edittraining/${training.trainingId}`}
+                  className="mr-2"
                 >
-                  {training.title}
-                </h4>
-                <div className="manageTrainingOptions">
-                  <Link to={`/admin/edittraining/${training.trainingId}`}>
-                    <Button className="manageTrainingOptionButton">Edit</Button>
-                  </Link>
-                  <Button
-                    className="manageTrainingOptionButton"
-                    loading={this.state.removingTraining[training.trainingId]}
-                    onClick={(e) =>
-                      this.confirmDeleteTraiing(
-                        training.title,
-                        training.trainingId
-                      )
-                    }
-                    type="primary"
-                    danger
-                  >
-                    Remove
-                  </Button>
-                </div>
-                <div className="clearBoth"></div>
+                  <Button className="manageTrainingOptionButton">Edit</Button>
+                </Link>
+                <Button
+                  loading={this.state.removingTraining[training.trainingId]}
+                  onClick={(e) =>
+                    this.confirmDeleteTraiing(
+                      training.title,
+                      training.trainingId
+                    )
+                  }
+                  type="primary"
+                  danger
+                >
+                  Remove
+                </Button>
               </div>
-              <Divider />
             </div>
-          )
-        })}
-      </div>
+            <Divider />
+          </li>
+        ))}
+      </ul>
     )
   }
 }
