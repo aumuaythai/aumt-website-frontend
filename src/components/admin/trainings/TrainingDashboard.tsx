@@ -175,80 +175,46 @@ export class TrainingDashboard extends Component<
   }
   render() {
     return (
-      <div className="trainingDashboardContainer">
-        <div className="weeklyStatSelectorContainer">
-          {/* <Button onClick={this.signMockData}>Mock Data</Button> */}
-          <Link
-            to="/admin/createtraining"
-            className="trainingDashboardCreateButton"
-          >
+      <div className="h-[calc(100%-28px-16px)] gap-y-4 flex flex-col">
+        <div className="flex items-center justify-between">
+          <div>
+            <Dropdown trigger={['click']} overlay={this.getFormsDropdown}>
+              <Button size="large">
+                {this.state.currentForm && this.state.currentForm.title
+                  ? this.state.currentForm.title.length > 40 &&
+                    window.innerWidth < 600
+                    ? this.state.currentForm.title.slice(0, 37) + '...'
+                    : this.state.currentForm.title
+                  : ''}{' '}
+                <DownOutlined />
+              </Button>
+            </Dropdown>
+            {this.state.currentForm && (
+              <Link
+                to={`/admin/attendance/${
+                  this.state.currentForm
+                    ? this.state.currentForm.trainingId
+                    : null
+                }`}
+                className="ml-2"
+              >
+                <Button type="primary" size="large">
+                  Attendance
+                </Button>
+              </Link>
+            )}
+          </div>
+
+          <Link to="/admin/createtraining">
             <Button type="primary" shape="round" size="large">
               Create Training <PlusOutlined />
             </Button>
           </Link>
-          <Dropdown
-            className="trainingDashboardFormSelector"
-            trigger={['click']}
-            overlay={this.getFormsDropdown}
-          >
-            <Button size="large">
-              {this.state.currentForm && this.state.currentForm.title
-                ? this.state.currentForm.title.length > 40 &&
-                  window.innerWidth < 600
-                  ? this.state.currentForm.title.slice(0, 37) + '...'
-                  : this.state.currentForm.title
-                : ''}{' '}
-              <DownOutlined />
-            </Button>
-          </Dropdown>
-          {this.state.currentForm ? (
-            <GenerateSignupWrapper
-              form={this.state.currentForm}
-            ></GenerateSignupWrapper>
-          ) : (
-            <></>
-          )}
-          {this.state.currentForm ? (
-            <Link
-              to={`/admin/attendance/${
-                this.state.currentForm
-                  ? this.state.currentForm.trainingId
-                  : null
-              }`}
-            >
-              <Button type="primary" size="large">
-                Attendance
-              </Button>
-            </Link>
-          ) : (
-            <></>
-          )}
-
-          <div className="clearBoth"></div>
         </div>
-        <div className="trainingDashboardContentContainer">
-          <div className="weekStatsContainer trainingDashboardSection">
-            <h2 className="sectionHeader">Weekly Stats</h2>
-            <WeekStats
-              loadingForms={this.state.loadingForms}
-              form={this.state.currentForm}
-            ></WeekStats>
-          </div>
-          <div className="editMembersContainer trainingDashboardSection">
-            <h2 className="sectionHeader">Edit Members</h2>
-            {this.state.loadingForms ? (
-              <div>
-                Loading current forms <Spin />
-              </div>
-            ) : this.state.currentForm ? (
-              <EditSignups form={this.state.currentForm}></EditSignups>
-            ) : (
-              <p>No Form Selected</p>
-            )}
-          </div>
-          <div className="clearBoth"></div>
-          <div className="manageTrainingsWrapper trainingDashboardSection">
-            <h2 className="sectionHeader">
+
+        <div className="grid grid-cols-2 grid-rows-2 h-full gap-8">
+          <div className="flex flex-col">
+            <h2 className="text-xl">
               Manage {this.state.allForms.length || ''} Trainings
               <Link to="/admin/createtraining">
                 <Button className="manageTrainingsAddButton" shape="round">
@@ -282,7 +248,7 @@ export class TrainingDashboard extends Component<
                 forms={this.state.allForms}
               ></GenerateReportWrapper>
             </h2>
-            <div className="manageTrainingsComponentWrapper">
+            <div className="manageTrainingsComponentWrapper overflow-y-auto h-full">
               <ManageTrainings
                 trainings={this.state.allForms}
                 loadingTrainings={this.state.loadingForms}
@@ -290,14 +256,27 @@ export class TrainingDashboard extends Component<
               ></ManageTrainings>
             </div>
           </div>
-          <div className="yearStatsWrapper trainingDashboardSection">
-            <h2 className="sectionHeader">Yearly Stats</h2>
+
+          <div className="flex flex-col">
+            <h2 className="text-xl">Edit Members</h2>
+            {this.state.loadingForms ? (
+              <div>
+                Loading current forms <Spin />
+              </div>
+            ) : this.state.currentForm ? (
+              <EditSignups form={this.state.currentForm}></EditSignups>
+            ) : (
+              <p>No Form Selected</p>
+            )}
+          </div>
+
+          <div className="col-span-2 flex flex-col h-full">
+            <h2 className="text-xl">Yearly Stats</h2>
             <YearStats
               forms={this.state.allForms}
               onTrainingClick={this.onClickTraining}
             ></YearStats>
           </div>
-          <div className="clearBoth"></div>
         </div>
       </div>
     )

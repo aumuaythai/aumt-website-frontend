@@ -46,7 +46,7 @@ export default function MainAdmin() {
   }
 
   return (
-    <div className="adminContainer">
+    <div className="text-left flex">
       {window.innerWidth < 1180 ? (
         <div className="openMenuButton">
           <Button onClick={(e) => setMenuOpen(true)}>
@@ -66,7 +66,8 @@ export default function MainAdmin() {
           <AdminMenu />
         </div>
       )}
-      <div className="adminContent">
+
+      <div className="p-3.5 h-[calc(100vh-50px)] flex-1">
         <Switch>
           <Route path="/admin/events/:id">
             <EventSignups events={events} />

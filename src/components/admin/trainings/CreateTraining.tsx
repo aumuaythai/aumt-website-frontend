@@ -74,7 +74,7 @@ class CreateTraining extends Component<
     }
   }
   populateWeeklyDefaults = () => {
-    const semesterStart = new Date(2025, 2, 3)
+    const semesterStart = new Date(2025, 6, 21)
 
     const week =
       this.state.currentPopulateWeekValue >= 7
@@ -94,6 +94,7 @@ class CreateTraining extends Component<
 
     const sessions = [
       this.createSession(`Tuesday 4:30 (Beginners)`, 40, 0),
+      this.createSession(`Wednesday 4:30 (Intermediate)`, 40, 1),
       this.createSession(`Wednesday 5:30 (Women's Beginners)`, 20, 1),
       this.createSession(`Thursday 4:30 (Beginners)`, 40, 2),
       this.createSession(`Friday 6:30 (Intermediate)`, 20, 3),
