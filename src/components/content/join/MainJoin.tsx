@@ -6,7 +6,6 @@ import { signOut } from '../../../services/auth'
 import dataUtil from '../../../services/data.util'
 import PaymentInstructions from '../../utility/PaymentInstructions'
 import { JoinForm } from './JoinForm'
-import './MainJoin.css'
 
 export default function MainJoin() {
   const { authedUser, authedUserId } = useAuth()
@@ -41,7 +40,7 @@ export default function MainJoin() {
       lines.push(
         <div>
           <h1>Our records show you have paid</h1>
-          <p className="joinAccountLine">
+          <p className="text-center">
             You can now signup to our <a href="/signups">weekly training</a>{' '}
             sessions.
           </p>
@@ -52,16 +51,12 @@ export default function MainJoin() {
     if (clubConfig?.clubSignupStatus === 'open') {
       lines.push(
         <p key="1">
-          <Button
-            type="link"
-            className="joinResultSignOut"
-            onClick={onSignOutClick}
-          >
+          <Button type="link" className="!px-1" onClick={onSignOutClick}>
             Log out
           </Button>
           and return to the signup page, or
           <Link to="/">
-            <Button className="joinResultSignOut" type="link">
+            <Button className="!px-1" type="link">
               visit home page
             </Button>
           </Link>
@@ -78,7 +73,7 @@ export default function MainJoin() {
     return (
       <div>
         <Result
-          className="joinResult"
+          className="max-w-[700px] mx-auto"
           status="success"
           title="You are a member of AUMT!"
           extra={getExtraResultContent()}

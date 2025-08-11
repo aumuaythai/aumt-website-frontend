@@ -18,7 +18,6 @@ import { setMember } from '../../../services/db'
 import validator from '../../../services/validator'
 import { AumtMember, ClubConfig } from '../../../types'
 import PaymentInstructions from '../../utility/PaymentInstructions'
-import './JoinForm.css'
 
 interface JoinFormProps {
   isAdmin: boolean
@@ -231,7 +230,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
 
   render() {
     return (
-      <div className="joinFormContainer">
+      <div className="max-w-[600px] text-left mx-auto px-8">
         {!this.props.isAdmin ? (
           <div>
             <h2>
@@ -251,7 +250,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               events. Please contact us if you have any questions.
             </p>
 
-            <h3 className="formSectionHeader">Agreement:</h3>
+            <h3 className="!mt-12">Agreement:</h3>
             <p>
               I understand that by filling out and submitting this form, I am
               partaking in the club activities at my own risk and all injuries
@@ -292,7 +291,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
             ) : null}
 
             <div>
-              <h3 className="formSectionHeader">Login Details</h3>
+              <h3 className="!mt-12">Login Details</h3>
               {!this.props.isAdmin ? (
                 <p>
                   This is your account to sign in to this site for trainings and
@@ -309,7 +308,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               name="email"
               label="Email"
             >
-              <Input className="joinFormInput" type="email" />
+              <Input type="email" />
             </Form.Item>
 
             {!this.props.isAdmin ? (
@@ -319,7 +318,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 name="password"
                 label="Password"
               >
-                <Input.Password className="joinFormInput" />
+                <Input.Password />
               </Form.Item>
             ) : (
               <Form.Item
@@ -329,14 +328,11 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                 label="UID"
                 help="Found in the Firebase Authentication section"
               >
-                <Input
-                  placeholder="See NOTE TO ADMIN"
-                  className="joinFormInput"
-                />
+                <Input placeholder="See NOTE TO ADMIN" />
               </Form.Item>
             )}
 
-            <h3 className="formSectionHeader">Personal Details</h3>
+            <h3 className="!mt-12">Personal Details</h3>
             <Form.Item
               name="ReturningMember"
               rules={[{ required: true }]}
@@ -353,7 +349,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               rules={[{ required: true }]}
               label="First Name "
             >
-              <Input className="joinFormInput" />
+              <Input />
             </Form.Item>
             <Form.Item
               {...this.alignInputLayout}
@@ -361,17 +357,14 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               rules={[{ required: true }]}
               label="Last Name "
             >
-              <Input className="joinFormInput" />
+              <Input />
             </Form.Item>
             <Form.Item
               {...this.alignInputLayout}
               name="PreferredName"
               label="Preferred Name"
             >
-              <Input
-                className="joinFormInput"
-                placeholder="If different from first name"
-              />
+              <Input placeholder="If different from first name" />
             </Form.Item>
 
             <Form.Item
@@ -419,7 +412,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               </Radio.Group>
             </Form.Item>
 
-            <h3 className="formSectionHeader">University Details</h3>
+            <h3 className="!mt-12">University Details</h3>
             <Form.Item
               name="UoaStudent"
               rules={[{ required: true }]}
@@ -449,7 +442,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                   }
                   rules={[{ required: true }]}
                 >
-                  <Input className="joinFormInput" />
+                  <Input />
                 </Form.Item>
                 <Form.Item
                   {...this.alignInputLayout}
@@ -457,19 +450,19 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                   rules={[{ required: true }]}
                   label="Student Id"
                 >
-                  <Input className="joinFormInput" />
+                  <Input />
                 </Form.Item>
               </div>
             ) : null}
 
-            <h3 className="formSectionHeader">Emergency Contact Details</h3>
+            <h3 className="!mt-12">Emergency Contact Details</h3>
             <Form.Item
               {...this.alignInputLayout}
               rules={[{ required: true }]}
               name="EmergencyContactName"
               label="Name"
             >
-              <Input className="joinFormInput" />
+              <Input />
             </Form.Item>
             <Form.Item
               {...this.alignInputLayout}
@@ -477,7 +470,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               name="EmergencyContactNumber"
               label="Phone Number"
             >
-              <Input className="joinFormInput" type="tel" />
+              <Input type="tel" />
             </Form.Item>
             <Form.Item
               {...this.alignInputLayout}
@@ -485,10 +478,10 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               name="EmergencyContactRelationship"
               label="Relationship"
             >
-              <Input className="joinFormInput" />
+              <Input />
             </Form.Item>
 
-            <h3 className="formSectionHeader">Muay Thai Experience</h3>
+            <h3 className="!mt-12">Muay Thai Experience</h3>
             <Form.Item
               rules={[{ required: true }]}
               name="Experience"
@@ -519,7 +512,6 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
                   Other
                   {this.state.currentExperienceInMuayThai === 'Other' ? (
                     <Input
-                      className="joinFormInput"
                       style={{
                         width: 100,
                         marginLeft: 10,
@@ -530,27 +522,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
               </Radio.Group>
             </Form.Item>
 
-            {/* <h3 className="formSectionHeader">Camp Interest</h3>
-                        <p>
-                            Every year AUMT hosts its legendary camp: a few days
-                            training and hanging out with fellow members. This will be held at
-                            Omori lodge, 22nd to 25th April.
-                        </p>
-                        <Form.Item
-                            name="interestedInCamp"
-                            rules={[{ required: true }]}
-                            label="Would you be interested in the AUMT camp?"
-                        >
-                            <Radio.Group
-                                buttonStyle="solid"
-                                name="interestedInCampRadio"
-                            >
-                                <Radio.Button value={"Yes"}>Yes</Radio.Button>
-                                <Radio.Button value={"No"}>No</Radio.Button>
-                            </Radio.Group>
-                        </Form.Item> */}
-
-            <h3 className="formSectionHeader">Membership Payment</h3>
+            <h3 className="!mt-12">Membership Payment</h3>
             <Form.Item
               name="Membership"
               rules={[{ required: true }]}
@@ -637,7 +609,7 @@ export class JoinForm extends Component<JoinFormProps, JoinFormState> {
 
             <Form.Item>
               <Button
-                className="joinFormSubmit"
+                className="mt-5 mb-24"
                 loading={this.state.submitting}
                 block
                 type="primary"

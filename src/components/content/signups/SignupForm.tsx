@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { removeMemberFromForm, signUserUp } from '../../../services/db'
 import { AumtTrainingSession } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
-import './SignupForm.css'
 
 export interface SignupFormProps {
   title: string
@@ -170,20 +169,20 @@ export default function SignupForm(props: SignupFormProps) {
           session.limit - Object.keys(session.members).length
         )
         const label = (
-          <span key={session.title} className="optionLine">
+          <span key={session.title} className="my-2.5 inline-block w-full">
             <Tooltip title={isFull ? 'Class full' : ''} placement="left">
               <span className="signupFormSessionTitle">
                 {session.title}
                 {signedUpOptions.includes(session.sessionId) ? (
                   <CheckSquareTwoTone
-                    className="signedUpOptionCheck"
+                    className="ml-2.5 text-[150%] align-middle"
                     twoToneColor="#52c41a"
                   />
                 ) : null}
               </span>
               {spotsLeft <= SPOTS_TAG_LIMIT ? (
                 <Tag
-                  className="spotsLeftTag"
+                  className="float-right -mr-2"
                   color={
                     spotsLeft === 0
                       ? 'error'
@@ -222,12 +221,10 @@ export default function SignupForm(props: SignupFormProps) {
   return (
     <div>
       <h2 className="formTitle text-xl">{props.title}</h2>
-      {props.notes && props.showNotes ? (
-        <div className="trainingNotesContainer">
-          <RenderMarkdown source={props.notes}></RenderMarkdown>
+      {props.notes && props.showNotes && (
+        <div className="my-5 mx-auto max-[400px] text-left">
+          <RenderMarkdown source={props.notes} />
         </div>
-      ) : (
-        ''
       )}
       <div className="optionsContainer">
         <Checkbox.Group
@@ -237,7 +234,7 @@ export default function SignupForm(props: SignupFormProps) {
         ></Checkbox.Group>
       </div>
       {props.authedUserId ? (
-        <div className="feedbackInputContainer">
+        <div className="text-left max-w-[400px] mx-auto my-7">
           <p>Thoughts on last training/feedback?</p>
           <Input.TextArea
             autoSize={{ maxRows: 6 }}
@@ -246,7 +243,7 @@ export default function SignupForm(props: SignupFormProps) {
           />
         </div>
       ) : props.openToPublic ? (
-        <div className="feedbackInputContainer">
+        <div className="text-left max-w-[400px] mx-auto my-7">
           <p>Enter your Full Name</p>
           <Input
             placeholder={'Enter your Full Name'}
@@ -256,33 +253,25 @@ export default function SignupForm(props: SignupFormProps) {
       ) : (
         ''
       )}
-      <div className="messageContainer">
-        {errorMessage ? (
-          <Alert type="error" message={errorMessage}></Alert>
-        ) : (
-          ''
-        )}
+      <div className="max-w-[300px] mx-auto my-1.5">
+        {errorMessage && <Alert type="error" message={errorMessage} />}
       </div>
-      {isAdvancedSelected() ? (
+      {isAdvancedSelected() && (
         <Alert
           type="info"
-          className="signupFormInfoTextContainer"
+          className="text-justify"
           showIcon
           message="Please make sure you have asked Victor before joining the advanced session and remember to bring a mouthguard - if one of these conditions isn't met we may stop you from training!"
-        ></Alert>
-      ) : (
-        ''
+        />
       )}
-      {props.submittingAsName ? (
-        <div className="aboveSubmitSignupFormText">
+      {props.submittingAsName && (
+        <div className="text-[10px] text-left mb-2.5">
           Submitting as {`${props.submittingAsName}`}
         </div>
-      ) : (
-        ''
       )}
       <Button
         block
-        className="signupFormButton"
+        className="!font-joyride"
         type="primary"
         size="large"
         loading={submittingState}
@@ -294,13 +283,13 @@ export default function SignupForm(props: SignupFormProps) {
         <Button
           disabled={!signedUpOptions.length}
           type="link"
-          className="signupFormRemove"
+          className="block mt-5"
           onClick={onRemoveClick}
           block
         >
           {removingState ? (
             <span>
-              <Spin className="signupFormRemoveLoadingIcon" />{' '}
+              <Spin className="mr-1.5" />{' '}
             </span>
           ) : (
             ''

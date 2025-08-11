@@ -10,6 +10,10 @@
   src: url(assets/fonts/Lacuna.otf) format('opentype');
 }
 
+@theme {
+  --font-joyride: 'Joyride', sans-serif;
+}
+
 #root {
   text-align: center;
 }

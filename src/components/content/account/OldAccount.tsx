@@ -568,11 +568,7 @@ function Account() {
 
       <p style={{ textAlign: 'center' }}>
         Click here to
-        <Button
-          type="link"
-          className="joinResultSignOut"
-          onClick={onSignOutClick}
-        >
+        <Button type="link" className="!px-1" onClick={onSignOutClick}>
           Log out
         </Button>
       </p>

@@ -10,7 +10,6 @@ import {
 } from '../../../services/db'
 import { AumtWeeklyTraining } from '../../../types'
 import SignupForm from './SignupForm'
-import './Signups.css'
 
 export default function Signups() {
   const { authedUser, authedUserId } = useAuth()
@@ -76,10 +75,10 @@ export default function Signups() {
 
   if (!forms.length) {
     return (
-      <div className="infoContainer">
+      <div className="flex flex-col items-center">
         <p>Weekly training signups will open on Sundays on this page</p>
         <p>The current training schedule is:</p>
-        <ul className="scheduleList">
+        <ul className="text-start list-none">
           <li>
             <b>Tuesday 4:30PM</b> Beginners
           </li>
@@ -101,13 +100,13 @@ export default function Signups() {
   }
 
   return (
-    <div className="signupsContainer">
+    <div>
       {forms.map((form) => {
         if (!form.openToPublic) {
           if (!authedUserId) {
             return (
               <div key={form.trainingId}>
-                <h2>{form.title}</h2>
+                <h2 className="text-2xl">{form.title}</h2>
                 <p>
                   You must <Link to="/login?from=/signups"> log in </Link> to
                   view and sign up!
@@ -127,7 +126,7 @@ export default function Signups() {
               (authedUser.membership === 'FY' && form.semester !== 'SS'))
           ) {
             return (
-              <div key={form.trainingId} className="formContainer">
+              <div key={form.trainingId} className="max-w-[440px] px-4 mx-auto">
                 <SignupForm
                   title={form.title}
                   id={form.trainingId}
@@ -156,7 +155,10 @@ export default function Signups() {
                 authedUser.membership !== form.semester))
           ) {
             return (
-              <div key={form.trainingId} className="signupsNotPaidContainer">
+              <div
+                key={form.trainingId}
+                className="max-w-[440px] p-5 mx-auto text-left"
+              >
                 <h2 className="text-xl">{form.title}</h2>
                 <p>
                   Your membership is out of date, please update it by going to
@@ -166,7 +168,10 @@ export default function Signups() {
             )
           } else {
             return (
-              <div key={form.trainingId} className="signupsNotPaidContainer">
+              <div
+                key={form.trainingId}
+                className="max-w-[440px] p-5 mx-auto text-left"
+              >
                 <h2 className="text-xl">{form.title}</h2>
                 <p>
                   Our records show you have not paid the membership fee for this
@@ -187,7 +192,7 @@ export default function Signups() {
           }
         } else {
           return (
-            <div key={form.trainingId} className="formContainer">
+            <div key={form.trainingId} className="max-w-[440px] px-4 mx-auto">
               <SignupForm
                 title={form.title}
                 id={form.trainingId}
