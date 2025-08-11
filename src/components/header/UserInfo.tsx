@@ -4,7 +4,6 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { signOut } from '../../services/auth'
 import { AumtMember } from '../../types'
 import { ResetPasswordLink } from './ResetLink'
-import './UserInfo.css'
 
 interface UserInfoProps {
   authedUser: AumtMember
@@ -44,9 +43,11 @@ export default function UserInfo(props: UserInfoProps) {
       placement="bottomRight"
       trigger={['click', 'hover']}
     >
-      <div className="userInfoContainer">
-        <div className="nameContainer">{nameText}</div>
-        <DownOutlined className="topMenuDownOutlined" />
+      <div className="flex items-center h-full cursor-pointer gap-x-2.5">
+        <div className="max-w-24 overflow-hidden text-ellipsis whitespace-nowrap">
+          {nameText}
+        </div>
+        <DownOutlined />
       </div>
     </Dropdown>
   )

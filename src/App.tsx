@@ -12,7 +12,7 @@ import Gallery from './components/content/info/Gallery'
 import MainJoin from './components/content/join/MainJoin'
 import Signups from './components/content/signups/Signups'
 import Header from './components/header/Header'
-import { LoginForm } from './components/header/LoginForm'
+import LoginForm from './components/login/LoginForm'
 import AuthProvider from './context/AuthProvider'
 import ConfigProvider from './context/ConfigProvider'
 

@@ -2,7 +2,6 @@ import UserOutlined from '@ant-design/icons/UserOutlined'
 import { Alert, Button, Input, Modal } from 'antd'
 import React, { ChangeEvent, Component, ReactNode } from 'react'
 import { sendPasswordResetEmail } from '../../services/auth'
-import './ResetLink.css'
 
 interface ResetPasswordLinkState {
   visible: boolean
@@ -85,7 +84,7 @@ export class ResetPasswordLink extends Component<
   render() {
     const { visible, confirmLoading } = this.state
     return (
-      <span className="resetContainer">
+      <span className="inline-block m-0">
         <Button type="link" className="mockLink" onClick={this.showModal}>
           {this.props.text || 'Reset Password'}
         </Button>

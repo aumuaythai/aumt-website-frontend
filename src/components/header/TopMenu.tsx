@@ -28,7 +28,7 @@ export default function TopMenu({ authedUser, isAdmin }: TopMenuProps) {
     {
       label: 'About',
       key: 'about',
-      className: 'dropdownTopMenuItem',
+      className: '!p-0',
       children: [
         {
           label: <Link to="/">Club Info</Link>,
@@ -105,7 +105,7 @@ function DesktopMenu({
       items={items}
       selectedKeys={current}
       mode="horizontal"
-      className="menu--desktop"
+      className="!hidden lg:!flex"
     />
   )
 }
@@ -121,11 +121,11 @@ function MobileMenu({
     {
       label: (
         <>
-          Menu <DownOutlined className="menuDownIcon" />
+          Menu <DownOutlined className="!text-[9px]" />
         </>
       ),
       key: 'menu',
-      className: 'dropdownTopMenuItem',
+      className: '!p-0',
       children: sharedItems,
     },
   ]
@@ -135,7 +135,7 @@ function MobileMenu({
       items={items}
       selectedKeys={current}
       mode="horizontal"
-      className="menu--mobile"
+      className="lg:!hidden"
     />
   )
 }
