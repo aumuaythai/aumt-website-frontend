@@ -27,7 +27,6 @@ import {
   getAllMembers,
   getClubConfig,
   listenToMembers,
-  setClubJoinForm,
   setClubSignupSem,
   unlisten,
 } from '../../../services/db'
@@ -98,7 +97,6 @@ class MemberDashboard extends Component<
   componentDidMount = () => {
     getClubConfig().then((clubConfig) => {
       this.setState({
-        ...this.state,
         clubFormLoading: false,
         currentClubFormOpen: clubConfig.clubSignupStatus === 'open',
         clubSignupSem: clubConfig.clubSignupSem,
@@ -117,12 +115,11 @@ class MemberDashboard extends Component<
     }
   }
   getMembers = () => {
-    this.setState({ ...this.state, loadingMembers: true })
+    this.setState({ loadingMembers: true })
     getAllMembers()
       .then((memberObj) => {
         this.setTableData(memberObj)
         this.setState({
-          ...this.state,
           dbListenerId: listenToMembers(this.onDbChange),
         })
       })
@@ -132,7 +129,7 @@ class MemberDashboard extends Component<
         })
       })
       .finally(() => {
-        this.setState({ ...this.state, loadingMembers: false })
+        this.setState({ loadingMembers: false })
       })
   }
   onDbChange = (memberObj: AumtMembersObj) => {
@@ -144,7 +141,6 @@ class MemberDashboard extends Component<
         )
         if (changedMember) {
           this.setState({
-            ...this.state,
             selectedMember: changedMember,
           })
         }
@@ -154,20 +150,17 @@ class MemberDashboard extends Component<
   }
   onSignupSemChange = (sem: 'S1' | 'S2' | 'SS') => {
     this.setState({
-      ...this.state,
       loadingSignupSem: true,
     })
     setClubSignupSem(sem)
       .then(() => {
         this.setState({
-          ...this.state,
           clubSignupSem: sem,
           loadingSignupSem: false,
         })
       })
       .catch((err) => {
         this.setState({
-          ...this.state,
           loadingSignupSem: false,
         })
         notification.error({
@@ -175,36 +168,12 @@ class MemberDashboard extends Component<
         })
       })
   }
-  onClubFormOpenChange = (open: boolean) => {
-    this.setState({
-      ...this.state,
-      clubFormLoading: true,
-    })
-    setClubJoinForm(open)
-      .then(() => {
-        this.setState({
-          ...this.state,
-          clubFormLoading: false,
-          currentClubFormOpen: open,
-        })
-      })
-      .catch((err) => {
-        this.setState({
-          ...this.state,
-          clubFormLoading: false,
-        })
-        notification.error({
-          message: `Could not ${
-            open ? 'open' : 'close'
-          } club form: ${err.toString()}`,
-        })
-      })
-  }
+
   setTableData = (memberObj: AumtMembersObj) => {
     if (this.helper) {
       const { lines, columns } = this.helper.getTableFromMembers(memberObj)
+      console.log(lines)
       this.setState({
-        ...this.state,
         tableDataSource: lines,
         tableColumns: columns,
       })
@@ -221,7 +190,6 @@ class MemberDashboard extends Component<
         const selectedMember = lines.find((l) => l.key === memberId)
         if (selectedMember) {
           this.setState({
-            ...this.state,
             selectedMember: selectedMember,
           })
         } else {
@@ -232,7 +200,6 @@ class MemberDashboard extends Component<
   }
   showImportMembers = () => {
     this.setState({
-      ...this.state,
       importMembersVisible: true,
       importMemberErrors: [],
       importMemberSuccessText: '',
@@ -243,7 +210,6 @@ class MemberDashboard extends Component<
   onImportMemberFileChange = (files: FileList | null) => {
     if (files && files.length > 0) {
       this.setState({
-        ...this.state,
         importMemberParsing: true,
         membersToImport: {},
       })
@@ -257,7 +223,6 @@ class MemberDashboard extends Component<
           }) => {
             const { members, errors, text } = parseObj
             this.setState({
-              ...this.state,
               importMemberSuccessText: text,
               importMemberErrors: errors,
               importMemberParsing: false,
@@ -267,7 +232,6 @@ class MemberDashboard extends Component<
         )
         .catch((err) => {
           this.setState({
-            ...this.state,
             importMemberParsing: false,
             importMemberErrors: [err.toString()],
             membersToImport: {},
@@ -278,12 +242,10 @@ class MemberDashboard extends Component<
   onImportMembersOk = () => {
     if (Object.keys(this.state.membersToImport).length === 0) {
       return this.setState({
-        ...this.state,
         importMemberErrors: ['No members to import'],
       })
     }
     this.setState({
-      ...this.state,
       importMembersVisible: false,
     })
     const key = 'importMemberMessage'
@@ -300,13 +262,11 @@ class MemberDashboard extends Component<
 
   onImportMembersCancel = () => {
     this.setState({
-      ...this.state,
       importMembersVisible: false,
     })
   }
   onMemberSelect = (member: TableDataLine) => {
     this.setState({
-      ...this.state,
       selectedMember: member,
     })
     this.props.history.push(`/admin/members/${member.key}`)
@@ -315,14 +275,12 @@ class MemberDashboard extends Component<
     const member = this.state.tableDataSource.find((l) => l.key === uid)
     if (member) {
       this.setState({
-        ...this.state,
         memberInDropdown: member,
       })
     }
   }
   onMobileSortByChange = (sortType: 'name' | 'joined') => {
     this.setState({
-      ...this.state,
       mobileMemberSort: sortType,
     })
   }
@@ -343,7 +301,6 @@ class MemberDashboard extends Component<
     selectedRows: TableDataLine[]
   ) => {
     this.setState({
-      ...this.state,
       selectedRowKeys,
     })
     this.helper?.onRowSelectChange(selectedRows)
@@ -351,7 +308,6 @@ class MemberDashboard extends Component<
 
   exitSelectedMember = () => {
     this.setState({
-      ...this.state,
       selectedMember: null,
     })
     this.props.history.push('/admin/members')
@@ -390,9 +346,7 @@ class MemberDashboard extends Component<
                   Multi Select{' '}
                   <AntSwitch
                     checked={this.state.rowSelectionEnabled}
-                    onChange={(e) =>
-                      this.setState({ ...this.state, rowSelectionEnabled: e })
-                    }
+                    onChange={(e) => this.setState({ rowSelectionEnabled: e })}
                   ></AntSwitch>
                 </div>
                 {this.longTable ? (
@@ -414,19 +368,6 @@ class MemberDashboard extends Component<
                         </Radio.Group>
                       )}
                     </div>
-                  </div>
-                ) : null}
-                {this.longTable ? (
-                  <div className="memberDashboardGlobalConfigOptionsContainer memberDashboardHideSmallScreen">
-                    Join Form:{' '}
-                    <AntSwitch
-                      className="memberDashboardClubOpenSwitch"
-                      checked={this.state.currentClubFormOpen}
-                      loading={this.state.clubFormLoading}
-                      onChange={(e) => this.onClubFormOpenChange(e)}
-                      checkedChildren="open"
-                      unCheckedChildren="closed"
-                    ></AntSwitch>
                   </div>
                 ) : null}
                 <div className="memberDashboardGlobalConfigOptionsContainer">

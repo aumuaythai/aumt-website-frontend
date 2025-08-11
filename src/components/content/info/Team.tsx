@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import './Team.css'
-// import { CommitteeApplicationForm } from './CommitteeApplicationForm'
 // import { RenderMarkdown } from '../../utility/RenderMarkdown'
 
 class Team extends Component {
-    private committeeAppMd = `
+  private committeeAppMd = `
 ### What we do
 
 Being part of the AUMT committee is an opportunity to get more involved with the best club in the world and it comes with endless benefits (see below).
@@ -42,73 +41,110 @@ Pictured above: the current committee after a productive meeting.
 * Willingness to make your voice heard; to contribute to new ideas and give feedback to your fellow committee members
 * Preferred but not mandatory: experience in photoshop, public relations or mailchimp
     `
-    render() {
-        return (
-            <div className='teamContainer'>
-                {/* <div>
-                        <h1>Applications</h1>
-                        <div className='committeeApplicationsContainer'>
-                            <RenderMarkdown source={this.committeeAppMd}></RenderMarkdown>
-                    {Date.now() < 160292160000 ?
-                            <CommitteeApplicationForm></CommitteeApplicationForm>
-                        : <p>Committee applications have closed. Message the AUMT page on Facebook or Instagram with any questions.</p>}
-                        </div>
-                    </div>
-                <Divider/> */}
-                <div className="teamGroup">
-                    <h1>AUMT Committee</h1>
-                    <div className='imgRow'>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/beatriz.png" alt="Beatriz" />
-                        </div>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/thomas.png" alt="Thomas" />
-                        </div>
-                    </div>
-
-                    <div className='imgRow'>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/emma.png" alt="Emma" />
-                        </div>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/horia.png" alt="Horia" />
-                        </div>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/grant.png" alt="Grant" />
-                        </div>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/ted.png" alt="Ted" />
-                        </div>
-                    </div>
-
-                    <div className='imgRow'>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/maxine.png" alt="Maxine" />
-                        </div>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/amos.png" alt="Amos" />
-                        </div>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/tearia.png" alt="Te Aria" />
-                        </div>
-                    </div>
-
-                    <div className='imgRow'>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/jeremie.png" alt="Jeremie" />
-                        </div>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/yang.png" alt="Yang" />
-                        </div>
-                        <div className="personContainer">
-                            <img className='headshot' src="./photos/Committee/ava.png" alt="Ava" />
-                        </div>
-                    </div>
-
-                </div>
+  render() {
+    return (
+      <div className="teamContainer">
+        <div className="teamGroup">
+          <h1>AUMT Committee</h1>
+          <div className="imgRow">
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/beatriz.png"
+                alt="Beatriz"
+              />
             </div>
-        )
-    }
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/thomas.png"
+                alt="Thomas"
+              />
+            </div>
+          </div>
+
+          <div className="imgRow">
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/emma.png"
+                alt="Emma"
+              />
+            </div>
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/horia.png"
+                alt="Horia"
+              />
+            </div>
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/grant.png"
+                alt="Grant"
+              />
+            </div>
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/ted.png"
+                alt="Ted"
+              />
+            </div>
+          </div>
+
+          <div className="imgRow">
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/maxine.png"
+                alt="Maxine"
+              />
+            </div>
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/amos.png"
+                alt="Amos"
+              />
+            </div>
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/tearia.png"
+                alt="Te Aria"
+              />
+            </div>
+          </div>
+
+          <div className="imgRow">
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/jeremie.png"
+                alt="Jeremie"
+              />
+            </div>
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/yang.png"
+                alt="Yang"
+              />
+            </div>
+            <div className="personContainer">
+              <img
+                className="headshot"
+                src="./photos/Committee/ava.png"
+                alt="Ava"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 }
 
 export default Team
