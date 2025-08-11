@@ -221,7 +221,7 @@ export default function SignupForm(props: SignupFormProps) {
 
   return (
     <div>
-      <h2 className="formTitle">{props.title}</h2>
+      <h2 className="formTitle text-xl">{props.title}</h2>
       {props.notes && props.showNotes ? (
         <div className="trainingNotesContainer">
           <RenderMarkdown source={props.notes}></RenderMarkdown>

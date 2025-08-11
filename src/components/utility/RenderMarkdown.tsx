@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
 import marked from 'marked'
+import React, { Component } from 'react'
 
-import './RenderMarkdown.css'
 /*
 This class exists because react-markdown has things that are unnecessary for this app
 Installing ReactMarkdown installs 40 new packages, better to not have that bloat
@@ -10,13 +9,13 @@ Also as of writing this images aren't quite up to markdown spec, a polyfill was 
 https://github.com/markedjs/marked/issues/339
 */
 
-const renderer = new marked.Renderer();
+const renderer = new marked.Renderer()
 
 const sanitize = (str: string) => {
   return str.replace(/&<"/g, (m) => {
-    if (m === "&") return "&amp;"
-    if (m === "<") return "&lt;"
-    return "&quot;"
+    if (m === '&') return '&amp;'
+    if (m === '<') return '&lt;'
+    return '&quot;'
   })
 }
 
@@ -29,31 +28,33 @@ renderer.image = (src, title, alt) => {
 }
 
 marked.setOptions({
-    renderer: renderer
+  renderer: renderer,
 })
 
 interface RenderMarkdownProps {
-    source: string
+  source: string
 }
 
-interface RenderMarkdownState {
-}
+interface RenderMarkdownState {}
 
-export class RenderMarkdown extends Component<RenderMarkdownProps, RenderMarkdownState> {
-    constructor(props: RenderMarkdownProps) {
-        super(props)
-        this.state = {}
-    }
+export class RenderMarkdown extends Component<
+  RenderMarkdownProps,
+  RenderMarkdownState
+> {
+  constructor(props: RenderMarkdownProps) {
+    super(props)
+    this.state = {}
+  }
 
-    getHtml = () => {
-        return {__html: marked(this.props.source)}
-    }
+  getHtml = () => {
+    return { __html: marked(this.props.source) }
+  }
 
-    render() {
-        // const lines = this.props.source?.split('\n')
-        // if (!lines || !lines.length) {
-        //     return ''
-        // }
-        return <div dangerouslySetInnerHTML={this.getHtml()}></div>
-    }
+  render() {
+    // const lines = this.props.source?.split('\n')
+    // if (!lines || !lines.length) {
+    //     return ''
+    // }
+    return <div dangerouslySetInnerHTML={this.getHtml()}></div>
+  }
 }

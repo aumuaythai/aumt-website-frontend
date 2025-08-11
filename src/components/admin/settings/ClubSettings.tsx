@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 
 import {
   Button,
@@ -14,7 +14,6 @@ import {
 import { ClubConfig } from '../../../types'
 
 import { getClubConfig, setClubConfig } from '../../../services/db'
-import './ClubSettings.css'
 
 interface ClubSettingsProps {}
 
@@ -112,8 +111,8 @@ export default class ClubSettings extends Component<
 
   render() {
     return (
-      <div className="clubSettingsContainer">
-        <h1>Club Settings</h1>
+      <div className="text-left mx-auto pb-10 max-w-2xl">
+        <h1 className="text-2xl">Club Settings</h1>
         <p>
           Here you can edit club credential settings. Make sure to click the
           save button at the bottom.
@@ -125,11 +124,7 @@ export default class ClubSettings extends Component<
           </div>
         ) : (
           <>
-            <List
-              bordered
-              header={<h1>Memberhip Prices ($)</h1>}
-              className={'listContainer'}
-            >
+            <List bordered header={<h1>Memberhip Prices ($)</h1>}>
               <List.Item>
                 <span>Summer School</span>
                 <InputNumber
@@ -160,11 +155,7 @@ export default class ClubSettings extends Component<
               </List.Item>
             </List>
 
-            <List
-              bordered
-              header={<h1>Join Form</h1>}
-              className={'listContainer'}
-            >
+            <List bordered header={<h1>Join Form</h1>} className="!mt-5">
               <List.Item>
                 <span>Status</span>
                 <Switch
@@ -189,11 +180,7 @@ export default class ClubSettings extends Component<
               </List.Item>
             </List>
 
-            <List
-              bordered
-              header={<h1>Club Credentials</h1>}
-              className={'listContainer'}
-            >
+            <List bordered header={<h1>Club Credentials</h1>} className="!mt-5">
               <List.Item>
                 <span>Bank Account Number</span>
                 <Input
@@ -218,7 +205,11 @@ export default class ClubSettings extends Component<
             {this.state.saving ? (
               <Spin />
             ) : (
-              <Button type="primary" onClick={this.updateSettings}>
+              <Button
+                type="primary"
+                onClick={this.updateSettings}
+                className="!mt-5"
+              >
                 Save Settings
               </Button>
             )}

@@ -75,7 +75,7 @@ export default function MainAdmin() {
         <Route path="/admin/events">
           <div className="manageEventsContainer">
             <div className="mainAdminEventsHeader">
-              <h2 className="createEventTitle manageEventTitle">
+              <h2 className="createEventTitle manageEventTitle text-xl">
                 Manage Events
               </h2>
               <Link

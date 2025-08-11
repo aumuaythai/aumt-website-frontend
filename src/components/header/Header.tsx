@@ -3,7 +3,6 @@ import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthProvider'
 import { Links } from '../../services/links'
-import './Header.css'
 import TopMenu from './TopMenu'
 import UserInfo from './UserInfo'
 
@@ -22,25 +21,32 @@ export default function Header() {
   }
 
   return (
-    <header className="headerContainer">
+    <header className="w-full flex items-center justify-between px-5 font-[Joyride] border-b border-b-[#f0f0f0] font-normal h-[50px]">
       <Link to="/">
-        <img className="logoImg" src={'logos/AUMTLogo.png'} alt="" />
+        <img
+          className="w-[120px] transition-opacity hover:opacity-80"
+          src="logos/AUMTLogo.png"
+          alt="AUMT"
+        />
       </Link>
 
       <TopMenu isAdmin={isAdmin} authedUser={authedUser} />
-      <div className="socialsContainer">
+      <div className="flex items-center h-full gap-x-6">
         {authedUser ? (
           <UserInfo authedUser={authedUser}></UserInfo>
         ) : (
-          <Link to={`/login?from=${pathname}`} className="loginButton">
+          <Link
+            to={`/login?from=${pathname}`}
+            className="h-full flex items-center px-8 !text-[#11388d] !transition-colors duration-300 hover:!bg-[#11388d]/10"
+          >
             Sign In
           </Link>
         )}
-        <div className="socialIconContainer">
-          <span className="socialIcon" onClick={fbClick}>
+        <div className="flex text-lg cursor-pointer text-black gap-x-2.5">
+          <span onClick={fbClick}>
             <FacebookFilled />
           </span>
-          <span className="socialIcon" onClick={igClick}>
+          <span onClick={igClick}>
             <InstagramFilled />
           </span>
         </div>

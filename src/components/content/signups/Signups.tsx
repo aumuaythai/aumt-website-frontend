@@ -157,7 +157,7 @@ export default function Signups() {
           ) {
             return (
               <div key={form.trainingId} className="signupsNotPaidContainer">
-                <h2>{form.title}</h2>
+                <h2 className="text-xl">{form.title}</h2>
                 <p>
                   Your membership is out of date, please update it by going to
                   the <Link to="/account">My Account</Link> tab.
@@ -167,7 +167,7 @@ export default function Signups() {
           } else {
             return (
               <div key={form.trainingId} className="signupsNotPaidContainer">
-                <h2>{form.title}</h2>
+                <h2 className="text-xl">{form.title}</h2>
                 <p>
                   Our records show you have not paid the membership fee for this
                   semester - once you do, you can sign up to trainings!
