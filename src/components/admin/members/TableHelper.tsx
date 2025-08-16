@@ -23,7 +23,6 @@ import {
 } from '../../../services/db'
 import Validator from '../../../services/validator'
 import { AumtMember, AumtMembersObj } from '../../../types'
-import { Marquee } from '../../utility/Marquee'
 import './TableHelper.css'
 
 export type TableDataLine = AumtMember & { key: string; tableName: string }
@@ -678,14 +677,7 @@ export class TableHelper extends Component<TableHelperProps, TableHelperState> {
         title: 'Notes',
         ...this.getColumnSearchProps('notes'),
         render: (text: string) => {
-          return (
-            <div className="tableLongTextContainer">
-              <Marquee
-                text={this.renderHighlightedText(text, 'notes')}
-                scroll={text.length > 10}
-              ></Marquee>
-            </div>
-          )
+          return <div className="tableLongTextContainer">{text}</div>
         },
       },
     ]

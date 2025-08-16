@@ -1,28 +1,3 @@
-.galleryContainer{
-  /* display: flex; */
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  
-}
-
-.carouselContainer{
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.imgContainer{
-  background-color: black ;
-  padding: 0;
-  width:fit-content !important;
-  box-sizing: border-box;
-}
-
-.galleryImg{
-  width:100%;
-  max-width: 1200px;
-  margin: 0;
-}
-
 .ant-carousel .slick-prev,
 .ant-carousel .slick-next,
 .ant-carousel .slick-prev:hover,
@@ -48,4 +23,3 @@
 .slick-arrow.slick-next {
   font-size: 20px !important;
 }
-

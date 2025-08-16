@@ -89,7 +89,7 @@ export default function EventsWrapperWithoutRouter() {
         />
         <Route path="/events">
           <div className="eventsListWrapper">
-            <div className="eventsListContainer upcomingEventsContainer">
+            <div className="max-w-[800px] !mx-auto px-[30px] upcomingEventsContainer">
               <h2>Upcoming Events</h2>
               {upcomingEvents.length ? (
                 <EventsList events={upcomingEvents}></EventsList>
@@ -100,7 +100,7 @@ export default function EventsWrapperWithoutRouter() {
                 </p>
               )}
             </div>
-            <div className="eventsListContainer">
+            <div className="max-w-[800px] !mx-auto px-[30px]">
               <h2>Past Events</h2>
               {pastEvents.length ? (
                 <EventsList events={pastEvents}></EventsList>

@@ -30,9 +30,6 @@ export default function App() {
               <Route path="/" exact>
                 <About />
               </Route>
-              {/* <Route path="/team">
-                        <Team />
-                      </Route> */}
               <Route path="/faq">
                 <Faq />
               </Route>

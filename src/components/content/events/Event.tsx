@@ -20,7 +20,6 @@ import {
 } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
 import { CampSignupForm } from './CampSignupForm'
-import './Event.css'
 
 interface EventProps {
   event: AumtEvent
@@ -211,24 +210,24 @@ export class Event extends Component<EventProps, EventState> {
   render() {
     console.log(this.state.displayTime)
     return (
-      <div className="eventContainer">
-        <div className="eventHeader">
-          <p className="backToEventsLink">
+      <div className="max-w-[500px] text-center mx-auto p-[30px]">
+        <div className="flex justify-between">
+          <p className="text-black !mt-[5px]">
             <Link title="Back to Events" to="/events">
               <ArrowLeftOutlined />
             </Link>
           </p>
           <h2>{this.props.event.title}</h2>
-          <div className="eventHeaderSpacer"></div>
+          <div className="w-[14px]" />
         </div>
-        <div className="eventDetailsContainer">
-          <div className="detail dayDetail">
+        <div className="text-left mx-auto p-5">
+          <div className="p-[5px]">
             <CalendarOutlined /> {this.state.displayDate}
           </div>
-          <div className="detail timeDetail">
+          <div className="p-[5px]">
             <ClockCircleOutlined /> {this.state.displayTime}
           </div>
-          <div className="detail locationDetail">
+          <div className="p-[5px]">
             <HomeOutlined />{' '}
             {this.props.event.locationLink ? (
               <a
@@ -243,7 +242,7 @@ export class Event extends Component<EventProps, EventState> {
             )}
           </div>
           {this.props.event.fbLink ? (
-            <div className="detail fbLinkDetail">
+            <div className="p-[5px]">
               <FacebookOutlined />{' '}
               <a
                 href={this.props.event.fbLink}
@@ -256,7 +255,7 @@ export class Event extends Component<EventProps, EventState> {
           ) : null}
         </div>
         <Divider />
-        <div className="eventDescriptionContainer">
+        <div className="text-left">
           <RenderMarkdown
             source={this.props.event.description}
           ></RenderMarkdown>
@@ -332,7 +331,7 @@ export class Event extends Component<EventProps, EventState> {
                     Object.keys(this.props.event.signups.members).length ? (
                   <div>
                     <h4>Signups are currently full</h4>
-                    <p className="eventWaitlistInfoText">
+                    <p className="text-left">
                       Fill out the form below to join the waitlist and the
                       committee will message you if a spot opens.
                     </p>
@@ -362,7 +361,7 @@ export class Event extends Component<EventProps, EventState> {
                         loading={this.state.reservingSpot}
                         type="primary"
                         block
-                        className="reserveEventSpotButton"
+                        className="mt-2.5"
                         onClick={(e) => this.onSignupFormSubmit(false)}
                       >
                         Reserve a Spot

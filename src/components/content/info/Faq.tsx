@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { getClubConfig } from '../../../services/db'
 import { Links } from '../../../services/links'
 import { ClubConfig } from '../../../types/ClubConfig'
-import './Faq.css'
 
 export default function Faq() {
   const [clubConfig, setClubConfig] = useState<ClubConfig | null>(null)
@@ -19,12 +18,16 @@ export default function Faq() {
   }, [])
 
   return (
-    <div className="faqContainer">
-      <h1 className="faqTitle">FAQ</h1>
-      <div className="questionContainer" key="trainings">
-        <p className="question">Q: When and where are trainings?</p>
-        <p className="answer">
-          A: Find the timetable <a href="/signups">here</a>.
+    <div className="text-left max-w-[1000px] mx-auto px-2.5 pb-[100px]">
+      <h1 className="w-full text-center text-3xl">FAQ</h1>
+      <div className="mx-auto max-w-[800px]" key="trainings">
+        <p className="font-bold">Q: When and where are trainings?</p>
+        <p>
+          A: Find the timetable{' '}
+          <a href="/signups" className="text-[#11388d]">
+            here
+          </a>
+          .
           <br />
           Trainings are located at the Hawks Nest Gym, 4/18 Beach Road.
         </p>
@@ -32,20 +35,21 @@ export default function Faq() {
           title="Training Location"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d633.4536252469256!2d174.76206034919215!3d-36.856698459636775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6d0d47bb9877fca5%3A0x70e64b98b3aeed38!2sThe%20Hawks&#39;%20Nest%20Gym!5e0!3m2!1sen!2snz!4v1644916967606!5m2!1sen!2snz"
           loading="lazy"
+          className="w-full h-[300px] xl:h-[400px]"
         />
         <Divider />
       </div>
-      <div className="questionContainer" key="membership">
-        <p className="question">Q: How much is a membership?</p>
-        <p className="answer">
+      <div className="mx-auto max-w-[800px]" key="membership">
+        <p className="font-bold">Q: How much is a membership?</p>
+        <p>
           A: Memberships are ${clubConfig?.semesterOneFee} for one semester or $
           {clubConfig?.fullYearFee} for the full year
         </p>
         <Divider />
       </div>
-      <div className="questionContainer" key="join">
-        <p className="question">Q: How do I join the club?</p>
-        <p className="answer">
+      <div className="mx-auto max-w-[800px]" key="join">
+        <p className="font-bold">Q: How do I join the club?</p>
+        <p>
           A: You can join anytime throughout the year. Just pay for your
           membership as per the instructions.
           <br />
@@ -53,11 +57,11 @@ export default function Faq() {
         </p>
         <Divider />
       </div>
-      <div className="questionContainer" key="money">
-        <p className="question">
+      <div className="mx-auto max-w-[800px]" key="money">
+        <p className="font-bold">
           Q: How do we transfer money to AUMT for events or memberships?
         </p>
-        <p className="answer">
+        <p>
           A: For online baking, our bank account is{' '}
           {clubConfig?.bankAccountNumber}.
           <br />
@@ -66,9 +70,9 @@ export default function Faq() {
         </p>
         <Divider />
       </div>
-      <div className="questionContainer" key="bring">
-        <p className="question">Q: What do I need to bring?</p>
-        <p className="answer">
+      <div className="mx-auto max-w-[800px]" key="bring">
+        <p className="font-bold">Q: What do I need to bring?</p>
+        <p>
           A: Workout clothes, drink bottle and handwraps (if you have them).
           <br />
           <em>We highly recommend buying handwraps.</em>
@@ -85,16 +89,19 @@ export default function Faq() {
         </p>
       </div>
 
-      <div className="thickDivider" />
+      <div className="bg-black w-full h-[5px]" />
 
-      <div className="bottomContainer">
+      <div className="mt-5 text-center">
         <h2>Have more questions?</h2>
         <p>
           Get in touch through
-          <a href="mailto:uoamuaythai@gmail.com"> uoamuaythai@gmail.com </a>
+          <a href="mailto:uoamuaythai@gmail.com" className="!text-[#11388d]">
+            {' '}
+            uoamuaythai@gmail.com{' '}
+          </a>
           or&nbsp;
           <Button
-            className="aboutInlineLink"
+            className="!text-[#11388d] !p-0 m-0"
             type="link"
             onClick={Links.openAumtFb}
           >
@@ -102,7 +109,7 @@ export default function Faq() {
           </Button>
           /
           <Button
-            className="aboutInlineLink"
+            className="!text-[#11388d] !p-0 m-0"
             type="link"
             onClick={Links.openAumtInsta}
           >
