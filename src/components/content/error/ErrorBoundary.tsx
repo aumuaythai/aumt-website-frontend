@@ -1,6 +1,5 @@
 import { Divider } from 'antd'
 import React, { Component, ErrorInfo } from 'react'
-import './ErrorBoundary.css'
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
@@ -53,7 +52,7 @@ export class ErrorBoundary extends Component<
           happened :){' '}
         </p>
         <Divider />
-        <div className="errorBoundaryErrorDisplayContainer">
+        <div className="bg-gray-200 rounded-lg p-[30px]">
           {JSON.stringify(this.state.error)}
           <br />
           {JSON.stringify(this.state.errorInfo)}

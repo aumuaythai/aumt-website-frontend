@@ -6,7 +6,6 @@ import { getAllEvents } from '../../../services/db'
 import { AumtEvent } from '../../../types'
 import { Event } from './Event'
 import EventsList from './EventsList'
-import './EventsWrapper.css'
 
 export default function EventsWrapperWithoutRouter() {
   const { authedUser } = useAuth()
@@ -74,22 +73,22 @@ export default function EventsWrapperWithoutRouter() {
     return <Alert message={errorMessage} type="error"></Alert>
   } else if (loadingEvents) {
     return (
-      <div className="retrievingEventsText">
+      <div className="mt-[30px]">
         Retrieving Events <Spin />
       </div>
     )
   }
 
   return (
-    <div className="eventsWrapper">
+    <div>
       <Switch>
         <Route
           path="/events/:eventId"
           render={(routerProps) => renderEvent(routerProps)}
         />
         <Route path="/events">
-          <div className="eventsListWrapper">
-            <div className="max-w-[800px] !mx-auto px-[30px] upcomingEventsContainer">
+          <div className="h-full overflow-y-scroll">
+            <div className="max-w-[800px] !mx-auto px-[30px] mb-10">
               <h2>Upcoming Events</h2>
               {upcomingEvents.length ? (
                 <EventsList events={upcomingEvents}></EventsList>

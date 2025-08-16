@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { AumtEvent } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
-import './EventsList.css'
 
 interface EventListProps extends RouteComponentProps {
   events: AumtEvent[]

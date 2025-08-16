@@ -9,7 +9,6 @@ import { setMember } from '../../../services/db'
 import { AumtMember, MembershipPeriod } from '../../../types'
 import PaymentInstructions from '../../utility/PaymentInstructions'
 import { ETHNICITIES } from '../join/JoinForm'
-import './Account.css'
 
 const accountSchema = z.object({
   membership: z.enum(['S1', 'S2', 'FY', 'SS']),
@@ -77,7 +76,7 @@ function Account() {
   }
 
   return (
-    <main className="accountContainer">
+    <main className="max-w-[640px] mx-auto text-left p-5">
       <h1>Account Settings</h1>
       <p>
         Here you can edit and update your details by clicking on the 'Edit'
@@ -141,14 +140,14 @@ function MembershipSection({ saving, control, onSave }: SectionProps) {
     >
       <List.Item>
         <span>Current</span>
-        <span className="bold">
+        <span className="font-bold">
           {MembershipPeriodLong[authedUser.membership]}
         </span>
       </List.Item>
 
       <List.Item>
         <span>Status</span>
-        <span className="bold">
+        <span className="font-bold">
           {authedUser.paid === 'Yes' ? 'Paid' : 'Not paid'}
         </span>
       </List.Item>
@@ -237,7 +236,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="input"
+              className="max-w-[400px]"
             />
           )}
         />
@@ -252,7 +251,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="input"
+              className="max-w-[400px]"
             />
           )}
         />
@@ -267,14 +266,14 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="input"
+              className="max-w-[400px]"
             />
           )}
         />
       </List.Item>
       <List.Item>
         <span>Email</span>
-        <span className="bold">{authedUser.email}</span>
+        <span className="font-bold">{authedUser.email}</span>
       </List.Item>
       <List.Item>
         <span>Ethnicity</span>
@@ -284,7 +283,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
           render={({ field: { value, onChange } }) => (
             <Select
               disabled={!editing}
-              className="dropdown"
+              className="flex-1 max-w-[400px]"
               value={value}
               onChange={onChange}
             >
@@ -365,7 +364,7 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
                   disabled={!editing}
                   value={value}
                   onChange={onChange}
-                  className="input"
+                  className="max-w-[400px]"
                 />
               )}
             />
@@ -380,7 +379,7 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
                   disabled={!editing}
                   value={value}
                   onChange={onChange}
-                  className="input"
+                  className="max-w-[400px]"
                 />
               )}
             />
@@ -413,7 +412,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="input"
+              className="max-w-[400px]"
             />
           )}
         />
@@ -428,7 +427,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="input"
+              className="max-w-[400px]"
             />
           )}
         />
@@ -443,7 +442,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="input"
+              className="max-w-[400px]"
             />
           )}
         />
@@ -471,7 +470,7 @@ function AccountSection({
     <List
       header={title}
       footer={
-        <div className="listFooter">
+        <div className="flex">
           {editing ? (
             <>
               <Button danger type="primary" onClick={() => setEditing(false)}>
@@ -493,7 +492,7 @@ function AccountSection({
         </div>
       }
       bordered
-      className="listContainer"
+      className="!mt-5"
     >
       {children}
     </List>
