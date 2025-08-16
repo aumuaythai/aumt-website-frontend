@@ -12,7 +12,6 @@ import {
 import React, { Component, Key } from 'react'
 import { removeMemberFromForm, signUserUp } from '../../../services/db'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
-import './EditSignups.css'
 
 interface EditSignupsProps {
   form: AumtWeeklyTraining
@@ -236,12 +235,12 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
   }
   render() {
     return (
-      <div className="editSignedUpMembersContainer">
+      <div className="px-2.5 overflow-y-auto max-h-full">
         {Object.values(this.props.form.sessions)
           .sort((a, b) => a.position - b.position)
           .map((session) => {
             return (
-              <div key={session.sessionId} className="sessionSelectContainer">
+              <div key={session.sessionId} className="pb-2.5">
                 <Row>
                   <Col span={7} className="editSignupsTitleAndSelect">
                     <div className="weekStatsDisplayWrapper">
@@ -260,7 +259,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                   <Col span={17}>
                     <Select
                       showSearch={window.innerWidth > 600}
-                      className="memberSelect"
+                      className="w-full"
                       placeholder="Select a person"
                       optionFilterProp="children"
                       onChange={(e) =>
@@ -280,11 +279,11 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                           )
                         })}
                     </Select>
-                    <div className="editSignupsOptionButtons">
+                    <div className="text-right">
                       <Input
                         addonAfter={
                           <Button
-                            className="editSignupsAddMemberButton"
+                            className="p-0 h-0"
                             type="text"
                             onClick={(e) =>
                               this.addToSession(session.sessionId)
@@ -299,7 +298,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
                         onChange={(e) =>
                           this.setAddMember(session.sessionId, e.target.value)
                         }
-                        className="editSignupsAddMemberInput"
+                        className="w-[160px]"
                       />
                       <Dropdown
                         disabled={

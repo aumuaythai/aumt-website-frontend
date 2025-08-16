@@ -318,7 +318,7 @@ class CreateEvent extends Component<CreateEventProps, CreateEventState> {
       )
     }
     return (
-      <div className="createTrainingContainer">
+      <div className="h-auto text-left px-5">
         <h4 className="formSectionTitle">Event</h4>
         <p>
           Title:{' '}

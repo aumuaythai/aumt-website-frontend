@@ -7,7 +7,6 @@ import {
   setMemberTrainingAttendance,
 } from '../../../services/db'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
-import './TrainingAttendance.css'
 
 interface TrainingAttendanceProps extends RouteComponentProps<{ id: string }> {}
 
@@ -84,7 +83,7 @@ class TrainingAttendance extends Component<
     }
 
     return (
-      <div style={{ marginTop: '30px' }}>
+      <div className="flex-1 pt-[30px]">
         <Link to={`/admin`}>
           <Button className="backButton">Back</Button>
         </Link>
@@ -93,6 +92,7 @@ class TrainingAttendance extends Component<
             <h2>{training.title} Attendance</h2>
             {/* <p>Training Date: {training}</p> */}
             <select
+              className="w-full p-2.5 my-2.5 border border-gray-300 rounded-sm text-base bg-gray-100 text-black font-medium"
               onChange={(event) => this.onSessionClick(event.target.value)}
             >
               {sessions
@@ -125,7 +125,10 @@ class TrainingAttendance extends Component<
                       this.state.currentMembers &&
                       this.state.currentMembers.includes(key)
                     return (
-                      <div key={index} className="memberCheckboxColumn">
+                      <div
+                        key={index}
+                        className="grow shrink-0 basis-1/2 box-border p-[5px]"
+                      >
                         <input
                           type="checkbox"
                           id={trainingSession.members[key].name}
@@ -133,8 +136,12 @@ class TrainingAttendance extends Component<
                             this.onMemberClick(key)
                           }}
                           checked={checked}
+                          className="scale-200"
                         />
-                        <label htmlFor={trainingSession.members[key].name}>
+                        <label
+                          htmlFor={trainingSession.members[key].name}
+                          className="text-xl pl-5"
+                        >
                           {trainingSession.members[key].name}
                         </label>
                       </div>
@@ -142,7 +149,7 @@ class TrainingAttendance extends Component<
                   })}
             </div>
 
-            <div className="attendanceCount">
+            <div className="pt-2.5 text-xl">
               {trainingSession && this.state.showList && (
                 <p>
                   {this.state.currentMembers.length} /{' '}
