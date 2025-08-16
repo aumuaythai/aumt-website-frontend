@@ -8,9 +8,8 @@ import { AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
 import { EditSignups } from './EditSignups'
 import { ManageTrainings } from './ManageTrainings'
-import { WeekStats } from './stats/WeekStats'
-import { YearStats } from './stats/YearStats'
 import './TrainingDashboard.css'
+import { YearStats } from './YearStats'
 
 interface TrainingDashboardProps {
   forms: AumtWeeklyTraining[]
