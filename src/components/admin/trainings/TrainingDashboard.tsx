@@ -8,7 +8,6 @@ import { AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
 import { EditSignups } from './EditSignups'
 import { ManageTrainings } from './ManageTrainings'
-import './TrainingDashboard.css'
 import { YearStats } from './YearStats'
 
 interface TrainingDashboardProps {

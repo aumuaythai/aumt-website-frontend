@@ -172,7 +172,7 @@ class EventSignups extends Component<EventSignupsProps, EventSignupsState> {
       <div className="eventSignupsContainer">
         <div className="eventSignupsHeaderContainer">
           <h1 className="eventSignupsHeader">
-            <Link className="mainAdminCreateBack" to="/admin/events">
+            <Link className="mx-1.5" to="/admin/events">
               <ArrowLeftOutlined />
             </Link>
             {this.state.event.title}

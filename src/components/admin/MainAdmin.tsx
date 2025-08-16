@@ -14,7 +14,6 @@ import CreateEvent from './events/CreateEvent'
 import EventSignups from './events/EventSignups'
 import { ManageEvents } from './events/ManageEvents'
 import { Feedback } from './feedback/Feedback'
-import './MainAdmin.css'
 import ClubSettings from './settings/ClubSettings'
 import CreateTraining from './trainings/CreateTraining'
 import TrainingAttendance from './trainings/TrainingAttendance'
@@ -48,7 +47,7 @@ export default function MainAdmin() {
   return (
     <div className="text-left flex min-h-[calc(100vh-50px)] h-0">
       {window.innerWidth < 1180 ? (
-        <div className="openMenuButton">
+        <div className="block ml-[30px]">
           <Button onClick={(e) => setMenuOpen(true)}>
             <MenuOutlined />
             Admin
@@ -73,20 +72,14 @@ export default function MainAdmin() {
         </Route>
 
         <Route path="/admin/events">
-          <div className="manageEventsContainer">
-            <div className="mainAdminEventsHeader">
-              <h2 className="createEventTitle manageEventTitle text-xl">
-                Manage Events
-              </h2>
-              <Link
-                to="/admin/createevent"
-                className="mainAdminCreateEventButton"
-              >
+          <div className="text-center max-w-[600px] mx-auto">
+            <div className="mt-[30px] flex justify-between">
+              <h2 className="text-xl">Manage Events</h2>
+              <Link to="/admin/createevent" className="float-right">
                 <Button type="primary" size="large" shape="round">
                   Create Event <PlusOutlined />
                 </Button>
               </Link>
-              <div className="clearBoth"></div>
             </div>
             <ManageEvents events={events} />
           </div>
@@ -105,9 +98,9 @@ export default function MainAdmin() {
         </Route>
 
         <Route path="/admin/createtraining">
-          <div className="mainAdminCreateFormContainer">
-            <h2 className="createTrainingTitle">
-              <Link className="mainAdminCreateBack" to="/admin">
+          <div className="mt-[30px] mx-auto">
+            <h2>
+              <Link className="mx-2.5" to="/admin">
                 <ArrowLeftOutlined />
               </Link>
               Create Training
@@ -117,9 +110,9 @@ export default function MainAdmin() {
         </Route>
 
         <Route path="/admin/createevent">
-          <div className="mainAdminCreateFormContainer">
-            <h2 className="createTrainingTitle">
-              <Link className="mainAdminCreateBack" to="/admin/events">
+          <div className="mt-[30px] mx-auto">
+            <h2>
+              <Link className="mx-2.5" to="/admin/events">
                 <ArrowLeftOutlined />
               </Link>
               Create Event
@@ -129,10 +122,10 @@ export default function MainAdmin() {
         </Route>
 
         <Route path="/admin/edittraining/:trainingid">
-          <div className="mainAdminCreateFormContainer">
+          <div className="mt-[30px] mx-auto">
             <div>
-              <h2 className="createTrainingTitle">
-                <Link className="mainAdminCreateBack" to="/admin">
+              <h2>
+                <Link className="mx-2.5" to="/admin">
                   <ArrowLeftOutlined />
                 </Link>
                 Edit
@@ -145,10 +138,10 @@ export default function MainAdmin() {
         <Route path="/admin/attendance/:id" component={TrainingAttendance} />
 
         <Route path="/admin/editevent/:eventId">
-          <div className="mainAdminCreateFormContainer">
+          <div className="mt-[30px] mx-auto">
             <div>
-              <h2 className="createTrainingTitle">
-                <Link className="mainAdminCreateBack" to="/admin/events">
+              <h2>
+                <Link className="mx-2.5" to="/admin/events">
                   <ArrowLeftOutlined />
                 </Link>
                 Edit Event
