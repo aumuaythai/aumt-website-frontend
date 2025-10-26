@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 @font-face {
   font-family: 'Joyride';
   src: url(assets/fonts/JoyrideSTD.ttf) format('truetype');
@@ -8,7 +10,21 @@
   src: url(assets/fonts/Lacuna.otf) format('opentype');
 }
 
-h1, h2, h3, h4, h5, h6 {
+@theme {
+  --font-joyride: 'Joyride', sans-serif;
+  --font-lacuna: 'Lacuna', sans-serif;
+}
+
+#root {
+  text-align: center;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Joyride', sans-serif;
 }
 
@@ -26,33 +42,37 @@ code {
     monospace;
 }
 
-.ant-btn-link{
-  color:black !important;
+.ant-btn-link {
+  color: black !important;
 }
-.ant-menu-item, .ant-dropdown-menu-item{
+
+.ant-menu-item,
+.ant-dropdown-menu-item {
   font-family: 'Joyride', sans-serif !important;
   border-bottom: none !important;
   padding: 0 10px !important;
 }
 
-.ant-menu-submenu-title{
+.ant-menu-submenu-title {
   font-family: 'Joyride', sans-serif !important;
-
 }
+
 .ant-menu-item-selected {
-  background-color: transparent!important;
+  background-color: transparent;
 }
-.ant-menu-item-selected a{
-  color: rgba(17,56,141,1) !important;
+
+.ant-menu-item-selected a {
+  color: rgba(17, 56, 141, 1) !important;
   border-bottom: none !important;
   font-family: 'Joyride', sans-serif !important;
 }
+
 .ant-menu-item-active {
-  background-color: rgba(17,56,141,0.1) !important;
-  color:rgba(17,56,141,1) !important;
+  background-color: rgba(17, 56, 141, 0.1) !important;
+  color: rgba(17, 56, 141, 1) !important;
   border-bottom: none !important;
 }
 
-.ant-menu-item-active a{
-  color:rgba(17,56,141,1) !important;
+.ant-menu-item-active a {
+  color: rgba(17, 56, 141, 1) !important;
 }
