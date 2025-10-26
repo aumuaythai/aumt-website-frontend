@@ -77,7 +77,7 @@ function Account() {
 
   return (
     <main className="max-w-[640px] mx-auto text-left p-5">
-      <h1>Account Settings</h1>
+      <h1 className="text-3xl font-bold">Account Settings</h1>
       <p>
         Here you can edit and update your details by clicking on the 'Edit'
         button for each section. In the membership section you can change your
