@@ -8,10 +8,8 @@ interface MarkdownEditorProps {
 }
 
 export default function MarkdownEditor(props: MarkdownEditorProps) {
-  const [text, setText] = useState(props.value)
-
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setText(e.target.value)
+    props.onChange(e.target.value)
   }
 
   return (
@@ -21,12 +19,12 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
           <Input.TextArea
             placeholder="Enter markdown text"
             autoSize={{ minRows: 2, maxRows: 26 }}
-            value={text}
+            value={props.value}
             onChange={handleChange}
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Preview" key="2">
-          <RenderMarkdown source={text} />
+          <RenderMarkdown source={props.value} />
         </Tabs.TabPane>
       </Tabs>
     </div>
