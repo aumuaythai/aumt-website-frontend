@@ -35,26 +35,6 @@ interface RenderMarkdownProps {
   source: string
 }
 
-interface RenderMarkdownState {}
-
-export class RenderMarkdown extends Component<
-  RenderMarkdownProps,
-  RenderMarkdownState
-> {
-  constructor(props: RenderMarkdownProps) {
-    super(props)
-    this.state = {}
-  }
-
-  getHtml = () => {
-    return { __html: marked(this.props.source) }
-  }
-
-  render() {
-    // const lines = this.props.source?.split('\n')
-    // if (!lines || !lines.length) {
-    //     return ''
-    // }
-    return <div dangerouslySetInnerHTML={this.getHtml()}></div>
-  }
+export function RenderMarkdown({ source }: RenderMarkdownProps) {
+  return <div dangerouslySetInnerHTML={{ __html: marked(source) }}></div>
 }
