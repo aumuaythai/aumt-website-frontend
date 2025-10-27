@@ -17,6 +17,7 @@
     "antd": "^4.24.16",
     "clsx": "^2.1.1",
     "firebase": "~8.2.10",
+    "firebase-tools": "^14.22.0",
     "marked": "^1.2.9",
     "moment": "^2.30.1",
     "papaparse": "^5.5.3",
