@@ -1,5 +1,84 @@
+// import { Divider, Spin } from 'antd'
+// import React, { Component } from 'react'
+// import { AumtWeeklyTraining } from '../../../types'
+// import AdminStore from '../AdminStore'
+// import './Feedback.css'
+
+// interface FeedbackProps {
+//   forms: AumtWeeklyTraining[]
+// }
+
+// interface FeedbackState {
+//   feedbackForms: AumtWeeklyTraining[]
+//   loadingForms: boolean
+// }
+
+// export class Feedback extends Component<FeedbackProps, FeedbackState> {
+//   constructor(props: FeedbackProps) {
+//     super(props)
+//     this.state = {
+//       feedbackForms: [],
+//       loadingForms: false,
+//     }
+//   }
+//   componentDidMount() {
+//     if (!this.props.forms.length) {
+//       this.setState({ ...this.state, loadingForms: true })
+//       AdminStore.requestTrainings()
+//     } else {
+//       this.handleNewForms(this.props.forms)
+//     }
+//   }
+//   componentDidUpdate = (prevProps: FeedbackProps, prevState: FeedbackState) => {
+//     if (this.props.forms !== prevProps.forms) {
+//       this.setState({ ...this.state, loadingForms: false }, () => {
+//         this.handleNewForms(this.props.forms)
+//       })
+//     }
+//   }
+//   handleNewForms = (forms: AumtWeeklyTraining[]) => {
+//     const newForms = forms.slice().sort((a, b) => {
+//       return a.closes < b.closes ? 1 : -1
+//     })
+//     this.setState({
+//       ...this.state,
+//       feedbackForms: newForms,
+//     })
+//   }
+//   render() {
+//     if (this.state.loadingForms) {
+//       return (
+//         <div className="retrievingFeedbackText">
+//           Retrieving feedback <Spin />
+//         </div>
+//       )
+//     }
+//     return (
+//       <div className="allFeedbackContainer">
+//         {this.state.feedbackForms.map((form) => {
+//           const feedback = form.feedback.reverse()
+//           return (
+//             <div key={form.trainingId}>
+//               <h3 className="text-base">{form.title}</h3>
+//               {feedback.length ? (
+//                 feedback.map((line, index) => {
+//                   return <p key={index}>{line}</p>
+//                 })
+//               ) : (
+//                 <p>No Feedback</p>
+//               )}
+//               <Divider />
+//             </div>
+//           )
+//         })}
+//         <div className="clearBoth"></div>
+//       </div>
+//     )
+//   }
+// }
+
 import { Divider, Spin } from 'antd'
-import React, { Component } from 'react'
+import { useEffect } from 'react'
 import { AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
 import './Feedback.css'
@@ -8,71 +87,44 @@ interface FeedbackProps {
   forms: AumtWeeklyTraining[]
 }
 
-interface FeedbackState {
-  feedbackForms: AumtWeeklyTraining[]
-  loadingForms: boolean
-}
+export default function Feedback(props: FeedbackProps) {
+  useEffect(() => {
+    AdminStore.requestTrainings()
+  }, [])
 
-export class Feedback extends Component<FeedbackProps, FeedbackState> {
-  constructor(props: FeedbackProps) {
-    super(props)
-    this.state = {
-      feedbackForms: [],
-      loadingForms: false,
-    }
-  }
-  componentDidMount() {
-    if (!this.props.forms.length) {
-      this.setState({ ...this.state, loadingForms: true })
-      AdminStore.requestTrainings()
-    } else {
-      this.handleNewForms(this.props.forms)
-    }
-  }
-  componentDidUpdate = (prevProps: FeedbackProps, prevState: FeedbackState) => {
-    if (this.props.forms !== prevProps.forms) {
-      this.setState({ ...this.state, loadingForms: false }, () => {
-        this.handleNewForms(this.props.forms)
-      })
-    }
-  }
-  handleNewForms = (forms: AumtWeeklyTraining[]) => {
-    const newForms = forms.slice().sort((a, b) => {
-      return a.closes < b.closes ? 1 : -1
-    })
-    this.setState({
-      ...this.state,
-      feedbackForms: newForms,
-    })
-  }
-  render() {
-    if (this.state.loadingForms) {
-      return (
-        <div className="retrievingFeedbackText">
-          Retrieving feedback <Spin />
-        </div>
-      )
-    }
+  const loadingForms = props.forms.length === 0
+
+  if (loadingForms) {
     return (
-      <div className="allFeedbackContainer">
-        {this.state.feedbackForms.map((form) => {
-          const feedback = form.feedback.reverse()
-          return (
-            <div key={form.trainingId}>
-              <h3 className="text-base">{form.title}</h3>
-              {feedback.length ? (
-                feedback.map((line, index) => {
-                  return <p key={index}>{line}</p>
-                })
-              ) : (
-                <p>No Feedback</p>
-              )}
-              <Divider />
-            </div>
-          )
-        })}
-        <div className="clearBoth"></div>
+      <div className="retrievingFeedbackText">
+        Retrieving feedback <Spin />
       </div>
     )
   }
+
+  const sortedForms = props.forms.slice().sort((a, b) => {
+    return a.closes < b.closes ? 1 : -1
+  })
+
+  return (
+    <div className="allFeedbackContainer">
+      {sortedForms.map((form) => {
+        const feedback = form.feedback.reverse()
+        return (
+          <div key={form.trainingId}>
+            <h3 className="text-base">{form.title}</h3>
+            {feedback.length ? (
+              feedback.map((line, index) => {
+                return <p key={index}>{line}</p>
+              })
+            ) : (
+              <p>No Feedback</p>
+            )}
+            <Divider />
+          </div>
+        )
+      })}
+      <div className="clearBoth"></div>
+    </div>
+  )
 }
