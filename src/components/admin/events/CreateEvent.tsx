@@ -484,7 +484,7 @@ import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { submitEvent } from '../../../services/db'
-import { MarkdownEditor } from '../../utility/MarkdownEditor'
+import MarkdownEditor from '../../utility/MarkdownEditor'
 import AdminStore from '../AdminStore'
 import './CreateEvent.css'
 
