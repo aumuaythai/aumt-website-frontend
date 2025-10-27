@@ -278,7 +278,7 @@ import { AumtCampSignupData, AumtEvent } from '../../../types'
 import { CampSignupForm } from '../../content/events/CampSignupForm'
 import AdminStore from '../AdminStore'
 import './EventSignups.css'
-import { EventSignupTable } from './EventSignupTable'
+import EventSignupTable from './EventSignupTable'
 
 interface EventSignupsProps extends RouteComponentProps {
   events: AumtEvent[]
@@ -384,6 +384,7 @@ export default function EventSignups(props: EventSignupsProps) {
       </div>
     )
   }
+
   if (!event || !event.signups) {
     return <div>No event with signups found</div>
   }
