@@ -731,7 +731,7 @@ import {
   signUpToEvent,
 } from '../../../services/db'
 import { AumtEventSignup, LicenseClasses, TableRow } from '../../../types'
-import { EventSignupDetails } from './EventSignupDetails'
+import EventSignupDetails from './EventSignupDetails'
 import './EventSignupTable.css'
 
 interface EventSignupTableProps {
@@ -1056,6 +1056,7 @@ export default function EventSignupTable(props: EventSignupTableProps) {
     })
     return columns
   }
+
   function getFooter(totalDisplayed: number) {
     return (
       <div>
@@ -1230,7 +1231,7 @@ export default function EventSignupTable(props: EventSignupTableProps) {
               isWaitlist={props.isWaitlist}
               eventId={props.eventId}
               selectedRow={curSelected}
-            ></EventSignupDetails>
+            />
             <Button
               onClick={(e) => onMoveClick(curSelected?.key || '')}
               disabled={!curSelected}
@@ -1336,7 +1337,7 @@ export default function EventSignupTable(props: EventSignupTableProps) {
             isWaitlist={props.isWaitlist}
             eventId={props.eventId}
             selectedRow={selectedSignup}
-          ></EventSignupDetails>
+          />
         </div>
       ) : null}
     </div>
