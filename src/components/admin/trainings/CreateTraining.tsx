@@ -10,7 +10,7 @@ import {
 } from 'antd'
 import moment from 'moment'
 import React, { Component } from 'react'
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
+import { Link, RouteComponentProps, withRouter } from 'react-router'
 import { submitNewForm } from '../../../services/db'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 import MarkdownEditor from '../../utility/MarkdownEditor'

@@ -22,7 +22,7 @@ import {
   RouteComponentProps,
   Switch,
   withRouter,
-} from 'react-router-dom'
+} from 'react-router'
 import {
   getAllMembers,
   getClubConfig,

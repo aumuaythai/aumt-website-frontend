@@ -1,6 +1,6 @@
 import { Divider, Spin, notification } from 'antd'
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { useAuth } from '../../../context/AuthProvider'
 import { useConfig } from '../../../context/ConfigProvider'
 import {

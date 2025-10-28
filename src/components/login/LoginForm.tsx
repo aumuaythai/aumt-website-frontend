@@ -1,7 +1,7 @@
 import UserOutlined from '@ant-design/icons/UserOutlined'
 import { Button, Input, InputRef } from 'antd'
 import { Component, createRef, Ref, RefObject } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router'
 import { getCurrentUser, signIn } from '../../services/auth'
 import { ResetPasswordLink } from '../header/ResetLink'
 import LoginErrorMessage from './LoginErrorMessage'
@@ -78,9 +78,10 @@ export default class LoginForm extends Component<LoginProps, LoginState> {
       })
   }
   render() {
-    if (this.state.isAuthed) {
-      return <Redirect to={this.getRedirectPath()}></Redirect>
-    }
+    // if (this.state.isAuthed) {
+    //   return <Redirect to={this.getRedirectPath()}></Redirect>
+    // }
+
     return (
       <div className="mx-auto my-5 max-w-xs px-2.5">
         <Link to="/">

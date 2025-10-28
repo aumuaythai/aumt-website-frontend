@@ -6,7 +6,7 @@ import {
 import { Button, Drawer, Menu } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { lazy, useEffect, useState } from 'react'
-import { Link, Route, Switch, useLocation } from 'react-router-dom'
+import { Link, Route, Switch, useLocation } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import AdminStore from './AdminStore'

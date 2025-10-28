@@ -1,7 +1,7 @@
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, notification, Popover, Spin } from 'antd'
 import React, { Component, Key } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import dataUtil from '../../../services/data.util'
 import { formatMembers } from '../../../services/db'
 import { AumtWeeklyTraining } from '../../../types'

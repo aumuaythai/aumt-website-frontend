@@ -1,7 +1,7 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Alert, Button, Divider, Modal, notification, Spin } from 'antd'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { removeTraining } from '../../../services/db'
 import { AumtWeeklyTraining } from '../../../types'
 

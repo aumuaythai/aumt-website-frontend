@@ -1,5 +1,5 @@
 import { Button } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { useConfig } from '../../../context/ConfigProvider'
 import { Links } from '../../../services/links'
 import { cn } from '../../utility/utils'

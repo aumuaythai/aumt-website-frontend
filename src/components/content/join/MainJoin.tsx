@@ -1,5 +1,5 @@
 import { Button, notification, Result, Spin } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { useAuth } from '../../../context/AuthProvider'
 import { useConfig } from '../../../context/ConfigProvider'
 import { signOut } from '../../../services/auth'

@@ -1,6 +1,6 @@
 import { Button } from 'antd'
 import React, { Component } from 'react'
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
+import { Link, RouteComponentProps, withRouter } from 'react-router'
 import {
   getTrainingAttendance,
   getTrainingData,

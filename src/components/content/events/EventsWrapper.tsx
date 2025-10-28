@@ -1,6 +1,6 @@
 import { Alert, Spin } from 'antd'
 import { useEffect, useState } from 'react'
-import { Link, Route, RouteComponentProps, Switch } from 'react-router-dom'
+import { Link, Route } from 'react-router'
 import { useAuth } from '../../../context/AuthProvider'
 import { getAllEvents } from '../../../services/db'
 import { AumtEvent } from '../../../types'
