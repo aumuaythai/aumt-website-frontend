@@ -13,7 +13,7 @@ import React, { Component } from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import { submitNewForm } from '../../../services/db'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
-import { MarkdownEditor } from '../../utility/MarkdownEditor'
+import MarkdownEditor from '../../utility/MarkdownEditor'
 import AdminStore from '../AdminStore'
 
 interface CreateTrainingProps extends RouteComponentProps {}

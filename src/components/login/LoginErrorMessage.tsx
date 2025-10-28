@@ -1,38 +1,18 @@
 import { Alert } from 'antd'
-import { Component } from 'react'
 
 export interface LoginErrorMessageProps {
   errorCode: string
 }
-export interface LoginState {}
 
-export class LoginErrorMessage extends Component<
-  LoginErrorMessageProps,
-  LoginState
-> {
-  getMessage = () => {
-    switch (this.props.errorCode) {
-      case 'auth/user-not-found':
-        return (
-          <Alert
-            type="error"
-            message="There is no user with this email address. Contact the club to make sure you are signed up"
-          ></Alert>
-        )
-      case 'auth/invalid-email':
-        return <Alert type="error" message="Email is not valid."></Alert>
-      case 'auth/wrong-password':
-        return (
-          <Alert
-            type="error"
-            message="You have entered an incorrect password"
-          ></Alert>
-        )
-      default:
-        return <Alert type="error" message="Error logging in"></Alert>
-    }
-  }
-  render() {
-    return this.getMessage()
-  }
+const ERROR_MESSAGES = {
+  'auth/user-not-found':
+    'There is no user with this email address. Contact the club to make sure you are signed up',
+  'auth/invalid-email': 'Email is not valid.',
+  'auth/wrong-password': 'You have entered an incorrect password',
+  default: 'Error logging in',
+}
+
+export default function LoginErrorMessage(props: LoginErrorMessageProps) {
+  const message = ERROR_MESSAGES[props.errorCode] || ERROR_MESSAGES.default
+  return <Alert type="error" message={message}></Alert>
 }

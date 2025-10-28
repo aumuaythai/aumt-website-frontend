@@ -19,7 +19,7 @@ import {
 import { ColumnsType } from 'antd/lib/table'
 import { TableCurrentDataSource } from 'antd/lib/table/interface'
 import moment from 'moment'
-import React, { Component } from 'react'
+import { useEffect, useState } from 'react'
 import dataUtil, { CarAllocation } from '../../../services/data.util'
 import {
   confirmMemberEventSignup,
@@ -27,7 +27,7 @@ import {
   signUpToEvent,
 } from '../../../services/db'
 import { AumtEventSignup, LicenseClasses, TableRow } from '../../../types'
-import { EventSignupDetails } from './EventSignupDetails'
+import EventSignupDetails from './EventSignupDetails'
 import './EventSignupTable.css'
 
 interface EventSignupTableProps {
@@ -39,22 +39,8 @@ interface EventSignupTableProps {
   limit: number | null
 }
 
-interface EventSignupTableState {
-  rows: TableRow[]
-  selectedRows: TableRow[]
-  columns: ColumnsType<TableRow>
-  tableLoading: boolean
-  selectedSignup: TableRow | null
-  showCarAllocs: boolean
-  randomCars: CarAllocation[]
-  max4Seats: boolean
-}
-
-export class EventSignupTable extends Component<
-  EventSignupTableProps,
-  EventSignupTableState
-> {
-  private keyNameMap: Record<keyof TableRow, string> = {
+export default function EventSignupTable(props: EventSignupTableProps) {
+  const keyNameMap: Record<keyof TableRow, string> = {
     confirmed: 'Paid?',
     displayName: 'Name',
     key: 'Firebase UID',
@@ -75,48 +61,30 @@ export class EventSignupTable extends Component<
     ecPhoneNumber: 'Emergency Contact Phone',
     ecRelation: 'Emergency Contact Relation',
   }
-  constructor(props: EventSignupTableProps) {
-    super(props)
-    this.state = {
-      rows: [],
-      selectedRows: [],
-      columns: [],
-      tableLoading: false,
-      selectedSignup: null,
-      showCarAllocs: false,
-      randomCars: [],
-      max4Seats: false,
-    }
-  }
-  componentDidMount = () => {
-    this.setState(
-      {
-        ...this.state,
-        columns: this.getColumns(),
-      },
-      () => {
-        this.handleNewData(this.props.signupData)
-      }
-    )
-  }
-  componentDidUpdate = (
-    prevProps: EventSignupTableProps,
-    prevState: EventSignupTableState
-  ) => {
-    if (prevProps.signupData !== this.props.signupData) {
-      this.handleNewData(Object.assign({}, this.props.signupData))
-    }
-  }
 
-  updateConfirmed = (row: TableRow | null, newConfirmed: boolean) => {
+  const [rows, setRows] = useState<TableRow[]>([])
+  const [selectedRows, setSelectedRows] = useState<TableRow[]>([])
+  const [columns, setColumns] = useState<ColumnsType<TableRow>>([])
+  const [tableLoading, setTableLoading] = useState(false)
+  const [selectedSignup, setSelectedSignup] = useState<TableRow | null>(null)
+  const [showCarAllocs, setShowCarAllocs] = useState(false)
+  const [randomCars, setRandomCars] = useState<CarAllocation[]>([])
+  const [max4Seats, setMax4Seats] = useState(false)
+
+  useEffect(() => {
+    setColumns(getColumns())
+    setRows(getRows())
+  }, [getColumns, getRows])
+
+  function updateConfirmed(row: TableRow | null, newConfirmed: boolean) {
     if (!row) {
       return
     }
     confirmMemberEventSignup(
-      this.props.eventId,
+      props.eventId,
       row.key,
       newConfirmed,
-      this.props.isWaitlist
+      props.isWaitlist
     )
       .then(() => {
         notification.success({
@@ -131,14 +99,12 @@ export class EventSignupTable extends Component<
         })
       })
   }
-  deleteMember = (key: string) => {
+  function deleteMember(key: string) {
     if (!key) return
-    removeMemberFromEvent(key, this.props.eventId, this.props.isWaitlist)
+    removeMemberFromEvent(key, props.eventId, props.isWaitlist)
       .then(() => {
         notification.success({
-          message: `Removed from ${
-            this.props.isWaitlist ? 'waitlist' : 'signups'
-          }`,
+          message: `Removed from ${props.isWaitlist ? 'waitlist' : 'signups'}`,
         })
       })
       .catch((err) => {
@@ -147,22 +113,18 @@ export class EventSignupTable extends Component<
         })
       })
   }
-  onMoveClick = (key: string) => {
+  function onMoveClick(key: string) {
     if (!key) return
-    this.setState({ ...this.state, tableLoading: true })
-    const data = this.props.signupData[key]
-    signUpToEvent(this.props.eventId, key, data, !this.props.isWaitlist)
+    setTableLoading(true)
+    const data = props.signupData[key]
+    signUpToEvent(props.eventId, key, data, !props.isWaitlist)
       .then(() => {
-        return removeMemberFromEvent(
-          key,
-          this.props.eventId,
-          this.props.isWaitlist
-        )
+        return removeMemberFromEvent(key, props.eventId, props.isWaitlist)
       })
       .then(() => {
         notification.success({
           message: `Successfully moved to ${
-            this.props.isWaitlist ? 'signups' : 'waitlist'
+            props.isWaitlist ? 'signups' : 'waitlist'
           }`,
         })
       })
@@ -172,46 +134,21 @@ export class EventSignupTable extends Component<
         })
       })
       .finally(() => {
-        this.setState({ ...this.state, tableLoading: false })
+        setTableLoading(false)
       })
   }
-  onSelectSignup = (key: string) => {
-    const member = this.state.rows.find((r) => r.key === key)
+  function onSelectSignup(key: string) {
+    const member = rows.find((r) => r.key === key)
     if (member) {
-      this.setState({
-        ...this.state,
-        selectedSignup: member,
-      })
+      setSelectedSignup(member)
     }
   }
-  handleNewData = (signupData: AumtEventSignup) => {
-    const rows = Object.keys(signupData).map((uid: string) => {
-      const signup = signupData[uid]
-      return Object.assign(signup, {
-        key: uid,
-        displayTime: moment(new Date(signup.timeSignedUpMs)).format(
-          'MMM DD HH:mm'
-        ),
-      })
-    })
-    const selectedMember = rows.find(
-      (r) => r.key === this.state.selectedSignup?.key
-    )
-    this.setState({
-      ...this.state,
-      rows,
-      columns: this.getColumns(),
-      selectedSignup: selectedMember || null,
-    })
-  }
-  setShowCarAllocations = (showCarAllocs: boolean) => {
+
+  function setShowCarAllocations(showCarAllocs: boolean) {
     let randomCars: CarAllocation[] = []
     if (showCarAllocs) {
       try {
-        randomCars = dataUtil.getRandomCars(
-          this.state.rows,
-          this.state.max4Seats
-        )
+        randomCars = dataUtil.getRandomCars(rows, max4Seats)
       } catch (e) {
         notification.error({
           message: 'Could not generate allocations: ' + e.toString(),
@@ -219,15 +156,23 @@ export class EventSignupTable extends Component<
         return
       }
     }
-    this.setState({ ...this.state, showCarAllocs, randomCars })
+    setShowCarAllocs(showCarAllocs)
+    setRandomCars(randomCars)
   }
-  setMax4Seats = (checked: boolean) => {
-    this.setState({
-      ...this.state,
-      max4Seats: checked,
+
+  function getRows() {
+    return Object.keys(props.signupData).map((uid: string) => {
+      const signup = props.signupData[uid]
+      return Object.assign(signup, {
+        key: uid,
+        displayTime: moment(new Date(signup.timeSignedUpMs)).format(
+          'MMM DD HH:mm'
+        ),
+      })
     })
   }
-  getColumns = () => {
+
+  function getColumns() {
     const columns: ColumnsType<TableRow> = [
       {
         title: 'Name',
@@ -237,7 +182,7 @@ export class EventSignupTable extends Component<
             <Tooltip placement="right" title="View Details">
               <span
                 className="eventTableNameLink"
-                onClick={(e) => this.onSelectSignup(record.key)}
+                onClick={(e) => onSelectSignup(record.key)}
               >
                 {name}
               </span>
@@ -257,7 +202,7 @@ export class EventSignupTable extends Component<
                   className="noLinkA rightTableText"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <CopyOutlined onClick={(e) => this.copyText(email)} />
+                  <CopyOutlined onClick={(e) => copyText(email)} />
                 </span>
               </Tooltip>
             </span>
@@ -288,7 +233,7 @@ export class EventSignupTable extends Component<
                 >
                   <FormOutlined
                     onClick={(e) =>
-                      this.updateConfirmed(record, newConfirmed === 'Yes')
+                      updateConfirmed(record, newConfirmed === 'Yes')
                     }
                   />
                 </span>
@@ -369,21 +314,18 @@ export class EventSignupTable extends Component<
         render: (val: boolean, record: TableRow) => {
           return (
             <span>
-              {this.props.isWaitlist ? (
-                <Button onClick={(e) => this.onMoveClick(record.key)}>
+              {props.isWaitlist ? (
+                <Button onClick={(e) => onMoveClick(record.key)}>
                   Move
                   <ArrowLeftOutlined />
                 </Button>
               ) : (
-                <Button onClick={(e) => this.onMoveClick(record.key)}>
+                <Button onClick={(e) => onMoveClick(record.key)}>
                   <ArrowRightOutlined />
                   Move
                 </Button>
               )}
-              <Button
-                type="link"
-                onClick={(e) => this.deleteMember(record.key)}
-              >
+              <Button type="link" onClick={(e) => deleteMember(record.key)}>
                 Delete
               </Button>
             </span>
@@ -391,8 +333,8 @@ export class EventSignupTable extends Component<
         },
       },
     ].filter((r) => {
-      if (this.props.isCamp) {
-        return this.state.selectedSignup
+      if (props.isCamp) {
+        return selectedSignup
           ? ['displayName', 'email', 'confirmed', 'displayTime'].indexOf(
               r.dataIndex || ''
             ) > -1 || r.title === 'Action'
@@ -410,21 +352,22 @@ export class EventSignupTable extends Component<
     })
     return columns
   }
-  getFooter = (totalDisplayed: number) => {
+
+  function getFooter(totalDisplayed: number) {
     return (
       <div>
         <Button
           className="eventSignupTableFooterDownloadButton"
           type="link"
-          onClick={this.copyEmails}
+          onClick={copyEmails}
         >
           Copy Emails
         </Button>
-        {!this.props.isWaitlist && !this.state.selectedSignup ? (
+        {!props.isWaitlist && !selectedSignup ? (
           <Button
             className="eventSignupTableFooterDownloadButton"
             type="link"
-            onClick={(e) => this.setShowCarAllocations(true)}
+            onClick={(e) => setShowCarAllocations(true)}
           >
             Random Car Allocations
           </Button>
@@ -432,26 +375,26 @@ export class EventSignupTable extends Component<
         <Button
           className="eventSignupTableFooterDownloadButton"
           type="link"
-          onClick={this.downloadCsv}
+          onClick={downloadCsv}
         >
           Download .csv
         </Button>
         <p className="eventSignupsTableFooterText">
-          Total: {totalDisplayed} / Limit: {this.props.limit || 'None'}
+          Total: {totalDisplayed} / Limit: {props.limit || 'None'}
         </p>
       </div>
     )
   }
-  copyText = (text: string | undefined) => {
+  function copyText(text: string | undefined) {
     if (text) dataUtil.copyText(text)
   }
-  onMemberSelect = (member: TableRow) => {
-    this.setState({ ...this.state, selectedSignup: member })
+  function onMemberSelect(member: TableRow) {
+    setSelectedSignup(member)
   }
-  exitSelectedSignup = () => {
-    this.setState({ ...this.state, selectedSignup: null })
+  function exitSelectedSignup() {
+    setSelectedSignup(null)
   }
-  sortTableKeys = (a: keyof TableRow, b: keyof TableRow) => {
+  function sortTableKeys(a: keyof TableRow, b: keyof TableRow) {
     const keyMap: Record<keyof TableRow, number> = {
       displayName: 100,
       email: 90,
@@ -475,28 +418,26 @@ export class EventSignupTable extends Component<
     }
     return keyMap[a] > keyMap[b] ? -1 : 1
   }
-  copyEmails = () => {
+  function copyEmails() {
     dataUtil.copyText(
-      Object.keys(this.props.signupData)
+      Object.keys(props.signupData)
         .filter((key) => {
-          if (this.state.selectedRows.length) {
-            return this.state.selectedRows.find((r) => r.key === key)
+          if (selectedRows.length) {
+            return selectedRows.find((r) => r.key === key)
           }
           return true
         })
-        .map((key) => this.props.signupData[key].email)
+        .map((key) => props.signupData[key].email)
         .join('\n')
     )
   }
-  downloadCsv = () => {
+  function downloadCsv() {
     let header = false
     let csvStr = ''
-    const fileName = `${this.props.urlPath}_${
-      this.props.isWaitlist ? 'waitlist' : 'signups'
+    const fileName = `${props.urlPath}_${
+      props.isWaitlist ? 'waitlist' : 'signups'
     }`
-    const csvRows = this.state.selectedRows.length
-      ? this.state.selectedRows
-      : this.state.rows
+    const csvRows = selectedRows.length ? selectedRows : rows
     csvRows
       .sort((a, b) => a.timeSignedUpMs - b.timeSignedUpMs)
       .forEach((row) => {
@@ -504,20 +445,20 @@ export class EventSignupTable extends Component<
           header = true
           csvStr +=
             (Object.keys(row) as (keyof TableRow)[])
-              .sort(this.sortTableKeys)
-              .map((k) => this.keyNameMap[k])
+              .sort(sortTableKeys)
+              .map((k) => keyNameMap[k])
               .join(',') + '\n'
         }
         csvStr +=
           (Object.keys(row) as (keyof TableRow)[])
-            .sort(this.sortTableKeys)
+            .sort(sortTableKeys)
             .map((key) => row[key])
             .join(',') + '\n'
       })
     dataUtil.downloadCsv(fileName, csvStr)
   }
-  downloadCarCsv = () => {
-    const allocations = this.state.randomCars
+  function downloadCarCsv() {
+    const allocations = randomCars
     let allCars: string[][] = []
     let maxLength = 0
     allocations.forEach((car) => {
@@ -541,163 +482,160 @@ export class EventSignupTable extends Component<
         .join('\n')
     dataUtil.downloadCsv('car_allocations', csvStr)
   }
-  onTableChange = (
+  function onTableChange(
     pagination: any,
     filter: Record<string, (string | number | boolean)[] | null>,
     sorter: any,
     dataSource: TableCurrentDataSource<TableRow>,
     ...extra: any
-  ) => {
-    this.setState({
-      ...this.state,
-      selectedRows: dataSource.currentDataSource,
-    })
+  ) {
+    setSelectedRows(dataSource.currentDataSource)
   }
-  render() {
-    if (window.innerWidth < 600) {
-      const curSelected = this.state.selectedSignup
-      return (
-        <div>
-          <Select
-            className="eventSignupSelect"
-            placeholder="Select Member"
-            onChange={this.onSelectSignup}
-          >
-            {this.state.rows
-              .sort((a, b) => b.timeSignedUpMs - a.timeSignedUpMs)
-              .map((signup: TableRow) => {
-                return (
-                  <Select.Option key={signup.key} value={signup.key}>
-                    <div className="eventSignupSelectName">
-                      {signup.displayName}
-                    </div>
-                    <div className="eventSignupSelectTime">
-                      {signup.displayTime}
-                    </div>
-                    {signup.confirmed ? (
-                      <Tag className="eventSignupSelectPaidTag" color="success">
-                        Paid
-                      </Tag>
-                    ) : null}
-                  </Select.Option>
-                )
-              })}
-          </Select>
-          {curSelected ? (
-            <div className="eventSignupMemberInfo">
-              <EventSignupDetails
-                isWaitlist={this.props.isWaitlist}
-                eventId={this.props.eventId}
-                selectedRow={curSelected}
-              ></EventSignupDetails>
-              <Button
-                onClick={(e) => this.onMoveClick(curSelected?.key || '')}
-                disabled={!curSelected}
-              >
-                Move to {this.props.isWaitlist ? ' signups' : ' waitlist'}
-              </Button>
-              <Button
-                onClick={(e) => this.deleteMember(curSelected?.key || '')}
-                disabled={!curSelected}
-                type="link"
-              >
-                Delete
-              </Button>
-            </div>
-          ) : null}
-        </div>
-      )
-    }
+
+  if (window.innerWidth < 600) {
+    const curSelected = selectedSignup
     return (
       <div>
-        <div
-          className={`eventSignupTableContainer ${
-            this.state.selectedSignup ? 'eventSignupTableContainerNarrow' : null
-          }`}
+        <Select
+          className="eventSignupSelect"
+          placeholder="Select Member"
+          onChange={onSelectSignup}
         >
-          <Drawer
-            visible={this.state.showCarAllocs}
-            title="Random Car Allocations"
-            getContainer={false}
-            placement="right"
-            onClose={(e) => this.setShowCarAllocations(false)}
-            width={600}
-            style={{ position: 'absolute' }}
-          >
-            <div className="carDrawerText">
-              <p>
-                Each car group has to have at least one owner and one driver on
-                their full. An owner with a restricted license will have a
-                driver with a full license in their group. Click New Allocation
-                to generate new groups!
-              </p>
-              <Button
-                icon={<ReloadOutlined />}
-                onClick={(e) => this.setShowCarAllocations(true)}
-              >
-                New Allocation
-              </Button>
-              <Button type="link" onClick={this.downloadCarCsv}>
-                Download .csv
-              </Button>
-              <Checkbox onChange={(e) => this.setMax4Seats(e.target.checked)}>
-                Limit 4 People/Car
-              </Checkbox>
-            </div>
-            {this.state.randomCars.map((car, idx) => {
+          {rows
+            .sort((a, b) => b.timeSignedUpMs - a.timeSignedUpMs)
+            .map((signup: TableRow) => {
               return (
-                <div key={idx}>
-                  <h3>Car {idx + 1}</h3>
-                  {car.carOwner === car.driver ? (
-                    <p className="carAllocationListLine">
-                      Owner/Driver: {car.carOwner}
-                    </p>
-                  ) : (
-                    <p className="carAllocationListLine">
-                      Owner: {car.carOwner}, Driver: {car.driver}
-                    </p>
-                  )}
-                  <p className="carAllocationListLine">
-                    Passengers: {car.passengers.join(', ')}
-                  </p>
-                </div>
+                <Select.Option key={signup.key} value={signup.key}>
+                  <div className="eventSignupSelectName">
+                    {signup.displayName}
+                  </div>
+                  <div className="eventSignupSelectTime">
+                    {signup.displayTime}
+                  </div>
+                  {signup.confirmed ? (
+                    <Tag className="eventSignupSelectPaidTag" color="success">
+                      Paid
+                    </Tag>
+                  ) : null}
+                </Select.Option>
               )
             })}
-          </Drawer>
-          <Table
-            size="small"
-            pagination={{
-              defaultPageSize: 10,
-              showSizeChanger: true,
-              pageSizeOptions: ['10', '20', '50'],
-              showTotal: this.getFooter,
-            }}
-            onChange={this.onTableChange}
-            bordered
-            loading={this.state.tableLoading}
-            columns={this.getColumns()}
-            dataSource={this.state.rows}
-            scroll={{ y: 400 }}
-          ></Table>
-        </div>
-        {this.state.selectedSignup ? (
-          <div className="eventSignupTableContainerNarrow">
-            <div className="eventSignupDetailsHeader">
-              <h2 className="eventSignupViewTitle">
-                {this.state.selectedSignup.displayName}
-              </h2>
-              <div className="eventSignupDetailsCloseIcon">
-                <CloseCircleOutlined onClick={this.exitSelectedSignup} />
-              </div>
-            </div>
+        </Select>
+        {curSelected ? (
+          <div className="eventSignupMemberInfo">
             <EventSignupDetails
-              isWaitlist={this.props.isWaitlist}
-              eventId={this.props.eventId}
-              selectedRow={this.state.selectedSignup}
-            ></EventSignupDetails>
+              isWaitlist={props.isWaitlist}
+              eventId={props.eventId}
+              selectedRow={curSelected}
+            />
+            <Button
+              onClick={(e) => onMoveClick(curSelected?.key || '')}
+              disabled={!curSelected}
+            >
+              Move to {props.isWaitlist ? ' signups' : ' waitlist'}
+            </Button>
+            <Button
+              onClick={(e) => deleteMember(curSelected?.key || '')}
+              disabled={!curSelected}
+              type="link"
+            >
+              Delete
+            </Button>
           </div>
         ) : null}
       </div>
     )
   }
+
+  return (
+    <div>
+      <div
+        className={`eventSignupTableContainer ${
+          selectedSignup ? 'eventSignupTableContainerNarrow' : null
+        }`}
+      >
+        <Drawer
+          visible={showCarAllocs}
+          title="Random Car Allocations"
+          getContainer={false}
+          placement="right"
+          onClose={(e) => setShowCarAllocations(false)}
+          width={600}
+          style={{ position: 'absolute' }}
+        >
+          <div className="carDrawerText">
+            <p>
+              Each car group has to have at least one owner and one driver on
+              their full. An owner with a restricted license will have a driver
+              with a full license in their group. Click New Allocation to
+              generate new groups!
+            </p>
+            <Button
+              icon={<ReloadOutlined />}
+              onClick={(e) => setShowCarAllocations(true)}
+            >
+              New Allocation
+            </Button>
+            <Button type="link" onClick={downloadCarCsv}>
+              Download .csv
+            </Button>
+            <Checkbox onChange={(e) => setMax4Seats(e.target.checked)}>
+              Limit 4 People/Car
+            </Checkbox>
+          </div>
+          {randomCars.map((car, idx) => {
+            return (
+              <div key={idx}>
+                <h3>Car {idx + 1}</h3>
+                {car.carOwner === car.driver ? (
+                  <p className="carAllocationListLine">
+                    Owner/Driver: {car.carOwner}
+                  </p>
+                ) : (
+                  <p className="carAllocationListLine">
+                    Owner: {car.carOwner}, Driver: {car.driver}
+                  </p>
+                )}
+                <p className="carAllocationListLine">
+                  Passengers: {car.passengers.join(', ')}
+                </p>
+              </div>
+            )
+          })}
+        </Drawer>
+        <Table
+          size="small"
+          pagination={{
+            defaultPageSize: 10,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50'],
+            showTotal: getFooter,
+          }}
+          onChange={onTableChange}
+          bordered
+          loading={tableLoading}
+          columns={columns}
+          dataSource={rows}
+          scroll={{ y: 400 }}
+        ></Table>
+      </div>
+      {selectedSignup ? (
+        <div className="eventSignupTableContainerNarrow">
+          <div className="eventSignupDetailsHeader">
+            <h2 className="eventSignupViewTitle">
+              {selectedSignup.displayName}
+            </h2>
+            <div className="eventSignupDetailsCloseIcon">
+              <CloseCircleOutlined onClick={exitSelectedSignup} />
+            </div>
+          </div>
+          <EventSignupDetails
+            isWaitlist={props.isWaitlist}
+            eventId={props.eventId}
+            selectedRow={selectedSignup}
+          />
+        </div>
+      ) : null}
+    </div>
+  )
 }

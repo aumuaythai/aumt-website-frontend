@@ -4,7 +4,7 @@ import { Component, createRef, Ref, RefObject } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { getCurrentUser, signIn } from '../../services/auth'
 import { ResetPasswordLink } from '../header/ResetLink'
-import { LoginErrorMessage } from './LoginErrorMessage'
+import LoginErrorMessage from './LoginErrorMessage'
 
 export interface LoginProps {}
 

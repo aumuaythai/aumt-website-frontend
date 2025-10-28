@@ -1,14 +1,13 @@
 import { CloseCircleOutlined, CopyOutlined } from '@ant-design/icons'
 import { Button, Input, notification, Popconfirm, Radio, Tooltip } from 'antd'
 import moment from 'moment'
-import React, { Component } from 'react'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { Component } from 'react'
+import { RouteComponentProps } from 'react-router-dom'
 import DataFormatterUtil from '../../../services/data.util'
 import { removeMember, setMember } from '../../../services/db'
 import { removeUser } from '../../../services/functions'
 import Validator from '../../../services/validator'
 import { AumtMember } from '../../../types'
-import { MemberAttendance } from './MemberAttendance'
 import './MemberDetails.css'
 import { TableDataLine } from './TableHelper'
 
@@ -41,7 +40,10 @@ interface MemberDetailsState {
   removing: boolean
 }
 
-class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
+export default class MemberDetails extends Component<
+  MemberDetailsProps,
+  MemberDetailsState
+> {
   constructor(props: MemberDetailsProps) {
     super(props)
     this.state = {
@@ -592,13 +594,7 @@ class MemberDetails extends Component<MemberDetailsProps, MemberDetailsState> {
           </div>
           <div className="clearBoth"></div>
         </div>
-        <div className="atttendanceContainer">
-          <h2>Attendance</h2>
-          <MemberAttendance member={this.props.member}></MemberAttendance>
-        </div>
       </div>
     )
   }
 }
-
-export default withRouter(MemberDetails)

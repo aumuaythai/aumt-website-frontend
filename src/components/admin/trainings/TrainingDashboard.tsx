@@ -7,7 +7,7 @@ import { formatMembers } from '../../../services/db'
 import { AumtWeeklyTraining } from '../../../types'
 import AdminStore from '../AdminStore'
 import { EditSignups } from './EditSignups'
-import { ManageTrainings } from './ManageTrainings'
+import ManageTrainings from './ManageTrainings'
 import { YearStats } from './YearStats'
 
 interface TrainingDashboardProps {

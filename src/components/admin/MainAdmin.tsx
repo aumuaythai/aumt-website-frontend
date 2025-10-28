@@ -12,19 +12,13 @@ import { AumtEvent, AumtWeeklyTraining } from '../../types'
 import AdminStore from './AdminStore'
 import CreateEvent from './events/CreateEvent'
 import EventSignups from './events/EventSignups'
-import { ManageEvents } from './events/ManageEvents'
-import { Feedback } from './feedback/Feedback'
+import ManageEvents from './events/ManageEvents'
+import Feedback from './feedback/Feedback'
+import MemberDashboard from './members/MemberDashboard'
 import ClubSettings from './settings/ClubSettings'
 import CreateTraining from './trainings/CreateTraining'
 import TrainingAttendance from './trainings/TrainingAttendance'
 import { TrainingDashboard } from './trainings/TrainingDashboard'
-
-const MemberDashboardLazyWrapper = lazy(
-  () =>
-    import(
-      './members/MemberDashboard' /* webpackChunkName: "member-dashboard" */
-    )
-)
 
 export default function MainAdmin() {
   const { userIsAdmin } = useAuth()
@@ -86,7 +80,7 @@ export default function MainAdmin() {
         </Route>
 
         <Route path="/admin/members">
-          <MemberDashboardLazyWrapper />
+          <MemberDashboard />
         </Route>
 
         <Route path="/admin/feedback">
