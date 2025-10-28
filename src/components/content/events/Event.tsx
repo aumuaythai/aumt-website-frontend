@@ -388,7 +388,7 @@ import {
   HomeOutlined,
 } from '@ant-design/icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Button, Divider, notification, Result } from 'antd'
+import { Button, Divider, notification, Result, Spin } from 'antd'
 import moment from 'moment'
 import { Link, useParams } from 'react-router'
 import { useAuth } from '../../../context/AuthProvider'
@@ -414,11 +414,19 @@ interface EventProps {
 export default function Event(props: EventProps) {
   const { eventId } = useParams()
 
-  const { data: event } = useQuery({
+  const { data: event, isPending } = useQuery({
     queryKey: ['event', eventId],
-    queryFn: () => getEventById(eventId),
+    queryFn: () => getEventById(eventId!),
     enabled: !!eventId,
   })
+
+  if (isPending) {
+    return (
+      <div>
+        Retrieving event <Spin />
+      </div>
+    )
+  }
 
   if (!event) {
     return <div>Event not found</div>
@@ -515,12 +523,10 @@ function Signups({ event }: { event: AumtEvent }) {
     isWaitlist: boolean,
     signupData?: AumtCampSignupData
   ) {
-    const displayName = this.props.authedUser
-      ? `${this.props.authedUser.firstName} ${this.props.authedUser.lastName}`
+    const displayName = authedUser
+      ? `${authedUser.firstName} ${authedUser.lastName}`
       : signupData?.name
-    const email = this.props.authedUser
-      ? this.props.authedUser.email
-      : signupData?.email
+    const email = authedUser ? authedUser.email : signupData?.email
 
     signup.mutate({
       uid: authedUserId,
@@ -535,8 +541,8 @@ function Signups({ event }: { event: AumtEvent }) {
     })
   }
 
-  const isSignedUp = !!event.signups.members[authedUserId]
-  const isOnWaitlist = !!event.signups.waitlist[authedUserId]
+  const isSignedUp = !!event.signups?.members[authedUserId]
+  const isOnWaitlist = !!event.signups?.waitlist[authedUserId]
   const { signups } = event
 
   if (!signups) {
@@ -554,7 +560,7 @@ function Signups({ event }: { event: AumtEvent }) {
           status="success"
           title="Thank you for signing up!"
           subTitle={
-            !event.signups.members[authedUserId].confirmed
+            !signups.members[authedUserId].confirmed
               ? 'Once the committee recieves your payment, you spot will be fully reserved'
               : signups.needAdminConfirm
               ? 'Our records show you have paid, your spot is confirmed'
@@ -573,11 +579,14 @@ function Signups({ event }: { event: AumtEvent }) {
   }
 
   function getWaitlistPosition() {
-    const waitlist = Object.keys(event.signups.waitlist)
+    if (!signups) {
+      return null
+    }
+
+    const waitlist = Object.keys(signups.waitlist)
     const sortedKeys = waitlist.sort((a, b) => {
       return (
-        event.signups.waitlist[a].timeSignedUpMs -
-        event.signups.waitlist[b].timeSignedUpMs
+        signups.waitlist[a].timeSignedUpMs - signups.waitlist[b].timeSignedUpMs
       )
     })
     const position = sortedKeys.indexOf(authedUserId) + 1
