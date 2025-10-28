@@ -3,12 +3,19 @@ import { Spin } from 'antd'
 import 'antd/dist/antd.css'
 import { Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router'
-import AdminLoader from './components/admin/AdminLoader'
+import AdminLayout from './components/admin/AdminLayout'
+import CreateEvent from './components/admin/events/CreateEvent'
+import EventSignups from './components/admin/events/EventSignups'
+import ManageEvents from './components/admin/events/ManageEvents'
+import Feedback from './components/admin/feedback/Feedback'
+import MemberDashboard from './components/admin/members/MemberDashboard'
+import ClubSettings from './components/admin/settings/ClubSettings'
+import CreateTraining from './components/admin/trainings/CreateTraining'
+import { TrainingDashboard } from './components/admin/trainings/TrainingDashboard'
 import Account from './components/content/account/Account'
 import { ErrorBoundary } from './components/content/error/ErrorBoundary'
 import Event from './components/content/events/Event'
 import Events from './components/content/events/Events'
-import EventsWrapper from './components/content/events/EventsWrapper'
 import About from './components/content/info/About'
 import Faq from './components/content/info/Faq'
 import Gallery from './components/content/info/Gallery'
@@ -39,7 +46,34 @@ export default function App() {
                   <Route path="/events" element={<Events />} />
                   <Route path="/events/:eventId" element={<Event />} />
                   <Route path="/join" element={<MainJoin />} />
-                  <Route path="/admin" element={<AdminLoader />} />
+                  <Route element={<AdminLayout />}>
+                    <Route
+                      path="/admin"
+                      element={<TrainingDashboard forms={[]} />}
+                    />
+                    <Route path="/admin/events" element={<ManageEvents />} />
+                    <Route
+                      path="/admin/events/create"
+                      element={<CreateEvent />}
+                    />
+                    <Route
+                      path="/admin/events/:eventId"
+                      element={<EventSignups />}
+                    />
+                    <Route
+                      path="/admin/members"
+                      element={<MemberDashboard />}
+                    />
+                    <Route
+                      path="/admin/feedback"
+                      element={<Feedback forms={[]} />}
+                    />
+                    <Route path="/admin/settings" element={<ClubSettings />} />
+                    <Route
+                      path="/admin/createtraining"
+                      element={<CreateTraining />}
+                    />
+                  </Route>
                   <Route path="/account" element={<Account />} />
                   <Route
                     path="/penis"

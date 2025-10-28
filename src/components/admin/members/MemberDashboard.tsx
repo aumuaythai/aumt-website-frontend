@@ -60,7 +60,7 @@ interface MemberDashboardState {
   mobileMemberSort: 'name' | 'joined'
 }
 
-class MemberDashboard extends Component<
+export default class MemberDashboard extends Component<
   MemberDashboardProps,
   MemberDashboardState
 > {
@@ -172,7 +172,6 @@ class MemberDashboard extends Component<
   setTableData = (memberObj: AumtMembersObj) => {
     if (this.helper) {
       const { lines, columns } = this.helper.getTableFromMembers(memberObj)
-      console.log(lines)
       this.setState({
         tableDataSource: lines,
         tableColumns: columns,
@@ -529,7 +528,7 @@ class MemberDashboard extends Component<
             )}
           </div>
         ) : null}
-        <Switch>
+        {/* <Switch>
           <Route path="/admin/members/add">
             <div className="memberDetailsSection">
               <h2 className="memberDetailsTitle">Add Member</h2>
@@ -552,10 +551,8 @@ class MemberDashboard extends Component<
               </div>
             ) : null}
           </Route>
-        </Switch>
+        </Switch> */}
       </div>
     )
   }
 }
-
-export default withRouter(MemberDashboard)

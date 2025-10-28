@@ -270,36 +270,30 @@
 // export default withRouter(EventSignups)
 
 import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons'
+import { useQuery } from '@tanstack/react-query'
 import { Button, notification, Spin } from 'antd'
-import { useEffect, useState } from 'react'
-import { Link, RouteComponentProps, useLocation } from 'react-router'
-import { signUpToEvent } from '../../../services/db'
-import { AumtCampSignupData, AumtEvent } from '../../../types'
+import { useState } from 'react'
+import { Link, useParams } from 'react-router'
+import { getEventById, signUpToEvent } from '../../../services/db'
+import { AumtCampSignupData } from '../../../types'
 import { CampSignupForm } from '../../content/events/CampSignupForm'
-import AdminStore from '../AdminStore'
 import './EventSignups.css'
 import EventSignupTable from './EventSignupTable'
 
-interface EventSignupsProps extends RouteComponentProps {
-  events: AumtEvent[]
-}
+export default function EventSignups() {
+  const { eventId } = useParams()
 
-export default function EventSignups(props: EventSignupsProps) {
-  const location = useLocation()
+  const { data: event, isPending } = useQuery({
+    queryKey: ['event', eventId],
+    queryFn: () => getEventById(eventId!),
+    enabled: !!eventId,
+  })
 
   const [addingMember, setAddingMember] = useState(false)
   const [addingWaitlistMember, setAddingWaitlistMember] = useState(false)
   const [submittingMember, setSubmittingMember] = useState(false)
   const [submittingWaitlistMember, setSubmittingWaitlistMember] =
     useState(false)
-
-  const eventId = location.pathname.split('/')[3]
-  const event = props.events.find((e) => e.id === eventId)
-  const loadingEvents = !props.events.length
-
-  useEffect(() => {
-    AdminStore.requestEvents()
-  }, [])
 
   function generateMockUid() {
     const alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
@@ -377,7 +371,7 @@ export default function EventSignups(props: EventSignupsProps) {
       })
   }
 
-  if (loadingEvents) {
+  if (isPending) {
     return (
       <div className="eventSignupsSpinContainer">
         <Spin />

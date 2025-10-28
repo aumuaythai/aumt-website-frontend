@@ -9,8 +9,6 @@ export default function Events() {
     queryFn: () => getAllEvents(),
   })
 
-  console.log(data)
-
   const currentDate = new Date()
 
   const pastEvents = data

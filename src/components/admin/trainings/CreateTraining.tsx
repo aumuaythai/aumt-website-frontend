@@ -1,4 +1,4 @@
-import { MinusCircleOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import {
   Button,
   DatePicker,
@@ -10,13 +10,13 @@ import {
 } from 'antd'
 import moment from 'moment'
 import React, { Component } from 'react'
-import { Link, RouteComponentProps, withRouter } from 'react-router'
+import { Link } from 'react-router'
 import { submitNewForm } from '../../../services/db'
 import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 import MarkdownEditor from '../../utility/MarkdownEditor'
 import AdminStore from '../AdminStore'
 
-interface CreateTrainingProps extends RouteComponentProps {}
+interface CreateTrainingProps {}
 
 interface CreateTrainingState {
   currentTitle: string
@@ -49,7 +49,7 @@ const TRAINING_DEFAULT_NOTES = `RULES/ETIQUETTE
 4.    Wipe inside and outside of gear using provided wipes at the end of class.
 5.    Put ALL training gear back in its designated place after use.`
 
-class CreateTraining extends Component<
+export default class CreateTraining extends Component<
   CreateTrainingProps,
   CreateTrainingState
 > {
@@ -347,131 +347,143 @@ class CreateTraining extends Component<
       return <Spin />
     }
     return (
-      <div className="h-auto text-left px-5">
-        <span>Use weekly training template for week: </span>
-        <InputNumber
-          onChange={this.onPopulateWeekChange}
-          className="max-w-[60px]"
-          defaultValue={1}
-          min={1}
-        />
-        <Button onClick={this.populateWeeklyDefaults}>Populate</Button>
-        <h4 className="!mt-[30px]">Title</h4>
-        <Input
-          placeholder="Form Title"
-          value={this.state.currentTitle}
-          onChange={(e) => this.onTrainingTitleChange(e.target.value)}
-        ></Input>
-        <div>
-          <span className="formItemTitle">Opens: </span>
-          <DatePicker
-            value={moment(this.state.currentOpens)}
-            showTime
-            onChange={(d) => this.onOpenDateChange(d?.toDate())}
-          />
-        </div>
-        <div>
-          <span className="formItemTitle">Closes: </span>
-          <DatePicker
-            value={moment(this.state.currentCloses)}
-            showTime
-            onChange={(d) => this.onClosesDateChange(d?.toDate())}
-          />
-        </div>
-        <div>
-          Open to Non-Members:
-          <Radio.Group
-            value={this.state.currentOpenToPublic}
-            onChange={(e) => this.onOpenToPublicChange(e.target.value)}
-          >
-            <Radio.Button value={true}>Yes</Radio.Button>
-            <Radio.Button value={false}>No</Radio.Button>
-          </Radio.Group>
-        </div>
-        <h4 className="!mt-[30px]">Sessions</h4>
-        Members can sign up to{' '}
-        <InputNumber
-          value={this.state.currentSignupMaxSessions}
-          onChange={this.onSignupMaxSessionsChange}
-          className="w-[55px]"
-          defaultValue={1}
-          min={1}
-        />{' '}
-        session(s).
-        <div className="py-2.5">
-          <div className="addSessionButton">
-            <Button onClick={this.onAddSessionClick}>Add Session +</Button>
-          </div>
-          {this.state.currentSessions.map((session) => {
-            return (
-              <div key={session.sessionId} className="py-2.5">
-                <Input
-                  value={session.title}
-                  className="max-w-[calc(100%-200px)]"
-                  placeholder="Session Title (e.g. Thursday 6:30 Beginners)"
-                  onChange={(e) =>
-                    this.onSessionTitleChange(e.target.value, session.sessionId)
-                  }
-                />
-                Limit:
-                <InputNumber
-                  min={0}
-                  defaultValue={session.limit}
-                  onChange={(e) =>
-                    this.onSessionLimitChange(e, session.sessionId)
-                  }
-                />
-                <MinusCircleOutlined
-                  onClick={(e) => this.onRemoveSessionClick(session.sessionId)}
-                  className="pl-2.5 cursor-pointer"
-                />
-              </div>
-            )
-          })}
-        </div>
-        <h4 className="!mt-[30px]">Semester</h4>
-        <Radio.Group
-          buttonStyle="solid"
-          name="semesterRadio"
-          value={this.state.semester}
-          onChange={(e) => this.onSemesterChange(e.target.value)}
-        >
-          <Radio.Button value={'S1'}>Semester 1</Radio.Button>
-          <Radio.Button value={'S2'}>Semester 2</Radio.Button>
-          <Radio.Button value={'SS'}>Summer School</Radio.Button>
-        </Radio.Group>
-        <h4 className="!mt-[30px]">Payment Lock</h4>
-        <Radio.Group
-          buttonStyle="solid"
-          name="semesterRadio"
-          value={this.state.paymentLock}
-          onChange={(e) => this.onPaymentLockChange(e.target.value)}
-        >
-          <Radio.Button value={true}>On</Radio.Button>
-          <Radio.Button value={false}>Off</Radio.Button>
-        </Radio.Group>
-        <h4 className="!mt-[30px]">Notes</h4>
-        <div className="notesContainer">
-          <MarkdownEditor
-            onChange={this.onNotesChange}
-            value={this.state.currentNotes}
-          ></MarkdownEditor>
-        </div>
-        <div className="py-2.5">
-          <Button
-            className="mr-2.5"
-            type="primary"
-            loading={this.state.isSubmitting}
-            onClick={this.onSubmitForm}
-          >
-            Save Training
-          </Button>
-          <Link to="/admin">
-            <Button>Cancel</Button>
+      <div className="mt-[30px] mx-auto">
+        <h2>
+          <Link className="mx-2.5" to="/admin">
+            <ArrowLeftOutlined />
           </Link>
+          Create Training
+        </h2>
+        <div className="h-auto text-left px-5">
+          <span>Use weekly training template for week: </span>
+          <InputNumber
+            onChange={this.onPopulateWeekChange}
+            className="max-w-[60px]"
+            defaultValue={1}
+            min={1}
+          />
+          <Button onClick={this.populateWeeklyDefaults}>Populate</Button>
+          <h4 className="!mt-[30px]">Title</h4>
+          <Input
+            placeholder="Form Title"
+            value={this.state.currentTitle}
+            onChange={(e) => this.onTrainingTitleChange(e.target.value)}
+          ></Input>
+          <div>
+            <span className="formItemTitle">Opens: </span>
+            <DatePicker
+              value={moment(this.state.currentOpens)}
+              showTime
+              onChange={(d) => this.onOpenDateChange(d?.toDate())}
+            />
+          </div>
+          <div>
+            <span className="formItemTitle">Closes: </span>
+            <DatePicker
+              value={moment(this.state.currentCloses)}
+              showTime
+              onChange={(d) => this.onClosesDateChange(d?.toDate())}
+            />
+          </div>
+          <div>
+            Open to Non-Members:
+            <Radio.Group
+              value={this.state.currentOpenToPublic}
+              onChange={(e) => this.onOpenToPublicChange(e.target.value)}
+            >
+              <Radio.Button value={true}>Yes</Radio.Button>
+              <Radio.Button value={false}>No</Radio.Button>
+            </Radio.Group>
+          </div>
+          <h4 className="!mt-[30px]">Sessions</h4>
+          Members can sign up to{' '}
+          <InputNumber
+            value={this.state.currentSignupMaxSessions}
+            onChange={this.onSignupMaxSessionsChange}
+            className="w-[55px]"
+            defaultValue={1}
+            min={1}
+          />{' '}
+          session(s).
+          <div className="py-2.5">
+            <div className="addSessionButton">
+              <Button onClick={this.onAddSessionClick}>Add Session +</Button>
+            </div>
+            {this.state.currentSessions.map((session) => {
+              return (
+                <div key={session.sessionId} className="py-2.5">
+                  <Input
+                    value={session.title}
+                    className="max-w-[calc(100%-200px)]"
+                    placeholder="Session Title (e.g. Thursday 6:30 Beginners)"
+                    onChange={(e) =>
+                      this.onSessionTitleChange(
+                        e.target.value,
+                        session.sessionId
+                      )
+                    }
+                  />
+                  Limit:
+                  <InputNumber
+                    min={0}
+                    defaultValue={session.limit}
+                    onChange={(e) =>
+                      this.onSessionLimitChange(e, session.sessionId)
+                    }
+                  />
+                  <MinusCircleOutlined
+                    onClick={(e) =>
+                      this.onRemoveSessionClick(session.sessionId)
+                    }
+                    className="pl-2.5 cursor-pointer"
+                  />
+                </div>
+              )
+            })}
+          </div>
+          <h4 className="!mt-[30px]">Semester</h4>
+          <Radio.Group
+            buttonStyle="solid"
+            name="semesterRadio"
+            value={this.state.semester}
+            onChange={(e) => this.onSemesterChange(e.target.value)}
+          >
+            <Radio.Button value={'S1'}>Semester 1</Radio.Button>
+            <Radio.Button value={'S2'}>Semester 2</Radio.Button>
+            <Radio.Button value={'SS'}>Summer School</Radio.Button>
+          </Radio.Group>
+          <h4 className="!mt-[30px]">Payment Lock</h4>
+          <Radio.Group
+            buttonStyle="solid"
+            name="semesterRadio"
+            value={this.state.paymentLock}
+            onChange={(e) => this.onPaymentLockChange(e.target.value)}
+          >
+            <Radio.Button value={true}>On</Radio.Button>
+            <Radio.Button value={false}>Off</Radio.Button>
+          </Radio.Group>
+          <h4 className="!mt-[30px]">Notes</h4>
+          <div className="notesContainer">
+            <MarkdownEditor
+              onChange={this.onNotesChange}
+              value={this.state.currentNotes}
+            ></MarkdownEditor>
+          </div>
+          <div className="py-2.5">
+            <Button
+              className="mr-2.5"
+              type="primary"
+              loading={this.state.isSubmitting}
+              onClick={this.onSubmitForm}
+            >
+              Save Training
+            </Button>
+            <Link to="/admin">
+              <Button>Cancel</Button>
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 }
-export default withRouter(CreateTraining)
