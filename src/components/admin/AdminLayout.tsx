@@ -7,7 +7,7 @@ export default function AdminLayout() {
   const { userIsAdmin } = useAuth()
 
   if (!userIsAdmin) {
-    return <div>You are not authorisezd to access this page.</div>
+    return <div>You are not authorised to access this page.</div>
   }
 
   return (

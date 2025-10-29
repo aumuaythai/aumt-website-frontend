@@ -11,7 +11,8 @@ import Feedback from './components/admin/feedback/Feedback'
 import MemberDashboard from './components/admin/members/MemberDashboard'
 import ClubSettings from './components/admin/settings/ClubSettings'
 import CreateTraining from './components/admin/trainings/CreateTraining'
-import { TrainingDashboard } from './components/admin/trainings/TrainingDashboard'
+import TrainingAttendance from './components/admin/trainings/TrainingAttendance'
+import TrainingDashboard from './components/admin/trainings/TrainingDashboard'
 import Account from './components/content/account/Account'
 import { ErrorBoundary } from './components/content/error/ErrorBoundary'
 import Event from './components/content/events/Event'
@@ -51,9 +52,25 @@ export default function App() {
                       path="/admin"
                       element={<TrainingDashboard forms={[]} />}
                     />
+                    <Route
+                      path="/admin/trainings/create"
+                      element={<CreateTraining />}
+                    />
+                    <Route
+                      path="/admin/trainings/:trainingId"
+                      element={<CreateTraining />}
+                    />
+                    <Route
+                      path="/admin/trainings/:trainingId/attendance"
+                      element={<TrainingAttendance />}
+                    />
                     <Route path="/admin/events" element={<ManageEvents />} />
                     <Route
                       path="/admin/events/create"
+                      element={<CreateEvent />}
+                    />
+                    <Route
+                      path="/admin/events/:eventId"
                       element={<CreateEvent />}
                     />
                     <Route
