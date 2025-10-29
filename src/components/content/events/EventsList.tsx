@@ -1,5 +1,4 @@
 import { Divider } from 'antd'
-import React, { Component } from 'react'
 import { Link } from 'react-router'
 import { AumtEvent } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'

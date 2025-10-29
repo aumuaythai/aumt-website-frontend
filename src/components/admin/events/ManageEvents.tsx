@@ -75,7 +75,7 @@ export default function ManageEvents() {
                       </Button>
                     </Link>
                   )}
-                  <Link to={`/admin/editevent/${event.id}`}>
+                  <Link to={`/admin/events/${event.id}`}>
                     <Button className="manageEventOptionButton">Edit</Button>
                   </Link>
                   <Popconfirm

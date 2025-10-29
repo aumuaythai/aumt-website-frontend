@@ -1,4 +1,5 @@
 import { ArrowLeftOutlined } from '@ant-design/icons'
+import { useQuery } from '@tanstack/react-query'
 import {
   Button,
   Checkbox,
@@ -9,9 +10,10 @@ import {
   Spin,
 } from 'antd'
 import moment from 'moment'
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
-import { submitEvent } from '../../../services/db'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useParams } from 'react-router'
+import z from 'zod'
+import { getEventById, submitEvent } from '../../../services/db'
 import MarkdownEditor from '../../utility/MarkdownEditor'
 import AdminStore from '../AdminStore'
 import './CreateEvent.css'
@@ -41,52 +43,45 @@ export default function CreateEvent() {
   const [currentWaitlist, setCurrentWaitlist] = useState({})
   const [showEditSignups, setShowEditSignups] = useState(false)
 
-  useEffect(() => {
-    const paths = window.location.pathname.split('/')
-    const editEventIdx = paths.indexOf('editevent')
-    if (editEventIdx > -1) {
-      const eventId = paths[editEventIdx + 1]
-      setLoadingEvent(true)
+  const { eventId } = useParams()
+  const hasPopulated = useRef(false)
 
-      AdminStore.getEventById(eventId)
-        .then((loadedEvent) => {
-          setCurrentId(loadedEvent.id)
-          setCurrentUrlPath(loadedEvent.urlPath)
-          setCurrentTitle(loadedEvent.title)
-          setCurrentDescription(loadedEvent.description)
-          setCurrentPhotoPath(loadedEvent.photoPath)
-          setCurrentDate(loadedEvent.date)
-          setCurrentLocation(loadedEvent.location)
-          setCurrentLocationLink(loadedEvent.locationLink)
-          setCurrentFbLink(loadedEvent.fbLink)
-          setShowEditSignups(!!loadedEvent.signups)
-          setCurrentSignupLimit(loadedEvent.signups?.limit || 30)
-          setCurrentHasLimit(loadedEvent.signups?.limit === null ? false : true)
-          setCurrentSignupOpenDate(loadedEvent.signups?.opens || new Date())
-          setCurrentSignupClosesDate(loadedEvent.signups?.closes || new Date())
-          setCurrentNeedAdminConfirm(
-            loadedEvent.signups?.needAdminConfirm || false
-          )
-          setCurrentOpenToNonMembers(
-            loadedEvent.signups?.openToNonMembers || false
-          )
-          setCurrentIsCamp(loadedEvent.signups?.isCamp || false)
-          setCurrentMembers(loadedEvent.signups?.members || {})
-          setCurrentWaitlist(loadedEvent.signups?.waitlist || {})
-        })
-        .catch((err) => {
-          notification.error({
-            message:
-              'Error retrieving event for id ' +
-              eventId +
-              ', redirecting to dashboard',
-          })
-        })
-        .finally(() => {
-          setLoadingEvent(false)
-        })
-    }
-  }, [])
+  const { data: event, isLoading: isLoadingEvent } = useQuery({
+    queryKey: ['event', eventId],
+    queryFn: () => getEventById(eventId!),
+    enabled: !!eventId,
+  })
+
+  if (event && !hasPopulated.current) {
+    hasPopulated.current = true
+    setCurrentId(event.id)
+    setCurrentUrlPath(event.urlPath)
+    setCurrentTitle(event.title)
+    setCurrentDescription(event.description)
+    setCurrentPhotoPath(event.photoPath)
+    setCurrentDate(event.date)
+    setCurrentLocation(event.location)
+    setCurrentLocationLink(event.locationLink)
+    setCurrentFbLink(event.fbLink)
+    setShowEditSignups(!!event.signups)
+    setCurrentSignupLimit(event.signups?.limit || 30)
+    setCurrentHasLimit(event.signups?.limit === null ? false : true)
+    setCurrentSignupOpenDate(event.signups?.opens || new Date())
+    setCurrentSignupClosesDate(event.signups?.closes || new Date())
+    setCurrentNeedAdminConfirm(event.signups?.needAdminConfirm || false)
+    setCurrentOpenToNonMembers(event.signups?.openToNonMembers || false)
+    setCurrentIsCamp(event.signups?.isCamp || false)
+    setCurrentMembers(event.signups?.members || {})
+    setCurrentWaitlist(event.signups?.waitlist || {})
+  }
+
+  if (isLoadingEvent) {
+    return (
+      <div>
+        Loading event <Spin />
+      </div>
+    )
+  }
 
   function generateEventId(length: number) {
     const digits = '1234567890qwertyuiopasdfghjklzxcvbnm'
