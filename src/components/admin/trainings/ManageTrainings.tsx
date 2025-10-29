@@ -11,20 +11,12 @@ interface ManageTrainingsProps {
   loadingTrainings: boolean
 }
 
-interface ManageTrainingsState {
-  errorText: string
-  removingTraining: {
-    [trainingId: string]: boolean
-  }
-}
-
 export default function ManageTrainings(props: ManageTrainingsProps) {
-  const [errorText, setErrorText] = useState('')
   const [removingTraining, setRemovingTraining] = useState<{
     [trainingId: string]: boolean
   }>({})
 
-  function confirmDeleteTraiing(title: string, trainingId: string) {
+  function confirmDeleteTraining(title: string, trainingId: string) {
     Modal.confirm({
       title: `Delete ${title}?`,
       icon: <ExclamationCircleOutlined />,
@@ -51,10 +43,6 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
       })
   }
 
-  if (errorText) {
-    return <Alert type="error" message={errorText}></Alert>
-  }
-
   if (props.loadingTrainings) {
     return (
       <div>
@@ -70,14 +58,18 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
   return (
     <ul className="mt-6 overflow-y-auto max-h-96 md:max-h-none">
       {props.trainings.map((training) => (
-        <li key={training.trainingId}>
-          <div className="flex flex-1 justify-between">
-            <h4 onClick={(e) => props.onTrainingClick(training.trainingId)}>
+        <>
+          <button
+            key={training.trainingId}
+            className="flex items-center justify-between w-full hover:cursor-pointer group py-4"
+            onClick={(e) => props.onTrainingClick(training.trainingId)}
+          >
+            <h4 className="group-hover:!text-gray-600 transition-colors !mb-0">
               {training.title}
             </h4>
             <div>
               <Link
-                to={`/admin/edittraining/${training.trainingId}`}
+                to={`/admin/trainings/${training.trainingId}`}
                 className="mr-2"
               >
                 <Button className="manageTrainingOptionButton">Edit</Button>
@@ -85,7 +77,7 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
               <Button
                 loading={removingTraining[training.trainingId]}
                 onClick={(e) =>
-                  confirmDeleteTraiing(training.title, training.trainingId)
+                  confirmDeleteTraining(training.title, training.trainingId)
                 }
                 type="primary"
                 danger
@@ -93,9 +85,9 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
                 Remove
               </Button>
             </div>
-          </div>
-          <Divider />
-        </li>
+          </button>
+          <Divider className="!my-0" />
+        </>
       ))}
     </ul>
   )
