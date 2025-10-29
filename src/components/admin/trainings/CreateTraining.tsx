@@ -22,7 +22,7 @@ import {
 } from 'react-hook-form'
 import { Link, useParams } from 'react-router'
 import z from 'zod'
-import { submitNewForm } from '../../../services/db'
+import { getOpenForms, submitNewForm } from '../../../services/db'
 import { AumtTrainingSession } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
 import AdminStore from '../AdminStore'
@@ -81,7 +81,7 @@ export default function CreateTraining() {
 
   const sessions = watch('sessions')
 
-  const { data: training, isPending: isLoadingTraining } = useQuery({
+  const { data: training, isLoading: isLoadingTraining } = useQuery({
     queryKey: ['training', trainingId],
     queryFn: () => AdminStore.getTrainingById(trainingId!),
     enabled: !!trainingId,
@@ -196,7 +196,11 @@ export default function CreateTraining() {
   const notes = watch('notes')
 
   if (isLoadingTraining) {
-    return <Spin />
+    return (
+      <div>
+        Loading training <Spin />
+      </div>
+    )
   }
 
   return (

@@ -1,4 +1,5 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useQueryClient } from '@tanstack/react-query'
 import { Button, Divider, Modal, notification, Spin } from 'antd'
 import { useState } from 'react'
 import { Link } from 'react-router'
@@ -15,6 +16,8 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
   const [removingTraining, setRemovingTraining] = useState<{
     [trainingId: string]: boolean
   }>({})
+
+  const queryClient = useQueryClient()
 
   function confirmDeleteTraining(title: string, trainingId: string) {
     Modal.confirm({
@@ -34,6 +37,7 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
     removeTraining(trainingId)
       .then(() => {
         setRemovingTraining((prev) => ({ ...prev, [trainingId]: false }))
+        queryClient.invalidateQueries({ queryKey: ['trainings'] })
       })
       .catch((err) => {
         notification.open({

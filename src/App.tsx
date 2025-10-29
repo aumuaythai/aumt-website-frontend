@@ -86,10 +86,6 @@ export default function App() {
                       element={<Feedback forms={[]} />}
                     />
                     <Route path="/admin/settings" element={<ClubSettings />} />
-                    <Route
-                      path="/admin/createtraining"
-                      element={<CreateTraining />}
-                    />
                   </Route>
                   <Route path="/account" element={<Account />} />
                   <Route

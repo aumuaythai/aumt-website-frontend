@@ -82,7 +82,7 @@ export default function TrainingDashboard(props: TrainingDashboardProps) {
           )}
         </div>
 
-        <Link to="/admin/createtraining">
+        <Link to="/admin/trainings/create">
           <Button type="default" shape="round" size="large">
             Create Training <PlusOutlined />
           </Button>
