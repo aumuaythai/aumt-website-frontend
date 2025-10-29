@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@plugin 'tailwindcss-animate';
+
 @font-face {
   font-family: 'Joyride';
   src: url(assets/fonts/JoyrideSTD.ttf) format('truetype');
