@@ -166,100 +166,91 @@
 
 // export default withRouter(TrainingAttendance)
 
-import { useQuery } from '@tanstack/react-query'
-import { Button } from 'antd'
-import React, { Component, useState } from 'react'
-import { Link, RouteComponentProps, useParams, withRouter } from 'react-router'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Button, Select, Spin } from 'antd'
+import { useState } from 'react'
+import { Link, useParams } from 'react-router'
 import {
   getTrainingAttendance,
   getTrainingData,
   setMemberTrainingAttendance,
 } from '../../../services/db'
-import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
 
-interface TrainingAttendanceProps extends RouteComponentProps<{ id: string }> {}
-
-interface TrainingAttendanceState {
-  training: AumtWeeklyTraining | null
-  trainingSession: AumtTrainingSession | null
-  currentMembers: string[]
-  showList: boolean
-}
-
-export default function TrainingAttendance(props: TrainingAttendanceProps) {
-  const [training, setTraining] = useState<AumtWeeklyTraining | null>(null)
-  const [trainingSession, setTrainingSession] =
-    useState<AumtTrainingSession | null>(null)
-  const [currentMembers, setCurrentMembers] = useState<string[]>([])
-  const [showList, setShowList] = useState(false)
-
+export default function TrainingAttendance() {
   const { trainingId } = useParams()
 
-  const { data: trainingData } = useQuery({
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined)
+  const [attendance, setAttendance] = useState<string[] | undefined>(undefined)
+
+  const { data: training, isPending: isLoadingTraining } = useQuery({
     queryKey: ['training', trainingId],
     queryFn: () => getTrainingData(trainingId!),
     enabled: !!trainingId,
   })
 
-  if (!trainingData) {
-    return null
+  const { data: trainingAttendance } = useQuery({
+    queryKey: ['trainingAttendance', trainingId, sessionId],
+    queryFn: () => getTrainingAttendance(trainingId!, sessionId!),
+    enabled: !!trainingId && !!sessionId,
+  })
+
+  const { mutate: updateAttendance, variables } = useMutation({
+    mutationFn: ({
+      memberId,
+      updatedMembers,
+    }: {
+      memberId: string
+      updatedMembers: string[]
+    }) =>
+      setMemberTrainingAttendance(
+        trainingId!,
+        sessionId!,
+        memberId,
+        updatedMembers
+      ),
+  })
+
+  if (isLoadingTraining) {
+    return (
+      <div>
+        Loading training
+        <Spin />
+      </div>
+    )
   }
 
-  const sessions = Object.values(trainingData.sessions)
-  const sortedSessions = sessions.sort((a, b) => a.position - b.position)
+  if (!training || !trainingId) {
+    return <div>Training not found</div>
+  }
 
-  // componentDidMount() {
-  //   const { match } = this.props // Access the match object from props
-  //   getTrainingData(match.params.id).then((training) => {
-  //     this.setState({ training })
-  //     const sessions = Object.values(training.sessions)
-  //     const sortedSessions = sessions.sort((a, b) => a.position - b.position)
-  //     this.onSessionClick(sortedSessions[0].sessionId)
-  //   })
-  // }
+  if (trainingAttendance && !attendance) {
+    setAttendance(trainingAttendance)
+  }
 
-  // onSessionClick = (sessionId: string) => {
-  //   const session = this.state.training?.sessions[sessionId]
-  //   this.setState({ trainingSession: session })
-  //   this.setState({ showList: false })
-  //   getTrainingAttendance(
-  //     this.state.training.trainingId,
-  //     session.sessionId
-  //   ).then((attendance) => {
-  //     this.setState({ currentMembers: attendance })
-  //     this.setState({ showList: true })
-  //   })
-  // }
+  if (!sessionId) {
+    const sortedSessions = Object.values(training.sessions).sort(
+      (a, b) => a.position - b.position
+    )
+    setSessionId(sortedSessions[0].sessionId)
+  }
 
-  // onMemberClick = (memberId: string) => {
-  //   const updatedMembers = [...this.state.currentMembers]
-  //   if (this.state.currentMembers.includes(memberId)) {
-  //     updatedMembers.splice(updatedMembers.indexOf(memberId), 1)
-  //   } else {
-  //     updatedMembers.push(memberId)
-  //   }
+  const session = sessionId ? training.sessions[sessionId] : undefined
 
-  //   this.setState({
-  //     currentMembers: updatedMembers,
-  //   })
+  function handleMemberClick(memberId: string) {
+    if (!attendance || !sessionId || !trainingId) {
+      return
+    }
 
-  //   setMemberTrainingAttendance(
-  //     this.state.training.trainingId,
-  //     this.state.trainingSession.sessionId,
-  //     memberId,
-  //     updatedMembers
-  //   )
-  // }
+    const updatedMembers = [...attendance]
+    if (attendance.includes(memberId)) {
+      updatedMembers.splice(updatedMembers.indexOf(memberId), 1)
+    } else {
+      updatedMembers.push(memberId)
+    }
 
-  console.log(trainingData)
-
-  // const { training, trainingSession } = this.state
-
-  // let sessions: AumtTrainingSession[] = []
-
-  // if (training) {
-  //   sessions = Object.values(training.sessions)
-  // }
+    setAttendance(updatedMembers)
+    updateAttendance({ memberId, updatedMembers })
+  }
 
   return (
     <div className="flex-1 pt-[30px]">
@@ -269,40 +260,38 @@ export default function TrainingAttendance(props: TrainingAttendanceProps) {
       {training && (
         <div>
           <h2>{training.title} Attendance</h2>
-          {/* <p>Training Date: {training}</p> */}
-          <select
+          <Select
             className="w-full p-2.5 my-2.5 border border-gray-300 rounded-sm text-base bg-gray-100 text-black font-medium"
-            onChange={(event) => this.onSessionClick(event.target.value)}
+            value={sessionId}
+            onChange={(value) => setSessionId(value)}
           >
-            {sessions
+            {Object.values(training.sessions)
               .sort((a, b) => a.position - b.position)
               .map((session) => (
-                <option key={session.sessionId} value={session.sessionId}>
+                <Select.Option
+                  key={session.sessionId}
+                  value={session.sessionId}
+                >
                   {session.title}
-                </option>
+                </Select.Option>
               ))}
-          </select>
+          </Select>
 
-          <div className="memberCheckboxContainer">
-            {trainingSession &&
-              this.state.showList &&
-              Object.keys(trainingSession.members)
-                .sort((a, b) =>
-                  trainingSession.members[a].name
-                    .split(' ')
-                    .pop()
-                    .toLowerCase()
-                    .localeCompare(
-                      trainingSession.members[b].name
-                        .split(' ')
-                        .pop()
-                        .toLowerCase()
-                    )
-                )
+          {session && (
+            <div className="memberCheckboxContainer">
+              {Object.keys(session.members)
+                .sort((a, b) => {
+                  const aLastName = session.members[a].name.split(' ').pop()
+                  const bLastName = session.members[b].name.split(' ').pop()
+
+                  return (
+                    aLastName
+                      ?.toLowerCase()
+                      .localeCompare(bLastName?.toLowerCase() || '') || 0
+                  )
+                })
                 .map((key, index) => {
-                  const checked =
-                    this.state.currentMembers &&
-                    this.state.currentMembers.includes(key)
+                  const checked = attendance && attendance.includes(key)
                   return (
                     <div
                       key={index}
@@ -310,29 +299,29 @@ export default function TrainingAttendance(props: TrainingAttendanceProps) {
                     >
                       <input
                         type="checkbox"
-                        id={trainingSession.members[key].name}
+                        id={session.members[key].name}
                         onChange={() => {
-                          this.onMemberClick(key)
+                          handleMemberClick(key)
                         }}
                         checked={checked}
                         className="scale-200"
                       />
                       <label
-                        htmlFor={trainingSession.members[key].name}
+                        htmlFor={session.members[key].name}
                         className="text-xl pl-5"
                       >
-                        {trainingSession.members[key].name}
+                        {session.members[key].name}
                       </label>
                     </div>
                   )
                 })}
-          </div>
+            </div>
+          )}
 
           <div className="pt-2.5 text-xl">
-            {trainingSession && this.state.showList && (
+            {session && (
               <p>
-                {this.state.currentMembers.length} /{' '}
-                {Object.keys(trainingSession.members).length}{' '}
+                {attendance?.length} / {Object.keys(session.members).length}{' '}
               </p>
             )}
           </div>

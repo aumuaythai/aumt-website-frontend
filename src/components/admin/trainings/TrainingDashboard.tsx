@@ -72,9 +72,7 @@ export default function TrainingDashboard(props: TrainingDashboardProps) {
           </Select>
           {selectedTraining && (
             <Link
-              to={`/admin/attendance/${
-                selectedTraining ? selectedTraining.trainingId : null
-              }`}
+              to={`/admin/trainings/${selectedTraining.trainingId}/attendance`}
               className="ml-2"
             >
               <Button type="primary" size="large">
