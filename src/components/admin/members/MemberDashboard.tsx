@@ -318,6 +318,8 @@ export default class MemberDashboard extends Component<
     return window.location.pathname === '/admin/members'
   }
   render() {
+    console.log(this.state.selectedMember)
+
     return (
       <div className="memberDashboardContainer">
         <TableHelper
@@ -528,6 +530,26 @@ export default class MemberDashboard extends Component<
             )}
           </div>
         ) : null}
+        {this.state.selectedMember ? (
+          <div className="memberDetailsSection">
+            <MemberDetails
+              member={this.state.selectedMember}
+              onExit={this.exitSelectedMember}
+            />
+          </div>
+        ) : null}
+        <Modal
+          open={!!this.state.selectedMember}
+          onCancel={() => this.setState({ selectedMember: null })}
+          footer={null}
+          // className="!max-h-96 overflow-y-auto"
+          classNames={{ content: 'max-h-160 overflow-y-auto' }}
+        >
+          <MemberDetails
+            member={this.state.selectedMember}
+            onExit={this.exitSelectedMember}
+          />
+        </Modal>
         {/* <Switch>
           <Route path="/admin/members/add">
             <div className="memberDetailsSection">
