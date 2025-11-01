@@ -7,7 +7,7 @@ import z from 'zod'
 import DataFormatterUtil from '../../../services/data.util'
 import { setMember } from '../../../services/db'
 import { AumtMember } from '../../../types'
-import { TableDataLine } from './TableHelper'
+import type { TableDataLine } from './MemberDashboard'
 
 interface MemberDetailsProps {
   member: TableDataLine
@@ -257,7 +257,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
                   <Input
                     suffix={
                       <Tooltip title="Copy">
-                        <CopyOutlined onClick={(e) => copyText(value)} />
+                        <CopyOutlined onClick={(e) => copyText(value ?? '')} />
                       </Tooltip>
                     }
                     value={value}
@@ -273,7 +273,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
                   <Input
                     suffix={
                       <Tooltip title="Copy">
-                        <CopyOutlined onClick={(e) => copyText(value)} />
+                        <CopyOutlined onClick={(e) => copyText(value ?? '')} />
                       </Tooltip>
                     }
                     value={value}
