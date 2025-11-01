@@ -1,4 +1,3 @@
-import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { Carousel } from 'antd'
 import './Gallery.css'
 

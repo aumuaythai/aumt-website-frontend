@@ -1,5 +1,6 @@
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
+import { Button } from 'antd'
 import { Link, useLocation } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 import { Links } from '../../services/links'
@@ -29,16 +30,24 @@ export default function Header() {
 
       <NavMenu isAdmin={isAdmin} authedUser={authedUser} />
 
-      <div className="flex items-center h-full gap-x-6">
+      <div className="flex items-center gap-x-3">
         {authedUser ? (
           <UserInfo authedUser={authedUser} />
         ) : (
-          <Link
-            to={`/login?from=${pathname}`}
-            className="h-full flex items-center px-8 !text-[#11388d] !transition-colors duration-300 hover:!bg-[#11388d]/10"
-          >
-            Sign In
-          </Link>
+          // <Link
+          //   to={`/login?from=${pathname}`}
+          //   className="h-full flex items-center px-8 !text-[#11388d] !transition-colors duration-300 hover:!bg-[#11388d]/10"
+          // >
+          //   Sign In
+          // </Link>
+          <div className="flex items-center gap-x-2">
+            <Button type="primary" ghost className="!py-4 !font-joyride">
+              <Link to={`/login?from=${pathname}`}>Sign In</Link>
+            </Button>
+            <Button type="primary" className="!py-4 !font-joyride">
+              <Link to={`/join`}>Create account</Link>
+            </Button>
+          </div>
         )}
         <div className="flex text-lg text-black gap-x-2.5">
           <button

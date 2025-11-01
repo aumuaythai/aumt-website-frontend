@@ -1,95 +1,57 @@
-import { Button, notification, Result, Spin } from 'antd'
+import { CheckCircleFilled } from '@ant-design/icons'
+import { Spin } from 'antd'
 import { Link } from 'react-router'
 import { useAuth } from '../../../context/AuthProvider'
 import { useConfig } from '../../../context/ClubConfigProvider'
-import { signOut } from '../../../services/auth'
-import dataUtil from '../../../services/data.util'
 import PaymentInstructions from '../../utility/PaymentInstructions'
 import { JoinForm } from './JoinForm'
 
 export default function MainJoin() {
-  const { authedUser, authedUserId } = useAuth()
+  const { authedUser } = useAuth()
   const clubConfig = useConfig()
 
-  const loadingAuthedUser = !!authedUser
-
-  const onSignOutClick = () => {
-    signOut().catch((err) => {
-      notification.error({ message: 'Error signing out: ' + err.toString() })
-    })
+  if (!clubConfig) {
+    return <Spin />
   }
-
-  const copyText = (text: string) => {
-    dataUtil.copyText(text)
-  }
-
-  const getExtraResultContent = () => {
-    const lines: JSX.Element[] = []
-    if (authedUser?.paid === 'No') {
-      lines.push(
-        <div>
-          <h1>However, membership payment pending</h1>
-          <PaymentInstructions
-            membershipType={authedUser.membership}
-            paymentType={authedUser.paymentType}
-            clubConfig={clubConfig}
-          />
-        </div>
-      )
-    } else {
-      lines.push(
-        <div>
-          <h1>Our records show you have paid</h1>
-          <p className="text-center">
-            You can now signup to our <a href="/signups">weekly training</a>{' '}
-            sessions.
-          </p>
-        </div>
-      )
-    }
-
-    if (clubConfig?.clubSignupStatus === 'open') {
-      lines.push(
-        <p key="1">
-          <Button type="link" className="!px-1" onClick={onSignOutClick}>
-            Log out
-          </Button>
-          and return to the signup page, or
-          <Link to="/">
-            <Button className="!px-1" type="link">
-              visit home page
-            </Button>
-          </Link>
-        </p>
-      )
-    }
-
-    return lines
-  }
-
-  if (clubConfig === null || loadingAuthedUser) return <Spin />
 
   if (authedUser) {
     return (
-      <div>
-        <Result
-          className="max-w-[700px] mx-auto"
-          status="success"
-          title="You are a member of AUMT!"
-          extra={getExtraResultContent()}
-        />
-        <h1>Your Current Membership</h1>
+      <div className="pt-16 p-6 max-w-2xl mx-auto">
+        <CheckCircleFilled className="!text-green-500 text-7xl" />
+        <h1 className="text-2xl mt-4 mb-8">You are a member of AUMT!</h1>
+
+        {authedUser?.paid === 'No' ? (
+          <>
+            <h2>However, membership payment is pending</h2>
+            <PaymentInstructions
+              membershipType={authedUser.membership}
+              paymentType={authedUser.paymentType}
+              clubConfig={clubConfig}
+            />
+          </>
+        ) : (
+          <>
+            <h2>Our records show you have paid</h2>
+            <p className="text-center">
+              You can now sign up to{' '}
+              <Link to="/signups" className="text-blue-500">
+                weekly trainings
+              </Link>
+            </p>
+          </>
+        )}
+
+        <h1 className="mt-6">Your Current Membership</h1>
         <p>
           Membership coverage:
           <b>
-            {authedUser.membership === 'S1' ? ' Semester 1 ' : ''}
-            {authedUser.membership === 'S2' ? ' Semester 2 ' : ''}
-            {authedUser.membership === 'SS' ? ' Summer School ' : ''}
-            {authedUser.membership === 'FY'
-              ? ' Full Year (Semester 1 and 2)'
-              : ''}
+            {authedUser.membership === 'S1' && ' Semester 1 '}
+            {authedUser.membership === 'S2' && ' Semester 2 '}
+            {authedUser.membership === 'SS' && ' Summer School '}
+            {authedUser.membership === 'FY' && ' Full Year (Semester 1 and 2)'}
           </b>
         </p>
+
         <p>
           Status:
           <b>{authedUser.paid === 'Yes' ? ' Paid ' : ' Not Paid '}</b>
@@ -100,18 +62,25 @@ export default function MainJoin() {
 
   if (clubConfig.clubSignupStatus === 'closed') {
     return (
-      <div>
+      <div className="p-6">
         Signups are closed until the next semester starts. Follow us on
         <a
           href="https://www.instagram.com/aumuaythai/"
           target="_blank"
           rel="noopener noreferrer"
+          className="text-blue-500"
         >
           {' '}
           Instagram{' '}
         </a>
         or
-        <a href="https://www.facebook.com/aumuaythai/"> Facebook </a>
+        <a
+          href="https://www.facebook.com/aumuaythai/"
+          className="text-blue-500"
+        >
+          {' '}
+          Facebook{' '}
+        </a>
         for announcements.
       </div>
     )
