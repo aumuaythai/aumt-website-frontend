@@ -40,13 +40,19 @@ export default function Header() {
             Sign In
           </Link>
         )}
-        <div className="flex text-lg cursor-pointer text-black gap-x-2.5">
-          <span onClick={fbClick}>
+        <div className="flex text-lg text-black gap-x-2.5">
+          <button
+            onClick={fbClick}
+            className="cursor-pointer hover:text-gray-500"
+          >
             <FacebookFilled />
-          </span>
-          <span onClick={igClick}>
+          </button>
+          <button
+            onClick={igClick}
+            className="cursor-pointer hover:text-gray-500"
+          >
             <InstagramFilled />
-          </span>
+          </button>
         </div>
       </div>
     </header>

@@ -11,7 +11,7 @@ interface UserInfoProps {
 }
 
 export default function UserInfo(props: UserInfoProps) {
-  const onSignOutClick = () => {
+  function handleSignOut() {
     signOut()
   }
 
@@ -25,16 +25,19 @@ export default function UserInfo(props: UserInfoProps) {
       ),
     },
     {
+      key: 'reset-password',
+      label: <ResetPasswordLink>Reset Password</ResetPasswordLink>,
+    },
+    {
+      type: 'divider',
+    },
+    {
       key: 'sign-out',
       label: (
-        <Button type="link" onClick={onSignOutClick}>
+        <Button type="link" onClick={handleSignOut}>
           Sign Out
         </Button>
       ),
-    },
-    {
-      key: 'reset-password',
-      label: <ResetPasswordLink>Reset Password</ResetPasswordLink>,
     },
   ]
 
@@ -47,10 +50,10 @@ export default function UserInfo(props: UserInfoProps) {
       trigger={['click', 'hover']}
     >
       <div className="flex items-center h-full cursor-pointer gap-x-2.5">
-        <div className="max-w-24 overflow-hidden text-ellipsis whitespace-nowrap">
+        <div className="text-sm overflow-hidden text-ellipsis whitespace-nowrap">
           {nameText}
         </div>
-        <DownOutlined />
+        <DownOutlined className="text-xs" />
       </div>
     </Dropdown>
   )
