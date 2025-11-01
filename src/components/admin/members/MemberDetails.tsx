@@ -70,7 +70,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
     },
   })
 
-  const { register, control, handleSubmit, watch } = useForm<MD>({
+  const { control, handleSubmit, watch } = useForm<MD>({
     resolver: zodResolver(memberDetailsSchema),
     defaultValues: {
       firstName: member.firstName,
@@ -92,6 +92,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
       EmergencyContactNumber: member.EmergencyContactNumber,
       EmergencyContactRelationship: member.EmergencyContactRelationship,
     },
+    values: { ...member },
   })
 
   function handleUpdateMember(data: MD) {
