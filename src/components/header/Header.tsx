@@ -1,8 +1,10 @@
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import { Link, useLocation } from 'react-router'
+import logo from '../../../public/logos/AUMTLogo.png'
 import { useAuth } from '../../context/AuthProvider'
 import { Links } from '../../services/links'
+import Logo from '../svg/Logo'
 import TopMenu from './TopMenu'
 import UserInfo from './UserInfo'
 
@@ -23,14 +25,11 @@ export default function Header() {
   return (
     <header className="w-full flex items-center justify-between px-5 font-[Joyride] border-b border-b-[#f0f0f0] font-normal h-[50px]">
       <Link to="/">
-        <img
-          className="w-[120px] transition-opacity hover:opacity-80"
-          src="logos/AUMTLogo.png"
-          alt="AUMT"
-        />
+        <Logo className="w-[120px] transition-opacity hover:opacity-80" />
       </Link>
 
       <TopMenu isAdmin={isAdmin} authedUser={authedUser} />
+
       <div className="flex items-center h-full gap-x-6">
         {authedUser ? (
           <UserInfo authedUser={authedUser}></UserInfo>

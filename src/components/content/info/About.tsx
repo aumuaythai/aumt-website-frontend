@@ -5,7 +5,7 @@ import { Links } from '../../../services/links'
 import { cn } from '../../utility/utils'
 
 export default function About() {
-  const { clubConfig } = useConfig()
+  const clubConfig = useConfig()
   const semesterFee = clubConfig?.semesterOneFee
   const fullYearFee = clubConfig?.fullYearFee
 

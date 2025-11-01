@@ -127,8 +127,10 @@ const MembershipPeriodLong: Record<MembershipPeriod, string> = {
 
 function MembershipSection({ saving, control, onSave }: SectionProps) {
   const { authedUser } = useAuth()
-  const { clubConfig, clubSignupSem } = useConfig()
+  const clubConfig = useConfig()
   const [editing, setEditing] = useState(false)
+
+  const clubSignupSem = clubConfig?.clubSignupSem
 
   return (
     <AccountSection

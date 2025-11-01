@@ -9,7 +9,7 @@ import { JoinForm } from './JoinForm'
 
 export default function MainJoin() {
   const { authedUser, authedUserId } = useAuth()
-  const { clubConfig } = useConfig()
+  const clubConfig = useConfig()
 
   const loadingAuthedUser = !!authedUser
 

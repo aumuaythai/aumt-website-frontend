@@ -1,51 +1,47 @@
+import { useQuery } from '@tanstack/react-query'
 import { Divider, Spin } from 'antd'
-import { useEffect } from 'react'
-import { AumtWeeklyTraining } from '../../../types'
-import AdminStore from '../AdminStore'
-import './Feedback.css'
+import { getAllForms } from '../../../services/db'
 
-interface FeedbackProps {
-  forms: AumtWeeklyTraining[]
-}
+export default function Feedback() {
+  const { data: trainings, isPending: isLoadingTrainings } = useQuery({
+    queryKey: ['trainings'],
+    queryFn: getAllForms,
+  })
 
-export default function Feedback(props: FeedbackProps) {
-  useEffect(() => {
-    AdminStore.requestTrainings()
-  }, [])
-
-  const loadingForms = props.forms.length === 0
-
-  if (loadingForms) {
+  if (isLoadingTrainings || !trainings) {
     return (
-      <div className="retrievingFeedbackText">
+      <div>
         Retrieving feedback <Spin />
       </div>
     )
   }
 
-  const sortedForms = props.forms.slice().sort((a, b) => {
+  const sortedForms = trainings.slice().sort((a, b) => {
     return a.closes < b.closes ? 1 : -1
   })
 
   return (
-    <div className="allFeedbackContainer">
-      {sortedForms.map((form) => {
-        const feedback = form.feedback.reverse()
-        return (
-          <div key={form.trainingId}>
-            <h3 className="text-base">{form.title}</h3>
-            {feedback.length ? (
-              feedback.map((line, index) => {
-                return <p key={index}>{line}</p>
-              })
-            ) : (
-              <p>No Feedback</p>
-            )}
-            <Divider />
-          </div>
-        )
-      })}
-      <div className="clearBoth"></div>
+    <div className="max-w-2xl mx-auto pt-8">
+      <h1 className="text-2xl">Feedback</h1>
+
+      <ul className="mt-6">
+        {sortedForms.map((form) => {
+          const feedback = form.feedback.reverse()
+          return (
+            <div key={form.trainingId}>
+              <h3 className="text-base">{form.title}</h3>
+              {feedback.length ? (
+                feedback.map((line, index) => {
+                  return <p key={index}>{line}</p>
+                })
+              ) : (
+                <p>No Feedback</p>
+              )}
+              <Divider />
+            </div>
+          )
+        })}
+      </ul>
     </div>
   )
 }

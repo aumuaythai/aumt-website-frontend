@@ -13,12 +13,13 @@ import SignupForm from './SignupForm'
 
 export default function Signups() {
   const { authedUser, authedUserId } = useAuth()
-  const { clubSignupSem } = useConfig()
+  const clubConfig = useConfig()
 
   const [forms, setForms] = React.useState<AumtWeeklyTraining[]>([])
   const [loadingForms, setLoadingForms] = React.useState<boolean>(true)
 
   const hasPaid = authedUser?.paid === 'Yes'
+  const clubSignupSem = clubConfig?.clubSignupSem
 
   useEffect(() => {
     let dbListenerIds: string[] = []
@@ -65,12 +66,8 @@ export default function Signups() {
     }
   }
 
-  if (loadingForms || clubSignupSem === 'loading') {
-    return (
-      <div>
-        <Spin />
-      </div>
-    )
+  if (loadingForms || !clubSignupSem) {
+    return <Spin />
   }
 
   if (!forms.length) {

@@ -4,16 +4,11 @@ import { Button, Select, Spin } from 'antd'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { getAllForms } from '../../../services/db'
-import { AumtWeeklyTraining } from '../../../types'
 import { EditSignups } from './EditSignups'
 import ManageTrainings from './ManageTrainings'
 import { YearStats } from './YearStats'
 
-interface TrainingDashboardProps {
-  forms: AumtWeeklyTraining[]
-}
-
-export default function TrainingDashboard(props: TrainingDashboardProps) {
+export default function TrainingDashboard() {
   const [selectedTrainingId, setSelectedTrainingId] = useState<string | null>(
     null
   )
@@ -75,16 +70,14 @@ export default function TrainingDashboard(props: TrainingDashboardProps) {
               to={`/admin/trainings/${selectedTraining.trainingId}/attendance`}
               className="ml-2"
             >
-              <Button type="primary" size="large">
-                Attendance
-              </Button>
+              <Button type="primary">Attendance</Button>
             </Link>
           )}
         </div>
 
         <Link to="/admin/trainings/create">
-          <Button type="default" shape="round" size="large">
-            Create Training <PlusOutlined />
+          <Button type="primary" shape="round" icon={<PlusOutlined />}>
+            Create Training
           </Button>
         </Link>
       </div>

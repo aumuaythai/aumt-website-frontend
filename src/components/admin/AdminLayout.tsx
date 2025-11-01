@@ -1,5 +1,5 @@
 import { Menu } from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { ItemType } from 'antd/lib/menu/interface'
 import { Link, Outlet, useLocation } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 
@@ -12,9 +12,7 @@ export default function AdminLayout() {
 
   return (
     <div className="text-left flex min-h-[calc(100vh-50px)] h-0">
-      <div className="w-44">
-        <AdminMenu />
-      </div>
+      <AdminMenu />
       <Outlet />
     </div>
   )
@@ -47,5 +45,11 @@ function AdminMenu() {
     },
   ]
 
-  return <Menu items={items} selectedKeys={[selectedKey]} />
+  return (
+    <Menu
+      items={items}
+      selectedKeys={[selectedKey]}
+      className="!max-w-44 !border-r !border-gray-100"
+    />
+  )
 }

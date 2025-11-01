@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { notification } from 'antd'
 import {
   createContext,
@@ -9,22 +10,10 @@ import {
 import { getClubConfig } from '../services/db'
 import { ClubConfig } from '../types'
 
-const ConfigContext = createContext<{
-  clubConfig: ClubConfig | null
-  clubSignupStatus: 'open' | 'closed' | 'loading'
-  clubSignupSem: 'S1' | 'S2' | 'loading' | 'SS'
-}>({
-  clubConfig: null,
-  clubSignupStatus: 'loading',
-  clubSignupSem: 'loading',
-})
+const ConfigContext = createContext<ClubConfig | undefined>(undefined)
 
 export function useConfig() {
   const context = useContext(ConfigContext)
-  if (!context) {
-    throw new Error('useConfig must be used within a ConfigProvider')
-  }
-
   return context
 }
 
@@ -33,35 +22,13 @@ export default function ClubConfigProvider({
 }: {
   children: ReactNode
 }) {
-  const [clubSignupStatus, setClubSignupStatus] = useState<
-    'open' | 'closed' | 'loading'
-  >('loading')
-  const [clubSignupSem, setClubSignupSem] = useState<
-    'S1' | 'S2' | 'loading' | 'SS'
-  >('loading')
-  const [clubConfig, setClubConfig] = useState<ClubConfig | null>(null)
-
-  useEffect(() => {
-    async function fetchConfig() {
-      try {
-        const config = await getClubConfig()
-        setClubConfig(config)
-        setClubSignupStatus(config.clubSignupStatus)
-        setClubSignupSem(config.clubSignupSem)
-      } catch (err) {
-        notification.error({
-          message: 'Failed to get website config: ' + err.toString(),
-        })
-      }
-    }
-
-    fetchConfig()
-  }, [])
+  const { data: clubConfig } = useQuery({
+    queryKey: ['clubConfig'],
+    queryFn: getClubConfig,
+  })
 
   return (
-    <ConfigContext.Provider
-      value={{ clubConfig, clubSignupStatus, clubSignupSem }}
-    >
+    <ConfigContext.Provider value={clubConfig}>
       {children}
     </ConfigContext.Provider>
   )

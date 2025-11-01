@@ -52,12 +52,12 @@ export default function ManageEvents() {
   const events = data.slice().sort((a, b) => (a.date > b.date ? -1 : 1))
 
   return (
-    <div className="text-center max-w-[600px] mx-auto">
-      <div className="mt-[30px] flex justify-between">
-        <h2 className="text-xl">Manage Events</h2>
+    <div className="text-center max-w-2xl mx-auto pt-8">
+      <div className="flex justify-between">
+        <h2 className="text-2xl">Manage Events</h2>
         <Link to="/admin/events/create" className="float-right">
-          <Button type="primary" size="large" shape="round">
-            Create Event <PlusOutlined />
+          <Button type="primary" shape="round" icon={<PlusOutlined />}>
+            Create Event
           </Button>
         </Link>
       </div>

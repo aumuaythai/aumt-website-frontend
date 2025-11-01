@@ -54,10 +54,7 @@ export default function App() {
                     <Route path="/events/:eventId" element={<Event />} />
                     <Route path="/join" element={<MainJoin />} />
                     <Route element={<AdminLayout />}>
-                      <Route
-                        path="/admin"
-                        element={<TrainingDashboard forms={[]} />}
-                      />
+                      <Route path="/admin" element={<TrainingDashboard />} />
                       <Route
                         path="/admin/trainings/create"
                         element={<CreateTraining />}
@@ -87,10 +84,7 @@ export default function App() {
                         path="/admin/members"
                         element={<MemberDashboard />}
                       />
-                      <Route
-                        path="/admin/feedback"
-                        element={<Feedback forms={[]} />}
-                      />
+                      <Route path="/admin/feedback" element={<Feedback />} />
                       <Route
                         path="/admin/settings"
                         element={<ClubSettings />}
