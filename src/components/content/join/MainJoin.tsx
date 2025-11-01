@@ -1,7 +1,7 @@
 import { Button, notification, Result, Spin } from 'antd'
 import { Link } from 'react-router'
 import { useAuth } from '../../../context/AuthProvider'
-import { useConfig } from '../../../context/ConfigProvider'
+import { useConfig } from '../../../context/ClubConfigProvider'
 import { signOut } from '../../../services/auth'
 import dataUtil from '../../../services/data.util'
 import PaymentInstructions from '../../utility/PaymentInstructions'

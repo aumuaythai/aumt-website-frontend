@@ -28,7 +28,11 @@ export function useConfig() {
   return context
 }
 
-export default function ConfigProvider({ children }: { children: ReactNode }) {
+export default function ClubConfigProvider({
+  children,
+}: {
+  children: ReactNode
+}) {
   const [clubSignupStatus, setClubSignupStatus] = useState<
     'open' | 'closed' | 'loading'
   >('loading')

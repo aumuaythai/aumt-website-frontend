@@ -15,7 +15,7 @@
     "@hookform/resolvers": "^5.2.1",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-query": "^5.90.5",
-    "antd": "^4.24.16",
+    "antd": "^5.27.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "~8.2.10",
