@@ -1,6 +1,6 @@
 import { DownOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { ItemType } from 'antd/lib/menu/interface'
 import { Link, useLocation } from 'react-router'
 import { AumtMember } from '../../types'
 import './TopMenu.css'
@@ -10,20 +10,18 @@ export interface TopMenuProps {
   isAdmin: boolean
 }
 
-const PathnameToKey: Record<string, string[]> = {
+const pathnameToKey: Record<string, string[]> = {
   '/': ['club-info', 'about'],
   '/gallery': ['gallery'],
   '/faq': ['faq'],
   '/signups': ['signups'],
   '/events': ['events'],
-  '/join': ['join'],
-  '/account': ['account'],
   '/admin': ['admin'],
 }
 
-export default function TopMenu({ authedUser, isAdmin }: TopMenuProps) {
+export default function NavMenu({ authedUser, isAdmin }: TopMenuProps) {
   const location = useLocation()
-  const current = PathnameToKey[location.pathname] || ['about']
+  const current = pathnameToKey[location.pathname]
   const sharedItems: ItemType[] = [
     {
       label: 'About',
@@ -49,22 +47,10 @@ export default function TopMenu({ authedUser, isAdmin }: TopMenuProps) {
       key: 'signups',
     },
     {
-      label: <Link to="/events">Join Events</Link>,
+      label: <Link to="/events">Events</Link>,
       key: 'events',
     },
   ]
-
-  if (authedUser) {
-    sharedItems.push({
-      label: <Link to="/account">My Account</Link>,
-      key: 'account',
-    })
-  } else {
-    sharedItems.push({
-      label: <Link to="/join">Create Account</Link>,
-      key: 'join',
-    })
-  }
 
   if (isAdmin) {
     sharedItems.push({

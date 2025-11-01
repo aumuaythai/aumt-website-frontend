@@ -46,10 +46,6 @@ code {
     monospace;
 }
 
-.ant-btn-link {
-  color: black !important;
-}
-
 .ant-menu-item,
 .ant-dropdown-menu-item {
   font-family: 'Joyride', sans-serif !important;

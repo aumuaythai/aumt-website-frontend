@@ -1,6 +1,7 @@
 import DownOutlined from '@ant-design/icons/DownOutlined'
 import { Button, Dropdown } from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { ItemType } from 'antd/lib/menu/interface'
+import { Link } from 'react-router'
 import { signOut } from '../../services/auth'
 import { AumtMember } from '../../types'
 import { ResetPasswordLink } from './ResetLink'
@@ -12,19 +13,21 @@ interface UserInfoProps {
 export default function UserInfo(props: UserInfoProps) {
   const onSignOutClick = () => {
     signOut()
-      .then(() => {
-        console.log('Signing out success')
-      })
-      .catch((signOutError) => {
-        console.log('Sign out error')
-      })
   }
 
   const items: ItemType[] = [
     {
+      key: 'account',
+      label: (
+        <Button type="link">
+          <Link to="/account">Account</Link>
+        </Button>
+      ),
+    },
+    {
       key: 'sign-out',
       label: (
-        <Button type="link" className="signOutLink" onClick={onSignOutClick}>
+        <Button type="link" onClick={onSignOutClick}>
           Sign Out
         </Button>
       ),
