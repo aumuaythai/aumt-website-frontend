@@ -95,7 +95,7 @@ export default function TrainingDashboard() {
         </div>
 
         <div className="flex flex-col">
-          <h2 className="text-xl">Edit Members</h2>
+          <h2 className="text-xl">Edit Signups</h2>
           {isLoadingTrainings ? (
             <div>
               Loading current forms <Spin />

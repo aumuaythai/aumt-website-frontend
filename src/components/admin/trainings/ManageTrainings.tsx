@@ -60,12 +60,12 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
   }
 
   return (
-    <ul className="mt-6 overflow-y-auto max-h-96 md:max-h-none">
+    <ul className="overflow-y-auto max-h-96 md:max-h-none mt-4">
       {props.trainings.map((training) => (
         <>
           <button
             key={training.trainingId}
-            className="flex items-center justify-between w-full hover:cursor-pointer group py-4"
+            className="flex items-center justify-between w-full hover:cursor-pointer group"
             onClick={(e) => props.onTrainingClick(training.trainingId)}
           >
             <h4 className="group-hover:!text-gray-600 transition-colors !mb-0">
@@ -90,7 +90,7 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
               </Button>
             </div>
           </button>
-          <Divider className="!my-0" />
+          <Divider className="!my-4" />
         </>
       ))}
     </ul>

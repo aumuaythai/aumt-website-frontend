@@ -11,10 +11,13 @@ export default function About() {
 
   return (
     <div className="flex flex-col items-center justify-center pb-6">
-      <div className="relative bg-[url('/photos/content/Landing_Coloured.jpg')] bg-cover bg-center h-[500px] w-full flex items-center justify-center">
+      <div className="relative bg-[url('/photos/content/Landing_Coloured.jpg')] bg-cover bg-center h-[500px] w-full flex-col flex items-center justify-center">
         <div className="inset-0 absolute bg-black/25 backdrop-blur-xs" />
-        <h1 className="text-[2.6vw] text-white drop-shadow-lg">
-          AUCKLAND UNIVERSITY MUAY THAI
+        <h1 className="text-[1.8vw] text-white drop-shadow-lg drop-shadow-white/20">
+          Auckland University
+        </h1>
+        <h1 className="text-[5vw] text-white drop-shadow-lg drop-shadow-white/20 leading-none">
+          MUAY THAI
         </h1>
       </div>
 

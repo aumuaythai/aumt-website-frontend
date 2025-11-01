@@ -235,7 +235,7 @@ export class EditSignups extends Component<EditSignupsProps, EditSignupsState> {
   }
   render() {
     return (
-      <div className="px-2.5 overflow-y-auto max-h-full">
+      <div className="overflow-y-auto max-h-full mt-4">
         {Object.values(this.props.form.sessions)
           .sort((a, b) => a.position - b.position)
           .map((session) => {
