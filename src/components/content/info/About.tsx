@@ -10,23 +10,20 @@ export default function About() {
   const fullYearFee = clubConfig?.fullYearFee
 
   return (
-    <div className="flex flex-col items-center justify-center py-5">
-      <h1 className="text-[25px] xl:text-[2.5vw] leading-[90%]">
-        WELCOME TO <br />
-        AUCKLAND UNIVERSITY MUAY THAI
-      </h1>
+    <div className="flex flex-col items-center justify-center pb-6">
+      <div className="relative bg-[url('/photos/content/Landing_Coloured.jpg')] bg-cover bg-center h-[500px] w-full flex items-center justify-center">
+        <div className="inset-0 absolute bg-black/25 backdrop-blur-xs" />
+        <h1 className="text-[2.6vw] text-white drop-shadow-lg">
+          AUCKLAND UNIVERSITY MUAY THAI
+        </h1>
+      </div>
 
-      <img
-        src="/photos/content/Landing_Coloured.jpg"
-        alt="landing image"
-        className="w-full h-[600px] object-cover"
-      />
       <div className="pt-10 pb-5">
         <h3 className="text-2xl">
-          AUMT INTODUCES STUDENTS TO THE ART OF MUAY THAI
+          AUMT INTRODUCES STUDENTS TO THE ART OF MUAY THAI
         </h3>
         <p>
-          Run by a passionate group of Muay Thai Enthusiasts, we run weekly
+          Run by a passionate group of Muay Thai enthusiasts, we run weekly
           trainings and social events. <br />
           we aim to teach martial arts in a friendly and low-pressure
           environment.
@@ -67,8 +64,8 @@ export default function About() {
           </div>
         </div>
         <p>
-          An AUMT membership gives you access to an 1 hour/1 class per week and
-          discounted prices to our priced events! <br />
+          An AUMT membership gives you access to as many classes as you want per
+          week and discounted prices to our priced events! <br />
           *One off classes are allowed for $10, please message us to book a
           1-off session.
         </p>
@@ -98,8 +95,8 @@ export default function About() {
               <br />
               - Intermediate Trainings are best for those who have prior Muay
               Thai experience and/or approval from committee and coach. A more
-              serious pace, these classes teach more advanced technique and
-              includes sparring.
+              serious pace, these classes teach more advanced techniques and
+              include sparring.
               <br />
             </p>
             <BoldButton
@@ -131,10 +128,10 @@ export default function About() {
           />
           <div className="w-full text-left flex flex-col justify-center items-center xl:w-1/2">
             <p className="px-5">
-              The social events planned by our committee gives our members a
-              chance to bond outside of the gym. <br />
+              The social events planned by our committee give our members a
+              chance to bond outside of training. <br />
               <br />
-              Past events include:
+              Past events have included:
               <br />
               - Annual Muay Thai Retreat
               <br />
@@ -143,7 +140,7 @@ export default function About() {
               - Collabs with other UoA Clubs
               <br />
               <br />
-              Keep updated on our socials for any events!
+              Keep an eye on our socials for upcoming events!
             </p>
 
             <BoldButton text="JOIN EVENTS" href="/events" color="pink" />

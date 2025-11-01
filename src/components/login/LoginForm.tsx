@@ -1,12 +1,13 @@
+import LockOutlined from '@ant-design/icons/lib/icons/LockOutlined'
 import UserOutlined from '@ant-design/icons/UserOutlined'
-import { Button, Input, InputRef } from 'antd'
-import { Component, createRef, Ref, RefObject } from 'react'
-import { Link } from 'react-router'
-import { getCurrentUser, signIn } from '../../services/auth'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Button, Input, notification } from 'antd'
+import { Controller, FieldErrors, useForm } from 'react-hook-form'
+import { Link, useNavigate, useSearchParams } from 'react-router'
+import z from 'zod'
+import { signIn } from '../../services/auth'
 import { ResetPasswordLink } from '../header/ResetLink'
-import LoginErrorMessage from './LoginErrorMessage'
-
-export interface LoginProps {}
+import Logo from '../svg/Logo'
 
 export interface LoginState {
   username: string
@@ -16,115 +17,99 @@ export interface LoginState {
   errorCode: string
 }
 
-const logoUrl = './logos/AUMTLogo.png'
+const ERROR_MESSAGES = {
+  'auth/user-not-found':
+    "There is no user with this email address. Contact the club to make sure you're signed up.",
+  'auth/invalid-email': 'Email is not valid.',
+  'auth/wrong-password': 'You have entered an incorrect password.',
+  default: 'Error logging in.',
+}
 
-export default class LoginForm extends Component<LoginProps, LoginState> {
-  private emailInputRef: RefObject<InputRef>
+const loginSchema = z.object({
+  email: z.email('Invalid email').min(1, 'Email is required'),
+  password: z.string('Invalid password').min(1, 'Password is required'),
+})
 
-  constructor(props: LoginProps) {
-    super(props)
-    this.emailInputRef = createRef()
-    this.state = {
-      username: '',
-      password: '',
-      errorCode: '',
-      authing: false,
-      isAuthed: !!getCurrentUser(),
+type LoginForm = z.infer<typeof loginSchema>
+
+export default function LoginForm() {
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+
+  const from = searchParams.get('from') || '/'
+
+  const {
+    control,
+    formState: { isSubmitting },
+    handleSubmit,
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+  })
+
+  async function onSubmit(data: LoginForm) {
+    try {
+      await signIn(data.email, data.password)
+      navigate(from)
+    } catch (error: any) {
+      notification.error({
+        message: 'Error logging in',
+        description: ERROR_MESSAGES[error.code] || ERROR_MESSAGES.default,
+      })
     }
   }
-  componentDidMount() {
-    this.emailInputRef.current?.focus()
-  }
-  getRedirectPath = () => {
-    const urlParams = new URLSearchParams(window.location.search)
-    return urlParams.get('from') || '/'
-  }
-  onUnChange = (username: string) => {
-    this.setState({
-      ...this.state,
-      username,
-    })
-  }
-  onPwChange = (password: string) => {
-    this.setState({
-      ...this.state,
-      password,
-    })
-  }
-  onLoginClick = () => {
-    this.setState({
-      ...this.state,
-      authing: true,
-      errorCode: '',
-    })
-    signIn(this.state.username, this.state.password)
-      .then((userInfo) => {
-        this.setState({
-          ...this.state,
-          isAuthed: true,
-          authing: false,
-        })
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code
-        console.log(error.message, error.code)
-        this.setState({
-          ...this.state,
-          errorCode: errorCode,
-          authing: false,
-        })
-        // ...
-      })
-  }
-  render() {
-    // if (this.state.isAuthed) {
-    //   return <Redirect to={this.getRedirectPath()}></Redirect>
-    // }
 
-    return (
-      <div className="mx-auto my-5 max-w-xs px-2.5">
-        <Link to="/">
-          <img
-            src={logoUrl}
-            className="max-w-[150px] mx-auto"
-            alt="aumt logo"
+  function handleError(error: FieldErrors<LoginForm>) {
+    const firstError = Object.keys(error)[0]
+    if (firstError) {
+      notification.error({
+        message: error[firstError]?.message,
+      })
+    }
+  }
+
+  return (
+    <div className="mx-auto p-6 max-w-sm">
+      <Link to="/">
+        <Logo className="max-w-48 mx-auto" />
+      </Link>
+      <h2 className="mt-3">Sign In</h2>
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { value, onChange } }) => (
+          <Input
+            type="email"
+            placeholder="Email"
+            autoFocus
+            value={value}
+            prefix={<UserOutlined />}
+            onChange={onChange}
           />
-        </Link>
-        <h3>Sign In</h3>
-        {this.state.errorCode ? (
-          <LoginErrorMessage
-            errorCode={this.state.errorCode}
-          ></LoginErrorMessage>
-        ) : (
-          ''
         )}
-        <Input
-          type="email"
-          className=""
-          ref={this.emailInputRef}
-          placeholder="email"
-          onChange={(e) => this.onUnChange(e.target.value)}
-          onPressEnter={this.onLoginClick}
-          prefix={<UserOutlined />}
-        />
-        <br />
-        <Input.Password
-          className="mt-1.5"
-          onChange={(e) => this.onPwChange(e.target.value)}
-          onPressEnter={this.onLoginClick}
-          placeholder="password"
-        />
+      />
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { value, onChange } }) => (
+          <Input.Password
+            className="mt-1.5"
+            value={value}
+            placeholder="●●●●●●●●"
+            prefix={<LockOutlined />}
+            onChange={onChange}
+          />
+        )}
+      />
 
-        <Button
-          className="w-full !mt-1.5"
-          onClick={this.onLoginClick}
-          loading={this.state.authing}
-        >
-          Log in
-        </Button>
-        <ResetPasswordLink />
-      </div>
-    )
-  }
+      <Button
+        className="w-full !mt-1.5"
+        onClick={handleSubmit(onSubmit, handleError)}
+        loading={isSubmitting}
+      >
+        Log in
+      </Button>
+
+      <ResetPasswordLink />
+    </div>
+  )
 }
