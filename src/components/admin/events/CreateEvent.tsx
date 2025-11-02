@@ -1,5 +1,6 @@
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { useQuery } from '@tanstack/react-query'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Button,
   Checkbox,
@@ -9,79 +10,83 @@ import {
   notification,
   Spin,
 } from 'antd'
-import moment from 'moment'
-import { useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Moment } from 'moment'
+import { useState } from 'react'
+import { Controller, FieldErrors, useForm } from 'react-hook-form'
+import { Link, useNavigate, useParams } from 'react-router'
 import z from 'zod'
 import { getEventById, submitEvent } from '../../../services/db'
+import { AumtEvent } from '../../../types'
 import MarkdownEditor from '../../utility/MarkdownEditor'
-import AdminStore from '../AdminStore'
-import './CreateEvent.css'
+
+const eventSchema = z.object({
+  title: z.string('Title is invalid').min(1, 'Title is required'),
+  urlPath: z.string('URL Path is invalid').min(1, 'URL Path is required'),
+  description: z
+    .string('Description is invalid')
+    .min(1, 'Description is required'),
+  photoPath: z.string().optional(),
+  date: z.refine((date) => (date as Moment)?.isValid(), 'Date is invalid'),
+  location: z.string('Location is invalid').min(1, 'Location is required'),
+  locationLink: z.url().optional(),
+  fbLink: z.url().optional(),
+  signups: z
+    .object({
+      opens: z.refine(
+        (date) => (date as Moment)?.isValid(),
+        'Open date is invalid'
+      ),
+      closes: z.refine(
+        (date) => (date as Moment)?.isValid(),
+        'Close date is invalid'
+      ),
+      openToNonMembers: z.boolean(),
+      limit: z.number(),
+      needAdminConfirm: z.boolean(),
+      isCamp: z.boolean(),
+    })
+    .optional(),
+})
+
+type EventForm = z.infer<typeof eventSchema>
 
 export default function CreateEvent() {
-  const [currentId, setCurrentId] = useState(generateEventId(10))
-  const [currentUrlPath, setCurrentUrlPath] = useState('')
-  const [currentTitle, setCurrentTitle] = useState('')
-  const [currentDescription, setCurrentDescription] = useState('')
-  const [currentPhotoPath, setCurrentPhotoPath] = useState('')
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [currentLocation, setCurrentLocation] = useState('')
-  const [currentLocationLink, setCurrentLocationLink] = useState('')
-  const [currentFbLink, setCurrentFbLink] = useState('')
-  const [currentSignupLimit, setCurrentSignupLimit] = useState(30)
-  const [currentIsCamp, setCurrentIsCamp] = useState(false)
-  const [currentHasLimit, setCurrentHasLimit] = useState(true)
-  const [currentSignupOpenDate, setCurrentSignupOpenDate] = useState(new Date())
-  const [currentSignupClosesDate, setCurrentSignupClosesDate] = useState(
-    new Date()
-  )
-  const [currentNeedAdminConfirm, setCurrentNeedAdminConfirm] = useState(false)
-  const [currentOpenToNonMembers, setCurrentOpenToNonMembers] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [loadingEvent, setLoadingEvent] = useState(false)
-  const [currentMembers, setCurrentMembers] = useState({})
-  const [currentWaitlist, setCurrentWaitlist] = useState({})
-  const [showEditSignups, setShowEditSignups] = useState(false)
+  const [hasLimit, setHasLimit] = useState(false)
 
+  const queryClient = useQueryClient()
   const { eventId } = useParams()
-  const hasPopulated = useRef(false)
+  const navigate = useNavigate()
 
-  const { data: event, isLoading: isLoadingEvent } = useQuery({
+  const { data: event, isPending: isLoadingEvent } = useQuery({
     queryKey: ['event', eventId],
     queryFn: () => getEventById(eventId!),
     enabled: !!eventId,
   })
 
-  if (event && !hasPopulated.current) {
-    hasPopulated.current = true
-    setCurrentId(event.id)
-    setCurrentUrlPath(event.urlPath)
-    setCurrentTitle(event.title)
-    setCurrentDescription(event.description)
-    setCurrentPhotoPath(event.photoPath)
-    setCurrentDate(event.date)
-    setCurrentLocation(event.location)
-    setCurrentLocationLink(event.locationLink)
-    setCurrentFbLink(event.fbLink)
-    setShowEditSignups(!!event.signups)
-    setCurrentSignupLimit(event.signups?.limit || 30)
-    setCurrentHasLimit(event.signups?.limit === null ? false : true)
-    setCurrentSignupOpenDate(event.signups?.opens || new Date())
-    setCurrentSignupClosesDate(event.signups?.closes || new Date())
-    setCurrentNeedAdminConfirm(event.signups?.needAdminConfirm || false)
-    setCurrentOpenToNonMembers(event.signups?.openToNonMembers || false)
-    setCurrentIsCamp(event.signups?.isCamp || false)
-    setCurrentMembers(event.signups?.members || {})
-    setCurrentWaitlist(event.signups?.waitlist || {})
-  }
+  const updateEvent = useMutation({
+    mutationFn: (eventData: AumtEvent) => submitEvent(eventData),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['events'] })
+      await navigate('/admin/events')
+      notification.success({
+        message: 'Event updated successfully',
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: 'Error updating event: ' + error.toString(),
+      })
+    },
+  })
 
-  if (isLoadingEvent) {
-    return (
-      <div>
-        Loading event <Spin />
-      </div>
-    )
-  }
+  const {
+    control,
+    formState: { isSubmitting },
+    handleSubmit,
+    watch,
+  } = useForm<EventForm>({
+    resolver: zodResolver(eventSchema),
+  })
 
   function generateEventId(length: number) {
     const digits = '1234567890qwertyuiopasdfghjklzxcvbnm'
@@ -92,125 +97,46 @@ export default function CreateEvent() {
     return id
   }
 
-  const onTitleChange = (title: string) => {
-    setCurrentTitle(title)
-  }
-  const onUrlPathChange = (path: string) => {
-    setCurrentUrlPath(path)
-  }
-  const onDateChange = (d: Date | undefined) => {
-    if (d) {
-      setCurrentDate(d)
+  async function onValid(data: EventForm) {
+    const id = eventId || generateEventId(10)
+
+    const eventData: AumtEvent = {
+      id: id,
+      title: data.title,
+      urlPath: data.urlPath,
+      description: data.description,
+      photoPath: data.photoPath ?? '',
+      date: (data.date as Moment).toDate(),
+      location: data.location,
+      locationLink: data.locationLink ?? '',
+      fbLink: data.fbLink ?? '',
+      signups: data.signups
+        ? {
+            opens: (data.signups.opens as unknown as Moment).toDate(),
+            closes: (data.signups.closes as unknown as Moment).toDate(),
+            openToNonMembers: data.signups.openToNonMembers ?? false,
+            needAdminConfirm: data.signups.needAdminConfirm ?? false,
+            isCamp: data.signups.isCamp ?? false,
+            limit: data.signups.limit ?? 30,
+            members: {},
+            waitlist: {},
+          }
+        : null,
     }
-  }
-  const onTrainingTitleChange = (title: string) => {
-    setCurrentTitle(title)
-  }
-  const onDescriptionChange = (description: string) => {
-    setCurrentDescription(description)
-  }
-  const onLocationChange = (location: string) => {
-    setCurrentLocation(location)
+
+    await updateEvent.mutateAsync(eventData)
   }
 
-  const onLocationLinkChange = (link: string) => {
-    setCurrentLocationLink(link)
-  }
-
-  const onFbLinkChange = (link: string) => {
-    setCurrentFbLink(link)
-  }
-
-  const onPhotoUrlChange = (url: string) => {
-    setCurrentPhotoPath(url)
-  }
-
-  const onEnableSignupsCheck = (checked: boolean) => {
-    setShowEditSignups(checked)
-  }
-  const onIsCampChange = (checked: boolean) => {
-    setCurrentIsCamp(checked)
-  }
-  const onHasLimitCheck = (checked: boolean) => {
-    setCurrentHasLimit(checked)
-  }
-
-  const onSignupLimitChange = (limit: string | number | undefined) => {
-    if (limit) {
-      setCurrentSignupLimit(Number(limit))
-    }
-  }
-  const onSignupOpenDateChange = (d: Date | undefined) => {
-    if (d) {
-      setCurrentSignupOpenDate(d)
-    }
-  }
-  const onSignupClosesDateChange = (d: Date | undefined) => {
-    if (d) {
-      setCurrentSignupClosesDate(d)
-    }
-  }
-  const onNeedAdminConfirmCheck = (checked: boolean) => {
-    setCurrentNeedAdminConfirm(checked)
-  }
-
-  const onOpenToNonMembersCheck = (checked: boolean) => {
-    setCurrentOpenToNonMembers(checked)
-  }
-
-  const onSubmitEvent = () => {
-    if (!currentTitle) {
+  function onInvalid(errors: FieldErrors<EventForm>) {
+    const firstError = Object.keys(errors)[0]
+    if (firstError) {
       notification.error({
-        message: 'Event title required',
+        message: errors[firstError]?.message,
       })
-      return
-    } else if (!currentUrlPath) {
-      // TODO: validate url path
-      notification.error({ message: 'Url Path required' })
-      return
-    } else if (!currentLocation) {
-      notification.error({ message: 'Location required' })
-      return
     }
-    setIsSubmitting(true)
-    submitEvent({
-      id: currentId,
-      urlPath: currentUrlPath,
-      title: currentTitle,
-      date: currentDate,
-      description: currentDescription,
-      fbLink: currentFbLink,
-      photoPath: currentPhotoPath,
-      location: currentLocation,
-      locationLink: currentLocationLink,
-      signups: !showEditSignups
-        ? null
-        : {
-            opens: currentSignupOpenDate,
-            closes: currentSignupClosesDate,
-            openToNonMembers: currentOpenToNonMembers,
-            limit: currentHasLimit ? currentSignupLimit : null,
-            needAdminConfirm: currentNeedAdminConfirm,
-            isCamp: currentIsCamp,
-            members: currentMembers || {},
-            waitlist: currentWaitlist || {},
-          },
-    })
-      .then(() => {
-        setIsSubmitting(false)
-        notification.success({
-          message: 'Event Submitted',
-        })
-      })
-      .catch((err) => {
-        setIsSubmitting(false)
-        notification.error({
-          message: 'Error submitting event to database: ' + err,
-        })
-      })
   }
 
-  if (loadingEvent) {
+  if (eventId && isLoadingEvent) {
     return (
       <div>
         <Spin />
@@ -218,161 +144,224 @@ export default function CreateEvent() {
     )
   }
 
+  const signups = watch('signups')
+
   return (
-    <div className="mt-[30px] mx-auto">
-      <h2>
-        <Link className="mx-2.5" to="/admin/events">
+    <form
+      onSubmit={handleSubmit(onValid, onInvalid)}
+      className="mx-auto p-6 pt-8 max-w-2xl w-full flex flex-col gap-y-6"
+    >
+      <div className="flex items-center gap-x-2.5">
+        <Link to="/admin/events">
           <ArrowLeftOutlined />
         </Link>
-        Create Event
-      </h2>
-      <div className="h-auto text-left px-5">
-        <h4 className="formSectionTitle">Event</h4>
-        <p>
-          Title:{' '}
-          <Input
-            value={currentTitle}
-            className="shortInput"
-            onChange={(e) => onTitleChange(e.target.value)}
-          />
-        </p>
-        <p>
-          Url Path:
-          <Input
-            className="shortInput"
-            value={currentUrlPath}
-            placeholder="aumt.co.nz/events/<url-path>"
-            onChange={(e) => onUrlPathChange(e.target.value)}
-          />
-        </p>
-        <h4 className="formSectionTitle">Description</h4>
-        <MarkdownEditor
-          onChange={onDescriptionChange}
-          value={currentDescription}
-        ></MarkdownEditor>
-        <h4 className="formSectionTitle">Details</h4>
-        <div>
-          Date:{' '}
-          <DatePicker
-            value={moment(currentDate)}
-            showTime
-            onChange={(e) => onDateChange(e?.toDate())}
-          />
-        </div>
-        <p>
-          Location:{' '}
-          <Input
-            value={currentLocation}
-            className="shortInput"
-            onChange={(e) => onLocationChange(e.target.value)}
-          />
-        </p>
-        <p>
-          Maps Link:{' '}
-          <Input
-            placeholder="optional"
-            value={currentLocationLink}
-            className="shortInput"
-            onChange={(e) => onLocationLinkChange(e.target.value)}
-          />
-        </p>
-        <p>
-          FB Link:{' '}
-          <Input
-            value={currentFbLink}
-            placeholder="optional"
-            className="shortInput"
-            onChange={(e) => onFbLinkChange(e.target.value)}
-          />
-        </p>
-        <p>
-          Photo URL:{' '}
-          <Input
-            value={currentPhotoPath}
-            placeholder="optional"
-            className="shortInput"
-            onChange={(e) => onPhotoUrlChange(e.target.value)}
-          />
-        </p>
-        <h4 className="formSectionDetail">Signups</h4>
-        <Checkbox
-          checked={showEditSignups}
-          onChange={(e) => onEnableSignupsCheck(e.target.checked)}
-        >
-          Enable Signups
-        </Checkbox>
-        {showEditSignups ? (
-          <div className="editEventSignupsContainer">
-            <div>
-              Signups Open:
-              <DatePicker
-                value={moment(currentSignupOpenDate)}
-                onChange={(e) => onSignupOpenDateChange(e?.toDate())}
-              />
-            </div>
-            <div>
-              Signups Close:
-              <DatePicker
-                value={moment(currentSignupClosesDate)}
-                onChange={(e) => onSignupClosesDateChange(e?.toDate())}
-              />
-            </div>
+        <h1 className="text-2xl">Create Event</h1>
+      </div>
+
+      <div>
+        <h2>Event</h2>
+        <label htmlFor="">Title</label>
+        <Controller
+          control={control}
+          name="title"
+          render={({ field }) => (
+            <Input
+              placeholder="Casino Night"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
+        <label htmlFor="">Url Path</label>
+        <Controller
+          control={control}
+          name="urlPath"
+          render={({ field }) => (
+            <Input
+              placeholder="casino-night"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="description"
+          render={({ field }) => (
+            <MarkdownEditor onChange={field.onChange} value={field.value} />
+          )}
+        />
+      </div>
+
+      <div>
+        <h2>Details</h2>
+        <label htmlFor="">Date</label>
+        <Controller
+          control={control}
+          name="date"
+          render={({ field }) => (
+            <DatePicker
+              showTime
+              value={field.value}
+              className="w-full"
+              onChange={field.onChange}
+            />
+          )}
+        />
+        <label htmlFor="">Location</label>
+        <Controller
+          control={control}
+          name="location"
+          render={({ field }) => (
+            <Input
+              placeholder="The Hawks' Nest Gym"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
+        <label htmlFor="">Maps Link</label>
+        <Controller
+          control={control}
+          name="locationLink"
+          render={({ field }) => (
+            <Input
+              placeholder="https://maps.app.goo.gl/u6GvtHHeazmszeTeA"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
+        <label htmlFor="">Photo URL</label>
+        <Controller
+          control={control}
+          name="photoPath"
+          render={({ field }) => (
+            <Input
+              value={field.value}
+              placeholder="https://example.com/photo.jpg"
+              onChange={field.onChange}
+            />
+          )}
+        />
+      </div>
+
+      <div>
+        <h2>Signups</h2>
+
+        <Controller
+          control={control}
+          name="signups"
+          render={({ field }) => (
+            <Checkbox
+              checked={!!field.value}
+              onChange={(e) =>
+                field.onChange(
+                  e.target.checked
+                    ? {
+                        opens: undefined,
+                        closes: undefined,
+                        openToNonMembers: false,
+                        needAdminConfirm: false,
+                        isCamp: false,
+                        limit: 30,
+                      }
+                    : null
+                )
+              }
+            >
+              Enable Signups
+            </Checkbox>
+          )}
+        />
+
+        {signups && (
+          <div>
+            <label htmlFor="">Signups Open</label>
+            <Controller
+              control={control}
+              name="signups.opens"
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value}
+                  className="w-full"
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <label htmlFor="">Signups Close</label>
+            <Controller
+              control={control}
+              name="signups.closes"
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value}
+                  className="w-full"
+                  onChange={field.onChange}
+                />
+              )}
+            />
             <div>
               <Checkbox
-                checked={currentHasLimit}
-                onChange={(e) => onHasLimitCheck(e.target.checked)}
+                checked={hasLimit}
+                onChange={(e) => setHasLimit(e.target.checked)}
               >
                 Limit:
               </Checkbox>
-              <InputNumber
-                disabled={!currentHasLimit}
-                min={0}
-                defaultValue={currentSignupLimit}
-                onChange={onSignupLimitChange}
+              <Controller
+                control={control}
+                name="signups.limit"
+                render={({ field }) => (
+                  <InputNumber
+                    disabled={!hasLimit}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
               />
             </div>
             <div>
-              <Checkbox
-                checked={currentNeedAdminConfirm}
-                onChange={(e) => onNeedAdminConfirmCheck(e.target.checked)}
-              >
-                Need Admin Confirmation?
-              </Checkbox>
-              (Confirm spot when paid, etc)
+              <Controller
+                control={control}
+                name="signups.needAdminConfirm"
+                render={({ field }) => (
+                  <Checkbox checked={field.value} onChange={field.onChange}>
+                    Need Admin Confirmation?
+                  </Checkbox>
+                )}
+              />
             </div>
-            <div>
-              <Checkbox
-                checked={currentIsCamp}
-                onChange={(e) => onIsCampChange(e.target.checked)}
-              >
-                Include Drivers and Dietary Requirement Form
-              </Checkbox>
-            </div>
-            <div>
-              <Checkbox
-                checked={currentOpenToNonMembers}
-                onChange={(e) => onOpenToNonMembersCheck(e.target.checked)}
-              >
-                Non Members can sign themselves up (admin can sign up anyone
-                regardless)
-              </Checkbox>
-            </div>
+            <Controller
+              control={control}
+              name="signups.isCamp"
+              render={({ field }) => (
+                <Checkbox checked={field.value} onChange={field.onChange}>
+                  Include Drivers and Dietary Requirement Form
+                </Checkbox>
+              )}
+            />
+            <Controller
+              control={control}
+              name="signups.openToNonMembers"
+              render={({ field }) => (
+                <Checkbox checked={field.value} onChange={field.onChange}>
+                  Non Members can sign themselves up (admin can sign up anyone
+                  regardless)
+                </Checkbox>
+              )}
+            />
           </div>
-        ) : null}
-        <div className="submitEventContainer">
-          <Button
-            className="createEventSubmitButton"
-            type="primary"
-            loading={isSubmitting}
-            onClick={onSubmitEvent}
-          >
-            Submit Event
-          </Button>
-          <Link to="/admin/events">
-            <Button>Cancel</Button>
-          </Link>
-        </div>
+        )}
       </div>
-    </div>
+
+      <div className="flex gap-x-2.5">
+        <Button htmlType="submit" type="primary" loading={isSubmitting}>
+          Submit Event
+        </Button>
+        <Link to="/admin/events">
+          <Button>Cancel</Button>
+        </Link>
+      </div>
+    </form>
   )
 }

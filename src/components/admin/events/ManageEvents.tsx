@@ -1,36 +1,30 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Divider, notification, Popconfirm, Spin } from 'antd'
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { getAllEvents, removeEvent } from '../../../services/db'
-import AdminStore from '../AdminStore'
 import './ManageEvents.css'
 
 export default function ManageEvents() {
-  const [removingEvent, setRemovingEvent] = useState<{
-    [eventId: string]: boolean
-  }>({})
+  const queryClient = useQueryClient()
 
   const { data, isPending } = useQuery({
     queryKey: ['events'],
     queryFn: () => getAllEvents(),
   })
 
-  useEffect(() => {
-    AdminStore.requestEvents()
-  }, [])
-
-  async function handleRemoveEvent(eventId: string) {
-    setRemovingEvent((prev) => ({ ...prev, [eventId]: true }))
-    try {
-      await removeEvent(eventId)
-      setRemovingEvent((prev) => ({ ...prev, [eventId]: false }))
-    } catch (error) {
-      notification.open({
-        message: 'Error removing event: ' + error.toString(),
+  const removeEventMutation = useMutation({
+    mutationFn: (eventId: string) => removeEvent(eventId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['events'] })
+      notification.success({
+        message: 'Event removed successfully',
       })
-    }
+    },
+  })
+
+  function handleRemoveEvent(eventId: string) {
+    removeEventMutation.mutate(eventId)
   }
 
   if (isPending) {
@@ -52,39 +46,36 @@ export default function ManageEvents() {
   const events = data.slice().sort((a, b) => (a.date > b.date ? -1 : 1))
 
   return (
-    <div className="text-center max-w-2xl mx-auto pt-8">
+    <div className="max-w-2xl mx-auto pt-8">
       <div className="flex justify-between">
-        <h2 className="text-2xl">Manage Events</h2>
-        <Link to="/admin/events/create" className="float-right">
+        <h1 className="text-2xl">Manage Events</h1>
+        <Link to="/admin/events/create">
           <Button type="primary" shape="round" icon={<PlusOutlined />}>
             Create Event
           </Button>
         </Link>
       </div>
-      <div className="manageEventsContainer">
+      <ul className="flex flex-col mt-8">
         {events.map((event) => {
           return (
-            <div className="eachEventManager" key={event.id}>
-              <div className="eventManageHeader">
-                <h4 className="manageEventTitle">{event.title}</h4>
-                <div className="manageEventOptions">
+            <>
+              <li key={event.id} className="flex gap-x-4 justify-between">
+                <h2>{event.title}</h2>
+                <div className="flex gap-x-2">
                   {event.signups && (
                     <Link to={`/admin/events/${event.id}`}>
-                      <Button className="manageEventOptionButton">
-                        View Signups
-                      </Button>
+                      <Button>View Signups</Button>
                     </Link>
                   )}
                   <Link to={`/admin/events/${event.id}`}>
-                    <Button className="manageEventOptionButton">Edit</Button>
+                    <Button>Edit</Button>
                   </Link>
                   <Popconfirm
                     title="Confirm Delete Event?"
                     onConfirm={() => handleRemoveEvent(event.id)}
                   >
                     <Button
-                      className="manageEventOptionButton"
-                      loading={removingEvent[event.id]}
+                      loading={removeEventMutation.isPending}
                       danger
                       type="primary"
                     >
@@ -92,13 +83,12 @@ export default function ManageEvents() {
                     </Button>
                   </Popconfirm>
                 </div>
-                <div className="clearBoth"></div>
-              </div>
+              </li>
               <Divider />
-            </div>
+            </>
           )
         })}
-      </div>
+      </ul>
     </div>
   )
 }
