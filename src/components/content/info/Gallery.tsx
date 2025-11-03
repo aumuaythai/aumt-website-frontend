@@ -1,5 +1,4 @@
 import { Carousel } from 'antd'
-import './Gallery.css'
 
 export default function Gallery() {
   return (
