@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Divider, notification, Popconfirm, Spin } from 'antd'
 import { Link } from 'react-router'
 import { getAllEvents, removeEvent } from '../../../services/db'
-import './ManageEvents.css'
 
 export default function ManageEvents() {
   const queryClient = useQueryClient()
@@ -36,11 +35,7 @@ export default function ManageEvents() {
   }
 
   if (!data) {
-    return (
-      <div>
-        No Events Found <Spin />
-      </div>
-    )
+    return <div>No Events Found</div>
   }
 
   const events = data.slice().sort((a, b) => (a.date > b.date ? -1 : 1))

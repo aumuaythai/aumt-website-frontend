@@ -62,6 +62,9 @@ importers:
       react-hook-form:
         specifier: ^7.61.1
         version: 7.61.1(react@18.3.1)
+      react-hook-form-antd:
+        specifier: ^1.1.4
+        version: 1.1.4(antd@5.27.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.61.1(react@18.3.1))(react@18.3.1)
       react-router:
         specifier: ^7.9.4
         version: 7.9.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -8024,6 +8027,14 @@ packages:
 
   react-error-overlay@6.1.0:
     resolution: {integrity: sha512-SN/U6Ytxf1QGkw/9ve5Y+NxBbZM6Ht95tuXNMKs8EJyFa/Vy/+Co3stop3KBHARfn/giv+Lj1uUnTfOJ3moFEQ==}
+
+  react-hook-form-antd@1.1.4:
+    resolution: {integrity: sha512-du2oR5nGf0atY822hT3+jp49YqJ74UfqB6K05nNgFBcAc8YPoI5M94z4UF+K7/B68HiJbxqmxUhT7DIT9TcJPA==}
+    peerDependencies:
+      antd: ^5
+      react: ^16.8.0 || ^17 || ^18 || ^19
+      react-dom: ^16.8.0 || ^17 || ^18 || ^19
+      react-hook-form: ^7
 
   react-hook-form@7.61.1:
     resolution: {integrity: sha512-2vbXUFDYgqEgM2RcXcAT2PwDW/80QARi+PKmHy5q2KhuKvOlG8iIYgf7eIlIANR5trW9fJbP4r5aub3a4egsew==}
@@ -19982,6 +19993,13 @@ snapshots:
       scheduler: 0.23.2
 
   react-error-overlay@6.1.0: {}
+
+  react-hook-form-antd@1.1.4(antd@5.27.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react-hook-form@7.61.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      antd: 5.27.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-hook-form: 7.61.1(react@18.3.1)
 
   react-hook-form@7.61.1(react@18.3.1):
     dependencies:

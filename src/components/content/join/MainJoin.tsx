@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import { useAuth } from '../../../context/AuthProvider'
 import { useConfig } from '../../../context/ClubConfigProvider'
 import PaymentInstructions from '../../utility/PaymentInstructions'
-import { JoinForm } from './JoinForm'
+import JoinForm from './JoinForm'
 
 export default function MainJoin() {
   const { authedUser } = useAuth()
@@ -86,9 +86,5 @@ export default function MainJoin() {
     )
   }
 
-  return (
-    <div>
-      <JoinForm clubConfig={clubConfig} isAdmin={false}></JoinForm>
-    </div>
-  )
+  return <JoinForm clubConfig={clubConfig} isAdmin={false} />
 }

@@ -37,10 +37,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [authedUserId, setAuthedUserId] = useState('')
 
   useEffect(() => {
-    auth.onAuthStateChanged(authStateChange)
+    auth.onAuthStateChanged(handleAuthStateChange)
   }, [])
 
-  async function authStateChange(fbUser: firebase.User | null) {
+  async function handleAuthStateChange(fbUser: firebase.User | null) {
     if (!fbUser) {
       setAuthedUser(null)
       setAuthedUserId('')
