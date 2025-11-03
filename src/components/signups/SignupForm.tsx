@@ -3,9 +3,9 @@ import { Alert, Button, Checkbox, Input, Spin, Tag, Tooltip } from 'antd'
 import { CheckboxOptionType } from 'antd/lib/checkbox'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { removeMemberFromForm, signUserUp } from '../../../services/db'
-import { AumtTrainingSession } from '../../../types'
-import { RenderMarkdown } from '../../utility/RenderMarkdown'
+import { removeMemberFromForm, signUserUp } from '../../services/db'
+import { AumtTrainingSession } from '../../types'
+import { RenderMarkdown } from '../utility/RenderMarkdown'
 
 export interface SignupFormProps {
   title: string

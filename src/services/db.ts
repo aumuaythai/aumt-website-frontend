@@ -1,16 +1,13 @@
 import firebase from 'firebase/app'
 import {
-  AumtCommitteeApp,
   AumtEvent,
   AumtEventSignupData,
   AumtMember,
   AumtMembersObj,
-  AumtTrainingSession,
   AumtWeeklyTraining,
   ClubConfig,
 } from '../types'
 import { db } from './firebase'
-import validator from './validator'
 
 const TRAINING_DB_PATH = 'weekly_trainings'
 const TRAINING_ATTENDANCE_DB_PATH = 'training_attendance'
@@ -41,14 +38,6 @@ export const getIsAdmin = (userId: string): Promise<boolean> => {
     })
 }
 
-export const setEmailVerified = (
-  userId: string,
-  emailVerified: boolean
-): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection(MEMBER_DB_PATH).doc(userId).update({ emailVerified })
-}
-
 export const getClubConfig = (): Promise<ClubConfig> => {
   if (!db) return Promise.reject('No db object')
   return db
@@ -66,61 +55,14 @@ export const setClubConfig = (config: ClubConfig): Promise<void> => {
   return db.collection('config').doc('config').set(config)
 }
 
-export const setClubJoinForm = (open: boolean): Promise<void> => {
+export async function getAllMembers(): Promise<AumtMembersObj> {
   if (!db) return Promise.reject('No db object')
-  return db
-    .collection('config')
-    .doc('config')
-    .update({
-      clubSignupStatus: open ? 'open' : 'closed',
-    })
-}
-
-export const setClubSignupSem = (sem: 'S1' | 'S2' | 'SS'): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection('config').doc('config').update({
-    clubSignupSem: sem,
+  const membersSnapshot = await db.collection(MEMBER_DB_PATH).get()
+  const members: AumtMembersObj = {}
+  membersSnapshot.forEach((doc) => {
+    members[doc.id] = doc.data() as AumtMember
   })
-}
-
-export const getAllMembers = (): Promise<AumtMembersObj> => {
-  if (!db) return Promise.reject('No db object')
-  return db
-    .collection(MEMBER_DB_PATH)
-    .get()
-    .then((querySnapshot) => {
-      const members: AumtMembersObj = {}
-      querySnapshot.forEach((doc) => {
-        const data = doc.data()
-        try {
-          members[doc.id] = docToMember(data)
-        } catch (e) {
-          console.warn(e)
-        }
-      })
-      return members
-    })
-}
-
-export const submitCommitteeApplication = (
-  app: AumtCommitteeApp
-): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection('committee-apps').doc(getListenerId()).set(app)
-}
-
-export const getCommitteeApplications = (): Promise<AumtCommitteeApp[]> => {
-  if (!db) return Promise.reject('No db object')
-  return db
-    .collection('committee-apps')
-    .get()
-    .then((querySnapshot) => {
-      const apps: AumtCommitteeApp[] = []
-      querySnapshot.forEach((doc) => {
-        apps.push(doc.data() as AumtCommitteeApp)
-      })
-      return apps.sort((a, b) => a.timestampMs - b.timestampMs)
-    })
+  return members
 }
 
 export const submitNewForm = (formData: AumtWeeklyTraining): Promise<void> => {
@@ -259,25 +201,6 @@ export const getAllForms = (): Promise<AumtWeeklyTraining[]> => {
     })
 }
 
-export const updatePaid = (
-  memberId: string,
-  newPaid: 'Yes' | 'No'
-): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection(MEMBER_DB_PATH).doc(memberId).update({ paid: newPaid })
-}
-
-export const updateMembership = (
-  memberId: string,
-  newMembership: 'S1' | 'S2' | 'FY' | 'SS'
-): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db
-    .collection(MEMBER_DB_PATH)
-    .doc(memberId)
-    .update({ membership: newMembership })
-}
-
 export const getOpenForms = (): Promise<AumtWeeklyTraining[]> => {
   if (!db) return Promise.reject('No db object')
   const currentDate = new Date()
@@ -305,34 +228,6 @@ export const setMember = (
 ): Promise<void> => {
   if (!db) return Promise.reject('No db object')
   return db.collection(MEMBER_DB_PATH).doc(memberId).set(memberData)
-}
-
-export const addMultipleMembers = (
-  members: Record<string, AumtMember>
-): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  const batch = db.batch()
-  const memberCollection = db.collection(MEMBER_DB_PATH)
-  Object.keys(members).forEach((key: string) => {
-    const docRef = memberCollection.doc(key)
-    batch.set(docRef, members[key])
-  })
-  return batch.commit()
-}
-
-export const removeMultipleMembers = (memberIds: string[]): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  const batch = db.batch()
-  memberIds.forEach((id) => {
-    const doc = db!.collection(MEMBER_DB_PATH).doc(id)
-    batch.delete(doc)
-  })
-  return batch.commit()
-}
-
-export const removeMember = (memberId: string): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection(MEMBER_DB_PATH).doc(memberId).delete()
 }
 
 export const getTrainingData = (
@@ -495,19 +390,6 @@ export const signUserUp = (
     .set(mergeObj, { merge: true })
 }
 
-export const formatMembers = () => {
-  if (!db) return Promise.reject('No db object')
-  // const experiences = ['Cash', 'Bank Transfer']
-  return db.collection('members').get()
-  // .then((querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //         // doc.ref.update({
-
-  //         // })
-  //     })
-  // })
-}
-
 export const listenToOneTraining = (
   formId: string,
   callback: (formId: string, training: AumtWeeklyTraining) => void
@@ -523,83 +405,11 @@ export const listenToOneTraining = (
   return listenerId
 }
 
-export const listenToTrainings = (
-  callback: (forms: AumtWeeklyTraining[]) => void
-): string => {
-  if (!db) throw new Error('no db')
-  const listenerId = getListenerId()
-  listeners[listenerId] = db
-    .collection(TRAINING_DB_PATH)
-    .onSnapshot((querySnapshot) => {
-      const newForms: AumtWeeklyTraining[] = []
-      querySnapshot.docs.forEach((doc) => {
-        newForms.push(docToForm(doc.data()))
-      })
-      callback(newForms)
-    })
-  return listenerId
-}
-
-export const listenToEvents = (
-  callback: (events: AumtEvent[]) => void,
-  errorCallback: (message: string) => void
-): string => {
-  if (!db) throw new Error('no db')
-  const listenerId = getListenerId()
-  listeners[listenerId] = db
-    .collection('events')
-    .onSnapshot((querySnapshot) => {
-      const newEvents: AumtEvent[] = []
-      querySnapshot.docs.forEach((doc) => {
-        try {
-          const event = docToEvent(doc.data())
-          newEvents.push(event)
-        } catch (err) {
-          console.warn(err)
-          // NOTE: uncomment this block if errors occur:
-          // if (errorCallback ) {
-          //     errorCallback(`Excluding event because ${err.toString()}`)
-          // }
-        }
-      })
-      callback(newEvents)
-    })
-  return listenerId
-}
-
-export const listenToMembers = (
-  callback: (members: AumtMembersObj) => void
-): string => {
-  if (!db) throw new Error('No db')
-  const listenerId = getListenerId()
-  listeners[listenerId] = db
-    .collection(MEMBER_DB_PATH)
-    .onSnapshot((querySnapshot) => {
-      const members: AumtMembersObj = {}
-      querySnapshot.forEach((doc) => {
-        const data = doc.data()
-        try {
-          members[doc.id] = docToMember(data)
-        } catch (e) {
-          console.warn(e)
-        }
-      })
-      callback(members)
-    })
-  return listenerId
-}
-
 export const unlisten = (listenerId: string) => {
   if (listeners[listenerId]) {
     listeners[listenerId]()
     delete listeners[listenerId]
   }
-}
-
-export const getRandomDate = (start: Date, end: Date) => {
-  return new Date(
-    start.getTime() + Math.random() * (end.getTime() - start.getTime())
-  )
 }
 
 export const getListenerId = () => {
@@ -638,29 +448,6 @@ export const docToForm = (docData: any): AumtWeeklyTraining => {
     paymentLock: docData.paymentLock,
   }
   return weeklyTraining
-}
-
-export const formToDoc = (form: AumtWeeklyTraining) => {
-  const sessions: AumtTrainingSession[] = []
-  Object.values(form.sessions).forEach((session: AumtTrainingSession) => {
-    sessions.push(session)
-  })
-  return {
-    ...form,
-    sessions: sessions.sort((a, b) => a.position - b.position),
-  }
-}
-
-export const docToMember = (docData: any): AumtMember => {
-  const member = validator.createAumtMember(docData)
-  if (typeof member === 'string') {
-    throw new Error(
-      `Could not read member. Reason: ${member}, Data: ${JSON.stringify(
-        docData
-      )}`
-    )
-  }
-  return member
 }
 
 export const docToEvent = (docData: any): AumtEvent => {

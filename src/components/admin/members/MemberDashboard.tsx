@@ -33,10 +33,12 @@ export default function MemberDashboard() {
   const dataSource: TableDataLine[] = []
   if (members) {
     Object.entries(members).forEach(([uid, member]) => {
+      const name = `${member.firstName} ${member.preferredName} ${member.lastName}`
+
       if (
         search &&
-        !member.firstName.includes(search) &&
-        !member.email.includes(search)
+        !name.toLowerCase().includes(search) &&
+        !member.email.toLowerCase().includes(search)
       ) {
         return
       }
@@ -44,9 +46,7 @@ export default function MemberDashboard() {
       dataSource.push({
         key: uid,
         ...member,
-        tableName: `${member.firstName} ${member.preferredName ?? ''} ${
-          member.lastName
-        }`,
+        tableName: name,
       })
     })
   }

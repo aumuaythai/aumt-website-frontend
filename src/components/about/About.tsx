@@ -1,8 +1,8 @@
 import { Button } from 'antd'
 import { Link } from 'react-router'
-import { useConfig } from '../../../context/ClubConfigProvider'
-import { Links } from '../../../services/links'
-import { cn } from '../../utility/utils'
+import { useConfig } from '../../context/ClubConfigProvider'
+import { cn } from '../../lib/utils'
+import { Links } from '../../services/links'
 
 export default function About() {
   const clubConfig = useConfig()
@@ -10,8 +10,8 @@ export default function About() {
   const fullYearFee = clubConfig?.fullYearFee
 
   return (
-    <div className="flex flex-col items-center justify-center pb-6">
-      <div className="relative bg-[url('/photos/content/Landing_Coloured.jpg')] bg-cover bg-center h-[500px] w-full flex-col flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center pb-6 text-center">
+      <div className="relative bg-[url('/photos/content/Landing_Coloured.jpg')] bg-[#14947e] bg-cover bg-center h-[500px] w-full flex-col flex items-center justify-center">
         <div className="inset-0 absolute bg-black/25 backdrop-blur-xs" />
         <h1 className="text-[1.8vw] text-white drop-shadow-lg drop-shadow-white/20">
           Auckland University

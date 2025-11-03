@@ -1,8 +1,8 @@
 import { Button, Divider } from 'antd'
 import { useEffect, useState } from 'react'
-import { getClubConfig } from '../../../services/db'
-import { Links } from '../../../services/links'
-import { ClubConfig } from '../../../types/ClubConfig'
+import { getClubConfig } from '../../services/db'
+import { Links } from '../../services/links'
+import { ClubConfig } from '../../types/ClubConfig'
 
 export default function Faq() {
   const [clubConfig, setClubConfig] = useState<ClubConfig | null>(null)

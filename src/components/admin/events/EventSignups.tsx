@@ -276,7 +276,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { getEventById, signUpToEvent } from '../../../services/db'
 import { AumtCampSignupData } from '../../../types'
-import { CampSignupForm } from '../../content/events/CampSignupForm'
+import { CampSignupForm } from '../../events/CampSignupForm'
 import './EventSignups.css'
 import EventSignupTable from './EventSignupTable'
 

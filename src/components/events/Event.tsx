@@ -9,18 +9,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Divider, notification, Result, Spin } from 'antd'
 import moment from 'moment'
 import { Link, useParams } from 'react-router'
-import { useAuth } from '../../../context/AuthProvider'
+import { useAuth } from '../../context/AuthProvider'
 import {
   getEventById,
   removeMemberFromEvent,
   signUpToEvent,
-} from '../../../services/db'
-import {
-  AumtCampSignupData,
-  AumtEvent,
-  AumtEventSignupData,
-} from '../../../types'
-import { RenderMarkdown } from '../../utility/RenderMarkdown'
+} from '../../services/db'
+import { AumtCampSignupData, AumtEvent, AumtEventSignupData } from '../../types'
+import { RenderMarkdown } from '../utility/RenderMarkdown'
 import { CampSignupForm } from './CampSignupForm'
 
 export default function Event() {

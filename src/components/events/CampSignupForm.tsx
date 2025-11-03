@@ -1,7 +1,7 @@
 import { Button, Form, Input, InputNumber, Radio } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import React, { Component } from 'react'
-import { AumtCampSignupData } from '../../../types'
+import { AumtCampSignupData } from '../../types'
 
 interface CampSignupFormProps {
   includeNameAndEmail: boolean

@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button, Input, notification, Popconfirm, Radio, Tooltip } from 'antd'
 import { Controller, FieldErrors, useForm } from 'react-hook-form'
 import z from 'zod'
-import DataFormatterUtil from '../../../services/data.util'
+import { copyText } from '../../../lib/utils'
 import { setMember } from '../../../services/db'
 import { AumtMember } from '../../../types'
 import type { TableDataLine } from './MemberDashboard'
@@ -118,10 +118,6 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
     console.log(errors)
   }
 
-  function copyText(text: string) {
-    DataFormatterUtil.copyText(text)
-  }
-
   const isMutating = updateMember.isPending || removeMember.isPending
 
   const isUoaStudent = watch('isUoAStudent')
@@ -166,7 +162,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
                 onChange={onChange}
                 suffix={
                   <Tooltip title="Copy">
-                    <CopyOutlined onClick={(e) => copyText(value)} />
+                    <CopyOutlined onClick={() => copyText(value)} />
                   </Tooltip>
                 }
               />

@@ -68,11 +68,11 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="mx-auto p-6 max-w-sm">
+    <div className="mx-auto p-6 pt-24 max-w-sm">
       <Link to="/">
         <Logo className="max-w-48 mx-auto" />
       </Link>
-      <h2 className="mt-3">Sign In</h2>
+      <h2 className="mt-1">Sign In</h2>
       <Controller
         control={control}
         name="email"

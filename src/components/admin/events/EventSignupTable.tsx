@@ -20,7 +20,7 @@ import { ColumnsType } from 'antd/lib/table'
 import { TableCurrentDataSource } from 'antd/lib/table/interface'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-import dataUtil, { CarAllocation } from '../../../services/data.util'
+import { copyText } from '../../../lib/utils'
 import {
   confirmMemberEventSignup,
   removeMemberFromEvent,
@@ -37,6 +37,23 @@ interface EventSignupTableProps {
   isWaitlist: boolean
   isCamp: boolean
   limit: number | null
+}
+
+type CarAllocation = {
+  driver: string
+  carOwner: string
+  passengers: string[]
+  seats: number
+}
+
+function downloadCsv(fileName: string, text: string) {
+  const blob = new Blob([text])
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = fileName + '.csv'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
 }
 
 export default function EventSignupTable(props: EventSignupTableProps) {
@@ -375,7 +392,7 @@ export default function EventSignupTable(props: EventSignupTableProps) {
         <Button
           className="eventSignupTableFooterDownloadButton"
           type="link"
-          onClick={downloadCsv}
+          onClick={downloadCsvInternal}
         >
           Download .csv
         </Button>
@@ -384,9 +401,6 @@ export default function EventSignupTable(props: EventSignupTableProps) {
         </p>
       </div>
     )
-  }
-  function copyText(text: string | undefined) {
-    if (text) dataUtil.copyText(text)
   }
   function onMemberSelect(member: TableRow) {
     setSelectedSignup(member)
@@ -419,7 +433,7 @@ export default function EventSignupTable(props: EventSignupTableProps) {
     return keyMap[a] > keyMap[b] ? -1 : 1
   }
   function copyEmails() {
-    dataUtil.copyText(
+    copyText(
       Object.keys(props.signupData)
         .filter((key) => {
           if (selectedRows.length) {
@@ -431,7 +445,7 @@ export default function EventSignupTable(props: EventSignupTableProps) {
         .join('\n')
     )
   }
-  function downloadCsv() {
+  function downloadCsvInternal() {
     let header = false
     let csvStr = ''
     const fileName = `${props.urlPath}_${
@@ -455,7 +469,7 @@ export default function EventSignupTable(props: EventSignupTableProps) {
             .map((key) => row[key])
             .join(',') + '\n'
       })
-    dataUtil.downloadCsv(fileName, csvStr)
+    downloadCsv(fileName, csvStr)
   }
   function downloadCarCsv() {
     const allocations = randomCars
@@ -480,7 +494,7 @@ export default function EventSignupTable(props: EventSignupTableProps) {
         .transpose(allCars)
         .map((row, idx) => (idx === 0 ? 'Owner' : '') + ',' + row.join(','))
         .join('\n')
-    dataUtil.downloadCsv('car_allocations', csvStr)
+    downloadCsv('car_allocations', csvStr)
   }
   function onTableChange(
     pagination: any,

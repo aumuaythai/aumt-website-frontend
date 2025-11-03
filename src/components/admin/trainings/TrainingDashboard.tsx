@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import { Button, Select, Spin } from 'antd'
 import { useState } from 'react'
@@ -6,7 +6,7 @@ import { Link } from 'react-router'
 import { getAllForms } from '../../../services/db'
 import { EditSignups } from './EditSignups'
 import ManageTrainings from './ManageTrainings'
-import { YearStats } from './YearStats'
+import YearStats from './YearStats'
 
 export default function TrainingDashboard() {
   const [selectedTrainingId, setSelectedTrainingId] = useState<string | null>(
@@ -46,32 +46,32 @@ export default function TrainingDashboard() {
   }
 
   return (
-    <div className="p-3.5 h-full flex-1">
+    <div className="p-4 h-full flex-1">
       <div className="flex items-center justify-between">
-        <div>
+        <div className="flex items-center gap-x-2">
           <Select
-            className="w-64"
             value={selectedTrainingId}
+            options={trainings.map((training) => ({
+              label: training.title,
+              value: training.trainingId,
+            }))}
+            className="w-72"
             onChange={(value) => handleTrainingClick(value as string)}
-          >
-            {trainings.map((training) => (
-              <Select.Option
-                key={training.trainingId}
-                value={training.trainingId}
-              >
-                {training.title.length > 50 && window.innerWidth < 600
-                  ? training.title.slice(0, 47) + '...'
-                  : training.title}
-              </Select.Option>
-            ))}
-          </Select>
+          />
           {selectedTraining && (
-            <Link
-              to={`/admin/trainings/${selectedTraining.trainingId}/attendance`}
-              className="ml-2"
-            >
-              <Button type="primary">Attendance</Button>
-            </Link>
+            <>
+              <Link to={`/admin/trainings/${selectedTraining.trainingId}`}>
+                <Button>Edit</Button>
+              </Link>
+              <Button danger>Remove</Button>
+              <Link
+                to={`/admin/trainings/${selectedTraining.trainingId}/attendance`}
+              >
+                <Button type="primary" ghost>
+                  Attendance
+                </Button>
+              </Link>
+            </>
           )}
         </div>
 
@@ -82,37 +82,19 @@ export default function TrainingDashboard() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 h-full mt-6 gap-6">
-        <div className="flex flex-col">
-          <h2 className="text-xl">
-            Manage {sortedTrainings.length || ''} Trainings
-          </h2>
-          <ManageTrainings
-            trainings={sortedTrainings}
-            loadingTrainings={isLoadingTrainings}
-            onTrainingClick={handleTrainingClick}
-          />
-        </div>
-
-        <div className="flex flex-col">
+      <div className="flex flex-col md:flex-row mt-4">
+        <div className="flex flex-col flex-1/3">
           <h2 className="text-xl">Edit Signups</h2>
-          {isLoadingTrainings ? (
-            <div>
-              Loading current forms <Spin />
-            </div>
-          ) : selectedTraining ? (
+          {selectedTraining ? (
             <EditSignups form={selectedTraining} />
           ) : (
             <p>No Form Selected</p>
           )}
         </div>
 
-        <div className="md:col-span-2 flex flex-col h-full">
+        <div className="flex flex-col flex-2/3">
           <h2 className="text-xl">Yearly Stats</h2>
-          <YearStats
-            forms={sortedTrainings}
-            onTrainingClick={handleTrainingClick}
-          />
+          <YearStats trainings={trainings} />
         </div>
       </div>
     </div>

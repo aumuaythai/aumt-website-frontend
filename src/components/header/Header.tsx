@@ -34,17 +34,11 @@ export default function Header() {
         {authedUser ? (
           <UserInfo authedUser={authedUser} />
         ) : (
-          // <Link
-          //   to={`/login?from=${pathname}`}
-          //   className="h-full flex items-center px-8 !text-[#11388d] !transition-colors duration-300 hover:!bg-[#11388d]/10"
-          // >
-          //   Sign In
-          // </Link>
           <div className="flex items-center gap-x-2">
-            <Button type="primary" ghost className="!py-4 !font-joyride">
+            <Button type="text" className="!py-4 !font-joyride">
               <Link to={`/login?from=${pathname}`}>Sign In</Link>
             </Button>
-            <Button type="primary" className="!py-4 !font-joyride">
+            <Button className="!py-4 !font-joyride">
               <Link to={`/join`}>Create account</Link>
             </Button>
           </div>

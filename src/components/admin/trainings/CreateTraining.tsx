@@ -22,10 +22,13 @@ import {
 } from 'react-hook-form'
 import { Link, useParams } from 'react-router'
 import z from 'zod'
-import { getOpenForms, submitNewForm } from '../../../services/db'
+import {
+  getOpenForms,
+  getTrainingData,
+  submitNewForm,
+} from '../../../services/db'
 import { AumtTrainingSession } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
-import AdminStore from '../AdminStore'
 
 const TRAINING_DEFAULT_NOTES = `RULES/ETIQUETTE
 1.    Keep the training area free until your session starts.
@@ -83,7 +86,7 @@ export default function CreateTraining() {
 
   const { data: training, isLoading: isLoadingTraining } = useQuery({
     queryKey: ['training', trainingId],
-    queryFn: () => AdminStore.getTrainingById(trainingId!),
+    queryFn: () => getTrainingData(trainingId!),
     enabled: !!trainingId,
   })
 

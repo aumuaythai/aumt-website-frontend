@@ -1,31 +1,36 @@
+import PaymentInstructions from '@/components/utility/PaymentInstructions'
+import { useAuth } from '@/context/AuthProvider'
+import { useConfig } from '@/context/ClubConfigProvider'
+import { setMember } from '@/services/db'
+import { AumtMember } from '@/types'
+import {
+  ETHNICITIES,
+  GENDER,
+  MEMBERSHIP_PERIOD,
+  PAYMENT_TYPE,
+} from '@/types/AumtMember'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 import { ReactNode, useState } from 'react'
 import { Control, Controller, useForm, UseFormWatch } from 'react-hook-form'
 import z from 'zod'
-import { useAuth } from '../../../context/AuthProvider'
-import { useConfig } from '../../../context/ClubConfigProvider'
-import { setMember } from '../../../services/db'
-import { AumtMember, MembershipPeriod } from '../../../types'
-import PaymentInstructions from '../../utility/PaymentInstructions'
-import { ETHNICITIES } from '../join/JoinForm'
 
 const accountSchema = z.object({
-  membership: z.enum(['S1', 'S2', 'FY', 'SS']),
-  paymentType: z.enum(['Cash', 'Bank Transfer', 'Other']),
+  membership: z.enum(MEMBERSHIP_PERIOD),
+  paymentType: z.enum(PAYMENT_TYPE),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   preferredName: z.string().optional(),
   ethnicity: z.enum(ETHNICITIES),
-  gender: z.string().min(1, 'Gender is required'),
-  isUoAStudent: z.enum(['Yes', 'No']),
+  gender: z.enum(GENDER),
+  isUoAStudent: z.boolean(),
   upi: z.string().optional(),
   studentId: z.string().optional(),
-  EmergencyContactName: z.string().min(1, 'Emergency contact name is required'),
-  EmergencyContactNumber: z
+  emergencyContactName: z.string().min(1, 'Emergency contact name is required'),
+  emergencyContactNumber: z
     .string()
     .min(1, 'Emergency contact number is required'),
-  EmergencyContactRelationship: z
+  emergencyContactRelationship: z
     .string()
     .min(1, 'Emergency contact relationship is required'),
 })
@@ -38,19 +43,19 @@ function Account() {
 
   const { control, watch, handleSubmit } = useForm<Account>({
     defaultValues: {
-      membership: authedUser.membership,
-      paymentType: authedUser.paymentType,
-      firstName: authedUser.firstName,
-      lastName: authedUser.lastName,
-      preferredName: authedUser.preferredName,
-      ethnicity: authedUser.ethnicity,
-      gender: authedUser.gender,
-      isUoAStudent: authedUser.isUoAStudent,
-      upi: authedUser.upi,
-      studentId: authedUser.studentId,
-      EmergencyContactName: authedUser.EmergencyContactName,
-      EmergencyContactNumber: authedUser.EmergencyContactNumber,
-      EmergencyContactRelationship: authedUser.EmergencyContactRelationship,
+      membership: authedUser?.membership,
+      paymentType: authedUser?.paymentType,
+      firstName: authedUser?.firstName,
+      lastName: authedUser?.lastName,
+      preferredName: authedUser?.preferredName ?? undefined,
+      ethnicity: authedUser?.ethnicity,
+      gender: authedUser?.gender,
+      isUoAStudent: authedUser?.isUoAStudent,
+      upi: authedUser?.upi ?? undefined,
+      studentId: authedUser?.studentId ?? undefined,
+      emergencyContactName: authedUser?.emergencyContactName,
+      emergencyContactNumber: authedUser?.emergencyContactNumber,
+      emergencyContactRelationship: authedUser?.emergencyContactRelationship,
     },
     resolver: zodResolver(accountSchema),
   })

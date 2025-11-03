@@ -1,14 +1,10 @@
 import { Divider, Spin, notification } from 'antd'
 import React, { useEffect } from 'react'
 import { Link } from 'react-router'
-import { useAuth } from '../../../context/AuthProvider'
-import { useConfig } from '../../../context/ClubConfigProvider'
-import {
-  getOpenForms,
-  listenToOneTraining,
-  unlisten,
-} from '../../../services/db'
-import { AumtWeeklyTraining } from '../../../types'
+import { useAuth } from '../../context/AuthProvider'
+import { useConfig } from '../../context/ClubConfigProvider'
+import { getOpenForms, listenToOneTraining, unlisten } from '../../services/db'
+import { AumtWeeklyTraining } from '../../types'
 import SignupForm from './SignupForm'
 
 export default function Signups() {

@@ -1,9 +1,9 @@
+import PaymentInstructions from '@/components/utility/PaymentInstructions'
+import { useAuth } from '@/context/AuthProvider'
+import { useConfig } from '@/context/ClubConfigProvider'
 import { CheckCircleFilled } from '@ant-design/icons'
 import { Spin } from 'antd'
 import { Link } from 'react-router'
-import { useAuth } from '../../../context/AuthProvider'
-import { useConfig } from '../../../context/ClubConfigProvider'
-import PaymentInstructions from '../../utility/PaymentInstructions'
 import JoinForm from './JoinForm'
 
 export default function MainJoin() {
