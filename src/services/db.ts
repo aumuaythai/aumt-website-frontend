@@ -18,25 +18,16 @@ const MEMBER_DB_PATH = 'members'
 
 const listeners: Record<string, Function> = {}
 
-export const getUserInfo = (fbUser: firebase.User): Promise<AumtMember> => {
-  if (!db) return Promise.reject('No db object')
-  return db
-    .collection(MEMBER_DB_PATH)
-    .doc(fbUser.uid)
-    .get()
-    .then((doc) => {
-      const docData = doc.data()
-      if (doc.exists && docData) {
-        try {
-          const member = docToMember(docData)
-          return member
-        } catch (e) {
-          throw e
-        }
-      } else {
-        throw new Error('No AUMT member exists for this acccount ' + fbUser.uid)
-      }
-    })
+export async function getUserInfo(fbUser: firebase.User): Promise<AumtMember> {
+  if (!db) throw new Error('No db object')
+  const doc = await db.collection(MEMBER_DB_PATH).doc(fbUser.uid).get()
+  const docData = doc.data()
+
+  if (!doc.exists || !docData) {
+    throw new Error('No AUMT member exists for this acccount ' + fbUser.uid)
+  }
+
+  return docData as AumtMember
 }
 
 export const getIsAdmin = (userId: string): Promise<boolean> => {

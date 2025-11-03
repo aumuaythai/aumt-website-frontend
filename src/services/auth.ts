@@ -16,6 +16,11 @@ export const getCurrentUser = (): firebase.User | null => {
   return auth.currentUser
 }
 
+export const getCurrentUid = (): string | null => {
+  const currentUser = getCurrentUser()
+  return currentUser ? currentUser.uid : null
+}
+
 export const createUser = (email: string, password: string) => {
   return auth.createUserWithEmailAndPassword(email, password)
 }

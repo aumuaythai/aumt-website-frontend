@@ -1,36 +1,40 @@
-export interface AumtMember {
+export type PaymentType = 'Cash' | 'Bank Transfer' | 'Other'
+
+export type MembershipPeriod = 'S1' | 'S2' | 'FY' | 'SS'
+
+export type Gender = 'Male' | 'Female' | 'Non-binary' | 'Prefer not to say'
+
+export type AumtMember = {
   // contact
   firstName: string
   lastName: string
-  preferredName: string
+  preferredName: string | null
   email: string
 
   // demographic
   ethnicity: string
-  gender: string
+  gender: Gender
 
   // Membership
   membership: MembershipPeriod
-  paymentType: 'Cash' | 'Bank Transfer' | 'Other'
-  isReturningMember: 'Yes' | 'No'
-  paid: 'Yes' | 'No'
+  paymentType: PaymentType
+  isReturningMember: boolean
+  paid: boolean
   timeJoinedMs: number
 
-  // details
-  upi: string
-  studentId: string
-  interestedInCamp: 'Yes' | 'No'
-  isUoAStudent: 'Yes' | 'No'
+  // Details
+  upi: string | null
+  studentId: string | null
+  isInterestedInCamp: boolean
+  isUoAStudent: boolean
   initialExperience: string
-  notes: string
+  notes: string | null
 
   // Emergency Contact
-  EmergencyContactName: string
-  EmergencyContactNumber: string
-  EmergencyContactRelationship: string
+  emergencyContactName: string
+  emergencyContactNumber: string
+  emergencyContactRelationship: string
 }
-
-export type MembershipPeriod = 'S1' | 'S2' | 'FY' | 'SS'
 
 export interface AumtMembersObj {
   [uid: string]: AumtMember
