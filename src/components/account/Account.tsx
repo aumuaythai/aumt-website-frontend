@@ -7,12 +7,19 @@ import {
   ETHNICITIES,
   GENDER,
   MEMBERSHIP_PERIOD,
+  MEMBERSHIP_PERIOD_LONG,
   PAYMENT_TYPE,
 } from '@/types/AumtMember'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 import { ReactNode, useState } from 'react'
-import { Control, Controller, useForm, UseFormWatch } from 'react-hook-form'
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  useForm,
+  UseFormWatch,
+} from 'react-hook-form'
 import z from 'zod'
 
 const accountSchema = z.object({
@@ -37,51 +44,70 @@ const accountSchema = z.object({
 
 type Account = z.infer<typeof accountSchema>
 
-function Account() {
-  const { authedUser, authedUserId } = useAuth()
-  const [saving, setSaving] = useState(false)
+export default function Account() {
+  const { user, userId } = useAuth()
 
-  const { control, watch, handleSubmit } = useForm<Account>({
+  const {
+    control,
+    watch,
+    handleSubmit,
+    formState: { isSubmitting: saving },
+  } = useForm<Account>({
     defaultValues: {
-      membership: authedUser?.membership,
-      paymentType: authedUser?.paymentType,
-      firstName: authedUser?.firstName,
-      lastName: authedUser?.lastName,
-      preferredName: authedUser?.preferredName ?? undefined,
-      ethnicity: authedUser?.ethnicity,
-      gender: authedUser?.gender,
-      isUoAStudent: authedUser?.isUoAStudent,
-      upi: authedUser?.upi ?? undefined,
-      studentId: authedUser?.studentId ?? undefined,
-      emergencyContactName: authedUser?.emergencyContactName,
-      emergencyContactNumber: authedUser?.emergencyContactNumber,
-      emergencyContactRelationship: authedUser?.emergencyContactRelationship,
+      membership: user?.membership,
+      paymentType: user?.paymentType,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      preferredName: user?.preferredName ?? undefined,
+      ethnicity: user?.ethnicity,
+      gender: user?.gender,
+      isUoAStudent: user?.isUoAStudent,
+      upi: user?.upi ?? undefined,
+      studentId: user?.studentId ?? undefined,
+      emergencyContactName: user?.emergencyContactName,
+      emergencyContactNumber: user?.emergencyContactNumber,
+      emergencyContactRelationship: user?.emergencyContactRelationship,
     },
     resolver: zodResolver(accountSchema),
   })
 
-  const onSave = handleSubmit(updateMember)
+  async function onSave(e?: React.BaseSyntheticEvent) {
+    await handleSubmit(onValid, onInvalid)(e)
+  }
 
-  async function updateMember(data: Account) {
-    setSaving(true)
+  async function onValid(data: Account) {
+    if (!user) {
+      return
+    }
+
     const updatedMember: AumtMember = {
-      ...authedUser,
+      ...user,
       ...data,
     }
 
-    try {
-      console.log(updatedMember)
-      await setMember(authedUserId, updatedMember)
-      notification.success({ message: 'Details updated' })
-    } catch (error) {
-      console.error('Error updating member:', error)
-    } finally {
-      setSaving(false)
+    await setMember(userId, updatedMember)
+  }
+
+  function onInvalid(errors: FieldErrors<Account>) {
+    const firstError = Object.keys(errors)[0]
+    if (firstError) {
+      notification.error({ message: errors[firstError]?.message })
     }
   }
 
+  if (!user) {
+    return (
+      <div>
+        Loading account details <Spin />
+      </div>
+    )
+  }
+
   return (
-    <main className="max-w-[640px] mx-auto text-left p-6">
+    <form
+      className="max-w-[640px] mx-auto text-left p-6"
+      onSubmit={handleSubmit(onValid, onInvalid)}
+    >
       <h1 className="text-2xl font-bold">Account Settings</h1>
 
       <MembershipSection saving={saving} control={control} onSave={onSave} />
@@ -97,18 +123,8 @@ function Account() {
         control={control}
         onSave={onSave}
       />
-    </main>
+    </form>
   )
-}
-
-export default function AccountWrapper() {
-  const { authedUser } = useAuth()
-
-  if (!authedUser) {
-    return <div>You do not have an account yet. Please join.</div>
-  }
-
-  return <Account />
 }
 
 type SectionProps = {
@@ -118,19 +134,20 @@ type SectionProps = {
   watch?: UseFormWatch<Account>
 }
 
-const MembershipPeriodLong: Record<MembershipPeriod, string> = {
-  S1: 'Semester 1',
-  S2: 'Semester 2',
-  FY: 'Full Year (Sem 1 and Sem 2)',
-  SS: 'Summer School',
-}
-
 function MembershipSection({ saving, control, onSave }: SectionProps) {
-  const { authedUser } = useAuth()
+  const { user } = useAuth()
   const clubConfig = useConfig()
   const [editing, setEditing] = useState(false)
 
   const clubSignupSem = clubConfig?.clubSignupSem
+
+  if (!user || !clubConfig) {
+    return (
+      <div>
+        Loading account details <Spin />
+      </div>
+    )
+  }
 
   return (
     <AccountSection
@@ -143,15 +160,13 @@ function MembershipSection({ saving, control, onSave }: SectionProps) {
       <List.Item>
         <span>Current</span>
         <span className="font-bold">
-          {MembershipPeriodLong[authedUser.membership]}
+          {MEMBERSHIP_PERIOD_LONG[user.membership]}
         </span>
       </List.Item>
 
       <List.Item>
         <span>Status</span>
-        <span className="font-bold">
-          {authedUser.paid === 'Yes' ? 'Paid' : 'Not paid'}
-        </span>
+        <span className="font-bold">{user.paid ? 'Paid' : 'Not paid'}</span>
       </List.Item>
 
       <List.Item>
@@ -176,9 +191,9 @@ function MembershipSection({ saving, control, onSave }: SectionProps) {
                 </>
               )}
               {clubSignupSem === 'S2' &&
-                !(
-                  authedUser.membership === 'FY' && authedUser.paid === 'Yes'
-                ) && <Radio.Button value="S2">Semester 2</Radio.Button>}
+                !(user.membership === 'FY' && user.paid) && (
+                  <Radio.Button value="S2">Semester 2</Radio.Button>
+                )}
             </Radio.Group>
           )}
         />
@@ -203,11 +218,11 @@ function MembershipSection({ saving, control, onSave }: SectionProps) {
           )}
         />
       </List.Item>
-      {authedUser.paid === 'No' && (
+      {!user.paid && (
         <List.Item>
           <PaymentInstructions
-            membershipType={authedUser.membership}
-            paymentType={authedUser.paymentType}
+            membershipType={user.membership}
+            paymentType={user.paymentType}
             clubConfig={clubConfig}
           />
         </List.Item>
@@ -217,8 +232,16 @@ function MembershipSection({ saving, control, onSave }: SectionProps) {
 }
 
 function PersonalSection({ saving, control, onSave }: SectionProps) {
-  const { authedUser } = useAuth()
+  const { user } = useAuth()
   const [editing, setEditing] = useState(false)
+
+  if (!user) {
+    return (
+      <div>
+        Loading account details <Spin />
+      </div>
+    )
+  }
 
   return (
     <AccountSection
@@ -275,7 +298,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
       </List.Item>
       <List.Item>
         <span>Email</span>
-        <span className="font-bold">{authedUser.email}</span>
+        <span className="font-bold">{user.email}</span>
       </List.Item>
       <List.Item>
         <span>Ethnicity</span>
@@ -323,10 +346,18 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
 }
 
 function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
-  const { authedUser } = useAuth()
+  const { user } = useAuth()
   const [editing, setEditing] = useState(false)
 
-  const isUoaStudent = watch('isUoAStudent')
+  const isUoaStudent = watch?.('isUoAStudent')
+
+  if (!user) {
+    return (
+      <div>
+        Loading account details <Spin />
+      </div>
+    )
+  }
 
   return (
     <AccountSection
@@ -354,7 +385,7 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
           )}
         />
       </List.Item>
-      {isUoaStudent === 'Yes' && (
+      {isUoaStudent && (
         <>
           <List.Item>
             <span>UPI</span>
@@ -393,7 +424,6 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
 }
 
 function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
-  const { authedUser } = useAuth()
   const [editing, setEditing] = useState(false)
 
   return (
@@ -407,7 +437,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
       <List.Item>
         <span>Name</span>
         <Controller
-          name="EmergencyContactName"
+          name="emergencyContactName"
           control={control}
           render={({ field: { value, onChange } }) => (
             <Input
@@ -422,7 +452,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
       <List.Item>
         <span>Number</span>
         <Controller
-          name="EmergencyContactNumber"
+          name="emergencyContactNumber"
           control={control}
           render={({ field: { value, onChange } }) => (
             <Input
@@ -437,7 +467,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
       <List.Item>
         <span>Relationship</span>
         <Controller
-          name="EmergencyContactRelationship"
+          name="emergencyContactRelationship"
           control={control}
           render={({ field: { value, onChange } }) => (
             <Input

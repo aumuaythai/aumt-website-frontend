@@ -19,5 +19,9 @@ const FIREBASE_CONFIG = {
 firebase.initializeApp(FIREBASE_CONFIG)
 export const auth = firebase.auth()
 export const functions = firebase.functions()
-export const db = firebase.firestore()
+
+const db = firebase.firestore()
+db.settings({ ignoreUndefinedProperties: true })
+export { db }
+
 export const analytics = firebase.analytics()

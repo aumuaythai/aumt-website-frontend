@@ -284,7 +284,7 @@ export const getTrainingAttendance = async (
   formId: string,
   sessionId: string
 ): Promise<string[]> => {
-  if (!db) return null
+  if (!db) return []
   if (!(await checkTrainingAttendanceExists(formId, sessionId))) {
     await createTrainingAttendance(formId, sessionId)
     return []
@@ -426,6 +426,8 @@ export const docToForm = (docData: any): AumtWeeklyTraining => {
     console.log(docData)
     throw new Error('Outdated website, clear cache and refresh page please')
   }
+  console.log('docData', docData)
+
   Object.keys(docData.sessions).forEach((sessionId: string) => {
     const session = docData.sessions[sessionId]
     Object.keys(session.members).forEach((i) => {

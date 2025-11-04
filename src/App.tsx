@@ -20,9 +20,9 @@ import { ErrorBoundary } from './components/error/ErrorBoundary'
 import Event from './components/events/Event'
 import Events from './components/events/Events'
 import Header from './components/header/Header'
-import MainJoin from './components/join/MainJoin'
+import Join from './components/join/Join'
 import LoginForm from './components/login/LoginForm'
-import Signups from './components/signups/Signups'
+import Trainings from './components/trainings/Trainings'
 import AuthProvider from './context/AuthProvider'
 import ClubConfigProvider from './context/ClubConfigProvider'
 
@@ -49,10 +49,10 @@ export default function App() {
                     <Route path="/" element={<About />} />
                     <Route path="/faq" element={<Faq />} />
                     <Route path="/gallery" element={<Gallery />} />
-                    <Route path="/signups" element={<Signups />} />
+                    <Route path="/trainings" element={<Trainings />} />
                     <Route path="/events" element={<Events />} />
                     <Route path="/events/:eventId" element={<Event />} />
-                    <Route path="/join" element={<MainJoin />} />
+                    <Route path="/join" element={<Join />} />
                     <Route element={<AdminLayout />}>
                       <Route path="/admin" element={<TrainingDashboard />} />
                       <Route

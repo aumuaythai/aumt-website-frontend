@@ -6,7 +6,7 @@ import { AumtMember } from '../../types'
 import './TopMenu.css'
 
 export interface TopMenuProps {
-  authedUser: AumtMember | null
+  user: AumtMember | null
   isAdmin: boolean
 }
 
@@ -14,12 +14,12 @@ const pathnameToKey: Record<string, string[]> = {
   '/': ['club-info', 'about'],
   '/gallery': ['gallery'],
   '/faq': ['faq'],
-  '/signups': ['signups'],
+  '/trainings': ['trainings'],
   '/events': ['events'],
   '/admin': ['admin'],
 }
 
-export default function NavMenu({ authedUser, isAdmin }: TopMenuProps) {
+export default function NavMenu({ user, isAdmin }: TopMenuProps) {
   const location = useLocation()
   const current = pathnameToKey[location.pathname]
   const sharedItems: ItemType[] = [
@@ -43,8 +43,8 @@ export default function NavMenu({ authedUser, isAdmin }: TopMenuProps) {
       ],
     },
     {
-      label: <Link to="/signups">Weekly Trainings</Link>,
-      key: 'signups',
+      label: <Link to="/trainings">Weekly Trainings</Link>,
+      key: 'trainings',
     },
     {
       label: <Link to="/events">Events</Link>,

@@ -9,7 +9,7 @@ import NavMenu from './NavMenu'
 import UserInfo from './UserInfo'
 
 export default function Header() {
-  const { authedUser, userIsAdmin } = useAuth()
+  const { user, userIsAdmin } = useAuth()
 
   const location = useLocation()
   const pathname = location.pathname
@@ -28,11 +28,11 @@ export default function Header() {
         <Logo className="w-[120px] transition-opacity hover:opacity-80" />
       </Link>
 
-      <NavMenu isAdmin={userIsAdmin} authedUser={authedUser} />
+      <NavMenu isAdmin={userIsAdmin} user={user} />
 
       <div className="flex items-center gap-x-3">
-        {authedUser ? (
-          <UserInfo authedUser={authedUser} />
+        {user ? (
+          <UserInfo user={user} />
         ) : (
           <div className="flex items-center gap-x-2">
             <Button type="text" className="!py-4 !font-joyride">

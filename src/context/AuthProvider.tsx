@@ -13,13 +13,13 @@ import { auth } from '../services/firebase'
 import { AumtMember } from '../types'
 
 const AuthContext = createContext<{
-  authedUser: AumtMember | null
+  user: AumtMember | null
   userIsAdmin: boolean
-  authedUserId: string
+  userId: string
 }>({
-  authedUser: null,
+  user: null,
   userIsAdmin: false,
-  authedUserId: '',
+  userId: '',
 })
 
 export function useAuth() {
@@ -32,9 +32,9 @@ export function useAuth() {
 }
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [authedUser, setAuthedUser] = useState<AumtMember | null>(null)
+  const [user, setUser] = useState<AumtMember | null>(null)
   const [userIsAdmin, setUserIsAdmin] = useState(false)
-  const [authedUserId, setAuthedUserId] = useState('')
+  const [userId, setUserId] = useState('')
 
   useEffect(() => {
     auth.onAuthStateChanged(handleAuthStateChange)
@@ -42,16 +42,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   async function handleAuthStateChange(fbUser: firebase.User | null) {
     if (!fbUser) {
-      setAuthedUser(null)
-      setAuthedUserId('')
+      setUser(null)
+      setUserId('')
       setUserIsAdmin(false)
       return
     }
 
     try {
       const userInfo: AumtMember = await getUserInfo(fbUser)
-      setAuthedUser(userInfo)
-      setAuthedUserId(fbUser.uid)
+      setUser(userInfo)
+      setUserId(fbUser.uid)
 
       const isAdmin: boolean = await getIsAdmin(fbUser.uid)
       setUserIsAdmin(isAdmin)
@@ -67,8 +67,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           message: `Error logging in: ${err}`,
         })
       }
-      setAuthedUser(null)
-      setAuthedUserId('')
+      setUser(null)
+      setUserId('')
       setUserIsAdmin(false)
       try {
         await signOut()
@@ -81,7 +81,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ authedUser, userIsAdmin, authedUserId }}>
+    <AuthContext.Provider value={{ user, userIsAdmin, userId }}>
       {children}
     </AuthContext.Provider>
   )

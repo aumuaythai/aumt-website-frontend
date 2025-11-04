@@ -6,26 +6,26 @@ import { Spin } from 'antd'
 import { Link } from 'react-router'
 import JoinForm from './JoinForm'
 
-export default function MainJoin() {
-  const { authedUser } = useAuth()
+export default function Join() {
+  const { user } = useAuth()
   const clubConfig = useConfig()
 
   if (!clubConfig) {
     return <Spin />
   }
 
-  if (authedUser) {
+  if (user) {
     return (
-      <div className="pt-16 p-6 max-w-2xl mx-auto">
+      <div className="pt-16 p-6 max-w-2xl mx-auto text-center">
         <CheckCircleFilled className="!text-green-500 text-7xl" />
         <h1 className="text-2xl mt-4 mb-8">You are a member of AUMT!</h1>
 
-        {authedUser?.paid === 'No' ? (
+        {!user?.paid ? (
           <>
             <h2>However, membership payment is pending</h2>
             <PaymentInstructions
-              membershipType={authedUser.membership}
-              paymentType={authedUser.paymentType}
+              membershipType={user.membership}
+              paymentType={user.paymentType}
               clubConfig={clubConfig}
             />
           </>
@@ -45,24 +45,25 @@ export default function MainJoin() {
         <p>
           Membership coverage:
           <b>
-            {authedUser.membership === 'S1' && ' Semester 1 '}
-            {authedUser.membership === 'S2' && ' Semester 2 '}
-            {authedUser.membership === 'SS' && ' Summer School '}
-            {authedUser.membership === 'FY' && ' Full Year (Semester 1 and 2)'}
+            {user.membership === 'S1' && ' Semester 1 '}
+            {user.membership === 'S2' && ' Semester 2 '}
+            {user.membership === 'SS' && ' Summer School '}
+            {user.membership === 'FY' && ' Full Year (Semester 1 and 2)'}
           </b>
         </p>
 
         <p>
           Status:
-          <b>{authedUser.paid === 'Yes' ? ' Paid ' : ' Not Paid '}</b>
+          <b>{user.paid ? ' Paid ' : ' Not Paid '}</b>
         </p>
       </div>
     )
   }
 
   if (clubConfig.clubSignupStatus === 'closed') {
+    // if (true) {
     return (
-      <div className="p-6">
+      <div className="p-6 text-center">
         Signups are closed until the next semester starts. Follow us on
         <a
           href="https://www.instagram.com/aumuaythai/"
@@ -86,5 +87,5 @@ export default function MainJoin() {
     )
   }
 
-  return <JoinForm clubConfig={clubConfig} isAdmin={false} />
+  return <JoinForm />
 }

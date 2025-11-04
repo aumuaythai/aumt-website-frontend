@@ -1,6 +1,7 @@
+import { getDisplayName } from '@/lib/utils'
 import { PlusOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
-import { Switch as AntSwitch, Button, Input, Modal, Spin, Table } from 'antd'
+import { Button, Input, Modal, Spin, Table } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import { useState } from 'react'
 import { Link } from 'react-router'
@@ -33,7 +34,7 @@ export default function MemberDashboard() {
   const dataSource: TableDataLine[] = []
   if (members) {
     Object.entries(members).forEach(([uid, member]) => {
-      const name = `${member.firstName} ${member.preferredName} ${member.lastName}`
+      const name = getDisplayName(member)
 
       if (
         search &&
@@ -79,8 +80,7 @@ export default function MemberDashboard() {
     {
       title: 'Paid',
       dataIndex: 'paid',
-      sorter: (a: TableDataLine, b: TableDataLine) =>
-        a.paid.localeCompare(b.paid),
+      sorter: (a: TableDataLine, b: TableDataLine) => (a.paid ? 1 : -1),
     },
   ]
 
@@ -120,12 +120,7 @@ export default function MemberDashboard() {
         classNames={{ content: 'max-h-160 overflow-y-auto' }}
         onCancel={() => setSelectedMember(null)}
       >
-        {selectedMember && (
-          <MemberDetails
-            member={selectedMember}
-            onExit={() => setSelectedMember(null)}
-          />
-        )}
+        {selectedMember && <MemberDetails member={selectedMember} />}
       </Modal>
     </div>
   )

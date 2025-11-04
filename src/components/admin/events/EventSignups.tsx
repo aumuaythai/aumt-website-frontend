@@ -269,6 +269,7 @@
 
 // export default withRouter(EventSignups)
 
+import { generateMockUid } from '@/lib/utils'
 import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import { Button, notification, Spin } from 'antd'
@@ -294,15 +295,6 @@ export default function EventSignups() {
   const [submittingMember, setSubmittingMember] = useState(false)
   const [submittingWaitlistMember, setSubmittingWaitlistMember] =
     useState(false)
-
-  function generateMockUid() {
-    const alphabet = '1234567890qwertyuiopasdfghjklzxcvbnm'
-    let uid = 'NONMEMBER'
-    for (let i = 0; i < 10; i++) {
-      uid += alphabet[Math.floor(Math.random() * alphabet.length)]
-    }
-    return uid
-  }
 
   function addMemberClick() {
     setAddingMember(true)

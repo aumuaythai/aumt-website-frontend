@@ -4,7 +4,7 @@ import { Button, Select, Spin } from 'antd'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { getAllForms } from '../../../services/db'
-import { EditSignups } from './EditSignups'
+import EditSignups from './EditSignups'
 import ManageTrainings from './ManageTrainings'
 import YearStats from './YearStats'
 
@@ -86,7 +86,7 @@ export default function TrainingDashboard() {
         <div className="flex flex-col flex-1/3">
           <h2 className="text-xl">Edit Signups</h2>
           {selectedTraining ? (
-            <EditSignups form={selectedTraining} />
+            <EditSignups training={selectedTraining} />
           ) : (
             <p>No Form Selected</p>
           )}
@@ -94,7 +94,7 @@ export default function TrainingDashboard() {
 
         <div className="flex flex-col flex-2/3">
           <h2 className="text-xl">Yearly Stats</h2>
-          <YearStats trainings={trainings} />
+          <YearStats trainings={sortedTrainings.slice().reverse()} />
         </div>
       </div>
     </div>

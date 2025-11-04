@@ -6,42 +6,16 @@ import { Controller, FieldErrors, useForm } from 'react-hook-form'
 import z from 'zod'
 import { copyText } from '../../../lib/utils'
 import { setMember } from '../../../services/db'
-import { AumtMember } from '../../../types'
+import { AumtMember, aumtMemberSchema } from '../../../types'
 import type { TableDataLine } from './MemberDashboard'
 
 interface MemberDetailsProps {
   member: TableDataLine
-  onExit: () => void
 }
 
-const memberDetailsSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  preferredName: z.string().optional(),
-  email: z.email().min(1, 'Email is required'),
-  ethnicity: z.string().min(1, 'Ethnicity is required'),
-  gender: z.string().min(1, 'Gender is required'),
-  membership: z.enum(['S1', 'S2', 'FY', 'SS']),
-  paid: z.enum(['Yes', 'No']),
-  paymentType: z.enum(['Cash', 'Bank Transfer', 'Other']),
-  isReturningMember: z.enum(['Yes', 'No']),
-  interestedInCamp: z.enum(['Yes', 'No']),
-  isUoAStudent: z.enum(['Yes', 'No']),
-  upi: z.string().optional(),
-  studentId: z.string().optional(),
-  notes: z.string().optional(),
-  EmergencyContactName: z.string().min(1, 'Emergency contact name is required'),
-  EmergencyContactNumber: z
-    .string()
-    .min(1, 'Emergency contact number is required'),
-  EmergencyContactRelationship: z
-    .string()
-    .min(1, 'Emergency contact relationship is required'),
-})
+type AumtMemberSchema = z.infer<typeof aumtMemberSchema>
 
-type MD = z.infer<typeof memberDetailsSchema>
-
-export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
+export default function MemberDetails({ member }: MemberDetailsProps) {
   const queryClient = useQueryClient()
 
   const updateMember = useMutation({
@@ -70,32 +44,12 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
     },
   })
 
-  const { control, handleSubmit, watch } = useForm<MD>({
-    resolver: zodResolver(memberDetailsSchema),
-    defaultValues: {
-      firstName: member.firstName,
-      lastName: member.lastName,
-      preferredName: member.preferredName,
-      email: member.email,
-      ethnicity: member.ethnicity,
-      gender: member.gender,
-      membership: member.membership,
-      paid: member.paid,
-      paymentType: member.paymentType,
-      isReturningMember: member.isReturningMember,
-      interestedInCamp: member.interestedInCamp,
-      isUoAStudent: member.isUoAStudent,
-      upi: member.upi,
-      studentId: member.studentId,
-      notes: member.notes,
-      EmergencyContactName: member.EmergencyContactName,
-      EmergencyContactNumber: member.EmergencyContactNumber,
-      EmergencyContactRelationship: member.EmergencyContactRelationship,
-    },
-    values: { ...member },
+  const { control, handleSubmit, watch } = useForm<AumtMemberSchema>({
+    resolver: zodResolver(aumtMemberSchema),
+    defaultValues: member,
   })
 
-  function handleUpdateMember(data: MD) {
+  function handleUpdateMember(data: AumtMemberSchema) {
     if (data.email !== member.email) {
       notification.open({
         message:
@@ -103,19 +57,18 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
       })
     }
 
-    updateMember.mutate({
-      ...data,
-      timeJoinedMs: member.timeJoinedMs,
-      initialExperience: '',
-    } as AumtMember)
+    updateMember.mutate({ ...data, timeJoinedMs: member.timeJoinedMs })
   }
 
   function handleRemoveMember() {
     removeMember.mutate()
   }
 
-  function onInvalid(errors: FieldErrors<MD>) {
-    console.log(errors)
+  function onInvalid(errors: FieldErrors<AumtMemberSchema>) {
+    const firstError = Object.keys(errors)[0]
+    if (firstError) {
+      notification.error({ message: errors[firstError]?.message })
+    }
   }
 
   const isMutating = updateMember.isPending || removeMember.isPending
@@ -221,17 +174,6 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
         </div>
         <div className="flex flex-col gap-y-1">
           <h3>Details</h3>
-          <div>Interested in Camp: </div>
-          <Controller
-            name="interestedInCamp"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <Radio.Group value={value} onChange={onChange}>
-                <Radio.Button value="Yes">Yes</Radio.Button>
-                <Radio.Button value="No">No</Radio.Button>
-              </Radio.Group>
-            )}
-          />
           <div>UoA: </div>
           <Controller
             name="isUoAStudent"
@@ -243,7 +185,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
               </Radio.Group>
             )}
           />
-          {isUoaStudent === 'Yes' && (
+          {isUoaStudent && (
             <>
               <div>UPI: </div>
               <Controller
@@ -297,7 +239,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
           <h3>Emergency Contact</h3>
           <span>Name: </span>
           <Controller
-            name="EmergencyContactName"
+            name="emergencyContactName"
             control={control}
             render={({ field: { value, onChange } }) => (
               <Input value={value} onChange={onChange} />
@@ -305,7 +247,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
           />
           <span>Number: </span>
           <Controller
-            name="EmergencyContactNumber"
+            name="emergencyContactNumber"
             control={control}
             render={({ field: { value, onChange } }) => (
               <Input
@@ -321,7 +263,7 @@ export default function MemberDetails({ member, onExit }: MemberDetailsProps) {
           />
           <span>Relation: </span>
           <Controller
-            name="EmergencyContactRelationship"
+            name="emergencyContactRelationship"
             control={control}
             render={({ field: { value, onChange } }) => (
               <Input value={value} onChange={onChange} />

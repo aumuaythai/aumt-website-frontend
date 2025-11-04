@@ -7,7 +7,7 @@ import { AumtMember } from '../../types'
 import { ResetPasswordLink } from './ResetLink'
 
 interface UserInfoProps {
-  authedUser: AumtMember
+  user: AumtMember
 }
 
 export default function UserInfo(props: UserInfoProps) {
@@ -41,7 +41,7 @@ export default function UserInfo(props: UserInfoProps) {
     },
   ]
 
-  const nameText = props.authedUser.preferredName || props.authedUser.firstName
+  const nameText = props.user.preferredName || props.user.firstName
 
   return (
     <Dropdown

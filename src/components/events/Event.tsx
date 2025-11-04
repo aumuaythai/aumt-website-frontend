@@ -92,7 +92,7 @@ export default function Event() {
 }
 
 function Signups({ event }: { event: AumtEvent }) {
-  const { authedUser, authedUserId } = useAuth()
+  const { user, userId } = useAuth()
   const queryClient = useQueryClient()
 
   const removeMember = useMutation({
@@ -131,13 +131,13 @@ function Signups({ event }: { event: AumtEvent }) {
     isWaitlist: boolean,
     signupData?: AumtCampSignupData
   ) {
-    const displayName = authedUser
-      ? `${authedUser.firstName} ${authedUser.lastName}`
+    const displayName = user
+      ? `${user.firstName} ${user.lastName}`
       : signupData?.name
-    const email = authedUser ? authedUser.email : signupData?.email
+    const email = user ? user.email : signupData?.email
 
     signup.mutate({
-      uid: authedUserId,
+      uid: userId,
       signupData: {
         ...signupData,
         displayName,
@@ -149,8 +149,8 @@ function Signups({ event }: { event: AumtEvent }) {
     })
   }
 
-  const isSignedUp = !!event.signups?.members[authedUserId]
-  const isOnWaitlist = !!event.signups?.waitlist[authedUserId]
+  const isSignedUp = !!event.signups?.members[userId]
+  const isOnWaitlist = !!event.signups?.waitlist[userId]
   const { signups } = event
 
   if (!signups) {
@@ -158,7 +158,7 @@ function Signups({ event }: { event: AumtEvent }) {
   }
 
   function handleWithdrawClick() {
-    removeMember.mutate(authedUserId)
+    removeMember.mutate(userId)
   }
 
   if (isSignedUp) {
@@ -168,7 +168,7 @@ function Signups({ event }: { event: AumtEvent }) {
           status="success"
           title="Thank you for signing up!"
           subTitle={
-            !signups.members[authedUserId].confirmed
+            !signups.members[userId].confirmed
               ? 'Once the committee recieves your payment, you spot will be fully reserved'
               : signups.needAdminConfirm
               ? 'Our records show you have paid, your spot is confirmed'
@@ -197,7 +197,7 @@ function Signups({ event }: { event: AumtEvent }) {
         signups.waitlist[a].timeSignedUpMs - signups.waitlist[b].timeSignedUpMs
       )
     })
-    const position = sortedKeys.indexOf(authedUserId) + 1
+    const position = sortedKeys.indexOf(userId) + 1
     return position > 0 ? position : null
   }
 
@@ -220,7 +220,7 @@ function Signups({ event }: { event: AumtEvent }) {
     return <div>Signups have closed!</div>
   }
 
-  if (!authedUser && !signups.openToNonMembers) {
+  if (!user && !signups.openToNonMembers) {
     return (
       <div>
         <p>
@@ -247,7 +247,7 @@ function Signups({ event }: { event: AumtEvent }) {
         </p>
         <CampSignupForm
           isCamp={signups.isCamp}
-          includeNameAndEmail={!authedUser}
+          includeNameAndEmail={!user}
           isWaitlist={true}
           onSubmit={(data) => onSignupFormSubmit(true, data)}
           submitting={signup.isPending}
@@ -262,7 +262,7 @@ function Signups({ event }: { event: AumtEvent }) {
       {signups.isCamp ? (
         <CampSignupForm
           isCamp={signups.isCamp}
-          includeNameAndEmail={!authedUser}
+          includeNameAndEmail={!user}
           isWaitlist={false}
           onSubmit={(data) => onSignupFormSubmit(false, data)}
           submitting={signup.isPending}

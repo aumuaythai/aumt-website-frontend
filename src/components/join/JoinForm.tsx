@@ -114,7 +114,6 @@ export default function JoinForm() {
       upi: data.upi ?? null,
       studentId: data.studentId ?? null,
       notes: null,
-      isInterestedInCamp: false,
     }
 
     await createMember.mutateAsync({ member, password })
