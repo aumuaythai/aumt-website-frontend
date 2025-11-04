@@ -1,21 +1,9 @@
+import { useConfig } from '@/context/ClubConfigProvider'
 import { Button, Divider } from 'antd'
-import { useEffect, useState } from 'react'
-import { getClubConfig } from '../../services/db'
 import { Links } from '../../services/links'
-import { ClubConfig } from '../../types/ClubConfig'
 
 export default function Faq() {
-  const [clubConfig, setClubConfig] = useState<ClubConfig | null>(null)
-
-  useEffect(() => {
-    getClubConfig()
-      .then((clubConfig: ClubConfig) => {
-        setClubConfig(clubConfig)
-      })
-      .catch((error: any) => {
-        console.error('Error fetching club configuration:', error)
-      })
-  }, [])
+  const clubConfig = useConfig()
 
   return (
     <div className="text-left max-w-[1000px] mx-auto px-2.5 pb-[100px]">

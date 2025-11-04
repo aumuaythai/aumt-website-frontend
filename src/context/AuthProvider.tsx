@@ -10,10 +10,10 @@ import {
 import { signOut } from '../services/auth'
 import { getIsAdmin, getUserInfo } from '../services/db'
 import { auth } from '../services/firebase'
-import { AumtMember } from '../types'
+import { Member } from '../types'
 
 const AuthContext = createContext<{
-  user: AumtMember | null
+  user: Member | null
   userIsAdmin: boolean
   userId: string
 }>({
@@ -32,7 +32,7 @@ export function useAuth() {
 }
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AumtMember | null>(null)
+  const [user, setUser] = useState<Member | null>(null)
   const [userIsAdmin, setUserIsAdmin] = useState(false)
   const [userId, setUserId] = useState('')
 
@@ -49,7 +49,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const userInfo: AumtMember = await getUserInfo(fbUser)
+      const userInfo: Member = await getUserInfo(fbUser)
       setUser(userInfo)
       setUserId(fbUser.uid)
 

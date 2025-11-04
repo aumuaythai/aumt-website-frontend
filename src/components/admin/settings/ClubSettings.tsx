@@ -1,3 +1,6 @@
+import { useConfig } from '@/context/ClubConfigProvider'
+import { useUpdateConfig } from '@/services/config'
+import { ClubConfig } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
@@ -12,9 +15,6 @@ import {
 } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import z from 'zod'
-import { useConfig } from '../../../context/ClubConfigProvider'
-import { setClubConfig } from '../../../services/db'
-import { ClubConfig } from '../../../types'
 
 const clubConfigSchema = z.object({
   summerSchoolFee: z.number().positive(),
@@ -55,21 +55,7 @@ export default function ClubSettings() {
     },
   })
 
-  const updateConfig = useMutation({
-    mutationFn: (data: ClubConfig) => setClubConfig(data),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['config'] })
-      notification.success({
-        message: 'Club settings saved successfully',
-      })
-    },
-    onError: (error) => {
-      notification.error({
-        message: 'Could not save club settings',
-        description: error.toString(),
-      })
-    },
-  })
+  const updateConfig = useUpdateConfig()
 
   function handleSave(data: ClubConfigForm) {
     updateConfig.mutate(data)

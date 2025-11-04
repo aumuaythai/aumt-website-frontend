@@ -6,10 +6,10 @@ import { ColumnType } from 'antd/lib/table'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { getAllMembers } from '../../../services/db'
-import { AumtMember } from '../../../types'
+import { Member } from '../../../types'
 import MemberDetails from './MemberDetails'
 
-export type TableDataLine = AumtMember & { key: string; tableName: string }
+export type TableDataLine = Member & { key: string; tableName: string }
 export type TableColumn = ColumnType<TableDataLine>
 
 export default function MemberDashboard() {

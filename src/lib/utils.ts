@@ -1,4 +1,4 @@
-import { AumtMember } from '@/types'
+import { Member } from '@/types'
 import { notification } from 'antd'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -16,7 +16,7 @@ export async function copyText(text: string) {
   }
 }
 
-export function getDisplayName(user: AumtMember) {
+export function getDisplayName(user: Member) {
   return (
     user.firstName +
     (user.preferredName ? ` "${user.preferredName}" ` : ' ') +

@@ -5,32 +5,29 @@ import { db } from './firebase'
 
 const TRAINING_DB_PATH = 'weekly_trainings'
 
-export async function getTraining(trainingId: string): Promise<Training> {
+async function getTraining(trainingId: string): Promise<Training> {
   const doc = await db.collection(TRAINING_DB_PATH).doc(trainingId).get()
   return doc.data() as Training
 }
 
-export async function getTrainings(): Promise<Training[]> {
+async function getTrainings(): Promise<Training[]> {
   const snapshot = await db.collection(TRAINING_DB_PATH).get()
   return snapshot.docs.map((doc) => doc.data() as Training)
 }
 
-export async function createTraining(training: Training) {
+async function createTraining(training: Training) {
   return await db
     .collection(TRAINING_DB_PATH)
     .doc(training.trainingId)
     .set(training)
 }
 
-export async function deleteTraining(trainingId: string) {
+async function deleteTraining(trainingId: string) {
   return await db.collection(TRAINING_DB_PATH).doc(trainingId).delete()
 }
 
-export async function updateTraining(trainingId: string, training: Training) {
-  return await db
-    .collection(TRAINING_DB_PATH)
-    .doc(trainingId)
-    .set(training, { merge: true })
+async function updateTraining(trainingId: string, training: Training) {
+  return await db.collection(TRAINING_DB_PATH).doc(trainingId).update(training)
 }
 
 export function useTraining(trainingId: string) {

@@ -1,55 +1,26 @@
+import { useDeleteMember, useUpdateMember } from '@/services/member'
 import { CopyOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button, Input, notification, Popconfirm, Radio, Tooltip } from 'antd'
 import { Controller, FieldErrors, useForm } from 'react-hook-form'
-import z from 'zod'
 import { copyText } from '../../../lib/utils'
-import { setMember } from '../../../services/db'
-import { AumtMember, aumtMemberSchema } from '../../../types'
+import { Member, memberSchema } from '../../../types'
 import type { TableDataLine } from './MemberDashboard'
 
 interface MemberDetailsProps {
   member: TableDataLine
 }
 
-type AumtMemberSchema = z.infer<typeof aumtMemberSchema>
-
 export default function MemberDetails({ member }: MemberDetailsProps) {
-  const queryClient = useQueryClient()
+  const updateMember = useUpdateMember()
+  const deleteMember = useDeleteMember()
 
-  const updateMember = useMutation({
-    mutationFn: (data: AumtMember) => setMember(member.key, data),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['members'] })
-      notification.success({ message: 'Member updated' })
-    },
-    onError: (error) => {
-      notification.error({
-        message: 'Error updating member: ' + error.toString(),
-      })
-    },
-  })
-
-  const removeMember = useMutation({
-    mutationFn: () => removeMember(member.key),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['members'] })
-      notification.success({ message: 'Member removed' })
-    },
-    onError: (error) => {
-      notification.error({
-        message: 'Error removing member: ' + error.toString(),
-      })
-    },
-  })
-
-  const { control, handleSubmit, watch } = useForm<AumtMemberSchema>({
-    resolver: zodResolver(aumtMemberSchema),
+  const { control, handleSubmit, watch } = useForm<Member>({
+    resolver: zodResolver(memberSchema),
     defaultValues: member,
   })
 
-  function handleUpdateMember(data: AumtMemberSchema) {
+  function handleUpdateMember(data: Member) {
     if (data.email !== member.email) {
       notification.open({
         message:
@@ -57,21 +28,21 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
       })
     }
 
-    updateMember.mutate({ ...data, timeJoinedMs: member.timeJoinedMs })
+    updateMember.mutate({ userId: member.key, member: data })
   }
 
   function handleRemoveMember() {
-    removeMember.mutate()
+    deleteMember.mutate(member.key)
   }
 
-  function onInvalid(errors: FieldErrors<AumtMemberSchema>) {
+  function onInvalid(errors: FieldErrors<Member>) {
     const firstError = Object.keys(errors)[0]
     if (firstError) {
       notification.error({ message: errors[firstError]?.message })
     }
   }
 
-  const isMutating = updateMember.isPending || removeMember.isPending
+  const isMutating = updateMember.isPending || deleteMember.isPending
 
   const isUoaStudent = watch('isUoAStudent')
 

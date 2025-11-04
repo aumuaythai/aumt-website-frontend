@@ -1,3 +1,5 @@
+import { useConfig as useConfigService } from '@/services/config'
+
 import { useQuery } from '@tanstack/react-query'
 import { notification } from 'antd'
 import {
@@ -22,10 +24,7 @@ export default function ClubConfigProvider({
 }: {
   children: ReactNode
 }) {
-  const { data: clubConfig } = useQuery({
-    queryKey: ['clubConfig'],
-    queryFn: getClubConfig,
-  })
+  const { data: clubConfig } = useConfigService()
 
   return (
     <ConfigContext.Provider value={clubConfig}>

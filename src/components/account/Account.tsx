@@ -1,15 +1,13 @@
 import PaymentInstructions from '@/components/utility/PaymentInstructions'
 import { useAuth } from '@/context/AuthProvider'
 import { useConfig } from '@/context/ClubConfigProvider'
-import { setMember } from '@/services/db'
-import { AumtMember } from '@/types'
+import { useUpdateMember } from '@/services/member'
+import { Member } from '@/types'
 import {
   ETHNICITIES,
-  GENDER,
-  MEMBERSHIP_PERIOD,
+  memberSchema,
   MEMBERSHIP_PERIOD_LONG,
-  PAYMENT_TYPE,
-} from '@/types/AumtMember'
+} from '@/types/Member'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 import { ReactNode, useState } from 'react'
@@ -22,30 +20,20 @@ import {
 } from 'react-hook-form'
 import z from 'zod'
 
-const accountSchema = z.object({
-  membership: z.enum(MEMBERSHIP_PERIOD),
-  paymentType: z.enum(PAYMENT_TYPE),
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  preferredName: z.string().optional(),
-  ethnicity: z.enum(ETHNICITIES),
-  gender: z.enum(GENDER),
-  isUoAStudent: z.boolean(),
-  upi: z.string().optional(),
-  studentId: z.string().optional(),
-  emergencyContactName: z.string().min(1, 'Emergency contact name is required'),
-  emergencyContactNumber: z
-    .string()
-    .min(1, 'Emergency contact number is required'),
-  emergencyContactRelationship: z
-    .string()
-    .min(1, 'Emergency contact relationship is required'),
+const accountSchema = memberSchema.omit({
+  email: true,
+  isReturningMember: true,
+  paid: true,
+  timeJoinedMs: true,
+  initialExperience: true,
+  notes: true,
 })
 
 type Account = z.infer<typeof accountSchema>
 
 export default function Account() {
   const { user, userId } = useAuth()
+  const updateMember = useUpdateMember()
 
   const {
     control,
@@ -53,21 +41,7 @@ export default function Account() {
     handleSubmit,
     formState: { isSubmitting: saving },
   } = useForm<Account>({
-    defaultValues: {
-      membership: user?.membership,
-      paymentType: user?.paymentType,
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      preferredName: user?.preferredName ?? undefined,
-      ethnicity: user?.ethnicity,
-      gender: user?.gender,
-      isUoAStudent: user?.isUoAStudent,
-      upi: user?.upi ?? undefined,
-      studentId: user?.studentId ?? undefined,
-      emergencyContactName: user?.emergencyContactName,
-      emergencyContactNumber: user?.emergencyContactNumber,
-      emergencyContactRelationship: user?.emergencyContactRelationship,
-    },
+    defaultValues: { ...user },
     resolver: zodResolver(accountSchema),
   })
 
@@ -80,12 +54,12 @@ export default function Account() {
       return
     }
 
-    const updatedMember: AumtMember = {
+    const updatedMember: Member = {
       ...user,
       ...data,
     }
 
-    await setMember(userId, updatedMember)
+    await updateMember.mutateAsync({ userId, member: updatedMember })
   }
 
   function onInvalid(errors: FieldErrors<Account>) {

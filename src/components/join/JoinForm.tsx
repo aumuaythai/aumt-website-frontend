@@ -1,18 +1,16 @@
 import PaymentInstructions from '@/components/utility/PaymentInstructions'
 import { useConfig } from '@/context/ClubConfigProvider'
-import { createUser } from '@/services/auth'
-import { setMember } from '@/services/db'
-import { AumtMember } from '@/types'
+import { useCreateMember } from '@/services/member'
+import { Member } from '@/types'
 import {
   ETHNICITIES,
   GENDER,
   INITIAL_EXPERIENCE,
   MEMBERSHIP_PERIOD,
   PAYMENT_TYPE,
-} from '@/types/AumtMember'
+} from '@/types/Member'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
 import {
   Button,
   Checkbox,
@@ -22,7 +20,6 @@ import {
   Select,
   Spin,
   Tooltip,
-  notification,
 } from 'antd'
 import { useForm } from 'react-hook-form'
 import { FormItem } from 'react-hook-form-antd'
@@ -60,6 +57,7 @@ type JoinForm = z.infer<typeof joinSchema>
 
 export default function JoinForm() {
   const clubConfig = useConfig()
+  const createMember = useCreateMember()
 
   const {
     control,
@@ -70,34 +68,12 @@ export default function JoinForm() {
     resolver: zodResolver(joinSchema),
   })
 
-  const createMember = useMutation({
-    mutationFn: async ({
-      member,
-      password,
-    }: {
-      member: AumtMember
-      password: string
-    }) => {
-      const user = await createUser(member.email, password)
-      if (!user.user?.uid) {
-        throw new Error('Failed to create user')
-      }
-
-      await setMember(user.user.uid, member)
-    },
-    onError: (error) => {
-      notification.error({
-        message: error.toString(),
-      })
-    },
-  })
-
   async function handleValid(data: JoinForm) {
     const password = data.password
-    const member: AumtMember = {
+    const member: Member = {
       firstName: data.firstName,
       lastName: data.lastName,
-      preferredName: data.preferredName ?? null,
+      preferredName: data.preferredName,
       email: data.email,
       ethnicity: data.ethnicity,
       gender: data.gender,
@@ -111,9 +87,8 @@ export default function JoinForm() {
       emergencyContactName: data.emergencyContactName,
       emergencyContactNumber: data.emergencyContactNumber,
       emergencyContactRelationship: data.emergencyContactRelationship,
-      upi: data.upi ?? null,
-      studentId: data.studentId ?? null,
-      notes: null,
+      upi: data.upi,
+      studentId: data.studentId,
     }
 
     await createMember.mutateAsync({ member, password })

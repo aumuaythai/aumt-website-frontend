@@ -2,11 +2,11 @@ import { DownOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
 import { ItemType } from 'antd/lib/menu/interface'
 import { Link, useLocation } from 'react-router'
-import { AumtMember } from '../../types'
+import { Member } from '../../types'
 import './TopMenu.css'
 
 export interface TopMenuProps {
-  user: AumtMember | null
+  user: Member | null
   isAdmin: boolean
 }
 

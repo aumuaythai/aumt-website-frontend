@@ -86,7 +86,7 @@ type PaymentType = (typeof PAYMENT_TYPE)[number]
 //   emergencyContactRelationship: string
 // }
 
-export const aumtMemberSchema = z.object({
+export const memberSchema = z.object({
   firstName: z.string('Required').min(1, 'Required'),
   lastName: z.string('Required').min(1, 'Required'),
   preferredName: z.string().optional(),
@@ -114,8 +114,8 @@ export const aumtMemberSchema = z.object({
   emergencyContactRelationship: z.string('Required').min(1, 'Required'),
 })
 
-export type AumtMember = z.infer<typeof aumtMemberSchema>
+export type Member = z.infer<typeof memberSchema>
 
 export interface AumtMembersObj {
-  [uid: string]: AumtMember
+  [uid: string]: Member
 }

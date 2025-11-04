@@ -3,11 +3,11 @@ import { Button, Dropdown } from 'antd'
 import { ItemType } from 'antd/lib/menu/interface'
 import { Link } from 'react-router'
 import { signOut } from '../../services/auth'
-import { AumtMember } from '../../types'
+import { Member } from '../../types'
 import { ResetPasswordLink } from './ResetLink'
 
 interface UserInfoProps {
-  user: AumtMember
+  user: Member
 }
 
 export default function UserInfo(props: UserInfoProps) {

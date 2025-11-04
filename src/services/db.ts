@@ -2,9 +2,9 @@ import firebase from 'firebase/app'
 import {
   AumtEvent,
   AumtEventSignupData,
-  AumtMember,
   AumtMembersObj,
   ClubConfig,
+  Member,
   Training,
 } from '../types'
 import { db } from './firebase'
@@ -15,7 +15,7 @@ const MEMBER_DB_PATH = 'members'
 
 const listeners: Record<string, Function> = {}
 
-export async function getUserInfo(fbUser: firebase.User): Promise<AumtMember> {
+export async function getUserInfo(fbUser: firebase.User): Promise<Member> {
   if (!db) throw new Error('No db object')
   const doc = await db.collection(MEMBER_DB_PATH).doc(fbUser.uid).get()
   const docData = doc.data()
@@ -24,7 +24,7 @@ export async function getUserInfo(fbUser: firebase.User): Promise<AumtMember> {
     throw new Error('No AUMT member exists for this acccount ' + fbUser.uid)
   }
 
-  return docData as AumtMember
+  return docData as Member
 }
 
 export const getIsAdmin = (userId: string): Promise<boolean> => {
@@ -38,29 +38,12 @@ export const getIsAdmin = (userId: string): Promise<boolean> => {
     })
 }
 
-export const getClubConfig = (): Promise<ClubConfig> => {
-  if (!db) return Promise.reject('No db object')
-  return db
-    .collection('config')
-    .doc('config')
-    .get()
-    .then((doc) => {
-      const data: any = doc.data()
-      return { ...data }
-    })
-}
-
-export const setClubConfig = (config: ClubConfig): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection('config').doc('config').set(config)
-}
-
 export async function getAllMembers(): Promise<AumtMembersObj> {
   if (!db) return Promise.reject('No db object')
   const membersSnapshot = await db.collection(MEMBER_DB_PATH).get()
   const members: AumtMembersObj = {}
   membersSnapshot.forEach((doc) => {
-    members[doc.id] = doc.data() as AumtMember
+    members[doc.id] = doc.data() as Member
   })
   return members
 }
@@ -170,14 +153,6 @@ export const getEventById = (id: string): Promise<AumtEvent> => {
 export const removeEvent = (eventId: string): Promise<void> => {
   if (!db) return Promise.reject('No db object')
   return db.collection('events').doc(eventId).delete()
-}
-
-export const setMember = (
-  memberId: string,
-  memberData: AumtMember
-): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection(MEMBER_DB_PATH).doc(memberId).set(memberData)
 }
 
 export const checkTrainingAttendanceExists = async (
@@ -371,68 +346,6 @@ export function signUserUp(
 //     .doc(formId)
 //     .set(mergeObj, { merge: true })
 // }
-
-export const listenToOneTraining = (
-  formId: string,
-  callback: (formId: string, training: Training) => void
-): string => {
-  if (!db) throw new Error('no db')
-  const listenerId = getListenerId()
-  listeners[listenerId] = db
-    .collection(TRAINING_DB_PATH)
-    .doc(formId)
-    .onSnapshot((doc: firebase.firestore.DocumentSnapshot) => {
-      callback(formId, docToForm(doc.data()))
-    })
-  return listenerId
-}
-
-export const unlisten = (listenerId: string) => {
-  if (listeners[listenerId]) {
-    listeners[listenerId]()
-    delete listeners[listenerId]
-  }
-}
-
-export const getListenerId = () => {
-  const chars = 'weyuiopasdhjklzxcvbnm1234567890'
-  let id = ''
-  for (let i = 0; i < 10; i++) {
-    id += chars[Math.floor(Math.random() * chars.length)]
-  }
-  return id
-}
-
-export const docToForm = (docData: any): Training => {
-  if (Array.isArray(docData.sessions)) {
-    console.log(docData)
-    throw new Error('Outdated website, clear cache and refresh page please')
-  }
-  console.log('docData', docData)
-
-  Object.keys(docData.sessions).forEach((sessionId: string) => {
-    const session = docData.sessions[sessionId]
-    Object.keys(session.members).forEach((i) => {
-      session.members[i].timeAdded = new Date(
-        session.members[i].timeAdded.seconds * 1000
-      )
-    })
-  })
-  const weeklyTraining: Training = {
-    title: docData.title,
-    feedback: docData.feedback,
-    trainingId: docData.trainingId,
-    sessions: docData.sessions,
-    signupMaxSessions: docData.signupMaxSessions || 1,
-    openToPublic: docData.openToPublic || false,
-    opens: new Date(docData.opens.seconds * 1000),
-    closes: new Date(docData.closes.seconds * 1000),
-    notes: docData.notes.split('%%NEWLINE%%').join('\n'),
-    semester: docData.semester,
-    paymentLock: docData.paymentLock,
-  }
-  return weeklyTraining
-}
 
 export const docToEvent = (docData: any): AumtEvent => {
   if (!docData.date) {
