@@ -1,23 +1,17 @@
+import { useDeleteTraining } from '@/services/trainings'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { useQueryClient } from '@tanstack/react-query'
-import { Button, Divider, Modal, notification, Spin } from 'antd'
-import { useState } from 'react'
+import { Button, Divider, Modal, Spin } from 'antd'
 import { Link } from 'react-router'
-import { removeTraining } from '../../../services/db'
-import { AumtWeeklyTraining } from '../../../types'
+import { Training } from '../../../types'
 
 interface ManageTrainingsProps {
   onTrainingClick: (trainingId: string) => void
-  trainings: AumtWeeklyTraining[]
+  trainings: Training[]
   loadingTrainings: boolean
 }
 
 export default function ManageTrainings(props: ManageTrainingsProps) {
-  const [removingTraining, setRemovingTraining] = useState<{
-    [trainingId: string]: boolean
-  }>({})
-
-  const queryClient = useQueryClient()
+  const removeTraining = useDeleteTraining()
 
   function confirmDeleteTraining(title: string, trainingId: string) {
     Modal.confirm({
@@ -32,19 +26,9 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
       onCancel: () => {},
     })
   }
+
   function handleRemoveTraining(trainingId: string) {
-    setRemovingTraining((prev) => ({ ...prev, [trainingId]: true }))
-    removeTraining(trainingId)
-      .then(() => {
-        setRemovingTraining((prev) => ({ ...prev, [trainingId]: false }))
-        queryClient.invalidateQueries({ queryKey: ['trainings'] })
-      })
-      .catch((err) => {
-        notification.open({
-          message: 'Error removing training: ' + err.toString(),
-        })
-        setRemovingTraining((prev) => ({ ...prev, [trainingId]: false }))
-      })
+    removeTraining.mutate(trainingId)
   }
 
   if (props.loadingTrainings) {
@@ -79,7 +63,7 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
                 <Button className="manageTrainingOptionButton">Edit</Button>
               </Link>
               <Button
-                loading={removingTraining[training.trainingId]}
+                loading={removeTraining.isPending}
                 onClick={(e) =>
                   confirmDeleteTraining(training.title, training.trainingId)
                 }

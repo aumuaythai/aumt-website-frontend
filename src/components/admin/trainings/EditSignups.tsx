@@ -363,10 +363,10 @@ import {
 } from 'antd'
 import React, { Component, FormEvent, Key, useState } from 'react'
 import { removeMemberFromForm, signUserUp } from '../../../services/db'
-import { AumtTrainingSession, AumtWeeklyTraining } from '../../../types'
+import { Training, TrainingSession } from '../../../types'
 
 type EditSignupsProps = {
-  training: AumtWeeklyTraining
+  training: Training
 }
 
 interface EditSignupsState {

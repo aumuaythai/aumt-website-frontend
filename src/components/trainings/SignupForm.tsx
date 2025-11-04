@@ -304,24 +304,26 @@
 // }
 
 import { generateMockUid } from '@/lib/utils'
-import { CheckSquareTwoTone, PropertySafetyFilled } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { Alert, Button, Checkbox, Form, Input, Spin, Tag, Tooltip } from 'antd'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Button, Checkbox, Form, Input, notification } from 'antd'
 import { CheckboxOptionType } from 'antd/lib/checkbox'
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { FieldErrors, useForm } from 'react-hook-form'
 import { FormItem } from 'react-hook-form-antd'
 import z from 'zod'
-import { removeMemberFromForm, signUserUp } from '../../services/db'
-import { AumtTrainingSession } from '../../types'
+import {
+  removeMemberFromEvent,
+  removeMemberFromForm,
+  signUserUp,
+} from '../../services/db'
+import { TrainingSession } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
 
 export interface SignupFormProps {
   title: string
   id: string
   closes: Date
-  sessions: Record<string, AumtTrainingSession>
+  sessions: Record<string, TrainingSession>
   displayName: string | null
   submittingAsName?: string
   userId: string | null
@@ -333,10 +335,11 @@ export interface SignupFormProps {
 }
 
 export default function SignupForm(props: SignupFormProps) {
+  const queryClient = useQueryClient()
+
   const signupFormSchema = z.object({
     sessions: z
       .array(z.string())
-      .min(1, 'You must select at least one session')
       .max(
         props.signupMaxSessions,
         'You can only select up to ${props.signupMaxSessions} sessions'
@@ -346,6 +349,11 @@ export default function SignupForm(props: SignupFormProps) {
 
   type SignupForm = z.infer<typeof signupFormSchema>
 
+  const signedUpSessions = Object.keys(props.sessions).filter((sessionId) => {
+    if (!props.userId) return false
+    return props.sessions[sessionId].members[props.userId]
+  })
+
   const {
     control,
     formState: { errors },
@@ -353,26 +361,35 @@ export default function SignupForm(props: SignupFormProps) {
     handleSubmit,
   } = useForm<SignupForm>({
     resolver: zodResolver(signupFormSchema),
-    defaultValues: {
-      sessions: [],
+    values: {
+      sessions: signedUpSessions,
     },
   })
 
-  const mutation = useMutation({
+  const addSignup = useMutation({
     mutationFn: (data: SignupForm) =>
       signUserUp(
         props.userId ?? generateMockUid(),
-        props.displayName,
-        new Date(),
+        props.displayName ?? '',
         props.id,
-        selectedSessions,
-        currentFeedback,
-        signedUpOptions
+        data.sessions,
+        signedUpSessions
       ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trainings'] })
+      notification.success({
+        message: 'Signup successful',
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: 'Error signing up',
+      })
+    },
   })
 
   function onValid(data: SignupForm) {
-    console.log(data)
+    addSignup.mutate(data)
   }
 
   function onInvalid(errors: FieldErrors<SignupForm>) {
@@ -402,6 +419,8 @@ export default function SignupForm(props: SignupFormProps) {
       }
     })
 
+  const isMutating = addSignup.isPending
+
   return (
     <>
       <h2 className="text-xl">{props.title}</h2>
@@ -430,11 +449,9 @@ export default function SignupForm(props: SignupFormProps) {
           htmlType="submit"
           className="w-full !font-joyride"
           size="large"
+          loading={isMutating}
         >
           Submit
-        </Button>
-        <Button danger size="large" className="mt-2 w-full">
-          Remove Signup
         </Button>
       </Form>
     </>

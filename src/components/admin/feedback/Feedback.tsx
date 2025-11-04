@@ -1,12 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+import { useTrainings } from '@/services/trainings'
 import { Divider, Spin } from 'antd'
-import { getAllForms } from '../../../services/db'
 
 export default function Feedback() {
-  const { data: trainings, isPending: isLoadingTrainings } = useQuery({
-    queryKey: ['trainings'],
-    queryFn: getAllForms,
-  })
+  const { data: trainings, isPending: isLoadingTrainings } = useTrainings()
 
   if (isLoadingTrainings || !trainings) {
     return (

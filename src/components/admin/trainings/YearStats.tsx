@@ -6,11 +6,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { AumtWeeklyTraining } from '../../../types'
+import { Training } from '../../../types'
 import './YearStats.css'
 
 interface YearStatsProps {
-  trainings: AumtWeeklyTraining[]
+  trainings: Training[]
 }
 
 export default function YearStats({ trainings }: YearStatsProps) {

@@ -1,11 +1,9 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { useQuery } from '@tanstack/react-query'
+import { useDeleteTraining, useTrainings } from '@/services/trainings'
+import { PlusOutlined } from '@ant-design/icons'
 import { Button, Select, Spin } from 'antd'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { getAllForms } from '../../../services/db'
 import EditSignups from './EditSignups'
-import ManageTrainings from './ManageTrainings'
 import YearStats from './YearStats'
 
 export default function TrainingDashboard() {
@@ -13,14 +11,8 @@ export default function TrainingDashboard() {
     null
   )
 
-  const { data: trainings, isPending: isLoadingTrainings } = useQuery({
-    queryKey: ['trainings'],
-    queryFn: () => getAllForms(),
-  })
-
-  if (selectedTrainingId === null && trainings) {
-    setSelectedTrainingId(trainings[0].trainingId)
-  }
+  const { data: trainings, isPending: isLoadingTrainings } = useTrainings()
+  const removeTraining = useDeleteTraining()
 
   if (!trainings) {
     return (
@@ -31,18 +23,30 @@ export default function TrainingDashboard() {
     )
   }
 
-  const selectedTraining = trainings.find(
-    (t) => t.trainingId === selectedTrainingId
-  )
-
   const sortedTrainings = trainings
     .sort((a, b) => {
       return a.closes < b.closes ? 1 : -1
     })
     .slice()
 
+  if (selectedTrainingId === null && trainings) {
+    setSelectedTrainingId(sortedTrainings[0].trainingId)
+  }
+
+  const selectedTraining = trainings.find(
+    (t) => t.trainingId === selectedTrainingId
+  )
+
   function handleTrainingClick(trainingId: string) {
     setSelectedTrainingId(trainingId)
+  }
+
+  function handleRemoveTraining() {
+    if (!selectedTrainingId) {
+      return
+    }
+
+    removeTraining.mutate(selectedTrainingId)
   }
 
   return (
@@ -51,7 +55,7 @@ export default function TrainingDashboard() {
         <div className="flex items-center gap-x-2">
           <Select
             value={selectedTrainingId}
-            options={trainings.map((training) => ({
+            options={sortedTrainings.map((training) => ({
               label: training.title,
               value: training.trainingId,
             }))}
@@ -63,7 +67,13 @@ export default function TrainingDashboard() {
               <Link to={`/admin/trainings/${selectedTraining.trainingId}`}>
                 <Button>Edit</Button>
               </Link>
-              <Button danger>Remove</Button>
+              <Button
+                danger
+                loading={removeTraining.isPending}
+                onClick={handleRemoveTraining}
+              >
+                Remove
+              </Button>
               <Link
                 to={`/admin/trainings/${selectedTraining.trainingId}/attendance`}
               >

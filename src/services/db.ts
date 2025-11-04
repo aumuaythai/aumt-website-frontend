@@ -4,8 +4,8 @@ import {
   AumtEventSignupData,
   AumtMember,
   AumtMembersObj,
-  AumtWeeklyTraining,
   ClubConfig,
+  Training,
 } from '../types'
 import { db } from './firebase'
 
@@ -63,14 +63,6 @@ export async function getAllMembers(): Promise<AumtMembersObj> {
     members[doc.id] = doc.data() as AumtMember
   })
   return members
-}
-
-export const submitNewForm = (formData: AumtWeeklyTraining): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  if (!formData) {
-    return Promise.reject('No form data submitted')
-  }
-  return db.collection(TRAINING_DB_PATH).doc(formData.trainingId).set(formData)
 }
 
 export const submitEvent = (eventData: AumtEvent): Promise<void> => {
@@ -180,71 +172,12 @@ export const removeEvent = (eventId: string): Promise<void> => {
   return db.collection('events').doc(eventId).delete()
 }
 
-export const removeTraining = (trainingId: string): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection(TRAINING_DB_PATH).doc(trainingId).delete()
-}
-
-export const getAllForms = (): Promise<AumtWeeklyTraining[]> => {
-  if (!db) return Promise.reject('No db object')
-  return db
-    .collection(TRAINING_DB_PATH)
-    .get()
-    .then((querySnapshot) => {
-      const allForms: AumtWeeklyTraining[] = []
-      querySnapshot.forEach((doc) => {
-        const data = doc.data()
-        const form = docToForm(data)
-        allForms.push(form)
-      })
-      return allForms
-    })
-}
-
-export const getOpenForms = (): Promise<AumtWeeklyTraining[]> => {
-  if (!db) return Promise.reject('No db object')
-  const currentDate = new Date()
-  return db
-    .collection(TRAINING_DB_PATH)
-    .where('closes', '>=', currentDate)
-    .get()
-    .then((querySnapshot) => {
-      const trainings: AumtWeeklyTraining[] = []
-      querySnapshot.forEach((doc) => {
-        const data = doc.data()
-        // can't do where('opens', '<', currentDate) in firestore db so have to here
-        if (data.opens.seconds * 1000 <= currentDate.getTime()) {
-          const weeklyTraining = docToForm(data)
-          trainings.push(weeklyTraining)
-        }
-      })
-      return trainings
-    })
-}
-
 export const setMember = (
   memberId: string,
   memberData: AumtMember
 ): Promise<void> => {
   if (!db) return Promise.reject('No db object')
   return db.collection(MEMBER_DB_PATH).doc(memberId).set(memberData)
-}
-
-export const getTrainingData = (
-  formId: string
-): Promise<AumtWeeklyTraining> => {
-  if (!db) return Promise.reject('No db object')
-  return db
-    .collection(TRAINING_DB_PATH)
-    .doc(formId)
-    .get()
-    .then((doc) => {
-      const docData = doc.data()
-      if (doc.exists && docData) {
-        return docToForm(docData)
-      }
-      throw new Error('Form does not exist')
-    })
 }
 
 export const checkTrainingAttendanceExists = async (
@@ -342,19 +275,22 @@ export const removeMemberFromForm = (
   )
 }
 
-export const signUserUp = (
+export function signUserUp(
   userId: string,
   displayName: string,
-  timeAdded: Date,
-  formId: string,
+  trainingId: string,
   sessionIds: string[],
-  feedback: string,
-  prevSessionIds: string[]
-): Promise<void> => {
+  currentSessionIds: string[]
+): Promise<void> {
   if (!db) return Promise.reject('No db object')
+
+  // Build session update object
   const sessionObj = {}
+  const timeAdded = new Date()
+
+  // Add user to sessions in sessionIds array
   sessionIds.forEach((sessionId) => {
-    ;(sessionObj as any)[sessionId] = {
+    sessionObj[sessionId] = {
       members: {
         [userId]: {
           name: displayName,
@@ -363,36 +299,82 @@ export const signUserUp = (
       },
     }
   })
-  const removeSessions = prevSessionIds.filter(
-    (sId) => !sessionIds.includes(sId)
+
+  // Remove user from sessions they're currently in but not in sessionIds
+  const sessionsToRemove = currentSessionIds.filter(
+    (sessionId) => !sessionIds.includes(sessionId)
   )
-  if (removeSessions.length) {
-    removeSessions.forEach((sId) => {
-      ;(sessionObj as any)[sId] = {
+
+  if (sessionsToRemove.length > 0) {
+    sessionsToRemove.forEach((sessionId) => {
+      sessionObj[sessionId] = {
         members: {
           [userId]: firebase.firestore.FieldValue.delete(),
         },
       }
     })
   }
-  let mergeObj = {
-    sessions: sessionObj,
-  }
-  if (feedback) {
-    ;(mergeObj as any) = {
-      ...mergeObj,
-      feedback: firebase.firestore.FieldValue.arrayUnion(feedback),
-    }
-  }
-  return db
-    .collection(TRAINING_DB_PATH)
-    .doc(formId)
-    .set(mergeObj, { merge: true })
+
+  // Update the training document
+  return db.collection(TRAINING_DB_PATH).doc(trainingId).set(
+    {
+      sessions: sessionObj,
+    },
+    { merge: true }
+  )
 }
+
+// export const signUserUp = (
+//   userId: string,
+//   displayName: string,
+//   timeAdded: Date,
+//   formId: string,
+//   sessionIds: string[],
+//   feedback: string,
+//   prevSessionIds: string[]
+// ): Promise<void> => {
+//   if (!db) return Promise.reject('No db object')
+//   const sessionObj = {}
+//   sessionIds.forEach((sessionId) => {
+//     ;(sessionObj as any)[sessionId] = {
+//       members: {
+//         [userId]: {
+//           name: displayName,
+//           timeAdded,
+//         },
+//       },
+//     }
+//   })
+//   const removeSessions = prevSessionIds.filter(
+//     (sId) => !sessionIds.includes(sId)
+//   )
+//   if (removeSessions.length) {
+//     removeSessions.forEach((sId) => {
+//       ;(sessionObj as any)[sId] = {
+//         members: {
+//           [userId]: firebase.firestore.FieldValue.delete(),
+//         },
+//       }
+//     })
+//   }
+//   let mergeObj = {
+//     sessions: sessionObj,
+//   }
+//   if (feedback) {
+//     ;(mergeObj as any) = {
+//       ...mergeObj,
+//       feedback: firebase.firestore.FieldValue.arrayUnion(feedback),
+//     }
+//   }
+//   return db
+//     .collection(TRAINING_DB_PATH)
+//     .doc(formId)
+//     .set(mergeObj, { merge: true })
+// }
 
 export const listenToOneTraining = (
   formId: string,
-  callback: (formId: string, training: AumtWeeklyTraining) => void
+  callback: (formId: string, training: Training) => void
 ): string => {
   if (!db) throw new Error('no db')
   const listenerId = getListenerId()
@@ -421,7 +403,7 @@ export const getListenerId = () => {
   return id
 }
 
-export const docToForm = (docData: any): AumtWeeklyTraining => {
+export const docToForm = (docData: any): Training => {
   if (Array.isArray(docData.sessions)) {
     console.log(docData)
     throw new Error('Outdated website, clear cache and refresh page please')
@@ -436,7 +418,7 @@ export const docToForm = (docData: any): AumtWeeklyTraining => {
       )
     })
   })
-  const weeklyTraining: AumtWeeklyTraining = {
+  const weeklyTraining: Training = {
     title: docData.title,
     feedback: docData.feedback,
     trainingId: docData.trainingId,

@@ -1,20 +1,15 @@
 import { getDisplayName } from '@/lib/utils'
-import { useQuery } from '@tanstack/react-query'
+import { useTrainings } from '@/services/trainings'
 import { Divider, Spin } from 'antd'
 import { Link } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 import { useConfig } from '../../context/ClubConfigProvider'
-import { getOpenForms } from '../../services/db'
 import SignupForm from './SignupForm'
 
 export default function Trainings() {
   const { user, userId } = useAuth()
   const clubConfig = useConfig()
-
-  const { data: trainings, isPending: isLoadingTrainings } = useQuery({
-    queryKey: ['trainings'],
-    queryFn: getOpenForms,
-  })
+  const { data: trainings, isPending: isLoadingTrainings } = useTrainings()
 
   if (isLoadingTrainings || !clubConfig?.clubSignupSem || !trainings) {
     return <Spin />

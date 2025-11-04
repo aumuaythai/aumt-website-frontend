@@ -1,24 +1,22 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  getTrainingAttendance,
+  setMemberTrainingAttendance,
+} from '@/services/db'
+import { useTraining } from '@/services/trainings'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Button, Select, Spin } from 'antd'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
-import {
-  getTrainingAttendance,
-  getTrainingData,
-  setMemberTrainingAttendance,
-} from '../../../services/db'
 
 export default function TrainingAttendance() {
-  const { trainingId } = useParams()
-
   const [sessionId, setSessionId] = useState<string | undefined>(undefined)
   const [attendance, setAttendance] = useState<string[] | undefined>(undefined)
 
-  const { data: training, isPending: isLoadingTraining } = useQuery({
-    queryKey: ['training', trainingId],
-    queryFn: () => getTrainingData(trainingId!),
-    enabled: !!trainingId,
-  })
+  const { trainingId } = useParams()
+
+  const { data: training, isPending: isLoadingTraining } = useTraining(
+    trainingId!
+  )
 
   const { data: trainingAttendance } = useQuery({
     queryKey: ['trainingAttendance', trainingId, sessionId],

@@ -1,6 +1,7 @@
+import { useCreateTraining, useTraining } from '@/services/trainings'
+import { Training, TrainingSession } from '@/types'
 import { ArrowLeftOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQuery } from '@tanstack/react-query'
 import {
   Button,
   Checkbox,
@@ -13,21 +14,15 @@ import {
   Tabs,
 } from 'antd'
 import moment from 'moment'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import {
   Controller,
   FieldErrors,
   useFieldArray,
   useForm,
 } from 'react-hook-form'
-import { Link, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import z from 'zod'
-import {
-  getOpenForms,
-  getTrainingData,
-  submitNewForm,
-} from '../../../services/db'
-import { AumtTrainingSession } from '../../../types'
 import { RenderMarkdown } from '../../utility/RenderMarkdown'
 
 const TRAINING_DEFAULT_NOTES = `RULES/ETIQUETTE
@@ -59,6 +54,12 @@ export default function CreateTraining() {
   const hasPopulated = useRef(false)
 
   const { trainingId } = useParams()
+  const navigate = useNavigate()
+
+  const { data: training, isLoading: isLoadingTraining } = useTraining(
+    trainingId!
+  )
+  const createTrainingMutation = useCreateTraining()
 
   const {
     handleSubmit,
@@ -77,18 +78,12 @@ export default function CreateTraining() {
     resolver: zodResolver(trainingSchema),
   })
 
-  const { fields, append, remove, update, replace } = useFieldArray({
+  const { append, remove, replace } = useFieldArray({
     control,
     name: 'sessions',
   })
 
   const sessions = watch('sessions')
-
-  const { data: training, isLoading: isLoadingTraining } = useQuery({
-    queryKey: ['training', trainingId],
-    queryFn: () => getTrainingData(trainingId!),
-    enabled: !!trainingId,
-  })
 
   if (training && !hasPopulated.current) {
     const sessions = Object.values(training.sessions).map((session) => ({
@@ -152,7 +147,7 @@ export default function CreateTraining() {
   }
 
   async function onSubmit(data: z.infer<typeof trainingSchema>) {
-    const sessions: Record<string, AumtTrainingSession> = {}
+    const sessions: Record<string, TrainingSession> = {}
     data.sessions.forEach((session, index) => {
       const sessionId = generateSessionId(10)
       sessions[sessionId] = {
@@ -166,7 +161,7 @@ export default function CreateTraining() {
       }
     })
 
-    await submitNewForm({
+    const newTraining: Training = {
       title: data.title,
       opens: data.opens,
       closes: data.closes,
@@ -180,6 +175,13 @@ export default function CreateTraining() {
       trainingId:
         trainingId ||
         data.title.split(' ').join('').slice(0, 13) + generateSessionId(7),
+    }
+
+    createTrainingMutation.mutate(newTraining)
+
+    await navigate('/admin')
+    notification.success({
+      message: 'Training created',
     })
   }
 
