@@ -157,7 +157,7 @@ export default function NavMenu({ isAdmin }: NavMenu) {
   }
 
   return (
-    <nav className="flex h-full gap-x-6 text-sm">
+    <nav className="md:flex h-full hidden gap-x-6 text-sm">
       {items.map((item) => (
         <NavLink
           key={item.to}

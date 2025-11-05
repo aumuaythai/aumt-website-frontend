@@ -7,32 +7,47 @@ import {
   doc,
   FieldValue,
   getDoc,
+  getDocs,
+  setDoc,
   updateDoc,
 } from 'firebase/firestore'
 import { db } from './firebase'
 
-const attendance = collection(db, 'training_attendance')
+const attendance = collection(db, 'training_attendance_flat')
 
-type Attendance = string[]
+type Attendance = Record<string, string[]>
 
-async function getAttendance(sessionId: string): Promise<Attendance> {
-  const attendanceDoc = await getDoc(doc(attendance, sessionId))
+async function getAttendance(trainingId: string): Promise<Attendance | null> {
+  console.log(trainingId)
+  const attendanceDoc = await getDoc(doc(attendance, trainingId))
+  if (!attendanceDoc.exists()) {
+    return null
+  }
+
   return attendanceDoc.data() as Attendance
 }
 
-async function addAttendance(sessionId: string, memberId: string) {
-  updateDoc(doc(attendance, sessionId), { members: arrayUnion(memberId) })
+async function addAttendance(
+  trainingId: string,
+  sessionId: string,
+  memberId: string
+) {
+  updateDoc(doc(attendance, trainingId), { [sessionId]: arrayUnion(memberId) })
 }
 
-async function removeAttendance(sessionId: string, memberId: string) {
-  updateDoc(doc(attendance, sessionId), { members: arrayRemove(memberId) })
+async function removeAttendance(
+  trainingId: string,
+  sessionId: string,
+  memberId: string
+) {
+  updateDoc(doc(attendance, trainingId), { [sessionId]: arrayRemove(memberId) })
 }
 
-export function useAttendance(sessionId?: string) {
+export function useAttendance(trainingId: string) {
   return useQuery({
-    queryKey: ['attendance', sessionId],
-    queryFn: () => getAttendance(sessionId!),
-    enabled: !!sessionId,
+    queryKey: ['attendance', trainingId],
+    queryFn: () => getAttendance(trainingId),
+    enabled: !!trainingId,
   })
 }
 
@@ -41,14 +56,16 @@ export function useAddAttendance() {
 
   return useMutation({
     mutationFn: ({
+      trainingId,
       sessionId,
       memberId,
     }: {
+      trainingId: string
       sessionId: string
       memberId: string
-    }) => addAttendance(sessionId, memberId),
-    onSuccess: (_, { sessionId }) => {
-      queryClient.invalidateQueries({ queryKey: ['attendance', sessionId] })
+    }) => addAttendance(trainingId, sessionId, memberId),
+    onSuccess: (_, { trainingId }) => {
+      queryClient.invalidateQueries({ queryKey: ['attendance', trainingId] })
     },
     onError: (error) => {
       notification.error({
@@ -63,14 +80,16 @@ export function useRemoveAttendance() {
 
   return useMutation({
     mutationFn: ({
+      trainingId,
       sessionId,
       memberId,
     }: {
+      trainingId: string
       sessionId: string
       memberId: string
-    }) => removeAttendance(sessionId, memberId),
-    onSuccess: (_, { sessionId }) => {
-      queryClient.invalidateQueries({ queryKey: ['attendance', sessionId] })
+    }) => removeAttendance(trainingId, sessionId, memberId),
+    onSuccess: (_, { trainingId }) => {
+      queryClient.invalidateQueries({ queryKey: ['attendance', trainingId] })
     },
     onError: (error) => {
       notification.error({
