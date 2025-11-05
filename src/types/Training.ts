@@ -20,7 +20,6 @@ export interface TrainingSession {
 export interface Training {
   sessions: Record<string, TrainingSession>
   feedback: string[]
-  trainingId: string
   title: string
   opens: Date
   closes: Date

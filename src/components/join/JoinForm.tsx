@@ -1,6 +1,6 @@
 import PaymentInstructions from '@/components/utility/PaymentInstructions'
 import { useConfig } from '@/context/ClubConfigProvider'
-import { useCreateMember } from '@/services/member'
+import { useCreateMember } from '@/services/members'
 import { Member } from '@/types'
 import {
   ETHNICITIES,

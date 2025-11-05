@@ -1,4 +1,4 @@
-import { useDeleteMember, useUpdateMember } from '@/services/member'
+import { useDeleteMember, useUpdateMember } from '@/services/members'
 import { CopyOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, notification, Popconfirm, Radio, Tooltip } from 'antd'

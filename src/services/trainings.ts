@@ -16,10 +16,7 @@ async function getTrainings(): Promise<Training[]> {
 }
 
 async function createTraining(training: Training) {
-  return await db
-    .collection(TRAINING_DB_PATH)
-    .doc(training.trainingId)
-    .set(training)
+  return await db.collection(TRAINING_DB_PATH).doc().set(training)
 }
 
 async function deleteTraining(trainingId: string) {

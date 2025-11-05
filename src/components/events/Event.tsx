@@ -15,7 +15,7 @@ import {
   removeMemberFromEvent,
   signUpToEvent,
 } from '../../services/db'
-import { AumtCampSignupData, AumtEvent, AumtEventSignupData } from '../../types'
+import { AumtCampSignupData, AumtEventSignupData, Event } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
 import { CampSignupForm } from './CampSignupForm'
 
@@ -91,7 +91,7 @@ export default function Event() {
   )
 }
 
-function Signups({ event }: { event: AumtEvent }) {
+function Signups({ event }: { event: Event }) {
   const { user, userId } = useAuth()
   const queryClient = useQueryClient()
 

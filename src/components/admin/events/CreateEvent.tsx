@@ -1,6 +1,6 @@
+import { useCreateEvent, useEvent } from '@/services/events'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Button,
   Checkbox,
@@ -13,10 +13,9 @@ import {
 import { Moment } from 'moment'
 import { useState } from 'react'
 import { Controller, FieldErrors, useForm } from 'react-hook-form'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useParams } from 'react-router'
 import z from 'zod'
-import { getEventById, submitEvent } from '../../../services/db'
-import { AumtEvent } from '../../../types'
+import { Event } from '../../../types'
 import MarkdownEditor from '../../utility/MarkdownEditor'
 
 const eventSchema = z.object({
@@ -53,31 +52,10 @@ type EventForm = z.infer<typeof eventSchema>
 export default function CreateEvent() {
   const [hasLimit, setHasLimit] = useState(false)
 
-  const queryClient = useQueryClient()
   const { eventId } = useParams()
-  const navigate = useNavigate()
 
-  const { data: event, isPending: isLoadingEvent } = useQuery({
-    queryKey: ['event', eventId],
-    queryFn: () => getEventById(eventId!),
-    enabled: !!eventId,
-  })
-
-  const updateEvent = useMutation({
-    mutationFn: (eventData: AumtEvent) => submitEvent(eventData),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['events'] })
-      await navigate('/admin/events')
-      notification.success({
-        message: 'Event updated successfully',
-      })
-    },
-    onError: (error) => {
-      notification.error({
-        message: 'Error updating event: ' + error.toString(),
-      })
-    },
-  })
+  const { data: event, isPending: isLoadingEvent } = useEvent(eventId!)
+  const createEvent = useCreateEvent()
 
   const {
     control,
@@ -88,20 +66,8 @@ export default function CreateEvent() {
     resolver: zodResolver(eventSchema),
   })
 
-  function generateEventId(length: number) {
-    const digits = '1234567890qwertyuiopasdfghjklzxcvbnm'
-    let id = ''
-    for (let i = 0; i < length; i++) {
-      id += digits[Math.floor(Math.random() * digits.length)]
-    }
-    return id
-  }
-
   async function onValid(data: EventForm) {
-    const id = eventId || generateEventId(10)
-
-    const eventData: AumtEvent = {
-      id: id,
+    const eventData: Event = {
       title: data.title,
       urlPath: data.urlPath,
       description: data.description,
@@ -124,7 +90,7 @@ export default function CreateEvent() {
         : null,
     }
 
-    await updateEvent.mutateAsync(eventData)
+    await createEvent.mutateAsync(eventData)
   }
 
   function onInvalid(errors: FieldErrors<EventForm>) {

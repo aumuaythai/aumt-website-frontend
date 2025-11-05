@@ -1,3 +1,4 @@
+import { useEvents } from '@/services/events'
 import { PlusOutlined } from '@ant-design/icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Button, Divider, notification, Popconfirm, Spin } from 'antd'
@@ -7,10 +8,7 @@ import { getAllEvents, removeEvent } from '../../../services/db'
 export default function ManageEvents() {
   const queryClient = useQueryClient()
 
-  const { data, isPending } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => getAllEvents(),
-  })
+  const { data, isPending: isLoadingEvents } = useEvents()
 
   const removeEventMutation = useMutation({
     mutationFn: (eventId: string) => removeEvent(eventId),
@@ -26,7 +24,7 @@ export default function ManageEvents() {
     removeEventMutation.mutate(eventId)
   }
 
-  if (isPending) {
+  if (isLoadingEvents) {
     return (
       <div>
         Loading Events <Spin />
@@ -54,7 +52,7 @@ export default function ManageEvents() {
         {events.map((event) => {
           return (
             <>
-              <li key={event.id} className="flex gap-x-4 justify-between">
+              <li key={event.title} className="flex gap-x-4 justify-between">
                 <h2>{event.title}</h2>
                 <div className="flex gap-x-2">
                   {event.signups && (

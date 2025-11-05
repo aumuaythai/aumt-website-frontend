@@ -1,11 +1,10 @@
 import { getDisplayName } from '@/lib/utils'
+import { useMembers } from '@/services/members'
 import { PlusOutlined } from '@ant-design/icons'
-import { useQuery } from '@tanstack/react-query'
 import { Button, Input, Modal, Spin, Table } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { getAllMembers } from '../../../services/db'
 import { Member } from '../../../types'
 import MemberDetails from './MemberDetails'
 
@@ -17,11 +16,7 @@ export default function MemberDashboard() {
     null
   )
   const [search, setSearch] = useState('')
-
-  const { data: members, isPending: isLoadingMembers } = useQuery({
-    queryKey: ['members'],
-    queryFn: getAllMembers,
-  })
+  const { data: members, isPending: isLoadingMembers } = useMembers()
 
   if (isLoadingMembers) {
     return (

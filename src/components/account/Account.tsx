@@ -1,7 +1,7 @@
 import PaymentInstructions from '@/components/utility/PaymentInstructions'
 import { useAuth } from '@/context/AuthProvider'
 import { useConfig } from '@/context/ClubConfigProvider'
-import { useUpdateMember } from '@/services/member'
+import { useUpdateMember } from '@/services/members'
 import { Member } from '@/types'
 import {
   ETHNICITIES,

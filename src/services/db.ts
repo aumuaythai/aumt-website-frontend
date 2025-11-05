@@ -1,9 +1,9 @@
 import firebase from 'firebase/app'
 import {
-  AumtEvent,
   AumtEventSignupData,
   AumtMembersObj,
   ClubConfig,
+  Event,
   Member,
   Training,
 } from '../types'
@@ -12,8 +12,6 @@ import { db } from './firebase'
 const TRAINING_DB_PATH = 'weekly_trainings'
 const TRAINING_ATTENDANCE_DB_PATH = 'training_attendance'
 const MEMBER_DB_PATH = 'members'
-
-const listeners: Record<string, Function> = {}
 
 export async function getUserInfo(fbUser: firebase.User): Promise<Member> {
   if (!db) throw new Error('No db object')
@@ -36,21 +34,6 @@ export const getIsAdmin = (userId: string): Promise<boolean> => {
     .then((doc) => {
       return !!doc.exists
     })
-}
-
-export async function getAllMembers(): Promise<AumtMembersObj> {
-  if (!db) return Promise.reject('No db object')
-  const membersSnapshot = await db.collection(MEMBER_DB_PATH).get()
-  const members: AumtMembersObj = {}
-  membersSnapshot.forEach((doc) => {
-    members[doc.id] = doc.data() as Member
-  })
-  return members
-}
-
-export const submitEvent = (eventData: AumtEvent): Promise<void> => {
-  if (!db) return Promise.reject('No db object')
-  return db.collection('events').doc(eventData.id).set(eventData)
 }
 
 export const signUpToEvent = (
@@ -120,13 +103,13 @@ export const removeMemberFromEvent = (
     )
 }
 
-export const getAllEvents = (): Promise<AumtEvent[]> => {
+export const getAllEvents = (): Promise<Event[]> => {
   if (!db) return Promise.reject('No db object')
   return db
     .collection('events')
     .get()
     .then((querySnapshot) => {
-      const events: AumtEvent[] = []
+      const events: Event[] = []
       querySnapshot.forEach((doc) => {
         const docData = doc.data()
         const event = docToEvent(docData)
@@ -136,7 +119,7 @@ export const getAllEvents = (): Promise<AumtEvent[]> => {
     })
 }
 
-export const getEventById = (id: string): Promise<AumtEvent> => {
+export const getEventById = (id: string): Promise<Event> => {
   if (!db) return Promise.reject('No db object')
   return db
     .collection('events')
@@ -347,11 +330,11 @@ export function signUserUp(
 //     .set(mergeObj, { merge: true })
 // }
 
-export const docToEvent = (docData: any): AumtEvent => {
+export const docToEvent = (docData: any): Event => {
   if (!docData.date) {
     throw new Error('No date on event: ' + JSON.stringify(docData))
   }
-  const event: AumtEvent = {
+  const event: Event = {
     ...docData,
     date: new Date(docData.date.seconds * 1000),
     signups: docData.signups

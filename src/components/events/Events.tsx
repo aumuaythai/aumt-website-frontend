@@ -1,27 +1,23 @@
-import { useQuery } from '@tanstack/react-query'
+import { useEvents } from '@/services/events'
 import { Spin } from 'antd'
-import { getAllEvents } from '../../services/db'
 import EventsList from './EventsList'
 
 export default function Events() {
-  const { data } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => getAllEvents(),
-  })
+  const { data: events, isPending: isLoadingEvents } = useEvents()
 
   const currentDate = new Date()
 
-  const pastEvents = data
+  const pastEvents = events
     ?.filter((e) => e.date < currentDate)
     .sort((a, b) => (a.date < b.date ? 1 : -1))
-  const upcomingEvents = data
+  const upcomingEvents = events
     ?.filter((e) => e.date >= currentDate)
     .sort((a, b) => (a.date > b.date ? 1 : -1))
 
-  if (!data) {
+  if (isLoadingEvents) {
     return (
       <div>
-        Retrieving Events <Spin />
+        Loading Events <Spin />
       </div>
     )
   }

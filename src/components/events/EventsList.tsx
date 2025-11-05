@@ -1,10 +1,10 @@
 import { Divider } from 'antd'
 import { Link } from 'react-router'
-import { AumtEvent } from '../../types'
+import { Event } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
 
 interface EventListProps {
-  events: AumtEvent[]
+  events: Event[]
 }
 
 const dateOptions: Intl.DateTimeFormatOptions = {
