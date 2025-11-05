@@ -10,12 +10,11 @@ import {
   FacebookOutlined,
   HomeOutlined,
 } from '@ant-design/icons'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Button, Divider, notification, Result, Spin } from 'antd'
+import { Button, Divider, Result, Spin } from 'antd'
 import moment from 'moment'
 import { Link, useParams } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
-import { AumtCampSignupData, AumtEventSignupData, Event } from '../../types'
+import { AumtCampSignupData, Event } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
 import { CampSignupForm } from './CampSignupForm'
 

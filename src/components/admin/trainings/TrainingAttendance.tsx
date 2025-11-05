@@ -1,7 +1,11 @@
-import { useAddAttendance, useAttendance } from '@/services/attendance'
+import {
+  useAddAttendance,
+  useAttendance,
+  useRemoveAttendance,
+} from '@/services/attendance'
 import { useTraining } from '@/services/trainings'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { Button, Select, Spin } from 'antd'
+import { Button, Checkbox, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 
@@ -14,6 +18,7 @@ export default function TrainingAttendance() {
   )
   const { data: attendance } = useAttendance(trainingId!)
   const addAttendance = useAddAttendance()
+  const removeAttendance = useRemoveAttendance()
 
   if (isLoadingTraining) {
     return (
@@ -40,9 +45,15 @@ export default function TrainingAttendance() {
     (a, b) => a.position - b.position
   )
 
-  function handleMemberClick(memberId: string) {
-    if (!attendance || !sessionId || !trainingId) {
+  function handleMemberClick(checked: boolean, memberId: string) {
+    if (!sessionId || !trainingId) {
       return
+    }
+
+    if (checked) {
+      addAttendance.mutate({ memberId, trainingId, sessionId })
+    } else {
+      removeAttendance.mutate({ memberId, trainingId, sessionId })
     }
   }
 
@@ -70,7 +81,7 @@ export default function TrainingAttendance() {
 
       {sessionId && session && (
         <>
-          <div>
+          <div className="flex flex-col gap-y-2">
             {Object.keys(session.members)
               .sort((a, b) => {
                 const aLastName = session.members[a].name.split(' ')[0]
@@ -81,27 +92,16 @@ export default function TrainingAttendance() {
                     .localeCompare(bLastName.toLowerCase() || '') || 0
                 )
               })
-              .map((key, index) => (
-                <div
-                  key={index}
-                  className="grow shrink-0 basis-1/2 box-border p-[5px]"
+              .map((memberId) => (
+                <Checkbox
+                  checked={attendance?.[sessionId]?.includes(memberId)}
+                  className="!text-2xl"
+                  onChange={(e) => {
+                    handleMemberClick(e.target.checked, memberId)
+                  }}
                 >
-                  <input
-                    type="checkbox"
-                    id={session.members[key].name}
-                    onChange={() => {
-                      handleMemberClick(key)
-                    }}
-                    checked={attendance?.[sessionId]?.includes(key)}
-                    className="scale-200"
-                  />
-                  <label
-                    htmlFor={session.members[key].name}
-                    className="text-xl pl-5"
-                  >
-                    {session.members[key].name}
-                  </label>
-                </div>
+                  {session.members[memberId].name}
+                </Checkbox>
               ))}
           </div>
           <div className="pt-2.5 text-xl">

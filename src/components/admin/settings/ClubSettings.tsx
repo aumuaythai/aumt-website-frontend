@@ -1,18 +1,8 @@
 import { useConfig } from '@/context/ClubConfigProvider'
 import { useUpdateConfig } from '@/services/config'
-import { ClubConfig } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  Button,
-  Input,
-  InputNumber,
-  List,
-  notification,
-  Radio,
-  Spin,
-  Switch,
-} from 'antd'
+import { useQueryClient } from '@tanstack/react-query'
+import { Button, Input, InputNumber, List, Radio, Spin, Switch } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import z from 'zod'
 

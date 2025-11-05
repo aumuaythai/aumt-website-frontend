@@ -342,7 +342,6 @@
 import { generateMockUid } from '@/lib/utils'
 import { useUpdateMemberSessions } from '@/services/trainings'
 import { MinusCircleOutlined } from '@ant-design/icons'
-import { useMutation } from '@tanstack/react-query'
 import { Button, Collapse, CollapseProps, Input, notification } from 'antd'
 import { FormEvent, useState } from 'react'
 import { Training } from '../../../types'
