@@ -1,38 +1,34 @@
-import firebase from 'firebase/app'
-import { auth } from './firebase'
+import { useQuery } from '@tanstack/react-query'
+import {
+  sendPasswordResetEmail as firebaseSendPasswordResetEmail,
+  signOut as firebaseSignOut,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
+import { auth, db } from './firebase'
 
-export const signIn = (
-  email: string,
-  password: string
-): Promise<firebase.auth.UserCredential> => {
-  return auth.signInWithEmailAndPassword(email, password)
+export async function signIn(email: string, password: string) {
+  return await signInWithEmailAndPassword(auth, email, password)
 }
 
-export const signOut = (): Promise<void> => {
-  return auth.signOut()
+export async function signOut(): Promise<void> {
+  return await firebaseSignOut(auth)
 }
 
-export const getCurrentUser = (): firebase.User | null => {
-  return auth.currentUser
+export async function sendPasswordResetEmail(email: string) {
+  return firebaseSendPasswordResetEmail(auth, email)
 }
 
-export const getCurrentUid = (): string | null => {
-  const currentUser = getCurrentUser()
-  return currentUser ? currentUser.uid : null
+export async function getIsAdmin(userId: string) {
+  const user = await getDoc(doc(db, 'admin', userId))
+  return !!user.exists()
 }
 
-export const createUser = (email: string, password: string) => {
-  return auth.createUserWithEmailAndPassword(email, password)
-}
-
-export const deleteCurrentUser = (): Promise<void> => {
-  const user = auth.currentUser
-  if (!user) {
-    return Promise.reject('Cannot delete - user is not signed in')
-  }
-  return user.delete()
-}
-
-export const sendPasswordResetEmail = (email: string) => {
-  return auth.sendPasswordResetEmail(email)
+export function useIsAdmin(userId?: string) {
+  return useQuery({
+    queryKey: ['isAdmin', userId],
+    queryFn: () => getIsAdmin(userId!),
+    enabled: !!userId,
+    initialData: false,
+  })
 }

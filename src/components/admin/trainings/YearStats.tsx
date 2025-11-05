@@ -28,7 +28,7 @@ export default function YearStats({ trainings }: YearStatsProps) {
     })
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height={400}>
       <LineChart data={graphData}>
         <XAxis
           dataKey="week"

@@ -1,4 +1,9 @@
 import {
+  useAddMemberToEvent,
+  useEvent,
+  useRemoveMemberFromEvent,
+} from '@/services/events'
+import {
   ArrowLeftOutlined,
   CalendarOutlined,
   ClockCircleOutlined,
@@ -10,25 +15,15 @@ import { Button, Divider, notification, Result, Spin } from 'antd'
 import moment from 'moment'
 import { Link, useParams } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
-import {
-  getEventById,
-  removeMemberFromEvent,
-  signUpToEvent,
-} from '../../services/db'
 import { AumtCampSignupData, AumtEventSignupData, Event } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
 import { CampSignupForm } from './CampSignupForm'
 
 export default function Event() {
   const { eventId } = useParams()
+  const { data: event, isPending: isLoadingEvent } = useEvent(eventId!)
 
-  const { data: event, isPending } = useQuery({
-    queryKey: ['event', eventId],
-    queryFn: () => getEventById(eventId!),
-    enabled: !!eventId,
-  })
-
-  if (isPending) {
+  if (isLoadingEvent) {
     return (
       <div>
         Retrieving event <Spin />
@@ -36,7 +31,7 @@ export default function Event() {
     )
   }
 
-  if (!event) {
+  if (!event || !eventId) {
     return <div>Event not found</div>
   }
 
@@ -91,41 +86,18 @@ export default function Event() {
   )
 }
 
-function Signups({ event }: { event: Event }) {
+function Signups({ eventId, event }: { eventId: string; event: Event }) {
   const { user, userId } = useAuth()
-  const queryClient = useQueryClient()
+  const addMember = useAddMemberToEvent()
+  const removeMember = useRemoveMemberFromEvent()
 
-  const removeMember = useMutation({
-    mutationFn: (uid: string) => removeMemberFromEvent(uid, event.id),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['events'] })
-    },
-    onError: (error) => {
-      notification.error({
-        message: 'Error withdrawing from event: ' + error.toString(),
-      })
-    },
-  })
+  const isSignedUp = !!event.signups?.members[userId]
+  const isOnWaitlist = !!event.signups?.waitlist[userId]
+  const { signups } = event
 
-  const signup = useMutation({
-    mutationFn: ({
-      uid,
-      signupData,
-      isWaitlist,
-    }: {
-      uid: string
-      signupData: AumtEventSignupData
-      isWaitlist: boolean
-    }) => signUpToEvent(event.id, uid, signupData, isWaitlist),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['events'] })
-    },
-    onError: (error) => {
-      notification.error({
-        message: 'Error signing up to event: ' + error.toString(),
-      })
-    },
-  })
+  if (!signups) {
+    return null
+  }
 
   function onSignupFormSubmit(
     isWaitlist: boolean,
@@ -136,8 +108,9 @@ function Signups({ event }: { event: Event }) {
       : signupData?.name
     const email = user ? user.email : signupData?.email
 
-    signup.mutate({
-      uid: userId,
+    addMember.mutate({
+      eventId,
+      userId,
       signupData: {
         ...signupData,
         displayName,
@@ -145,20 +118,11 @@ function Signups({ event }: { event: Event }) {
         timeSignedUpMs: new Date().getTime(),
         confirmed: event.signups?.needAdminConfirm ? false : true,
       },
-      isWaitlist,
     })
   }
 
-  const isSignedUp = !!event.signups?.members[userId]
-  const isOnWaitlist = !!event.signups?.waitlist[userId]
-  const { signups } = event
-
-  if (!signups) {
-    return null
-  }
-
   function handleWithdrawClick() {
-    removeMember.mutate(userId)
+    removeMember.mutate({ eventId, userId })
   }
 
   if (isSignedUp) {

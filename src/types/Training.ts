@@ -17,7 +17,8 @@ export interface TrainingSession {
     }
   }
 }
-export interface Training {
+
+export type Training = {
   sessions: Record<string, TrainingSession>
   feedback: string[]
   title: string

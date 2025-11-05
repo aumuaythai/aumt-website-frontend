@@ -1,15 +1,18 @@
 import { ClubConfig } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { notification } from 'antd'
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from './firebase'
 
+const configCollection = collection(db, 'config')
+
 async function getConfig(): Promise<ClubConfig> {
-  const doc = await db.collection('config').doc('config').get()
-  return doc.data() as ClubConfig
+  const config = await getDoc(doc(configCollection, 'config'))
+  return config.data() as ClubConfig
 }
 
 async function updateConfig(config: ClubConfig): Promise<void> {
-  await db.collection('config').doc('config').set(config)
+  return await setDoc(doc(configCollection, 'config'), config)
 }
 
 export function useConfig() {

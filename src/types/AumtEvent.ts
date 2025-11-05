@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore'
+
 export interface AumtCampSignupData {
   name?: string
   email?: string
@@ -46,12 +48,12 @@ export interface AumtEventSignupObject {
   waitlist: AumtEventSignup
 }
 
-export interface Event {
+export type Event = {
   title: string
   description: string
   urlPath: string
   photoPath: string
-  date: Date
+  date: Timestamp
   location: string
   locationLink: string
   fbLink: string

@@ -1,10 +1,10 @@
+import { EventWithId } from '@/services/events'
 import { Divider } from 'antd'
 import { Link } from 'react-router'
-import { Event } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
 
 interface EventListProps {
-  events: Event[]
+  events: EventWithId[]
 }
 
 const dateOptions: Intl.DateTimeFormatOptions = {
@@ -14,15 +14,16 @@ const dateOptions: Intl.DateTimeFormatOptions = {
   day: 'numeric',
 }
 
-export default function EventsList(props: EventListProps) {
-  if (props.events.length === 0) {
+export default function EventsList({ events }: EventListProps) {
+  if (events.length === 0) {
     return <p>There are no club events up at this time</p>
   }
 
   return (
     <ul className="flex flex-col gap-y-4">
-      {props.events.map((event) => {
-        const dateString = event.date.toLocaleDateString(undefined, dateOptions)
+      {events.map((event) => {
+        const date = event.date.toDate()
+        const dateString = date.toLocaleDateString(undefined, dateOptions)
 
         return (
           <Link
@@ -32,7 +33,9 @@ export default function EventsList(props: EventListProps) {
           >
             <div className="flex justify-between items-center">
               <h3>{event.title}</h3>
-              <time dateTime={event.date.toISOString()}>{dateString}</time>
+              <time dateTime={date.toISOString()} className="text-sm">
+                {dateString}
+              </time>
             </div>
             <Divider className="!my-4" />
             <div className="max-h-36 overflow-y-auto text-sm">

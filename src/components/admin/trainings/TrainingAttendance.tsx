@@ -1,44 +1,19 @@
-import {
-  getTrainingAttendance,
-  setMemberTrainingAttendance,
-} from '@/services/db'
+import { useAddAttendance, useAttendance } from '@/services/attendance'
 import { useTraining } from '@/services/trainings'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { Button, Select, Spin } from 'antd'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 
 export default function TrainingAttendance() {
   const [sessionId, setSessionId] = useState<string | undefined>(undefined)
-  const [attendance, setAttendance] = useState<string[] | undefined>(undefined)
 
   const { trainingId } = useParams()
-
   const { data: training, isPending: isLoadingTraining } = useTraining(
     trainingId!
   )
+  const { data: attendance } = useAttendance(sessionId)
 
-  const { data: trainingAttendance } = useQuery({
-    queryKey: ['trainingAttendance', trainingId, sessionId],
-    queryFn: () => getTrainingAttendance(trainingId!, sessionId!),
-    enabled: !!trainingId && !!sessionId,
-  })
-
-  const { mutate: updateAttendance, variables } = useMutation({
-    mutationFn: ({
-      memberId,
-      updatedMembers,
-    }: {
-      memberId: string
-      updatedMembers: string[]
-    }) =>
-      setMemberTrainingAttendance(
-        trainingId!,
-        sessionId!,
-        memberId,
-        updatedMembers
-      ),
-  })
+  const addAttendance = useAddAttendance()
 
   if (isLoadingTraining) {
     return (
@@ -51,10 +26,6 @@ export default function TrainingAttendance() {
 
   if (!training || !trainingId) {
     return <div>Training not found</div>
-  }
-
-  if (trainingAttendance && !attendance) {
-    setAttendance(trainingAttendance)
   }
 
   if (!sessionId) {
@@ -78,8 +49,7 @@ export default function TrainingAttendance() {
       updatedMembers.push(memberId)
     }
 
-    setAttendance(updatedMembers)
-    updateAttendance({ memberId, updatedMembers })
+    addAttendance.mutate({ sessionId, memberId })
   }
 
   return (

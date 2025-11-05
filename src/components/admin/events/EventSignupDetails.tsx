@@ -1,5 +1,4 @@
 import { Button, notification } from 'antd'
-import { confirmMemberEventSignup } from '../../../services/db'
 import { TableRow } from '../../../types'
 import './EventSignupDetails.css'
 
@@ -11,27 +10,27 @@ interface EventSignupDetailsProps {
 
 export default function EventSignupDetails(props: EventSignupDetailsProps) {
   function updateConfirmed(row: TableRow | null, newConfirmed: boolean) {
-    if (!row) {
-      return
-    }
-    confirmMemberEventSignup(
-      props.eventId,
-      row.key,
-      newConfirmed,
-      props.isWaitlist
-    )
-      .then(() => {
-        notification.success({
-          message: `Updated confirmed for ${row.displayName} to ${
-            newConfirmed ? 'Yes' : 'No'
-          }`,
-        })
-      })
-      .catch((err) => {
-        notification.error({
-          message: `Error confirming signup: ${err.toString()}`,
-        })
-      })
+    // if (!row) {
+    //   return
+    // }
+    // confirmMemberEventSignup(
+    //   props.eventId,
+    //   row.key,
+    //   newConfirmed,
+    //   props.isWaitlist
+    // )
+    //   .then(() => {
+    //     notification.success({
+    //       message: `Updated confirmed for ${row.displayName} to ${
+    //         newConfirmed ? 'Yes' : 'No'
+    //       }`,
+    //     })
+    //   })
+    //   .catch((err) => {
+    //     notification.error({
+    //       message: `Error confirming signup: ${err.toString()}`,
+    //     })
+    //   })
   }
 
   return (

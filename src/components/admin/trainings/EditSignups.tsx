@@ -340,30 +340,12 @@
 // }
 
 import { generateMockUid } from '@/lib/utils'
-import {
-  DeleteOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from '@ant-design/icons'
+import { useUpdateMemberSessions } from '@/services/trainings'
+import { MinusCircleOutlined } from '@ant-design/icons'
 import { useMutation } from '@tanstack/react-query'
-import {
-  Button,
-  Col,
-  Collapse,
-  CollapseProps,
-  Divider,
-  Dropdown,
-  Form,
-  Input,
-  Menu,
-  Row,
-  Select,
-  Statistic,
-  notification,
-} from 'antd'
-import React, { Component, FormEvent, Key, useState } from 'react'
-import { removeMemberFromForm, signUserUp } from '../../../services/db'
-import { Training, TrainingSession } from '../../../types'
+import { Button, Collapse, CollapseProps, Input, notification } from 'antd'
+import { FormEvent, useState } from 'react'
+import { Training } from '../../../types'
 
 type EditSignupsProps = {
   training: Training
@@ -445,18 +427,7 @@ function MemberList({
 }) {
   const [memberName, setMemberName] = useState<string>('')
 
-  const addMember = useMutation({
-    mutationFn: () =>
-      signUserUp(
-        generateMockUid(),
-        memberName,
-        new Date(),
-        trainingId,
-        [sessionId],
-        '',
-        []
-      ),
-  })
+  const updateMemberSessions = useUpdateMemberSessions()
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -465,7 +436,13 @@ function MemberList({
       return notification.error({ message: 'Name required' })
     }
 
-    await addMember.mutateAsync()
+    await updateMemberSessions.mutateAsync({
+      userId: generateMockUid(),
+      displayName: memberName,
+      trainingId,
+      sessionIds: [sessionId],
+      currentSessionIds: [],
+    })
     setMemberName('')
   }
 

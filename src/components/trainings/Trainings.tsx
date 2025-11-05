@@ -1,15 +1,16 @@
-import { getDisplayName } from '@/lib/utils'
-import { useTrainings } from '@/services/trainings'
+import { useOpenTrainings, useTrainings } from '@/services/trainings'
 import { Divider, Spin } from 'antd'
 import { Link } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 import { useConfig } from '../../context/ClubConfigProvider'
-import SignupForm from './SignupForm'
+import TrainingForm from './TrainingForm'
 
 export default function Trainings() {
-  const { user, userId } = useAuth()
+  const auth = useAuth()
   const clubConfig = useConfig()
-  const { data: trainings, isPending: isLoadingTrainings } = useTrainings()
+  const { data: trainings, isPending: isLoadingTrainings } = useOpenTrainings()
+
+  const user = auth?.user
 
   if (isLoadingTrainings || !clubConfig?.clubSignupSem || !trainings) {
     return <Spin />
@@ -17,7 +18,7 @@ export default function Trainings() {
 
   if (!trainings.length) {
     return (
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center px-6 pt-8">
         <p>Weekly training signups will open on Sundays on this page</p>
         <p>The current training schedule is:</p>
         <ul className="text-start list-none">
@@ -65,31 +66,13 @@ export default function Trainings() {
           (user.membership !== 'FY' && user.membership !== training.semester)
 
         if (training.openToPublic) {
-          return (
-            <SignupForm
-              title={training.title}
-              id={training.trainingId}
-              closes={training.closes}
-              sessions={training.sessions}
-              displayName={getDisplayName(user)}
-              showNotes={true}
-              submittingAsName={
-                user
-                  ? `${user.preferredName || user.firstName} ${user.lastName}`
-                  : ''
-              }
-              userId={userId}
-              notes={training.notes}
-              signupMaxSessions={training.signupMaxSessions}
-              openToPublic={training.openToPublic}
-            />
-          )
+          return <TrainingForm training={training} />
         }
 
         if (!user.paid && training.paymentLock) {
           return (
             <div
-              key={training.trainingId}
+              key={training.id}
               className="max-w-[440px] p-5 mx-auto text-left"
             >
               <h2 className="text-xl">{training.title}</h2>
@@ -123,25 +106,7 @@ export default function Trainings() {
           )
         }
 
-        return (
-          <SignupForm
-            title={training.title}
-            id={training.trainingId}
-            closes={training.closes}
-            sessions={training.sessions}
-            displayName={getDisplayName(user)}
-            showNotes={true}
-            submittingAsName={
-              user
-                ? `${user.preferredName || user.firstName} ${user.lastName}`
-                : ''
-            }
-            userId={userId}
-            notes={training.notes}
-            signupMaxSessions={training.signupMaxSessions}
-            openToPublic={training.openToPublic}
-          />
-        )
+        return <TrainingForm training={training} />
       })}
     </main>
   )

@@ -1,5 +1,5 @@
-import { notification } from 'antd'
-import firebase from 'firebase/app'
+import { useMember } from '@/services/members'
+import { User as FirebaseUser } from 'firebase/auth'
 import {
   createContext,
   ReactNode,
@@ -7,82 +7,41 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { signOut } from '../services/auth'
-import { getIsAdmin, getUserInfo } from '../services/db'
+import { useIsAdmin } from '../services/auth'
 import { auth } from '../services/firebase'
 import { Member } from '../types'
 
-const AuthContext = createContext<{
-  user: Member | null
-  userIsAdmin: boolean
+type User = {
   userId: string
-}>({
-  user: null,
-  userIsAdmin: false,
-  userId: '',
-})
+  user: Member
+  isAdmin: boolean | undefined
+} | null
+
+const AuthContext = createContext<User | null>(null)
 
 export function useAuth() {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-
-  return context
+  return useContext(AuthContext)
 }
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<Member | null>(null)
-  const [userIsAdmin, setUserIsAdmin] = useState(false)
-  const [userId, setUserId] = useState('')
+  const [authUser, setAuthUser] = useState<FirebaseUser | null>(null)
+
+  const { data: member } = useMember(authUser?.uid)
+  const { data: isAdmin } = useIsAdmin(authUser?.uid)
 
   useEffect(() => {
-    auth.onAuthStateChanged(handleAuthStateChange)
+    const unsubscribe = auth.onAuthStateChanged(setAuthUser)
+    return () => unsubscribe()
   }, [])
 
-  async function handleAuthStateChange(fbUser: firebase.User | null) {
-    if (!fbUser) {
-      setUser(null)
-      setUserId('')
-      setUserIsAdmin(false)
-      return
-    }
-
-    try {
-      const userInfo: Member = await getUserInfo(fbUser)
-      setUser(userInfo)
-      setUserId(fbUser.uid)
-
-      const isAdmin: boolean = await getIsAdmin(fbUser.uid)
-      setUserIsAdmin(isAdmin)
-    } catch (err) {
-      if (err === 'No User for uid') {
-        notification.error({
-          message: 'Error logging in',
-          description:
-            'User is registered but not in database! Message the AUMT team on Facebook as this should not happen :)',
-        })
-      } else {
-        notification.error({
-          message: `Error logging in: ${err}`,
-        })
-      }
-      setUser(null)
-      setUserId('')
-      setUserIsAdmin(false)
-      try {
-        await signOut()
-      } catch (signOutErr) {
-        notification.error({
-          message: `Error signing out: ${signOutErr}`,
-        })
-      }
+  let user: User | null = null
+  if (authUser && member) {
+    user = {
+      userId: authUser.uid,
+      user: member,
+      isAdmin: isAdmin,
     }
   }
 
-  return (
-    <AuthContext.Provider value={{ user, userIsAdmin, userId }}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>
 }

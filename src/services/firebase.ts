@@ -1,11 +1,9 @@
-import 'firebase/analytics'
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/database'
-import 'firebase/firestore'
-import 'firebase/functions'
+import { getAnalytics } from 'firebase/analytics'
+import { FirebaseOptions, initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
+import { initializeFirestore } from 'firebase/firestore'
 
-const FIREBASE_CONFIG = {
+const firebaseConfig: FirebaseOptions = {
   apiKey: import.meta.env.VITE_FB_API_KEY,
   authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
   databaseURL: import.meta.env.VITE_FB_DATABASE_URL,
@@ -16,12 +14,8 @@ const FIREBASE_CONFIG = {
   measurementId: import.meta.env.VITE_GA_MEASUREMENT_ID,
 }
 
-firebase.initializeApp(FIREBASE_CONFIG)
-export const auth = firebase.auth()
-export const functions = firebase.functions()
+const app = initializeApp(firebaseConfig)
 
-const db = firebase.firestore()
-db.settings({ ignoreUndefinedProperties: true })
-export { db }
-
-export const analytics = firebase.analytics()
+export const auth = getAuth(app)
+export const db = initializeFirestore(app, { ignoreUndefinedProperties: true })
+export const analytics = getAnalytics(app)

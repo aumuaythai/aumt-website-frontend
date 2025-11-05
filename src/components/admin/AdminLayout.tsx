@@ -4,14 +4,15 @@ import { Link, Outlet, useLocation } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 
 export default function AdminLayout() {
-  const { userIsAdmin } = useAuth()
+  const user = useAuth()
+  const isAdmin = user?.isAdmin
 
-  if (!userIsAdmin) {
+  if (!isAdmin) {
     return <div>You are not authorised to access this page.</div>
   }
 
   return (
-    <div className="text-left flex min-h-[calc(100vh-50px)] h-0">
+    <div className="text-left flex min-h-[calc(100vh-50px)]">
       <AdminMenu />
       <Outlet />
     </div>

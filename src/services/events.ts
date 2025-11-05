@@ -1,28 +1,69 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { notification } from 'antd'
-import { Event } from '../types'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  deleteField,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from 'firebase/firestore'
+import { AumtEventSignupData, Event } from '../types'
 import { db } from './firebase'
 
+export type EventWithId = Event & { id: string }
+
+const events = collection(db, 'events')
+
 async function getEvent(eventId: string) {
-  const doc = await db.collection('events').doc(eventId).get()
-  return doc.data() as Event
+  const event = await getDoc(doc(events, eventId))
+  return event.data() as Event
 }
 
-async function getEvents() {
-  const snapshot = await db.collection('events').get()
-  return snapshot.docs.map((doc) => doc.data() as Event)
+async function getEvents(): Promise<EventWithId[]> {
+  const snapshot = await getDocs(events)
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Event),
+  }))
 }
 
 async function createEvent(event: Event) {
-  return await db.collection('events').doc().set(event)
+  return await addDoc(events, event)
 }
 
 async function updateEvent(eventId: string, event: Event) {
-  return await db.collection('events').doc(eventId).update(event)
+  return await updateDoc(doc(events, eventId), event)
 }
 
 async function deleteEvent(eventId: string) {
-  return await db.collection('events').doc(eventId).delete()
+  return await deleteDoc(doc(events, eventId))
+}
+
+async function addMemberToEvent(
+  eventId: string,
+  userId: string,
+  signupData: AumtEventSignupData
+) {
+  return await updateDoc(doc(events, eventId), {
+    signups: {
+      members: {
+        [userId]: signupData,
+      },
+    },
+  })
+}
+
+async function removeMemberFromEvent(eventId: string, userId: string) {
+  return await updateDoc(doc(events, eventId), {
+    signups: {
+      members: {
+        [userId]: deleteField(),
+      },
+    },
+  })
 }
 
 export function useEvent(eventId: string) {
@@ -89,6 +130,53 @@ export function useDeleteEvent() {
       queryClient.invalidateQueries({ queryKey: ['events'] })
       notification.success({
         message: 'Event deleted',
+      })
+    },
+  })
+  return mutation
+}
+
+export function useAddMemberToEvent() {
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: ({
+      eventId,
+      userId,
+      signupData,
+    }: {
+      eventId: string
+      userId: string
+      signupData: AumtEventSignupData
+    }) => addMemberToEvent(eventId, userId, signupData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] })
+      notification.success({
+        message: 'Member added',
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: 'Error adding member: ' + error.toString(),
+      })
+    },
+  })
+  return mutation
+}
+
+export function useRemoveMemberFromEvent() {
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: ({ eventId, userId }: { eventId: string; userId: string }) =>
+      removeMemberFromEvent(eventId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] })
+      notification.success({
+        message: 'Member removed',
+      })
+    },
+    onError: (error) => {
+      notification.error({
+        message: 'Error removing member: ' + error.toString(),
       })
     },
   })

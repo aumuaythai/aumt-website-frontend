@@ -30,12 +30,10 @@ export default function TrainingDashboard() {
     .slice()
 
   if (selectedTrainingId === null && trainings) {
-    setSelectedTrainingId(sortedTrainings[0].trainingId)
+    setSelectedTrainingId(sortedTrainings[0].id)
   }
 
-  const selectedTraining = trainings.find(
-    (t) => t.trainingId === selectedTrainingId
-  )
+  const selectedTraining = trainings.find((t) => t.id === selectedTrainingId)
 
   function handleTrainingClick(trainingId: string) {
     setSelectedTrainingId(trainingId)
@@ -50,21 +48,21 @@ export default function TrainingDashboard() {
   }
 
   return (
-    <div className="p-4 h-full flex-1">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-x-2">
+    <div className="p-4 flex-1 w-full">
+      <div className="flex flex-col-reverse lg:flex-row gap-y-2 lg:gap-y-0 items-center justify-between">
+        <div className="flex items-center gap-x-2 w-full">
           <Select
             value={selectedTrainingId}
             options={sortedTrainings.map((training) => ({
               label: training.title,
-              value: training.trainingId,
+              value: training.id,
             }))}
-            className="w-72"
+            className="lg:w-72 w-full"
             onChange={(value) => handleTrainingClick(value as string)}
           />
           {selectedTraining && (
             <>
-              <Link to={`/admin/trainings/${selectedTraining.trainingId}`}>
+              <Link to={`/admin/trainings/${selectedTraining.id}`}>
                 <Button>Edit</Button>
               </Link>
               <Button
@@ -74,9 +72,7 @@ export default function TrainingDashboard() {
               >
                 Remove
               </Button>
-              <Link
-                to={`/admin/trainings/${selectedTraining.trainingId}/attendance`}
-              >
+              <Link to={`/admin/trainings/${selectedTraining.id}/attendance`}>
                 <Button type="primary" ghost>
                   Attendance
                 </Button>
@@ -85,14 +81,14 @@ export default function TrainingDashboard() {
           )}
         </div>
 
-        <Link to="/admin/trainings/create">
-          <Button type="primary" shape="round" icon={<PlusOutlined />}>
+        <Link to="/admin/trainings/create" className="w-full lg:w-auto">
+          <Button icon={<PlusOutlined />} className="w-full lg:w-auto">
             Create Training
           </Button>
         </Link>
       </div>
 
-      <div className="flex flex-col md:flex-row mt-4">
+      <div className="mt-6">
         <div className="flex flex-col flex-1/3">
           <h2 className="text-xl">Edit Signups</h2>
           {selectedTraining ? (
@@ -102,9 +98,9 @@ export default function TrainingDashboard() {
           )}
         </div>
 
-        <div className="flex flex-col flex-2/3">
+        <div className="mt-8 w-full">
           <h2 className="text-xl">Yearly Stats</h2>
-          <YearStats trainings={sortedTrainings.slice().reverse()} />
+          {/* <YearStats trainings={sortedTrainings.slice().reverse()} /> */}
         </div>
       </div>
     </div>

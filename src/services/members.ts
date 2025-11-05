@@ -1,30 +1,58 @@
 import { Member } from '@/types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { notification } from 'antd'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from 'firebase/firestore'
 import { auth, db } from './firebase'
 
-const MEMBER_DB_PATH = 'members'
+const members = collection(db, 'members')
 
-async function getMembers(): Promise<Member[]> {
-  const members = await db.collection('members').get()
-  return members.docs.map((doc) => doc.data() as Member)
+export async function getMember(userId: string) {
+  const member = await getDoc(doc(members, userId))
+  return member.data() as Member
+}
+
+async function getMembers() {
+  const snapshot = await getDocs(members)
+  return snapshot.docs.map((doc) => doc.data() as Member)
 }
 
 async function createMember(member: Member, password: string) {
-  const user = await auth.createUserWithEmailAndPassword(member.email, password)
+  const user = await createUserWithEmailAndPassword(
+    auth,
+    member.email,
+    password
+  )
   if (!user.user?.uid) {
     throw new Error('Failed to create user')
   }
 
-  return await db.collection(MEMBER_DB_PATH).doc(user.user.uid).set(member)
+  return await setDoc(doc(members, user.user.uid), member)
 }
 
 async function updateMember(userId: string, member: Member) {
-  return await db.collection(MEMBER_DB_PATH).doc(userId).update(member)
+  return await updateDoc(doc(members, userId), member)
 }
 
 async function deleteMember(userId: string) {
-  return await db.collection(MEMBER_DB_PATH).doc(userId).delete()
+  return await deleteDoc(doc(members, userId))
+}
+
+export function useMember(userId?: string) {
+  const query = useQuery({
+    queryKey: ['member', userId],
+    queryFn: () => getMember(userId!),
+    enabled: !!userId,
+  })
+  return query
 }
 
 export function useMembers() {

@@ -1,4 +1,8 @@
 import {
+  useAddMemberToEvent,
+  useRemoveMemberFromEvent,
+} from '@/services/events'
+import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
   CloseCircleOutlined,
@@ -21,11 +25,6 @@ import { TableCurrentDataSource } from 'antd/lib/table/interface'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { copyText } from '../../../lib/utils'
-import {
-  confirmMemberEventSignup,
-  removeMemberFromEvent,
-  signUpToEvent,
-} from '../../../services/db'
 import { AumtEventSignup, LicenseClasses, TableRow } from '../../../types'
 import EventSignupDetails from './EventSignupDetails'
 import './EventSignupTable.css'
@@ -88,71 +87,64 @@ export default function EventSignupTable(props: EventSignupTableProps) {
   const [randomCars, setRandomCars] = useState<CarAllocation[]>([])
   const [max4Seats, setMax4Seats] = useState(false)
 
+  const addMember = useAddMemberToEvent()
+  const removeMember = useRemoveMemberFromEvent()
+
   useEffect(() => {
     setColumns(getColumns())
     setRows(getRows())
   }, [getColumns, getRows])
 
   function updateConfirmed(row: TableRow | null, newConfirmed: boolean) {
-    if (!row) {
-      return
-    }
-    confirmMemberEventSignup(
-      props.eventId,
-      row.key,
-      newConfirmed,
-      props.isWaitlist
-    )
-      .then(() => {
-        notification.success({
-          message: `Updated confirmed for ${row.displayName} to ${
-            newConfirmed ? 'Yes' : 'No'
-          }`,
-        })
-      })
-      .catch((err) => {
-        notification.error({
-          message: `Error confirming signup: ${err.toString()}`,
-        })
-      })
+    // if (!row) {
+    //   return
+    // }
+    // confirmMemberEventSignup(
+    //   props.eventId,
+    //   row.key,
+    //   newConfirmed,
+    //   props.isWaitlist
+    // )
+    //   .then(() => {
+    //     notification.success({
+    //       message: `Updated confirmed for ${row.displayName} to ${
+    //         newConfirmed ? 'Yes' : 'No'
+    //       }`,
+    //     })
+    //   })
+    //   .catch((err) => {
+    //     notification.error({
+    //       message: `Error confirming signup: ${err.toString()}`,
+    //     })
+    //   })
   }
   function deleteMember(key: string) {
     if (!key) return
-    removeMemberFromEvent(key, props.eventId, props.isWaitlist)
-      .then(() => {
-        notification.success({
-          message: `Removed from ${props.isWaitlist ? 'waitlist' : 'signups'}`,
-        })
-      })
-      .catch((err) => {
-        notification.error({
-          message: `Error removing from event: ${err.toString()}`,
-        })
-      })
+    removeMember.mutate({ eventId: props.eventId, userId: key })
   }
   function onMoveClick(key: string) {
-    if (!key) return
-    setTableLoading(true)
-    const data = props.signupData[key]
-    signUpToEvent(props.eventId, key, data, !props.isWaitlist)
-      .then(() => {
-        return removeMemberFromEvent(key, props.eventId, props.isWaitlist)
-      })
-      .then(() => {
-        notification.success({
-          message: `Successfully moved to ${
-            props.isWaitlist ? 'signups' : 'waitlist'
-          }`,
-        })
-      })
-      .catch((err) => {
-        notification.error({
-          message: `Error moving member: ${err.toString()}`,
-        })
-      })
-      .finally(() => {
-        setTableLoading(false)
-      })
+    // if (!key) return
+    // setTableLoading(true)
+    // const data = props.signupData[key]
+    // signUpToEvent(props.eventId, key, data, !props.isWaitlist)
+    //   .then(() => {
+    //     return removeMemberFromEvent(key, props.eventId, props.isWaitlist)
+    //   })
+    //   .then(() => {
+    //     notification.success({
+    //       message: `Successfully moved to ${
+    //         props.isWaitlist ? 'signups' : 'waitlist'
+    //       }`,
+    //     })
+    //   })
+    //   .catch((err) => {
+    //     notification.error({
+    //       message: `Error moving member: ${err.toString()}`,
+    //     })
+    //   })
+    //   .finally(() => {
+    //     setTableLoading(false)
+    //   })
   }
   function onSelectSignup(key: string) {
     const member = rows.find((r) => r.key === key)

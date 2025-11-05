@@ -9,7 +9,7 @@ import NavMenu from './NavMenu'
 import UserInfo from './UserInfo'
 
 export default function Header() {
-  const { user, userIsAdmin } = useAuth()
+  const user = useAuth()
 
   const location = useLocation()
   const pathname = location.pathname
@@ -23,16 +23,16 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full flex items-center justify-between px-5 font-[Joyride] border-b border-b-[#f0f0f0] font-normal h-[50px]">
+    <header className="w-full flex items-center justify-between px-5 font-[Joyride] border-b border-b-[#f0f0f0] h-[50px]">
       <Link to="/">
-        <Logo className="w-[120px] transition-opacity hover:opacity-80" />
+        <Logo className="w-[100px] transition-opacity hover:opacity-80" />
       </Link>
 
-      <NavMenu isAdmin={userIsAdmin} user={user} />
+      <NavMenu isAdmin={user?.isAdmin} />
 
       <div className="flex items-center gap-x-3">
         {user ? (
-          <UserInfo user={user} />
+          <UserInfo user={user.user} />
         ) : (
           <div className="flex items-center gap-x-2">
             <Button type="text" className="!py-4 !font-joyride">

@@ -1,27 +1,14 @@
-import { useEvents } from '@/services/events'
+import { useDeleteEvent, useEvents } from '@/services/events'
 import { PlusOutlined } from '@ant-design/icons'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Button, Divider, notification, Popconfirm, Spin } from 'antd'
+import { Button, Divider, Popconfirm, Spin } from 'antd'
 import { Link } from 'react-router'
-import { getAllEvents, removeEvent } from '../../../services/db'
 
 export default function ManageEvents() {
-  const queryClient = useQueryClient()
-
-  const { data, isPending: isLoadingEvents } = useEvents()
-
-  const removeEventMutation = useMutation({
-    mutationFn: (eventId: string) => removeEvent(eventId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['events'] })
-      notification.success({
-        message: 'Event removed successfully',
-      })
-    },
-  })
+  const { data: events, isPending: isLoadingEvents } = useEvents()
+  const deleteEvent = useDeleteEvent()
 
   function handleRemoveEvent(eventId: string) {
-    removeEventMutation.mutate(eventId)
+    deleteEvent.mutate(eventId)
   }
 
   if (isLoadingEvents) {
@@ -32,11 +19,11 @@ export default function ManageEvents() {
     )
   }
 
-  if (!data) {
+  if (!events) {
     return <div>No Events Found</div>
   }
 
-  const events = data.slice().sort((a, b) => (a.date > b.date ? -1 : 1))
+  const sortedEvents = events.slice().sort((a, b) => (a.date > b.date ? -1 : 1))
 
   return (
     <div className="max-w-2xl mx-auto pt-8">
@@ -49,10 +36,10 @@ export default function ManageEvents() {
         </Link>
       </div>
       <ul className="flex flex-col mt-8">
-        {events.map((event) => {
+        {sortedEvents.map((event) => {
           return (
             <>
-              <li key={event.title} className="flex gap-x-4 justify-between">
+              <li key={event.id} className="flex gap-x-4 justify-between">
                 <h2>{event.title}</h2>
                 <div className="flex gap-x-2">
                   {event.signups && (
@@ -68,7 +55,7 @@ export default function ManageEvents() {
                     onConfirm={() => handleRemoveEvent(event.id)}
                   >
                     <Button
-                      loading={removeEventMutation.isPending}
+                      loading={deleteEvent.isPending}
                       danger
                       type="primary"
                     >

@@ -270,31 +270,27 @@
 // export default withRouter(EventSignups)
 
 import { generateMockUid } from '@/lib/utils'
+import { useAddMemberToEvent, useEvent } from '@/services/events'
 import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons'
-import { useQuery } from '@tanstack/react-query'
 import { Button, notification, Spin } from 'antd'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { getEventById, signUpToEvent } from '../../../services/db'
-import { AumtCampSignupData } from '../../../types'
+import { AumtCampSignupData, AumtEventSignupData } from '../../../types'
 import { CampSignupForm } from '../../events/CampSignupForm'
 import './EventSignups.css'
 import EventSignupTable from './EventSignupTable'
 
 export default function EventSignups() {
   const { eventId } = useParams()
-
-  const { data: event, isPending } = useQuery({
-    queryKey: ['event', eventId],
-    queryFn: () => getEventById(eventId!),
-    enabled: !!eventId,
-  })
+  const { data: event, isPending: isLoadingEvent } = useEvent(eventId!)
 
   const [addingMember, setAddingMember] = useState(false)
   const [addingWaitlistMember, setAddingWaitlistMember] = useState(false)
   const [submittingMember, setSubmittingMember] = useState(false)
   const [submittingWaitlistMember, setSubmittingWaitlistMember] =
     useState(false)
+
+  const addMember = useAddMemberToEvent()
 
   function addMemberClick() {
     setAddingMember(true)
@@ -331,39 +327,20 @@ export default function EventSignups() {
       setSubmittingMember(true)
     }
 
-    signUpToEvent(
-      event?.id,
-      generateMockUid(),
-      Object.assign(signupData, {
-        confirmed: false,
-        timeSignedUpMs: new Date().getTime(),
+    addMember.mutate({
+      eventId: eventId!,
+      userId: generateMockUid(),
+      signupData: {
+        ...signupData,
         displayName: signupData.name,
         email: signupData.email,
-      }),
-      isWaitlist
-    )
-      .then(() => {
-        notification.success({
-          message: `Successfully signed up ${signupData.name}`,
-        })
-      })
-      .catch((err) => {
-        notification.error({
-          message: `Error signing up to event: ${err.toString()}`,
-        })
-      })
-      .finally(() => {
-        if (isWaitlist) {
-          setSubmittingWaitlistMember(false)
-          setAddingWaitlistMember(false)
-        } else {
-          setSubmittingMember(false)
-          setAddingMember(false)
-        }
-      })
+        timeSignedUpMs: new Date().getTime(),
+        confirmed: false,
+      },
+    })
   }
 
-  if (isPending) {
+  if (isLoadingEvent) {
     return (
       <div className="eventSignupsSpinContainer">
         <Spin />
@@ -385,7 +362,7 @@ export default function EventSignups() {
           {event.title}
         </h1>
         <div className="eventSignupsHeaderButtons">
-          <Link to={`/admin/editevent/${event.id}`}>
+          <Link to={`/admin/editevent/${eventId}`}>
             <Button>Edit Event</Button>
           </Link>
         </div>
@@ -423,7 +400,7 @@ export default function EventSignups() {
           <EventSignupTable
             urlPath={event.urlPath}
             isWaitlist={false}
-            eventId={event.id}
+            eventId={eventId!}
             signupData={event.signups.members}
             isCamp={event.signups.isCamp}
             limit={event.signups.limit}
@@ -462,7 +439,7 @@ export default function EventSignups() {
           <EventSignupTable
             urlPath={event.urlPath}
             isWaitlist={true}
-            eventId={event.id}
+            eventId={eventId!}
             signupData={event.signups.waitlist}
             isCamp={event.signups.isCamp}
             limit={null}

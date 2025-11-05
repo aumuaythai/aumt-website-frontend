@@ -1,15 +1,5 @@
 import { useConfig as useConfigService } from '@/services/config'
-
-import { useQuery } from '@tanstack/react-query'
-import { notification } from 'antd'
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
-import { getClubConfig } from '../services/db'
+import { createContext, ReactNode, useContext } from 'react'
 import { ClubConfig } from '../types'
 
 const ConfigContext = createContext<ClubConfig | undefined>(undefined)

@@ -303,45 +303,30 @@
 //   )
 // }
 
-import { generateMockUid } from '@/lib/utils'
+import { useAuth } from '@/context/AuthProvider'
+import { getDisplayName } from '@/lib/utils'
+import { TrainingWithId, useUpdateMemberSessions } from '@/services/trainings'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Button, Checkbox, Form, Input, notification } from 'antd'
+import { Button, Checkbox, Form, Input } from 'antd'
 import { CheckboxOptionType } from 'antd/lib/checkbox'
 import { FieldErrors, useForm } from 'react-hook-form'
 import { FormItem } from 'react-hook-form-antd'
 import z from 'zod'
-import {
-  removeMemberFromEvent,
-  removeMemberFromForm,
-  signUserUp,
-} from '../../services/db'
-import { TrainingSession } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
 
-export interface SignupFormProps {
-  title: string
-  id: string
-  closes: Date
-  sessions: Record<string, TrainingSession>
-  displayName: string | null
-  submittingAsName?: string
-  userId: string | null
-  notes: string
-  openToPublic: boolean
-  showNotes: boolean
-  onSignupChanged?: () => void
-  signupMaxSessions: number
+export interface TrainingForm {
+  training: TrainingWithId
 }
 
-export default function SignupForm(props: SignupFormProps) {
-  const queryClient = useQueryClient()
+export default function TrainingForm({ training }: TrainingForm) {
+  const auth = useAuth()
+  const updateMemberSessions = useUpdateMemberSessions()
 
   const signupFormSchema = z.object({
     sessions: z
       .array(z.string())
       .max(
-        props.signupMaxSessions,
+        training.signupMaxSessions,
         'You can only select up to ${props.signupMaxSessions} sessions'
       ),
     feedback: z.string().optional(),
@@ -349,10 +334,18 @@ export default function SignupForm(props: SignupFormProps) {
 
   type SignupForm = z.infer<typeof signupFormSchema>
 
-  const signedUpSessions = Object.keys(props.sessions).filter((sessionId) => {
-    if (!props.userId) return false
-    return props.sessions[sessionId].members[props.userId]
-  })
+  const userId = auth?.userId
+  const user = auth?.user
+
+  const signedUpSessions = Object.keys(training.sessions).filter(
+    (sessionId) => {
+      if (!userId) {
+        return false
+      }
+
+      return training.sessions[sessionId].members[userId]
+    }
+  )
 
   const {
     control,
@@ -366,30 +359,18 @@ export default function SignupForm(props: SignupFormProps) {
     },
   })
 
-  const addSignup = useMutation({
-    mutationFn: (data: SignupForm) =>
-      signUserUp(
-        props.userId ?? generateMockUid(),
-        props.displayName ?? '',
-        props.id,
-        data.sessions,
-        signedUpSessions
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['trainings'] })
-      notification.success({
-        message: 'Signup successful',
-      })
-    },
-    onError: (error) => {
-      notification.error({
-        message: 'Error signing up',
-      })
-    },
-  })
-
   function onValid(data: SignupForm) {
-    addSignup.mutate(data)
+    if (!user || !userId) {
+      return
+    }
+
+    updateMemberSessions.mutate({
+      userId: userId,
+      displayName: getDisplayName(user),
+      trainingId: training.id,
+      sessionIds: data.sessions,
+      currentSessionIds: signedUpSessions,
+    })
   }
 
   function onInvalid(errors: FieldErrors<SignupForm>) {
@@ -397,7 +378,7 @@ export default function SignupForm(props: SignupFormProps) {
   }
 
   const sessions = watch('sessions')
-  const options: CheckboxOptionType[] = Object.values(props.sessions)
+  const options: CheckboxOptionType[] = Object.values(training.sessions)
     .sort((a, b) => a.position - b.position)
     .map((session) => {
       const isFull = session.limit <= Object.keys(session.members).length
@@ -408,7 +389,7 @@ export default function SignupForm(props: SignupFormProps) {
       const isDisabled =
         isFull ||
         (!sessions.includes(session.sessionId) &&
-          sessions.length >= props.signupMaxSessions)
+          sessions.length >= training.signupMaxSessions)
 
       return {
         label: session.title,
@@ -419,14 +400,14 @@ export default function SignupForm(props: SignupFormProps) {
       }
     })
 
-  const isMutating = addSignup.isPending
+  const isMutating = updateMemberSessions.isPending
 
   return (
     <>
-      <h2 className="text-xl">{props.title}</h2>
-      {props.notes && props.showNotes && (
+      <h2 className="text-xl">{training.title}</h2>
+      {training.notes && (
         <div className="text-sm mt-4">
-          <RenderMarkdown source={props.notes} />
+          <RenderMarkdown source={training.notes} />
         </div>
       )}
       <Form layout="vertical" onFinish={handleSubmit(onValid, onInvalid)}>
