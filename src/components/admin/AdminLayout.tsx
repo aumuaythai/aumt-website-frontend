@@ -1,6 +1,5 @@
-import { Menu } from 'antd'
-import { ItemType } from 'antd/lib/menu/interface'
-import { Link, Outlet, useLocation } from 'react-router'
+import { cn } from '@/lib/utils'
+import { NavLink, Outlet } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 
 export default function AdminLayout() {
@@ -13,44 +12,40 @@ export default function AdminLayout() {
 
   return (
     <div className="text-left flex min-h-[calc(100vh-50px)]">
-      <AdminMenu />
+      <NavMenu />
       <Outlet />
     </div>
   )
 }
 
-function AdminMenu() {
-  const location = useLocation()
-  const selectedKey = location.pathname.split('/')[2] || 'trainings'
+const navItems: { label: string; to: string }[] = [
+  { label: 'Trainings', to: '/admin' },
+  { label: 'Events', to: '/admin/events' },
+  { label: 'Members', to: '/admin/members' },
+  { label: 'Feedback', to: '/admin/feedback' },
+  { label: 'Settings', to: '/admin/settings' },
+]
 
-  const items: ItemType[] = [
-    {
-      label: <Link to="/admin">Trainings</Link>,
-      key: 'trainings',
-    },
-    {
-      label: <Link to="/admin/events">Events</Link>,
-      key: 'events',
-    },
-    {
-      label: <Link to="/admin/members">Members</Link>,
-      key: 'members',
-    },
-    {
-      label: <Link to="/admin/feedback">Feedback</Link>,
-      key: 'feedback',
-    },
-    {
-      label: <Link to="/admin/settings">Settings</Link>,
-      key: 'settings',
-    },
-  ]
-
+function NavMenu() {
   return (
-    <Menu
-      items={items}
-      selectedKeys={[selectedKey]}
-      className="!max-w-44 !border-r !border-gray-100"
-    />
+    <nav className="flex flex-col w-44 border-r border-r-gray-100">
+      {navItems.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end
+          className={({ isActive }) =>
+            cn(
+              'transition-colors flex items-center font-joyride px-4 py-3 text-sm',
+              isActive
+                ? 'text-blue-900 bg-blue-50'
+                : 'hover:text-blue-900 hover:bg-blue-50'
+            )
+          }
+        >
+          {item.label}
+        </NavLink>
+      ))}
+    </nav>
   )
 }

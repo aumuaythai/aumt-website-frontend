@@ -54,43 +54,63 @@ async function updateTraining(trainingId: string, training: Training) {
   return await updateDoc(doc(trainings, trainingId), training)
 }
 
+export async function addMemberToSession(
+  userId: string,
+  displayName: string,
+  trainingId: string,
+  sessionId: string
+) {
+  const snapshot = await getDoc(doc(trainings, trainingId))
+  const training = snapshot.data() as Training
+
+  const sessions = training.sessions
+  sessions[sessionId].members[userId] = {
+    name: displayName,
+    timeAdded: new Date(),
+  }
+
+  return await updateDoc(doc(trainings, trainingId), {
+    sessions: sessions,
+  })
+}
+
+export async function removeMemberFromSession(
+  userId: string,
+  trainingId: string,
+  sessionId: string
+) {
+  const snapshot = await getDoc(doc(trainings, trainingId))
+  const training = snapshot.data() as Training
+  delete training.sessions[sessionId].members[userId]
+
+  return await updateDoc(doc(trainings, trainingId), {
+    sessions: training.sessions,
+  })
+}
+
 export async function updateMemberSessions(
   userId: string,
   displayName: string,
   trainingId: string,
-  sessionIds: string[],
-  currentSessionIds: string[]
+  sessionIds: string[]
 ) {
-  const sessionObj = {}
-  const timeAdded = new Date()
+  const snapshot = await getDoc(doc(trainings, trainingId))
+  const training = snapshot.data() as Training
 
-  sessionIds.forEach((sessionId) => {
-    sessionObj[sessionId] = {
-      members: {
-        [userId]: {
-          name: displayName,
-          timeAdded,
-        },
-      },
+  const sessions = training.sessions
+  Object.values(sessions).forEach((session) => {
+    if (sessionIds.includes(session.sessionId) && !session.members[userId]) {
+      session.members[userId] = {
+        name: displayName,
+        timeAdded: new Date(),
+      }
+    } else {
+      delete session.members[userId]
     }
   })
 
-  const sessionsToRemove = currentSessionIds.filter(
-    (sessionId) => !sessionIds.includes(sessionId)
-  )
-
-  if (sessionsToRemove.length > 0) {
-    sessionsToRemove.forEach((sessionId) => {
-      sessionObj[sessionId] = {
-        members: {
-          [userId]: deleteField(),
-        },
-      }
-    })
-  }
-
   return await updateDoc(doc(trainings, trainingId), {
-    sessions: sessionObj,
+    sessions: sessions,
   })
 }
 
@@ -189,40 +209,78 @@ export function useUpdateTraining() {
   return mutation
 }
 
-export function useUpdateMemberSessions() {
+export function useAddMemberToSession() {
   const queryClient = useQueryClient()
-
   const mutation = useMutation({
     mutationFn: ({
       userId,
       displayName,
       trainingId,
+      sessionId,
+    }: {
+      userId: string
+      displayName: string
+      trainingId: string
+      sessionId: string
+    }) => addMemberToSession(userId, displayName, trainingId, sessionId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['trainings'] })
+    },
+    onError: (error) => {
+      notification.error({
+        message: 'Error adding member to session: ' + error.message,
+      })
+    },
+  })
+  return mutation
+}
+
+export function useRemoveMemberFromSession() {
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: ({
+      userId,
+      trainingId,
+      sessionId,
+    }: {
+      userId: string
+      trainingId: string
+      sessionId: string
+    }) => removeMemberFromSession(userId, trainingId, sessionId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['trainings'] })
+    },
+    onError: (error) => {
+      notification.error({
+        message: 'Error removing member from session: ' + error.message,
+      })
+    },
+  })
+  return mutation
+}
+
+export function useUpdateMemberSessions() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      userId,
+      displayName,
+      trainingId,
       sessionIds,
-      currentSessionIds,
     }: {
       userId: string
       displayName: string
       trainingId: string
       sessionIds: string[]
-      currentSessionIds: string[]
-    }) =>
-      updateMemberSessions(
-        userId,
-        displayName,
-        trainingId,
-        sessionIds,
-        currentSessionIds
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['trainings'] })
-      notification.success({ message: 'Member added to training' })
+    }) => updateMemberSessions(userId, displayName, trainingId, sessionIds),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['trainings'] })
     },
     onError: (error) => {
       notification.error({
-        message: 'Error adding member to training: ' + error.message,
+        message: 'Error signing up: ' + error.toString(),
       })
     },
   })
-
-  return mutation
 }

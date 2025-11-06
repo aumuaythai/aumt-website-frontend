@@ -7,7 +7,6 @@ import {
   YAxis,
 } from 'recharts'
 import { Training } from '../../../types'
-import './YearStats.css'
 
 interface YearStatsProps {
   trainings: Training[]

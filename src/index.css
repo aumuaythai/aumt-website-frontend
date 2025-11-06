@@ -42,7 +42,7 @@ code {
     monospace;
 }
 
-.ant-menu-item,
+/* .ant-menu-item,
 .ant-dropdown-menu-item {
   font-family: 'Joyride', sans-serif !important;
   border-bottom: none !important;
@@ -71,7 +71,7 @@ code {
 
 .ant-menu-item-active a {
   color: rgba(17, 56, 141, 1) !important;
-}
+} */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

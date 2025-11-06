@@ -1,7 +1,6 @@
 import { useConfig } from '@/context/ClubConfigProvider'
 import { useUpdateConfig } from '@/services/config'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQueryClient } from '@tanstack/react-query'
 import { Button, Input, InputNumber, List, Radio, Spin, Switch } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
 import z from 'zod'
@@ -14,16 +13,12 @@ const clubConfigSchema = z.object({
   clubSignupSem: z.enum(['S1', 'S2', 'SS']),
   clubSignupStatus: z.enum(['open', 'closed']),
   bankAccountNumber: z.string().min(1),
-  // phoneNumber: z.string().min(1),
-  // address: z.string().min(1),
-  // email: z.email(),
 })
 
 type ClubConfigForm = z.infer<typeof clubConfigSchema>
 
 export default function ClubSettings() {
   const clubConfig = useConfig()
-  const queryClient = useQueryClient()
 
   const {
     control,
@@ -31,18 +26,7 @@ export default function ClubSettings() {
     handleSubmit,
   } = useForm<ClubConfigForm>({
     resolver: zodResolver(clubConfigSchema),
-    defaultValues: {
-      summerSchoolFee: clubConfig?.summerSchoolFee,
-      semesterOneFee: clubConfig?.semesterOneFee,
-      semesterTwoFee: clubConfig?.semesterTwoFee,
-      fullYearFee: clubConfig?.fullYearFee,
-      clubSignupSem: clubConfig?.clubSignupSem,
-      clubSignupStatus: clubConfig?.clubSignupStatus,
-      bankAccountNumber: clubConfig?.bankAccountNumber,
-      // phoneNumber: clubConfig?.phoneNumber,
-      // address: clubConfig?.address,
-      // email: clubConfig?.email,
-    },
+    defaultValues: clubConfig,
   })
 
   const updateConfig = useUpdateConfig()

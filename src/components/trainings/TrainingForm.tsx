@@ -347,12 +347,7 @@ export default function TrainingForm({ training }: TrainingForm) {
     }
   )
 
-  const {
-    control,
-    formState: { errors },
-    watch,
-    handleSubmit,
-  } = useForm<SignupForm>({
+  const { control, watch, handleSubmit } = useForm<SignupForm>({
     resolver: zodResolver(signupFormSchema),
     values: {
       sessions: signedUpSessions,
@@ -369,7 +364,6 @@ export default function TrainingForm({ training }: TrainingForm) {
       displayName: getDisplayName(user),
       trainingId: training.id,
       sessionIds: data.sessions,
-      currentSessionIds: signedUpSessions,
     })
   }
 
