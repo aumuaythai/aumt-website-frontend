@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
@@ -17,6 +19,7 @@
 @theme {
   --font-joyride: 'Joyride', sans-serif;
   --font-lacuna: 'Lacuna', sans-serif;
+  --font-inter: 'Inter', sans-serif;
 }
 
 h1,
@@ -29,17 +32,7 @@ h6 {
 }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: var(--font-inter);
 }
 
 /* .ant-menu-item,
