@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConfigProvider, Spin } from 'antd'
-import { Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { Suspense, useEffect } from 'react'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router'
 import About from './components/about/About'
 import Faq from './components/about/Faq'
 import Gallery from './components/about/Gallery'
@@ -29,85 +29,86 @@ import ClubConfigProvider from './context/ClubConfigProvider'
 const queryClient = new QueryClient()
 
 export default function App() {
+  const location = useLocation()
+
+  useEffect(() => {
+    const route = location.pathname.split('/')[1]
+    let title = 'Auckland University Muay Thai'
+    if (route) {
+      title = `AUMT - ${route.charAt(0).toUpperCase() + route.slice(1)}`
+    }
+
+    document.title = title
+  }, [location.pathname])
+
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <ConfigProvider
-          theme={{
-            token: {
-              borderRadius: 0,
-            },
-          }}
-        >
-          <AuthProvider>
-            <ClubConfigProvider>
-              <Header />
-              <ErrorBoundary>
-                <Suspense fallback={<Spin />}>
-                  <Routes>
-                    <Route path="/login" element={<LoginForm />} />
-                    <Route path="/" element={<About />} />
-                    <Route path="/faq" element={<Faq />} />
-                    <Route path="/gallery" element={<Gallery />} />
-                    <Route path="/trainings" element={<Trainings />} />
-                    <Route path="/events" element={<Events />} />
-                    <Route path="/events/:eventId" element={<Event />} />
-                    <Route path="/join" element={<Join />} />
-                    <Route element={<AdminLayout />}>
-                      <Route path="/admin" element={<TrainingDashboard />} />
-                      <Route
-                        path="/admin/trainings/create"
-                        element={<CreateTraining />}
-                      />
-                      <Route
-                        path="/admin/trainings/:trainingId"
-                        element={<CreateTraining />}
-                      />
-                      <Route
-                        path="/admin/trainings/:trainingId/attendance"
-                        element={<TrainingAttendance />}
-                      />
-                      <Route path="/admin/events" element={<ManageEvents />} />
-                      <Route
-                        path="/admin/events/create"
-                        element={<CreateEvent />}
-                      />
-                      <Route
-                        path="/admin/events/:eventId"
-                        element={<CreateEvent />}
-                      />
-                      <Route
-                        path="/admin/events/:eventId"
-                        element={<EventSignups />}
-                      />
-                      <Route
-                        path="/admin/members"
-                        element={<MemberDashboard />}
-                      />
-                      <Route path="/admin/feedback" element={<Feedback />} />
-                      <Route
-                        path="/admin/settings"
-                        element={<ClubSettings />}
-                      />
-                    </Route>
-                    <Route path="/account" element={<Account />} />
+    <QueryClientProvider client={queryClient}>
+      <ConfigProvider
+        theme={{
+          token: {
+            borderRadius: 0,
+          },
+        }}
+      >
+        <AuthProvider>
+          <ClubConfigProvider>
+            <Header />
+            <ErrorBoundary>
+              <Suspense fallback={<Spin />}>
+                <Routes>
+                  <Route path="/login" element={<LoginForm />} />
+                  <Route path="/" element={<About />} />
+                  <Route path="/faq" element={<Faq />} />
+                  <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/trainings" element={<Trainings />} />
+                  <Route path="/events" element={<Events />} />
+                  <Route path="/events/:eventId" element={<Event />} />
+                  <Route path="/join" element={<Join />} />
+                  <Route element={<AdminLayout />}>
+                    <Route path="/admin" element={<TrainingDashboard />} />
                     <Route
-                      path="/penis"
-                      element={
-                        <img
-                          className="headshotheadshot"
-                          src="./photos/tom.jpg"
-                          alt="Tom Haliday"
-                        />
-                      }
+                      path="/admin/trainings/create"
+                      element={<CreateTraining />}
                     />
-                  </Routes>
-                </Suspense>
-              </ErrorBoundary>
-            </ClubConfigProvider>
-          </AuthProvider>
-        </ConfigProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+                    <Route
+                      path="/admin/trainings/:trainingId"
+                      element={<CreateTraining />}
+                    />
+                    <Route
+                      path="/admin/trainings/:trainingId/attendance"
+                      element={<TrainingAttendance />}
+                    />
+                    <Route path="/admin/events" element={<ManageEvents />} />
+                    <Route
+                      path="/admin/events/create"
+                      element={<CreateEvent />}
+                    />
+                    <Route
+                      path="/admin/events/:eventId"
+                      element={<CreateEvent />}
+                    />
+                    <Route
+                      path="/admin/events/:eventId"
+                      element={<EventSignups />}
+                    />
+                    <Route
+                      path="/admin/members"
+                      element={<MemberDashboard />}
+                    />
+                    <Route path="/admin/feedback" element={<Feedback />} />
+                    <Route path="/admin/settings" element={<ClubSettings />} />
+                  </Route>
+                  <Route path="/account" element={<Account />} />
+                  <Route
+                    path="/penis"
+                    element={<img src="./photos/tom.jpg" alt="Tom Haliday" />}
+                  />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
+          </ClubConfigProvider>
+        </AuthProvider>
+      </ConfigProvider>
+    </QueryClientProvider>
   )
 }

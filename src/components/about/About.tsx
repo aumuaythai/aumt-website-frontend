@@ -28,7 +28,7 @@ export default function About() {
         <p>
           Run by a passionate group of Muay Thai enthusiasts, we run weekly
           trainings and social events. <br />
-          we aim to teach martial arts in a friendly and low-pressure
+          We aim to teach martial arts in a friendly and low-pressure
           environment.
           <br />
           All experience levels are welcome!
