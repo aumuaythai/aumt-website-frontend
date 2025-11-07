@@ -428,9 +428,9 @@ export default function About() {
         <div className="h-px bg-gray-200" />
 
         <section>
-          <div className="p-10 flex flex-col justify-center items-center xl:text-left">
+          <div className="flex flex-col justify-center items-center xl:text-left">
             <h3 className="text-2xl">WANT TO KNOW MORE?</h3>
-            <p>
+            <p className="mt-4">
               Check out our <Link to="/faq">FAQ page</Link>, get in touch
               through
               <a href="mailto:uoamuaythai@gmail.com" className="text-[#11388d]">

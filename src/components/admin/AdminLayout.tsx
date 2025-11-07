@@ -3,10 +3,9 @@ import { NavLink, Outlet } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 
 export default function AdminLayout() {
-  const user = useAuth()
-  const isAdmin = user?.isAdmin
+  const auth = useAuth()
 
-  if (!isAdmin) {
+  if (!auth?.user?.isAdmin) {
     return <div>You are not authorised to access this page.</div>
   }
 

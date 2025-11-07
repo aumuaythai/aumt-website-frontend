@@ -14,7 +14,7 @@ import UserInfo from './UserInfo'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
-  const user = useAuth()
+  const auth = useAuth()
 
   const location = useLocation()
   const pathname = location.pathname
@@ -25,7 +25,7 @@ export default function Header() {
     { label: 'Events', to: '/events' },
   ]
 
-  if (user?.isAdmin) {
+  if (auth?.user?.isAdmin) {
     navItems.push({ label: 'Admin', to: '/admin' })
   }
 
@@ -47,8 +47,8 @@ export default function Header() {
       <MobileMenu open={open} setOpen={setOpen} navItems={navItems} />
 
       <div className="hidden md:flex items-center gap-x-3">
-        {user ? (
-          <UserInfo user={user.user} />
+        {auth.user ? (
+          <UserInfo user={auth.user} />
         ) : (
           <div className="flex items-center gap-x-2">
             <Button type="text" className="!py-4 !font-joyride">
@@ -117,6 +117,7 @@ function MobileMenu({
                       : 'hover:text-blue-900 hover:bg-blue-50'
                   )
                 }
+                onClick={() => setOpen(false)}
               >
                 {item.label}
               </NavLink>

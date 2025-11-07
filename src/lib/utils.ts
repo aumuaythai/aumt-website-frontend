@@ -1,6 +1,7 @@
 import { Member } from '@/types'
 import { notification } from 'antd'
 import { clsx, type ClassValue } from 'clsx'
+import moment from 'moment'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -31,4 +32,12 @@ export function generateMockUid() {
     uid += alphabet[Math.floor(Math.random() * alphabet.length)]
   }
   return uid
+}
+
+export function isValidMoment(date: any) {
+  try {
+    return moment(date).isValid()
+  } catch (error) {
+    return false
+  }
 }

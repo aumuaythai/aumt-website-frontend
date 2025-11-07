@@ -2,13 +2,7 @@ import PaymentInstructions from '@/components/utility/PaymentInstructions'
 import { useConfig } from '@/context/ClubConfigProvider'
 import { useCreateMember } from '@/services/members'
 import { Member } from '@/types'
-import {
-  ETHNICITIES,
-  GENDER,
-  INITIAL_EXPERIENCE,
-  MEMBERSHIP_PERIOD,
-  PAYMENT_TYPE,
-} from '@/types/Member'
+import { ETHNICITIES, memberSchema } from '@/types/Member'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -25,33 +19,21 @@ import { useForm } from 'react-hook-form'
 import { FormItem } from 'react-hook-form-antd'
 import z from 'zod'
 
-const joinSchema = z.object({
-  disclaimer: z.literal(
-    true,
-    'To proceed, you must confirm you have read and understood the agreement'
-  ),
-  email: z.email('Required'),
-  password: z
-    .string('Required')
-    .min(8, 'Password must be at least 8 characters long'),
-  isReturningMember: z.boolean('Required'),
-  firstName: z.string('Required').min(1, 'Required'),
-  lastName: z.string('Required').min(1, 'Required'),
-  preferredName: z.string().optional(),
-  ethnicity: z.enum(ETHNICITIES, 'Required'),
-  gender: z.enum(GENDER, 'Required'),
-  isUoAStudent: z.boolean('Required'),
-  upi: z.string().optional(),
-  studentId: z.string().optional(),
-  emergencyContactName: z.string('Required').min(1, 'Required'),
-  emergencyContactNumber: z
-    .string('Required')
-    .regex(/^\+?[0-9]+$/, 'Invalid phone number'),
-  emergencyContactRelationship: z.string('Required').min(1, 'Required'),
-  initialExperience: z.enum(INITIAL_EXPERIENCE, 'Required'),
-  membership: z.enum(MEMBERSHIP_PERIOD, 'Required'),
-  paymentType: z.enum(PAYMENT_TYPE, 'Required'),
-})
+const joinSchema = memberSchema
+  .omit({
+    paid: true,
+    timeJoinedMs: true,
+    notes: true,
+  })
+  .extend({
+    disclaimer: z.literal(
+      true,
+      'To proceed, you must confirm you have read and understood the agreement'
+    ),
+    password: z
+      .string('Required')
+      .min(8, 'Password must be at least 8 characters long'),
+  })
 
 type JoinForm = z.infer<typeof joinSchema>
 
@@ -61,7 +43,7 @@ export default function JoinForm() {
 
   const {
     control,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
     handleSubmit,
     watch,
   } = useForm<JoinForm>({
@@ -70,26 +52,7 @@ export default function JoinForm() {
 
   async function handleValid(data: JoinForm) {
     const password = data.password
-    const member: Member = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      preferredName: data.preferredName,
-      email: data.email,
-      ethnicity: data.ethnicity,
-      gender: data.gender,
-      isReturningMember: data.isReturningMember,
-      isUoAStudent: data.isUoAStudent,
-      membership: data.membership,
-      paymentType: data.paymentType,
-      paid: false,
-      timeJoinedMs: Date.now(),
-      initialExperience: data.initialExperience,
-      emergencyContactName: data.emergencyContactName,
-      emergencyContactNumber: data.emergencyContactNumber,
-      emergencyContactRelationship: data.emergencyContactRelationship,
-      upi: data.upi,
-      studentId: data.studentId,
-    }
+    const member: Member = { ...data, paid: false }
 
     await createMember.mutateAsync({ member, password })
   }
@@ -98,6 +61,7 @@ export default function JoinForm() {
   const clubSignupSem = clubConfig?.clubSignupSem
   const isUoAStudent = watch('isUoAStudent')
   const paymentType = watch('paymentType')
+  const membershipType = watch('membership')
 
   if (!clubConfig) {
     return (
@@ -111,13 +75,12 @@ export default function JoinForm() {
     <div className="max-w-2xl text-left mx-auto px-6 pt-8 flex flex-col gap-y-4">
       <div>
         <h1 className="text-2xl">
-          AUMT {currentYear}
+          Join AUMT - {currentYear}
           {clubSignupSem === 'S1' && ' Semester 1 '}
           {clubSignupSem === 'S2' && ' Semester 2 '}
           {clubSignupSem === 'SS' && ' Summer School '}
-          Sign-Ups
         </h1>
-        <p>
+        <p className="mt-2">
           Welcome to AUMT! We look forward to you being a part of our club.
           Please fill in the form below to create an account. Your account will
           enable you to sign up to future training sessions and join events.
@@ -125,9 +88,13 @@ export default function JoinForm() {
         </p>
       </div>
 
-      <Form layout="vertical" onFinish={handleSubmit(handleValid)}>
+      <Form
+        layout="vertical"
+        className="flex flex-col gap-y-2"
+        onFinish={handleSubmit(handleValid)}
+      >
         <div>
-          <h2>Agreement</h2>
+          <h2 className="text-lg">Agreement</h2>
           <p>
             I understand that by filling out and submitting this form, I am
             partaking in the club activities at my own risk and all injuries
@@ -143,7 +110,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2>Login Details</h2>
+          <h2 className="text-lg">Login Details</h2>
           <FormItem control={control} name="email" label="Email">
             <Input type="email" />
           </FormItem>
@@ -153,7 +120,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2>Personal Details</h2>
+          <h2 className="text-lg">Personal Details</h2>
           <FormItem
             control={control}
             name="isReturningMember"
@@ -173,9 +140,9 @@ export default function JoinForm() {
           <FormItem
             control={control}
             name="preferredName"
-            label="Preferred Name"
+            label="Preferred Name (if different from first name)"
           >
-            <Input placeholder="If different from first name" />
+            <Input />
           </FormItem>
           <FormItem control={control} name="ethnicity" label="Ethnicity">
             <Select>
@@ -197,7 +164,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2>University Details</h2>
+          <h2 className="text-lg">University Details</h2>
           <FormItem
             control={control}
             name="isUoAStudent"
@@ -232,7 +199,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2>Emergency Contact Details</h2>
+          <h2 className="text-lg">Emergency Contact Details</h2>
           <FormItem control={control} name="emergencyContactName" label="Name">
             <Input />
           </FormItem>
@@ -253,7 +220,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2>Muay Thai Experience</h2>
+          <h2 className="text-lg">Muay Thai Experience</h2>
           <FormItem
             control={control}
             name="initialExperience"
@@ -271,7 +238,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2>Membership Payment</h2>
+          <h2 className="text-lg">Membership Payment</h2>
           <FormItem
             control={control}
             name="membership"
@@ -307,21 +274,21 @@ export default function JoinForm() {
             <PaymentInstructions
               clubConfig={clubConfig}
               paymentType="Bank Transfer"
-              membershipType={clubSignupSem}
+              membershipType={membershipType}
             />
           )}
           {paymentType === 'Cash' && (
             <PaymentInstructions
               clubConfig={clubConfig}
               paymentType="Cash"
-              membershipType={clubSignupSem}
+              membershipType={membershipType}
             />
           )}
           {paymentType === 'Other' && (
             <PaymentInstructions
               clubConfig={clubConfig}
               paymentType="Other"
-              membershipType={clubSignupSem}
+              membershipType={membershipType}
             />
           )}
         </div>

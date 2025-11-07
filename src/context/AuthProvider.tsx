@@ -11,13 +11,18 @@ import { useIsAdmin } from '../services/auth'
 import { auth } from '../services/firebase'
 import { Member } from '../types'
 
-type User = {
-  userId: string
-  user: Member
+type User = Member & {
+  id: string
   isAdmin: boolean | undefined
-} | null
+}
 
-const AuthContext = createContext<User | null>(null)
+const AuthContext = createContext<{
+  user: User | null
+  isLoading: boolean
+}>({
+  user: null,
+  isLoading: true,
+})
 
 export function useAuth() {
   return useContext(AuthContext)
@@ -26,8 +31,8 @@ export function useAuth() {
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null)
 
-  const { data: member } = useMember(authUser?.uid)
-  const { data: isAdmin } = useIsAdmin(authUser?.uid)
+  const { data: member, isLoading: isLoadingMember } = useMember(authUser?.uid)
+  const { data: isAdmin, isPending: isLoadingAdmin } = useIsAdmin(authUser?.uid)
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(setAuthUser)
@@ -37,11 +42,17 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   let user: User | null = null
   if (authUser && member) {
     user = {
-      userId: authUser.uid,
-      user: member,
+      ...member,
+      id: authUser.uid,
       isAdmin: isAdmin,
     }
   }
 
-  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider
+      value={{ user, isLoading: isLoadingMember || isLoadingAdmin }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
 }

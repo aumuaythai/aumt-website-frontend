@@ -1,4 +1,7 @@
+import MarkdownEditor from '@/components/utility/MarkdownEditor'
 import { useCreateEvent, useEvent } from '@/services/events'
+import type { Event } from '@/types'
+import { eventSchema } from '@/types'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -10,44 +13,12 @@ import {
   notification,
   Spin,
 } from 'antd'
+import { Timestamp } from 'firebase/firestore'
 import { Moment } from 'moment'
 import { useState } from 'react'
 import { Controller, FieldErrors, useForm } from 'react-hook-form'
 import { Link, useParams } from 'react-router'
 import z from 'zod'
-import { Event } from '../../../types'
-import MarkdownEditor from '../../utility/MarkdownEditor'
-
-const eventSchema = z.object({
-  title: z.string('Title is invalid').min(1, 'Title is required'),
-  urlPath: z.string('URL Path is invalid').min(1, 'URL Path is required'),
-  description: z
-    .string('Description is invalid')
-    .min(1, 'Description is required'),
-  photoPath: z.string().optional(),
-  date: z.refine((date) => (date as Moment)?.isValid(), 'Date is invalid'),
-  location: z.string('Location is invalid').min(1, 'Location is required'),
-  locationLink: z.url().optional(),
-  fbLink: z.url().optional(),
-  signups: z
-    .object({
-      opens: z.refine(
-        (date) => (date as Moment)?.isValid(),
-        'Open date is invalid'
-      ),
-      closes: z.refine(
-        (date) => (date as Moment)?.isValid(),
-        'Close date is invalid'
-      ),
-      openToNonMembers: z.boolean(),
-      limit: z.number(),
-      needAdminConfirm: z.boolean(),
-      isCamp: z.boolean(),
-    })
-    .optional(),
-})
-
-type EventForm = z.infer<typeof eventSchema>
 
 export default function CreateEvent() {
   const [hasLimit, setHasLimit] = useState(false)
@@ -62,38 +33,40 @@ export default function CreateEvent() {
     formState: { isSubmitting },
     handleSubmit,
     watch,
-  } = useForm<EventForm>({
+  } = useForm<Event>({
     resolver: zodResolver(eventSchema),
   })
 
-  async function onValid(data: EventForm) {
-    const eventData: Event = {
-      title: data.title,
-      urlPath: data.urlPath,
-      description: data.description,
-      photoPath: data.photoPath ?? '',
-      date: (data.date as Moment).toDate(),
-      location: data.location,
-      locationLink: data.locationLink ?? '',
-      fbLink: data.fbLink ?? '',
-      signups: data.signups
-        ? {
-            opens: (data.signups.opens as unknown as Moment).toDate(),
-            closes: (data.signups.closes as unknown as Moment).toDate(),
-            openToNonMembers: data.signups.openToNonMembers ?? false,
-            needAdminConfirm: data.signups.needAdminConfirm ?? false,
-            isCamp: data.signups.isCamp ?? false,
-            limit: data.signups.limit ?? 30,
-            members: {},
-            waitlist: {},
-          }
-        : null,
-    }
+  async function onValid(data: Event) {
+    // const eventData: Event = {
+    //   title: data.title,
+    //   urlPath: data.urlPath,
+    //   description: data.description,
+    //   photoPath: data.photoPath ?? '',
+    //   date: Timestamp.fromDate(data.date),
+    //   location: data.location,
+    //   locationLink: data.locationLink ?? '',
+    //   fbLink: data.fbLink ?? '',
+    //   signups: data.signups
+    //     ? {
+    //         opens: (data.signups.opens as unknown as Moment).toDate(),
+    //         closes: (data.signups.closes as unknown as Moment).toDate(),
+    //         openToNonMembers: data.signups.openToNonMembers ?? false,
+    //         needAdminConfirm: data.signups.needAdminConfirm ?? false,
+    //         isCamp: data.signups.isCamp ?? false,
+    //         limit: data.signups.limit ?? 30,
+    //         members: {},
+    //         waitlist: {},
+    //       }
+    //     : null,
+    // }
+
+    const eventData: Event = { ...data }
 
     await createEvent.mutateAsync(eventData)
   }
 
-  function onInvalid(errors: FieldErrors<EventForm>) {
+  function onInvalid(errors: FieldErrors<Event>) {
     const firstError = Object.keys(errors)[0]
     if (firstError) {
       notification.error({

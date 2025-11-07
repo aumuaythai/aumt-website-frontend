@@ -43,7 +43,7 @@ export const INITIAL_EXPERIENCE = [
 type InitialExperience = (typeof INITIAL_EXPERIENCE)[number]
 
 export const MEMBERSHIP_PERIOD = ['S1', 'S2', 'FY', 'SS'] as const
-type MembershipPeriod = (typeof MEMBERSHIP_PERIOD)[number]
+export type MembershipPeriod = (typeof MEMBERSHIP_PERIOD)[number]
 
 export const MEMBERSHIP_PERIOD_LONG: Record<MembershipPeriod, string> = {
   S1: 'Semester 1',
@@ -53,38 +53,7 @@ export const MEMBERSHIP_PERIOD_LONG: Record<MembershipPeriod, string> = {
 }
 
 export const PAYMENT_TYPE = ['Cash', 'Bank Transfer', 'Other'] as const
-type PaymentType = (typeof PAYMENT_TYPE)[number]
-
-// export type AumtMember = {
-//   // contact
-//   firstName: string
-//   lastName: string
-//   preferredName?: string
-//   email: string
-
-//   // demographic
-//   ethnicity: Ethnicities
-//   gender: Gender
-
-//   // Membership
-//   membership: MembershipPeriod
-//   paymentType: PaymentType
-//   isReturningMember: boolean
-//   paid: boolean
-//   timeJoinedMs: number
-
-//   // Details
-//   upi?: string
-//   studentId?: string
-//   isUoAStudent: boolean
-//   initialExperience: InitialExperience
-//   notes?: string
-
-//   // Emergency Contact
-//   emergencyContactName: string
-//   emergencyContactNumber: string
-//   emergencyContactRelationship: string
-// }
+export type PaymentType = (typeof PAYMENT_TYPE)[number]
 
 export const memberSchema = z.object({
   firstName: z.string('Required').min(1, 'Required'),

@@ -7,8 +7,10 @@ import { Link } from 'react-router'
 import JoinForm from './JoinForm'
 
 export default function Join() {
-  const { user } = useAuth()
+  const auth = useAuth()
   const clubConfig = useConfig()
+
+  const user = auth?.user
 
   if (!clubConfig) {
     return <Spin />
@@ -61,7 +63,6 @@ export default function Join() {
   }
 
   if (clubConfig.clubSignupStatus === 'closed') {
-    // if (true) {
     return (
       <div className="p-6 text-center">
         Signups are closed until the next semester starts. Follow us on

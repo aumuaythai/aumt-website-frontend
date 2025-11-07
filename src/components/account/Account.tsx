@@ -18,6 +18,7 @@ import {
   useForm,
   UseFormWatch,
 } from 'react-hook-form'
+import { useNavigate } from 'react-router'
 import z from 'zod'
 
 const accountSchema = memberSchema.omit({
@@ -32,8 +33,11 @@ const accountSchema = memberSchema.omit({
 type Account = z.infer<typeof accountSchema>
 
 export default function Account() {
-  const { user, userId } = useAuth()
+  const auth = useAuth()
   const updateMember = useUpdateMember()
+  const navigate = useNavigate()
+
+  const user = auth?.user
 
   const {
     control,
@@ -44,6 +48,21 @@ export default function Account() {
     defaultValues: { ...user },
     resolver: zodResolver(accountSchema),
   })
+
+  console.log(auth)
+
+  if (auth?.isLoading) {
+    return (
+      <div>
+        Loading account details <Spin />
+      </div>
+    )
+  }
+
+  if (!user) {
+    navigate('/login?from=/account')
+    return
+  }
 
   async function onSave(e?: React.BaseSyntheticEvent) {
     await handleSubmit(onValid, onInvalid)(e)
@@ -59,7 +78,7 @@ export default function Account() {
       ...data,
     }
 
-    await updateMember.mutateAsync({ userId, member: updatedMember })
+    await updateMember.mutateAsync({ userId: user.id, member: updatedMember })
   }
 
   function onInvalid(errors: FieldErrors<Account>) {
@@ -67,14 +86,6 @@ export default function Account() {
     if (firstError) {
       notification.error({ message: errors[firstError]?.message })
     }
-  }
-
-  if (!user) {
-    return (
-      <div>
-        Loading account details <Spin />
-      </div>
-    )
   }
 
   return (
@@ -109,10 +120,11 @@ type SectionProps = {
 }
 
 function MembershipSection({ saving, control, onSave }: SectionProps) {
-  const { user } = useAuth()
+  const auth = useAuth()
   const clubConfig = useConfig()
   const [editing, setEditing] = useState(false)
 
+  const user = auth?.user
   const clubSignupSem = clubConfig?.clubSignupSem
 
   if (!user || !clubConfig) {
@@ -206,8 +218,10 @@ function MembershipSection({ saving, control, onSave }: SectionProps) {
 }
 
 function PersonalSection({ saving, control, onSave }: SectionProps) {
-  const { user } = useAuth()
+  const auth = useAuth()
   const [editing, setEditing] = useState(false)
+
+  const user = auth?.user
 
   if (!user) {
     return (
@@ -272,7 +286,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
       </List.Item>
       <List.Item>
         <span>Email</span>
-        <span className="font-bold">{user.email}</span>
+        <span>{user.email}</span>
       </List.Item>
       <List.Item>
         <span>Ethnicity</span>
@@ -320,9 +334,10 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
 }
 
 function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
-  const { user } = useAuth()
+  const auth = useAuth()
   const [editing, setEditing] = useState(false)
 
+  const user = auth?.user
   const isUoaStudent = watch?.('isUoAStudent')
 
   if (!user) {
