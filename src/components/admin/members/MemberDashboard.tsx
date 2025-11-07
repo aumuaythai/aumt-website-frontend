@@ -81,7 +81,7 @@ export default function MemberDashboard() {
 
   return (
     <div className="flex-1 p-4 h-full">
-      <div className="flex justify-between mb-2">
+      <div className="flex justify-between mb-4">
         <Input
           placeholder="Search names or emails"
           className="!w-80"

@@ -265,12 +265,14 @@ export default function About() {
           className="object-cover absolute inset-0 size-full"
         />
         <div className="inset-0 absolute bg-black/25 backdrop-blur-xs" />
-        <h1 className="text-[1.8vw] text-white drop-shadow-lg drop-shadow-white/20">
-          Auckland University
-        </h1>
-        <h1 className="text-[5vw] text-white drop-shadow-lg drop-shadow-white/20 leading-none">
-          MUAY THAI
-        </h1>
+        <div>
+          <h1 className="text-[4vw] lg:text-[1.8vw] text-white drop-shadow-lg drop-shadow-white/20">
+            Auckland University
+          </h1>
+          <h1 className="text-[10vw] lg:text-[5vw] text-white drop-shadow-lg drop-shadow-white/20 leading-none">
+            MUAY THAI
+          </h1>
+        </div>
       </div>
 
       <div className="max-w-6xl mx-auto flex flex-col gap-y-20 px-6">

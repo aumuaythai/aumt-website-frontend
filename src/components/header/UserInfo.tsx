@@ -1,10 +1,10 @@
+import { signOut } from '@/services/auth'
+import { Member } from '@/types'
 import DownOutlined from '@ant-design/icons/DownOutlined'
 import { Button, Dropdown } from 'antd'
 import { ItemType } from 'antd/lib/menu/interface'
 import { Link } from 'react-router'
-import { signOut } from '../../services/auth'
-import { Member } from '../../types'
-import { ResetPasswordLink } from './ResetLink'
+import ResetPasswordLink from './ResetLink'
 
 interface UserInfoProps {
   user: Member
@@ -26,7 +26,11 @@ export default function UserInfo(props: UserInfoProps) {
     },
     {
       key: 'reset-password',
-      label: <ResetPasswordLink>Reset Password</ResetPasswordLink>,
+      label: (
+        <ResetPasswordLink>
+          <Button type="link">Reset Password</Button>
+        </ResetPasswordLink>
+      ),
     },
     {
       type: 'divider',

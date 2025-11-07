@@ -17,7 +17,7 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
 
   const { control, handleSubmit, watch } = useForm<Member>({
     resolver: zodResolver(memberSchema),
-    defaultValues: member,
+    values: { ...member },
   })
 
   function handleUpdateMember(data: Member) {
@@ -245,7 +245,7 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
           <Button
             type="primary"
             loading={isMutating}
-            onClick={handleSubmit(handleUpdateMember)}
+            onClick={handleSubmit(handleUpdateMember, onInvalid)}
           >
             Save {member.firstName}
           </Button>
