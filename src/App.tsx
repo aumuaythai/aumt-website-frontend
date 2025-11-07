@@ -47,6 +47,7 @@ export default function App() {
         theme={{
           token: {
             borderRadius: 0,
+            fontFamily: 'var(--font-inter)',
           },
         }}
       >

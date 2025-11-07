@@ -6,7 +6,7 @@ import { Controller, FieldErrors, useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import z from 'zod'
 import { signIn } from '../../services/auth'
-import { ResetPasswordLink } from '../header/ResetLink'
+import ResetPasswordLink from '../header/ResetLink'
 import Logo from '../svg/Logo'
 
 export interface LoginState {
@@ -72,44 +72,45 @@ export default function LoginForm() {
       <Link to="/">
         <Logo className="max-w-48 mx-auto" />
       </Link>
-      <h2 className="mt-1">Sign In</h2>
-      <Controller
-        control={control}
-        name="email"
-        render={({ field: { value, onChange } }) => (
-          <Input
-            type="email"
-            placeholder="Email"
-            autoFocus
-            value={value}
-            prefix={<UserOutlined />}
-            onChange={onChange}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name="password"
-        render={({ field: { value, onChange } }) => (
-          <Input.Password
-            className="mt-1.5"
-            value={value}
-            placeholder="●●●●●●●●"
-            prefix={<LockOutlined />}
-            onChange={onChange}
-          />
-        )}
-      />
-
-      <Button
-        className="w-full !mt-1.5"
-        onClick={handleSubmit(onSubmit, handleError)}
-        loading={isSubmitting}
+      <h2 className="mt-1 text-center">Sign In</h2>
+      <form
+        onSubmit={handleSubmit(onSubmit, handleError)}
+        className="mt-2 flex flex-col gap-y-2"
       >
-        Log in
-      </Button>
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { value, onChange } }) => (
+            <Input
+              type="email"
+              placeholder="Email"
+              autoFocus
+              value={value}
+              prefix={<UserOutlined />}
+              onChange={onChange}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="password"
+          render={({ field: { value, onChange } }) => (
+            <Input.Password
+              value={value}
+              placeholder="●●●●●●●●"
+              prefix={<LockOutlined />}
+              onChange={onChange}
+            />
+          )}
+        />
+        <Button htmlType="submit" loading={isSubmitting}>
+          Log in
+        </Button>
+      </form>
 
-      <ResetPasswordLink />
+      <ResetPasswordLink className="text-sm mt-2 cursor-pointer hover:text-blue-400 text-blue-500 block mx-auto">
+        Reset Password
+      </ResetPasswordLink>
     </div>
   )
 }

@@ -1,113 +1,101 @@
 import UserOutlined from '@ant-design/icons/UserOutlined'
-import { Alert, Button, Input, Modal } from 'antd'
-import React, { ChangeEvent, Component, ReactNode } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Alert, Input, Modal, notification } from 'antd'
+import { FirebaseError } from 'firebase/app'
+import { ReactNode, useState } from 'react'
+import { Controller, FieldErrors, useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { sendPasswordResetEmail } from '../../services/auth'
 
-interface ResetPasswordLinkState {
-  visible: boolean
-  confirmLoading: boolean
-  currentEmail: string
-  buttonText: string
-  errorText: string
-}
-
-interface ResetPasswordLinkProps {
-  text?: string
+type ResetPasswordLinkProps = {
+  className?: string
   children?: ReactNode
 }
 
-export class ResetPasswordLink extends Component<
-  ResetPasswordLinkProps,
-  ResetPasswordLinkState
-> {
-  constructor(props: ResetPasswordLinkProps) {
-    super(props)
-    this.state = {
-      visible: false,
-      confirmLoading: false,
-      currentEmail: '',
-      buttonText: 'Send Reset Email',
-      errorText: '',
+const resetPasswordSchema = z.object({
+  email: z.email('Invalid email').min(1, 'Email is required'),
+})
+
+type ResetPasswordForm = z.infer<typeof resetPasswordSchema>
+
+export default function ResetPasswordLink({
+  className,
+  children,
+}: ResetPasswordLinkProps) {
+  const [open, setOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const { control, reset, handleSubmit } = useForm<ResetPasswordForm>({
+    resolver: zodResolver(resetPasswordSchema),
+  })
+
+  async function onValid(data: ResetPasswordForm) {
+    setIsSubmitting(true)
+    try {
+      await sendPasswordResetEmail(data.email)
+      setOpen(false)
+      notification.success({
+        message: 'Reset email sent',
+      })
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        let errorText = 'Error sending reset email'
+        if (error.code === 'auth/user-not-found') {
+          errorText =
+            "No usesr found for email. Contact the club to make sure you're signed up."
+        } else if (error.code === 'auth/invalid-email') {
+          errorText = 'Invalid Email.'
+        }
+        setError(errorText)
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
-  onEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      ...this.state,
-      currentEmail: e.target.value,
-    })
+  function onInvalid(errors: FieldErrors<ResetPasswordForm>) {
+    const firstError = Object.keys(errors)[0]
+    if (firstError) {
+      setError(errors[firstError]?.message)
+    }
   }
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    })
+  function handleCancel() {
+    setError(null)
+    setOpen(false)
+    reset()
   }
 
-  handleResetClick = () => {
-    this.setState({
-      confirmLoading: true,
-      errorText: '',
-    })
-    sendPasswordResetEmail(this.state.currentEmail)
-      .then((success) => {
-        console.log('RESET EMAIL success', success)
-        this.setState({
-          ...this.state,
-          confirmLoading: false,
-          buttonText: 'Email Sent',
-        })
-      })
-      .catch((err) => {
-        let errDisplay = 'Error sending reset email'
-        console.log(err)
-        if (err.code === 'auth/user-not-found') {
-          errDisplay =
-            'No user found for email. Contact AUMT to make sure your email is registered.'
-        } else if (err.code === 'auth/invalid-email') {
-          errDisplay = 'Invalid Email.'
-        }
-        this.setState({
-          ...this.state,
-          confirmLoading: false,
-          errorText: errDisplay,
-        })
-      })
-  }
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    })
-  }
-
-  render() {
-    const { visible, confirmLoading } = this.state
-    return (
-      <span className="inline-block m-0">
-        <Button type="link" className="mockLink" onClick={this.showModal}>
-          {this.props.text || 'Reset Password'}
-        </Button>
-        <Modal
-          title="Reset Password"
-          visible={visible}
-          onOk={this.handleResetClick}
-          confirmLoading={confirmLoading}
-          onCancel={this.handleCancel}
-          okText={this.state.buttonText}
-        >
-          {this.state.errorText ? (
-            <Alert type="error" message={this.state.errorText}></Alert>
-          ) : null}
-          <Input
-            type="email"
-            placeholder="email"
-            onPressEnter={this.handleResetClick}
-            onChange={this.onEmailChange}
-            prefix={<UserOutlined />}
-          />
-        </Modal>
-      </span>
-    )
-  }
+  return (
+    <>
+      <button onClick={() => setOpen(true)} className={className}>
+        {children}
+      </button>
+      <Modal
+        title="Reset Password"
+        open={open}
+        onOk={handleSubmit(onValid, onInvalid)}
+        confirmLoading={isSubmitting}
+        onCancel={handleCancel}
+        okText="Send Reset Email"
+      >
+        {error && <Alert type="error" message={error} />}
+        <Controller
+          control={control}
+          name="email"
+          render={({ field }) => (
+            <Input
+              type="email"
+              placeholder="Email"
+              prefix={<UserOutlined />}
+              value={field.value}
+              className="mt-2"
+              onChange={field.onChange}
+            />
+          )}
+        />
+      </Modal>
+    </>
+  )
 }
