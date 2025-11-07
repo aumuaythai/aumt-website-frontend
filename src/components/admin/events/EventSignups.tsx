@@ -270,75 +270,40 @@
 // export default withRouter(EventSignups)
 
 import { generateMockUid } from '@/lib/utils'
-import { useAddMemberToEvent, useEvent } from '@/services/events'
-import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons'
-import { Button, notification, Spin } from 'antd'
+import {
+  useAddMemberToEvent,
+  useEvent,
+  useRemoveMemberFromEvent,
+} from '@/services/events'
+import { MailOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Button, Form, Input, Modal, Spin, Table } from 'antd'
+import { ColumnsType } from 'antd/lib/table'
+import { ArrowLeft, LoaderCircle, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { FormItem } from 'react-hook-form-antd'
 import { Link, useParams } from 'react-router'
-import { AumtCampSignupData, AumtEventSignupData } from '../../../types'
-import { CampSignupForm } from '../../events/CampSignupForm'
-import './EventSignups.css'
-import EventSignupTable from './EventSignupTable'
+import z from 'zod'
+
+const addMemberSchema = z.object({
+  name: z.string().min(1),
+  email: z.email(),
+})
+
+type AddMemberForm = z.infer<typeof addMemberSchema>
 
 export default function EventSignups() {
+  const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false)
+
   const { eventId } = useParams()
   const { data: event, isPending: isLoadingEvent } = useEvent(eventId!)
-
-  const [addingMember, setAddingMember] = useState(false)
-  const [addingWaitlistMember, setAddingWaitlistMember] = useState(false)
-  const [submittingMember, setSubmittingMember] = useState(false)
-  const [submittingWaitlistMember, setSubmittingWaitlistMember] =
-    useState(false)
-
   const addMember = useAddMemberToEvent()
+  const removeMember = useRemoveMemberFromEvent()
 
-  function addMemberClick() {
-    setAddingMember(true)
-  }
-
-  function onCancelAddMember() {
-    setAddingMember(false)
-  }
-
-  function addWaitlistMemberClick() {
-    setAddingWaitlistMember(true)
-  }
-
-  function onCancelAddWaitlistMember() {
-    setAddingWaitlistMember(false)
-  }
-
-  function signUpNewMember(
-    signupData: AumtCampSignupData,
-    isWaitlist: boolean
-  ) {
-    if (!signupData.name) {
-      return notification.error({ message: 'Name required' })
-    }
-    if (!signupData.email) {
-      return notification.error({ message: 'Email required' })
-    }
-    if (!event) {
-      return
-    }
-    if (isWaitlist) {
-      setSubmittingWaitlistMember(true)
-    } else {
-      setSubmittingMember(true)
-    }
-
-    addMember.mutate({
-      eventId: eventId!,
-      userId: generateMockUid(),
-      signupData: {
-        ...signupData,
-        displayName: signupData.name,
-        email: signupData.email,
-        timeSignedUpMs: new Date().getTime(),
-        confirmed: false,
-      },
-    })
-  }
+  const { control, reset, handleSubmit } = useForm<AddMemberForm>({
+    resolver: zodResolver(addMemberSchema),
+  })
 
   if (isLoadingEvent) {
     return (
@@ -352,100 +317,124 @@ export default function EventSignups() {
     return <div>No event with signups found</div>
   }
 
+  const dataSource = Object.entries(event.signups.members).map(
+    ([userId, signup]) => ({
+      key: userId,
+      name: signup.displayName,
+      email: signup.email,
+      timeSignedUpMs: signup.timeSignedUpMs,
+      confirmed: signup.confirmed,
+    })
+  )
+
+  const columns: ColumnsType = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Paid?',
+      dataIndex: 'confirmed',
+      key: 'confirmed',
+      render: (confirmed: boolean) => {
+        return confirmed ? 'Yes' : 'No'
+      },
+    },
+    {
+      title: 'Remove',
+      render: (_, record) => {
+        return (
+          <button
+            className="size-4 flex w-full justify-center text-gray-400 cursor-pointer hover:text-red-600 transition-colors"
+            onClick={() => handleRemoveMember(record.key)}
+          >
+            {removeMember.isPending ? (
+              <LoaderCircle className="size-full animate-spin text-blue-500" />
+            ) : (
+              <Trash2 className="size-4" />
+            )}
+          </button>
+        )
+      },
+      width: '80px',
+    },
+  ]
+
+  async function handleAddMember(data: AddMemberForm) {
+    await addMember.mutateAsync({
+      eventId: eventId!,
+      userId: generateMockUid(),
+      signupData: {
+        displayName: data.name,
+        email: data.email,
+        confirmed: false,
+        timeSignedUpMs: new Date().getTime(),
+      },
+    })
+    setIsAddMemberModalOpen(false)
+    reset()
+  }
+
+  async function handleRemoveMember(userId: string) {
+    await removeMember.mutateAsync({
+      eventId: eventId!,
+      userId,
+    })
+  }
+
   return (
-    <div className="eventSignupsContainer">
-      <div className="eventSignupsHeaderContainer">
-        <h1 className="eventSignupsHeader">
-          <Link className="mx-1.5" to="/admin/events">
-            <ArrowLeftOutlined />
-          </Link>
-          {event.title}
-        </h1>
-        <div className="eventSignupsHeaderButtons">
-          <Link to={`/admin/editevent/${eventId}`}>
-            <Button>Edit Event</Button>
-          </Link>
-        </div>
-      </div>
-      <div className="clearBoth"></div>
-      <div className="eventSignupsMemberDisplaySection">
-        <div className="eventSignupMemberDisplayHeader">
-          <h3 className="eventSignupMemberDisplayTitle">Signups</h3>
+    <>
+      <main className="flex-1 p-4 h-full">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-x-2">
+            <Link to={`/admin/events`}>
+              <ArrowLeft className="size-5" />
+            </Link>
+            <h1>{event.title}</h1>
+          </div>
           <Button
-            className="eventSignupMemberDisplayAddButton"
-            type="primary"
-            shape="round"
-            onClick={addMemberClick}
+            icon={<PlusOutlined />}
+            onClick={() => setIsAddMemberModalOpen(true)}
           >
-            <PlusOutlined />
             Add Member
           </Button>
-          <p className="eventSignupMemberDisplayTotalText">
-            Total: {Object.keys(event.signups.members).length} /{' '}
-            {event.signups.limit}
-          </p>
-          <div className="clearBoth"></div>
-          {addingMember ? (
-            <div className="eventSignupsAddMemberContainer">
-              <Button onClick={onCancelAddMember}>Cancel</Button>
-              <CampSignupForm
-                isCamp={event.signups.isCamp}
-                onSubmit={(data) => signUpNewMember(data, false)}
-                isWaitlist={false}
-                includeNameAndEmail={true}
-                submitting={submittingMember}
-              />
-            </div>
-          ) : null}
-          <EventSignupTable
-            urlPath={event.urlPath}
-            isWaitlist={false}
-            eventId={eventId!}
-            signupData={event.signups.members}
-            isCamp={event.signups.isCamp}
-            limit={event.signups.limit}
-          />
         </div>
-      </div>
-      <div className="clearBoth"></div>
-      <div className="eventSignupsMemberDisplaySection">
-        <div className="eventSignupMemberDisplayHeader">
-          <h3 className="eventSignupMemberDisplayTitle">Waitlist</h3>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          size="middle"
+          bordered
+          className="mt-4"
+        />
+      </main>
+
+      <Modal
+        open={isAddMemberModalOpen}
+        footer={null}
+        onCancel={() => setIsAddMemberModalOpen(false)}
+      >
+        <Form layout="vertical" onFinish={handleSubmit(handleAddMember)}>
+          <FormItem label="Name" name="name" control={control}>
+            <Input prefix={<UserOutlined />} />
+          </FormItem>
+          <FormItem label="Email" name="email" control={control}>
+            <Input prefix={<MailOutlined />} />
+          </FormItem>
           <Button
-            className="eventSignupMemberDisplayAddButton"
             type="primary"
-            shape="round"
-            onClick={addWaitlistMemberClick}
+            htmlType="submit"
+            loading={addMember.isPending}
           >
-            <PlusOutlined />
             Add Member
           </Button>
-          <p className="eventSignupMemberDisplayTotalText">
-            Total: {Object.keys(event.signups.waitlist).length}
-          </p>
-          <div className="clearBoth"></div>
-          {addingWaitlistMember ? (
-            <div className="eventSignupsAddMemberContainer">
-              <Button onClick={onCancelAddWaitlistMember}>Cancel</Button>
-              <CampSignupForm
-                isCamp={event.signups.isCamp}
-                onSubmit={(data) => signUpNewMember(data, true)}
-                isWaitlist={true}
-                includeNameAndEmail={true}
-                submitting={submittingWaitlistMember}
-              />
-            </div>
-          ) : null}
-          <EventSignupTable
-            urlPath={event.urlPath}
-            isWaitlist={true}
-            eventId={eventId!}
-            signupData={event.signups.waitlist}
-            isCamp={event.signups.isCamp}
-            limit={null}
-          />
-        </div>
-      </div>
-    </div>
+        </Form>
+      </Modal>
+    </>
   )
 }

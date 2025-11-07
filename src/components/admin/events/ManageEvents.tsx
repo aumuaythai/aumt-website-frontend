@@ -43,7 +43,7 @@ export default function ManageEvents() {
                 <h2>{event.title}</h2>
                 <div className="flex gap-x-2">
                   {event.signups && (
-                    <Link to={`/admin/events/${event.id}`}>
+                    <Link to={`/admin/events/${event.id}/signups`}>
                       <Button>View Signups</Button>
                     </Link>
                   )}

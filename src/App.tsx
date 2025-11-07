@@ -89,7 +89,7 @@ export default function App() {
                       element={<CreateEvent />}
                     />
                     <Route
-                      path="/admin/events/:eventId"
+                      path="/admin/events/:eventId/signups"
                       element={<EventSignups />}
                     />
                     <Route

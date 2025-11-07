@@ -137,7 +137,7 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
               ? 'Our records show you have paid, your spot is confirmed'
               : ''
           }
-        ></Result>
+        />
         <Button
           type="link"
           loading={removeMember.isPending}
@@ -214,7 +214,7 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
           isWaitlist={true}
           onSubmit={(data) => onSignupFormSubmit(true, data)}
           submitting={signup.isPending}
-        ></CampSignupForm>
+        />
       </div>
     )
   }
@@ -229,7 +229,7 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
           isWaitlist={false}
           onSubmit={(data) => onSignupFormSubmit(false, data)}
           submitting={signup.isPending}
-        ></CampSignupForm>
+        />
       ) : (
         <Button
           loading={signup.isPending}

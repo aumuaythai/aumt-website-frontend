@@ -10,7 +10,7 @@ import {
   getDocs,
   updateDoc,
 } from 'firebase/firestore'
-import { AumtEventSignupData, Event } from '../types'
+import { Event, EventSignup } from '../types'
 import { db } from './firebase'
 
 export type EventWithId = Event & { id: string }
@@ -45,24 +45,16 @@ async function deleteEvent(eventId: string) {
 async function addMemberToEvent(
   eventId: string,
   userId: string,
-  signupData: AumtEventSignupData
+  signupData: EventSignup
 ) {
   return await updateDoc(doc(events, eventId), {
-    signups: {
-      members: {
-        [userId]: signupData,
-      },
-    },
+    [`signups.members.${userId}`]: signupData,
   })
 }
 
 async function removeMemberFromEvent(eventId: string, userId: string) {
   return await updateDoc(doc(events, eventId), {
-    signups: {
-      members: {
-        [userId]: deleteField(),
-      },
-    },
+    [`signups.members.${userId}`]: deleteField(),
   })
 }
 
@@ -146,10 +138,10 @@ export function useAddMemberToEvent() {
     }: {
       eventId: string
       userId: string
-      signupData: AumtEventSignupData
+      signupData: EventSignup
     }) => addMemberToEvent(eventId, userId, signupData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['events'] })
+    onSuccess: (_, { eventId }) => {
+      queryClient.invalidateQueries({ queryKey: ['event', eventId] })
       notification.success({
         message: 'Member added',
       })
@@ -168,8 +160,8 @@ export function useRemoveMemberFromEvent() {
   const mutation = useMutation({
     mutationFn: ({ eventId, userId }: { eventId: string; userId: string }) =>
       removeMemberFromEvent(eventId, userId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['events'] })
+    onSuccess: (_, { eventId }) => {
+      queryClient.invalidateQueries({ queryKey: ['event', eventId] })
       notification.success({
         message: 'Member removed',
       })
