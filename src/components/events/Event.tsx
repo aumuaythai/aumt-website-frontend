@@ -47,10 +47,10 @@ export default function Event() {
       </div>
       <div className="text-left mx-auto p-5">
         <div className="p-[5px]">
-          <CalendarOutlined /> {event.date.toLocaleDateString()}
+          <CalendarOutlined /> {event.date.toLocaleString()}
         </div>
         <div className="p-[5px]">
-          <ClockCircleOutlined /> {event.date.toLocaleTimeString()}
+          <ClockCircleOutlined /> {event.date.format('HH:mm')}
         </div>
         <div className="p-[5px]">
           <HomeOutlined />{' '}
@@ -80,18 +80,22 @@ export default function Event() {
         <RenderMarkdown source={event.description}></RenderMarkdown>
       </div>
       <Divider />
-      <Signups event={event} />
+      <Signups eventId={eventId} event={event} />
     </div>
   )
 }
 
 function Signups({ eventId, event }: { eventId: string; event: Event }) {
-  const { user, userId } = useAuth()
+  const { user } = useAuth()
   const addMember = useAddMemberToEvent()
   const removeMember = useRemoveMemberFromEvent()
 
-  const isSignedUp = !!event.signups?.members[userId]
-  const isOnWaitlist = !!event.signups?.waitlist[userId]
+  if (!user?.id) {
+    return null
+  }
+
+  const isSignedUp = !!event.signups?.members[user.id]
+  const isOnWaitlist = !!event.signups?.waitlist[user.id]
   const { signups } = event
 
   if (!signups) {
@@ -102,6 +106,10 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
     isWaitlist: boolean,
     signupData?: AumtCampSignupData
   ) {
+    if (!user?.id) {
+      return
+    }
+
     const displayName = user
       ? `${user.firstName} ${user.lastName}`
       : signupData?.name
@@ -109,7 +117,7 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
 
     addMember.mutate({
       eventId,
-      userId,
+      userId: user.id,
       signupData: {
         ...signupData,
         displayName,

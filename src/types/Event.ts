@@ -1,5 +1,8 @@
 import { isValidMoment } from '@/lib/utils'
+import moment, { Moment } from 'moment'
 import z from 'zod'
+
+const momentSchema = z.custom<Moment>((date) => isValidMoment(date))
 
 export interface AumtCampSignupData {
   name?: string
@@ -40,8 +43,8 @@ export const eventSignupSchema = z.object({
 export type EventSignup = z.infer<typeof eventSignupSchema>
 
 export const eventSignupsSchema = z.object({
-  opens: z.refine((date) => isValidMoment(date), 'Open date is invalid'),
-  closes: z.refine((date) => isValidMoment(date), 'Close date is invalid'),
+  opens: momentSchema,
+  closes: momentSchema,
   limit: z.number().nullable(),
   needAdminConfirm: z.boolean(),
   openToNonMembers: z.boolean(),
@@ -58,7 +61,7 @@ export const eventSchema = z.object({
     .string('Description is invalid')
     .min(1, 'Description is required'),
   photoPath: z.string().optional(),
-  date: z.refine((date) => isValidMoment(date), 'Date is invalid'),
+  date: momentSchema,
   location: z.string('Location is invalid').min(1, 'Location is required'),
   locationLink: z.url().optional(),
   fbLink: z.url().optional(),

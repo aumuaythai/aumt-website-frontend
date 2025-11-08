@@ -24,7 +24,7 @@ export default function Feedback() {
         {sortedForms.map((form) => {
           const feedback = form.feedback.reverse()
           return (
-            <div key={form.trainingId}>
+            <div key={form.id}>
               <h3 className="text-base">{form.title}</h3>
               {feedback.length ? (
                 feedback.map((line, index) => {

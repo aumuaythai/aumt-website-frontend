@@ -1,12 +1,11 @@
-import { useDeleteTraining } from '@/services/trainings'
+import { TrainingWithId, useDeleteTraining } from '@/services/trainings'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Divider, Modal, Spin } from 'antd'
 import { Link } from 'react-router'
-import { Training } from '../../../types'
 
 interface ManageTrainingsProps {
   onTrainingClick: (trainingId: string) => void
-  trainings: Training[]
+  trainings: TrainingWithId[]
   loadingTrainings: boolean
 }
 
@@ -48,24 +47,21 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
       {props.trainings.map((training) => (
         <>
           <button
-            key={training.trainingId}
+            key={training.id}
             className="flex items-center justify-between w-full hover:cursor-pointer group"
-            onClick={(e) => props.onTrainingClick(training.trainingId)}
+            onClick={(e) => props.onTrainingClick(training.id)}
           >
             <h4 className="group-hover:!text-gray-600 transition-colors !mb-0">
               {training.title}
             </h4>
             <div>
-              <Link
-                to={`/admin/trainings/${training.trainingId}`}
-                className="mr-2"
-              >
+              <Link to={`/admin/trainings/${training.id}`} className="mr-2">
                 <Button className="manageTrainingOptionButton">Edit</Button>
               </Link>
               <Button
                 loading={removeTraining.isPending}
                 onClick={(e) =>
-                  confirmDeleteTraining(training.title, training.trainingId)
+                  confirmDeleteTraining(training.title, training.id)
                 }
                 type="primary"
                 danger

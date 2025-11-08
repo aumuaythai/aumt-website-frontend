@@ -172,9 +172,6 @@ export default function CreateTraining() {
       notes: data.notes,
       signupMaxSessions: data.maxSessions,
       feedback: training?.feedback || [],
-      trainingId:
-        trainingId ||
-        data.title.split(' ').join('').slice(0, 13) + generateSessionId(7),
     }
 
     createTrainingMutation.mutate(newTraining)
