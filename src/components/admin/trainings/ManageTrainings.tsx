@@ -1,30 +1,18 @@
+import { TrainingWithId, useDeleteTraining } from '@/services/trainings'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { Alert, Button, Divider, Modal, notification, Spin } from 'antd'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { removeTraining } from '../../../services/db'
-import { AumtWeeklyTraining } from '../../../types'
+import { Button, Divider, Modal, Spin } from 'antd'
+import { Link } from 'react-router'
 
 interface ManageTrainingsProps {
   onTrainingClick: (trainingId: string) => void
-  trainings: AumtWeeklyTraining[]
+  trainings: TrainingWithId[]
   loadingTrainings: boolean
 }
 
-interface ManageTrainingsState {
-  errorText: string
-  removingTraining: {
-    [trainingId: string]: boolean
-  }
-}
-
 export default function ManageTrainings(props: ManageTrainingsProps) {
-  const [errorText, setErrorText] = useState('')
-  const [removingTraining, setRemovingTraining] = useState<{
-    [trainingId: string]: boolean
-  }>({})
+  const removeTraining = useDeleteTraining()
 
-  function confirmDeleteTraiing(title: string, trainingId: string) {
+  function confirmDeleteTraining(title: string, trainingId: string) {
     Modal.confirm({
       title: `Delete ${title}?`,
       icon: <ExclamationCircleOutlined />,
@@ -37,22 +25,9 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
       onCancel: () => {},
     })
   }
-  function handleRemoveTraining(trainingId: string) {
-    setRemovingTraining((prev) => ({ ...prev, [trainingId]: true }))
-    removeTraining(trainingId)
-      .then(() => {
-        setRemovingTraining((prev) => ({ ...prev, [trainingId]: false }))
-      })
-      .catch((err) => {
-        notification.open({
-          message: 'Error removing training: ' + err.toString(),
-        })
-        setRemovingTraining((prev) => ({ ...prev, [trainingId]: false }))
-      })
-  }
 
-  if (errorText) {
-    return <Alert type="error" message={errorText}></Alert>
+  function handleRemoveTraining(trainingId: string) {
+    removeTraining.mutate(trainingId)
   }
 
   if (props.loadingTrainings) {
@@ -68,24 +43,25 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
   }
 
   return (
-    <ul className="mt-6 overflow-y-auto max-h-96 md:max-h-none">
+    <ul className="overflow-y-auto max-h-96 md:max-h-none mt-4">
       {props.trainings.map((training) => (
-        <li key={training.trainingId}>
-          <div className="flex flex-1 justify-between">
-            <h4 onClick={(e) => props.onTrainingClick(training.trainingId)}>
+        <>
+          <button
+            key={training.id}
+            className="flex items-center justify-between w-full hover:cursor-pointer group"
+            onClick={(e) => props.onTrainingClick(training.id)}
+          >
+            <h4 className="group-hover:!text-gray-600 transition-colors !mb-0">
               {training.title}
             </h4>
             <div>
-              <Link
-                to={`/admin/edittraining/${training.trainingId}`}
-                className="mr-2"
-              >
+              <Link to={`/admin/trainings/${training.id}`} className="mr-2">
                 <Button className="manageTrainingOptionButton">Edit</Button>
               </Link>
               <Button
-                loading={removingTraining[training.trainingId]}
+                loading={removeTraining.isPending}
                 onClick={(e) =>
-                  confirmDeleteTraiing(training.title, training.trainingId)
+                  confirmDeleteTraining(training.title, training.id)
                 }
                 type="primary"
                 danger
@@ -93,9 +69,9 @@ export default function ManageTrainings(props: ManageTrainingsProps) {
                 Remove
               </Button>
             </div>
-          </div>
-          <Divider />
-        </li>
+          </button>
+          <Divider className="!my-4" />
+        </>
       ))}
     </ul>
   )

@@ -1,16 +1,33 @@
+import { cn } from '@/lib/utils'
 import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
-import { Link, useLocation } from 'react-router-dom'
+import * as Dialog from '@radix-ui/react-dialog'
+import * as Popover from '@radix-ui/react-popover'
+import { Button } from 'antd'
+import { Hamburger, Menu, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 import { Links } from '../../services/links'
-import TopMenu from './TopMenu'
+import Logo from '../svg/Logo'
 import UserInfo from './UserInfo'
 
 export default function Header() {
-  const { authedUser, userIsAdmin: isAdmin } = useAuth()
+  const [open, setOpen] = useState(false)
+  const auth = useAuth()
 
   const location = useLocation()
   const pathname = location.pathname
+
+  const navItems: { label: string; to: string }[] = [
+    { label: 'About', to: '/' },
+    { label: 'Weekly Trainings', to: '/trainings' },
+    { label: 'Events', to: '/events' },
+  ]
+
+  if (auth?.user?.isAdmin) {
+    navItems.push({ label: 'Admin', to: '/admin' })
+  }
 
   const fbClick = () => {
     Links.openAumtFb()
@@ -21,36 +38,116 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full flex items-center justify-between px-5 font-[Joyride] border-b border-b-[#f0f0f0] font-normal h-[50px]">
+    <header className="w-full flex items-center justify-between px-5 font-[Joyride] border-b border-b-[#f0f0f0] h-[50px]">
       <Link to="/">
-        <img
-          className="w-[120px] transition-opacity hover:opacity-80"
-          src="logos/AUMTLogo.png"
-          alt="AUMT"
-        />
+        <Logo className="w-[100px] transition-opacity hover:opacity-80" />
       </Link>
 
-      <TopMenu isAdmin={isAdmin} authedUser={authedUser} />
-      <div className="flex items-center h-full gap-x-6">
-        {authedUser ? (
-          <UserInfo authedUser={authedUser}></UserInfo>
+      <DesktopMenu items={navItems} />
+      <MobileMenu open={open} setOpen={setOpen} navItems={navItems} />
+
+      <div className="hidden md:flex items-center gap-x-3">
+        {auth.user ? (
+          <UserInfo user={auth.user} />
         ) : (
-          <Link
-            to={`/login?from=${pathname}`}
-            className="h-full flex items-center px-8 !text-[#11388d] !transition-colors duration-300 hover:!bg-[#11388d]/10"
-          >
-            Sign In
-          </Link>
+          <div className="flex items-center gap-x-2">
+            <Button type="text" className="!py-4 !font-joyride">
+              <Link to={`/login?from=${pathname}`}>Sign In</Link>
+            </Button>
+            <Button className="!py-4 !font-joyride">
+              <Link to={`/join`}>Create account</Link>
+            </Button>
+          </div>
         )}
-        <div className="flex text-lg cursor-pointer text-black gap-x-2.5">
-          <span onClick={fbClick}>
+        <div className="flex text-lg text-black gap-x-2.5">
+          <button
+            onClick={fbClick}
+            className="cursor-pointer hover:text-gray-500"
+          >
             <FacebookFilled />
-          </span>
-          <span onClick={igClick}>
+          </button>
+          <button
+            onClick={igClick}
+            className="cursor-pointer hover:text-gray-500"
+          >
             <InstagramFilled />
-          </span>
+          </button>
         </div>
       </div>
     </header>
+  )
+}
+
+function MobileMenu({
+  open,
+  setOpen,
+  navItems,
+}: {
+  open: boolean
+  setOpen: (open: boolean) => void
+  navItems: { label: string; to: string }[]
+}) {
+  const mobileNavItems = [...navItems]
+  mobileNavItems.push({ label: 'Account', to: '/account' })
+
+  return (
+    <Dialog.Root modal={false} open={open} onOpenChange={setOpen}>
+      <Dialog.Trigger className="cursor-pointer transition-colors hover:text-slate-600 md:hidden">
+        {open ? <X /> : <Menu />}
+      </Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Content
+          className="fixed inset-0 top-[50px] bg-white z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 md:hidden"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
+          <Dialog.Title className="sr-only">Menu</Dialog.Title>
+          <Dialog.Description className="sr-only">
+            Mobile navigation menu
+          </Dialog.Description>
+          <nav className="flex flex-col">
+            {mobileNavItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  cn(
+                    'font-joyride text-lg py-4 px-6',
+                    isActive
+                      ? 'text-blue-900 bg-blue-50'
+                      : 'hover:text-blue-900 hover:bg-blue-50'
+                  )
+                }
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  )
+}
+
+function DesktopMenu({ items }: { items: { label: string; to: string }[] }) {
+  return (
+    <nav className="md:flex h-full hidden gap-x-6 text-sm">
+      {items.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          className={({ isActive }) =>
+            cn(
+              'transition-colors flex items-center px-3',
+              isActive
+                ? 'text-blue-900 bg-blue-50'
+                : 'hover:text-blue-900 hover:bg-blue-50'
+            )
+          }
+        >
+          {item.label}
+        </NavLink>
+      ))}
+    </nav>
   )
 }

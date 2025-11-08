@@ -1,41 +1,51 @@
+import { signOut } from '@/services/auth'
+import { Member } from '@/types'
 import DownOutlined from '@ant-design/icons/DownOutlined'
 import { Button, Dropdown } from 'antd'
-import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { signOut } from '../../services/auth'
-import { AumtMember } from '../../types'
-import { ResetPasswordLink } from './ResetLink'
+import { ItemType } from 'antd/lib/menu/interface'
+import { Link } from 'react-router'
+import ResetPasswordLink from './ResetLink'
 
 interface UserInfoProps {
-  authedUser: AumtMember
+  user: Member
 }
 
 export default function UserInfo(props: UserInfoProps) {
-  const onSignOutClick = () => {
+  function handleSignOut() {
     signOut()
-      .then(() => {
-        console.log('Signing out success')
-      })
-      .catch((signOutError) => {
-        console.log('Sign out error')
-      })
   }
 
   const items: ItemType[] = [
     {
-      key: 'sign-out',
+      key: 'account',
       label: (
-        <Button type="link" className="signOutLink" onClick={onSignOutClick}>
-          Sign Out
+        <Button type="link">
+          <Link to="/account">Account</Link>
         </Button>
       ),
     },
     {
       key: 'reset-password',
-      label: <ResetPasswordLink>Reset Password</ResetPasswordLink>,
+      label: (
+        <ResetPasswordLink>
+          <Button type="link">Reset Password</Button>
+        </ResetPasswordLink>
+      ),
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'sign-out',
+      label: (
+        <Button type="link" onClick={handleSignOut}>
+          Sign Out
+        </Button>
+      ),
     },
   ]
 
-  const nameText = props.authedUser.preferredName || props.authedUser.firstName
+  const nameText = props.user.preferredName || props.user.firstName
 
   return (
     <Dropdown
@@ -44,10 +54,10 @@ export default function UserInfo(props: UserInfoProps) {
       trigger={['click', 'hover']}
     >
       <div className="flex items-center h-full cursor-pointer gap-x-2.5">
-        <div className="max-w-24 overflow-hidden text-ellipsis whitespace-nowrap">
+        <div className="text-sm overflow-hidden text-ellipsis whitespace-nowrap">
           {nameText}
         </div>
-        <DownOutlined />
+        <DownOutlined className="text-xs" />
       </div>
     </Dropdown>
   )

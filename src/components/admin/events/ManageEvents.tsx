@@ -1,40 +1,17 @@
-import { Button, Divider, notification, Popconfirm, Spin } from 'antd'
-import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { removeEvent } from '../../../services/db'
-import { AumtEvent } from '../../../types'
-import AdminStore from '../AdminStore'
-import './ManageEvents.css'
+import { useDeleteEvent, useEvents } from '@/services/events'
+import { PlusOutlined } from '@ant-design/icons'
+import { Button, Divider, Popconfirm, Spin } from 'antd'
+import { Link } from 'react-router'
 
-interface ManageEventsProps {
-  events: AumtEvent[]
-}
+export default function ManageEvents() {
+  const { data: events, isPending: isLoadingEvents } = useEvents()
+  const deleteEvent = useDeleteEvent()
 
-export default function ManageEvents(props: ManageEventsProps) {
-  const [removingEvent, setRemovingEvent] = useState<{
-    [eventId: string]: boolean
-  }>({})
-
-  const events = props.events.slice().sort((a, b) => (a.date > b.date ? -1 : 1))
-  const loadingEvents = !props.events.length
-
-  useEffect(() => {
-    AdminStore.requestEvents()
-  }, [])
-
-  async function handleRemoveEvent(eventId: string) {
-    setRemovingEvent((prev) => ({ ...prev, [eventId]: true }))
-    try {
-      await removeEvent(eventId)
-      setRemovingEvent((prev) => ({ ...prev, [eventId]: false }))
-    } catch (error) {
-      notification.open({
-        message: 'Error removing event: ' + error.toString(),
-      })
-    }
+  function handleRemoveEvent(eventId: string) {
+    deleteEvent.mutate(eventId)
   }
 
-  if (loadingEvents) {
+  if (isLoadingEvents) {
     return (
       <div>
         Loading Events <Spin />
@@ -42,44 +19,56 @@ export default function ManageEvents(props: ManageEventsProps) {
     )
   }
 
+  if (!events) {
+    return <div>No Events Found</div>
+  }
+
+  const sortedEvents = events.slice().sort((a, b) => (a.date > b.date ? -1 : 1))
+
   return (
-    <div className="manageEventsContainer">
-      {events.map((event) => {
-        return (
-          <div className="eachEventManager" key={event.id}>
-            <div className="eventManageHeader">
-              <h4 className="manageEventTitle">{event.title}</h4>
-              <div className="manageEventOptions">
-                {event.signups && (
+    <div className="max-w-2xl mx-auto pt-8">
+      <div className="flex justify-between">
+        <h1 className="text-2xl">Manage Events</h1>
+        <Link to="/admin/events/create">
+          <Button type="primary" shape="round" icon={<PlusOutlined />}>
+            Create Event
+          </Button>
+        </Link>
+      </div>
+      <ul className="flex flex-col mt-8">
+        {sortedEvents.map((event) => {
+          return (
+            <>
+              <li key={event.id} className="flex gap-x-4 justify-between">
+                <h2>{event.title}</h2>
+                <div className="flex gap-x-2">
+                  {event.signups && (
+                    <Link to={`/admin/events/${event.id}/signups`}>
+                      <Button>View Signups</Button>
+                    </Link>
+                  )}
                   <Link to={`/admin/events/${event.id}`}>
-                    <Button className="manageEventOptionButton">
-                      View Signups
-                    </Button>
+                    <Button>Edit</Button>
                   </Link>
-                )}
-                <Link to={`/admin/editevent/${event.id}`}>
-                  <Button className="manageEventOptionButton">Edit</Button>
-                </Link>
-                <Popconfirm
-                  title="Confirm Delete Event?"
-                  onConfirm={() => handleRemoveEvent(event.id)}
-                >
-                  <Button
-                    className="manageEventOptionButton"
-                    loading={removingEvent[event.id]}
-                    danger
-                    type="primary"
+                  <Popconfirm
+                    title="Confirm Delete Event?"
+                    onConfirm={() => handleRemoveEvent(event.id)}
                   >
-                    Remove
-                  </Button>
-                </Popconfirm>
-              </div>
-              <div className="clearBoth"></div>
-            </div>
-            <Divider />
-          </div>
-        )
-      })}
+                    <Button
+                      loading={deleteEvent.isPending}
+                      danger
+                      type="primary"
+                    >
+                      Remove
+                    </Button>
+                  </Popconfirm>
+                </div>
+              </li>
+              <Divider />
+            </>
+          )
+        })}
+      </ul>
     </div>
   )
 }
