@@ -16,7 +16,7 @@ import { Link, useParams } from 'react-router'
 import { useAuth } from '../../context/AuthProvider'
 import { AumtCampSignupData, Event } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
-import { CampSignupForm } from './CampSignupForm'
+import EventSignupForm from './CampSignupForm'
 
 export default function Event() {
   const { eventId } = useParams()
@@ -35,7 +35,7 @@ export default function Event() {
   }
 
   return (
-    <div className="max-w-[500px] text-center mx-auto p-[30px]">
+    <div className="max-w-2xl text-center mx-auto pt-8 p-6">
       <div className="flex justify-between">
         <p className="text-black !mt-[5px]">
           <Link title="Back to Events" to="/events">
@@ -47,10 +47,10 @@ export default function Event() {
       </div>
       <div className="text-left mx-auto p-5">
         <div className="p-[5px]">
-          <CalendarOutlined /> {event.date.toLocaleString()}
+          <CalendarOutlined /> {event.date.toDate().toLocaleDateString()}
         </div>
         <div className="p-[5px]">
-          <ClockCircleOutlined /> {event.date.format('HH:mm')}
+          <ClockCircleOutlined /> {event.date.toDate().toLocaleTimeString()}
         </div>
         <div className="p-[5px]">
           <HomeOutlined />{' '}
@@ -66,14 +66,14 @@ export default function Event() {
             event.location
           )}
         </div>
-        {event.fbLink ? (
+        {event.fbLink && (
           <div className="p-[5px]">
             <FacebookOutlined />{' '}
             <a href={event.fbLink} target="_blank" rel="noopener noreferrer">
               {event.fbLink}
             </a>
           </div>
-        ) : null}
+        )}
       </div>
       <Divider />
       <div className="text-left">
@@ -94,43 +94,17 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
     return null
   }
 
-  const isSignedUp = !!event.signups?.members[user.id]
-  const isOnWaitlist = !!event.signups?.waitlist[user.id]
+  const isSignedUp = !!event.signups?.members?.[user.id]
+  const isOnWaitlist = !!event.signups?.waitlist?.[user.id]
   const { signups } = event
 
   if (!signups) {
     return null
   }
 
-  function onSignupFormSubmit(
-    isWaitlist: boolean,
-    signupData?: AumtCampSignupData
-  ) {
-    if (!user?.id) {
-      return
-    }
+  function handleSignup() {}
 
-    const displayName = user
-      ? `${user.firstName} ${user.lastName}`
-      : signupData?.name
-    const email = user ? user.email : signupData?.email
-
-    addMember.mutate({
-      eventId,
-      userId: user.id,
-      signupData: {
-        ...signupData,
-        displayName,
-        email,
-        timeSignedUpMs: new Date().getTime(),
-        confirmed: event.signups?.needAdminConfirm ? false : true,
-      },
-    })
-  }
-
-  function handleWithdrawClick() {
-    removeMember.mutate({ eventId, userId })
-  }
+  function handleWithdraw() {}
 
   if (isSignedUp) {
     return (
@@ -139,7 +113,7 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
           status="success"
           title="Thank you for signing up!"
           subTitle={
-            !signups.members[userId].confirmed
+            !signups.members?.[user.id].confirmed
               ? 'Once the committee recieves your payment, you spot will be fully reserved'
               : signups.needAdminConfirm
               ? 'Our records show you have paid, your spot is confirmed'
@@ -149,7 +123,7 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
         <Button
           type="link"
           loading={removeMember.isPending}
-          onClick={handleWithdrawClick}
+          onClick={handleWithdraw}
         >
           Withdraw Signup
         </Button>
@@ -157,37 +131,13 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
     )
   }
 
-  function getWaitlistPosition() {
-    if (!signups) {
-      return null
-    }
-
-    const waitlist = Object.keys(signups.waitlist)
-    const sortedKeys = waitlist.sort((a, b) => {
-      return (
-        signups.waitlist[a].timeSignedUpMs - signups.waitlist[b].timeSignedUpMs
-      )
-    })
-    const position = sortedKeys.indexOf(userId) + 1
-    return position > 0 ? position : null
-  }
-
-  if (isOnWaitlist) {
-    return (
-      <div>
-        <p>You are currently {getWaitlistPosition()} on the event waitlist.</p>
-        <p>If a spot frees up the committee will let you know!</p>
-      </div>
-    )
-  }
-
-  if (signups.opens > new Date()) {
+  if (signups.opens?.seconds * 1000 > Date.now()) {
     return (
       <div>Signups will open {moment(signups.opens).format('MMMM Do')}</div>
     )
   }
 
-  if (signups.closes < new Date()) {
+  if (signups.closes?.seconds * 1000 < Date.now()) {
     return <div>Signups have closed!</div>
   }
 
@@ -208,7 +158,10 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
     )
   }
 
-  if (signups.limit && signups.limit <= Object.keys(signups.members).length) {
+  if (
+    signups.limit &&
+    signups.limit <= Object.keys(signups.members ?? {}).length
+  ) {
     return (
       <div>
         <h4>Signups are currently full</h4>
@@ -216,13 +169,7 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
           Fill out the form below to join the waitlist and the committee will
           message you if a spot opens.
         </p>
-        <CampSignupForm
-          isCamp={signups.isCamp}
-          includeNameAndEmail={!user}
-          isWaitlist={true}
-          onSubmit={(data) => onSignupFormSubmit(true, data)}
-          submitting={signup.isPending}
-        />
+        <EventSignupForm eventId={eventId} />
       </div>
     )
   }
@@ -231,20 +178,14 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
     <div>
       <h2>Signups</h2>
       {signups.isCamp ? (
-        <CampSignupForm
-          isCamp={signups.isCamp}
-          includeNameAndEmail={!user}
-          isWaitlist={false}
-          onSubmit={(data) => onSignupFormSubmit(false, data)}
-          submitting={signup.isPending}
-        />
+        <EventSignupForm eventId={eventId} />
       ) : (
         <Button
-          loading={signup.isPending}
+          loading={addMember.isPending}
           type="primary"
           block
           className="mt-2.5"
-          onClick={(e) => onSignupFormSubmit(false)}
+          onClick={handleSignup}
         >
           Reserve a Spot
         </Button>

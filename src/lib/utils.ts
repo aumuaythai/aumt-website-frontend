@@ -1,4 +1,4 @@
-import { Member } from '@/types'
+import { Member } from '@/types/Member'
 import { notification } from 'antd'
 import { clsx, type ClassValue } from 'clsx'
 import moment from 'moment'

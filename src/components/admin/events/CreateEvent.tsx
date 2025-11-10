@@ -1,4 +1,5 @@
 import MarkdownEditor from '@/components/utility/MarkdownEditor'
+import { cn } from '@/lib/utils'
 import { useCreateEvent, useEvent } from '@/services/events'
 import type { Event } from '@/types'
 import { eventSchema } from '@/types'
@@ -7,30 +8,26 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Button,
   Checkbox,
-  DatePicker,
+  Form,
   Input,
   InputNumber,
   notification,
   Spin,
 } from 'antd'
-import { Timestamp } from 'firebase/firestore'
-import { Moment } from 'moment'
-import { useState } from 'react'
 import { Controller, FieldErrors, useForm } from 'react-hook-form'
-import { Link, useParams } from 'react-router'
-import z from 'zod'
+import { FormItem } from 'react-hook-form-antd'
+import { Link, useNavigate, useParams } from 'react-router'
 
 export default function CreateEvent() {
-  const [hasLimit, setHasLimit] = useState(false)
-
   const { eventId } = useParams()
+  const navigate = useNavigate()
 
   const { data: event, isPending: isLoadingEvent } = useEvent(eventId!)
   const createEvent = useCreateEvent()
 
   const {
     control,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     handleSubmit,
     watch,
   } = useForm<Event>({
@@ -38,35 +35,11 @@ export default function CreateEvent() {
   })
 
   async function onValid(data: Event) {
-    // const eventData: Event = {
-    //   title: data.title,
-    //   urlPath: data.urlPath,
-    //   description: data.description,
-    //   photoPath: data.photoPath ?? '',
-    //   date: Timestamp.fromDate(data.date),
-    //   location: data.location,
-    //   locationLink: data.locationLink ?? '',
-    //   fbLink: data.fbLink ?? '',
-    //   signups: data.signups
-    //     ? {
-    //         opens: (data.signups.opens as unknown as Moment).toDate(),
-    //         closes: (data.signups.closes as unknown as Moment).toDate(),
-    //         openToNonMembers: data.signups.openToNonMembers ?? false,
-    //         needAdminConfirm: data.signups.needAdminConfirm ?? false,
-    //         isCamp: data.signups.isCamp ?? false,
-    //         limit: data.signups.limit ?? 30,
-    //         members: {},
-    //         waitlist: {},
-    //       }
-    //     : null,
-    // }
-
-    const eventData: Event = { ...data }
-
-    await createEvent.mutateAsync(eventData)
+    await createEvent.mutateAsync(data)
+    navigate('/admin/events')
   }
 
-  function onInvalid(errors: FieldErrors<Event>) {
+  function onInvalid(errors: FieldErrors<Event>, g) {
     const firstError = Object.keys(errors)[0]
     if (firstError) {
       notification.error({
@@ -86,221 +59,161 @@ export default function CreateEvent() {
   const signups = watch('signups')
 
   return (
-    <form
-      onSubmit={handleSubmit(onValid, onInvalid)}
-      className="mx-auto p-6 pt-8 max-w-2xl w-full flex flex-col gap-y-6"
-    >
+    <div className="mx-auto p-6 pt-8 max-w-2xl w-full">
       <div className="flex items-center gap-x-2.5">
         <Link to="/admin/events">
           <ArrowLeftOutlined />
         </Link>
         <h1 className="text-2xl">Create Event</h1>
       </div>
+      <Form layout="vertical" onFinish={handleSubmit(onValid, onInvalid)}>
+        <h2 className="mt-4 text-lg">Details</h2>
+        <FormItem control={control} name="title" label="Title">
+          <Input placeholder="Casino Night" />
+        </FormItem>
 
-      <div>
-        <h2>Event</h2>
-        <label htmlFor="">Title</label>
+        <label htmlFor="date" className="mb-2 block">
+          Date
+        </label>
         <Controller
-          control={control}
-          name="title"
-          render={({ field }) => (
-            <Input
-              placeholder="Casino Night"
-              value={field.value}
-              onChange={field.onChange}
-            />
-          )}
-        />
-        <label htmlFor="">Url Path</label>
-        <Controller
-          control={control}
-          name="urlPath"
-          render={({ field }) => (
-            <Input
-              placeholder="casino-night"
-              value={field.value}
-              onChange={field.onChange}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="description"
-          render={({ field }) => (
-            <MarkdownEditor onChange={field.onChange} value={field.value} />
-          )}
-        />
-      </div>
-
-      <div>
-        <h2>Details</h2>
-        <label htmlFor="">Date</label>
-        <Controller
-          control={control}
           name="date"
-          render={({ field }) => (
-            <DatePicker
-              showTime
-              value={field.value}
-              className="w-full"
-              onChange={field.onChange}
-            />
-          )}
-        />
-        <label htmlFor="">Location</label>
-        <Controller
           control={control}
-          name="location"
-          render={({ field }) => (
-            <Input
-              placeholder="The Hawks' Nest Gym"
-              value={field.value}
-              onChange={field.onChange}
-            />
+          render={({ field, fieldState: { error } }) => (
+            <>
+              <Input
+                id="date"
+                type="datetime-local"
+                value={field.value?.toISOString().slice(0, -1)}
+                className={cn(
+                  'relative [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:size-full',
+                  error && '!border-red-500'
+                )}
+                onChange={(e) => field.onChange(new Date(e.target.value + 'Z'))}
+              />
+              <div className="text-red-500 !mb-4">{error?.message}</div>
+            </>
           )}
         />
-        <label htmlFor="">Maps Link</label>
-        <Controller
-          control={control}
-          name="locationLink"
-          render={({ field }) => (
-            <Input
-              placeholder="https://maps.app.goo.gl/u6GvtHHeazmszeTeA"
-              value={field.value}
-              onChange={field.onChange}
-            />
-          )}
-        />
-        <label htmlFor="">Photo URL</label>
-        <Controller
-          control={control}
-          name="photoPath"
-          render={({ field }) => (
-            <Input
-              value={field.value}
-              placeholder="https://example.com/photo.jpg"
-              onChange={field.onChange}
-            />
-          )}
-        />
-      </div>
+        <FormItem control={control} name="urlPath" label="Url Path">
+          <Input placeholder="casino-night" />
+        </FormItem>
+        <FormItem control={control} name="description" label="Description">
+          <MarkdownEditor />
+        </FormItem>
 
-      <div>
-        <h2>Signups</h2>
+        <FormItem control={control} name="location" label="Location">
+          <Input placeholder="The Hawks' Nest Gym" />
+        </FormItem>
+        <FormItem control={control} name="locationLink" label="Maps Link">
+          <Input placeholder="https://maps.app.goo.gl/u6GvtHHeazmszeTeA" />
+        </FormItem>
+        <FormItem control={control} name="photoPath" label="Photo URL">
+          <Input placeholder="https://example.com/photo.jpg" />
+        </FormItem>
 
-        <Controller
-          control={control}
-          name="signups"
-          render={({ field }) => (
-            <Checkbox
+        <h2 className="mt-4 text-lg">Signups</h2>
+        <FormItem control={control} name="signups">
+          <Checkbox>Enable Signups</Checkbox>
+        </FormItem>
+
+        {/* <Controller
+            control={control}
+            name="signups"
+            render={({ field }) => (
+              <Checkbox
               checked={!!field.value}
               onChange={(e) =>
-                field.onChange(
-                  e.target.checked
-                    ? {
-                        opens: undefined,
-                        closes: undefined,
-                        openToNonMembers: false,
-                        needAdminConfirm: false,
-                        isCamp: false,
-                        limit: 30,
-                      }
-                    : null
-                )
-              }
-            >
-              Enable Signups
-            </Checkbox>
-          )}
-        />
-
+              field.onChange(
+                e.target.checked
+                ? {
+                  opens: undefined,
+                  closes: undefined,
+                  openToNonMembers: false,
+                  needAdminConfirm: false,
+                  isCamp: false,
+                  limit: 30,
+                  }
+                  : null
+                  )
+                  }
+                  >
+                  Enable Signups
+                  </Checkbox>
+                  )}
+                  /> */}
         {signups && (
           <div>
-            <label htmlFor="">Signups Open</label>
+            <label htmlFor="signups.opens" className="mb-2 block">
+              Signups Open
+            </label>
             <Controller
-              control={control}
               name="signups.opens"
-              render={({ field }) => (
-                <DatePicker
-                  value={field.value}
-                  className="w-full"
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            <label htmlFor="">Signups Close</label>
-            <Controller
               control={control}
-              name="signups.closes"
-              render={({ field }) => (
-                <DatePicker
-                  value={field.value}
-                  className="w-full"
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            <div>
-              <Checkbox
-                checked={hasLimit}
-                onChange={(e) => setHasLimit(e.target.checked)}
-              >
-                Limit:
-              </Checkbox>
-              <Controller
-                control={control}
-                name="signups.limit"
-                render={({ field }) => (
-                  <InputNumber
-                    disabled={!hasLimit}
-                    value={field.value}
-                    onChange={field.onChange}
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <Input
+                    id="signups.opens"
+                    type="datetime-local"
+                    value={field.value?.toISOString().slice(0, -1)}
+                    className={cn(
+                      'relative [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:size-full',
+                      error && '!border-red-500'
+                    )}
+                    onChange={(e) => field.onChange(new Date(e.target.value))}
                   />
-                )}
-              />
-            </div>
-            <div>
-              <Controller
-                control={control}
-                name="signups.needAdminConfirm"
-                render={({ field }) => (
-                  <Checkbox checked={field.value} onChange={field.onChange}>
-                    Need Admin Confirmation?
-                  </Checkbox>
-                )}
-              />
-            </div>
-            <Controller
-              control={control}
-              name="signups.isCamp"
-              render={({ field }) => (
-                <Checkbox checked={field.value} onChange={field.onChange}>
-                  Include Drivers and Dietary Requirement Form
-                </Checkbox>
+                  <div className="text-red-500 !mb-4">{error?.message}</div>
+                </>
               )}
             />
+            <label htmlFor="signups.closes" className="mb-2 block">
+              Signups Close
+            </label>
             <Controller
+              name="signups.closes"
               control={control}
-              name="signups.openToNonMembers"
-              render={({ field }) => (
-                <Checkbox checked={field.value} onChange={field.onChange}>
-                  Non Members can sign themselves up (admin can sign up anyone
-                  regardless)
-                </Checkbox>
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <Input
+                    id="signups.closes"
+                    type="datetime-local"
+                    value={field.value?.toISOString().slice(0, -1)}
+                    className={cn(
+                      'relative [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:size-full',
+                      error && '!border-red-500'
+                    )}
+                    onChange={(e) => field.onChange(new Date(e.target.value))}
+                  />
+                  <div className="text-red-500 !mb-4">{error?.message}</div>
+                </>
               )}
             />
+            <FormItem
+              control={control}
+              name="signups.limit"
+              label="Limit (optional)"
+            >
+              <InputNumber />
+            </FormItem>
+            <FormItem control={control} name="signups.needAdminConfirm">
+              <Checkbox>Require Admin Approval</Checkbox>
+            </FormItem>
+            <FormItem control={control} name="signups.isCamp">
+              <Checkbox>Include Drivers and Dietary Forms</Checkbox>
+            </FormItem>
+            <FormItem control={control} name="signups.openToNonMembers">
+              <Checkbox>Open to Non-Members</Checkbox>
+            </FormItem>
           </div>
         )}
-      </div>
-
-      <div className="flex gap-x-2.5">
-        <Button htmlType="submit" type="primary" loading={isSubmitting}>
-          Submit Event
-        </Button>
-        <Link to="/admin/events">
-          <Button>Cancel</Button>
-        </Link>
-      </div>
-    </form>
+        <div className="flex gap-x-2.5">
+          <Button htmlType="submit" type="primary" loading={isSubmitting}>
+            Submit Event
+          </Button>
+          <Link to="/admin/events">
+            <Button>Cancel</Button>
+          </Link>
+        </div>
+      </Form>
+    </div>
   )
 }

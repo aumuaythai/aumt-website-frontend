@@ -1,8 +1,13 @@
 import { isValidMoment } from '@/lib/utils'
+import { Timestamp } from 'firebase/firestore'
 import moment, { Moment } from 'moment'
 import z from 'zod'
 
 const momentSchema = z.custom<Moment>((date) => isValidMoment(date))
+const timestampSchema = z.custom<Timestamp>(
+  (timestamp) => timestamp instanceof Timestamp,
+  'Invalid timestamp'
+)
 
 export interface AumtCampSignupData {
   name?: string
@@ -43,26 +48,26 @@ export const eventSignupSchema = z.object({
 export type EventSignup = z.infer<typeof eventSignupSchema>
 
 export const eventSignupsSchema = z.object({
-  opens: momentSchema,
-  closes: momentSchema,
+  opens: z.date(),
+  closes: z.date(),
   limit: z.number().nullable(),
   needAdminConfirm: z.boolean(),
   openToNonMembers: z.boolean(),
   isCamp: z.boolean(),
-  members: z.record(z.string(), eventSignupSchema),
-  waitlist: z.record(z.string(), eventSignupSchema),
+  members: z.record(z.string(), eventSignupSchema).optional(),
+  waitlist: z.record(z.string(), eventSignupSchema).optional(),
 })
 export type EventSignups = z.infer<typeof eventSignupsSchema>
 
 export const eventSchema = z.object({
-  title: z.string('Title is invalid').min(1, 'Title is required'),
-  urlPath: z.string('URL Path is invalid').min(1, 'URL Path is required'),
+  title: z.string('Invalid title').min(1, 'Title is required'),
+  urlPath: z.string('Invalid URL Path').min(1, 'URL Path is required'),
   description: z
-    .string('Description is invalid')
+    .string('Invalid description')
     .min(1, 'Description is required'),
   photoPath: z.string().optional(),
-  date: momentSchema,
-  location: z.string('Location is invalid').min(1, 'Location is required'),
+  date: z.date('Invalid date'),
+  location: z.string('Invalid location').min(1, 'Location is required'),
   locationLink: z.url().optional(),
   fbLink: z.url().optional(),
   signups: eventSignupsSchema.optional(),

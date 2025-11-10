@@ -79,8 +79,8 @@ export function useCreateEvent() {
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: createEvent,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['events'] })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['events'] })
       notification.success({
         message: 'Event created',
       })
