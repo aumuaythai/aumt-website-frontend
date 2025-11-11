@@ -111,7 +111,7 @@ function MobileMenu({
                 to={item.to}
                 className={({ isActive }) =>
                   cn(
-                    'font-joyride text-lg py-4 px-6',
+                    'font-joyride text-lg py-4 px-6 transition-colors',
                     isActive
                       ? 'text-blue-900 bg-blue-50'
                       : 'hover:text-blue-900 hover:bg-blue-50'
@@ -131,7 +131,7 @@ function MobileMenu({
 
 function DesktopMenu({ items }: { items: { label: string; to: string }[] }) {
   return (
-    <nav className="md:flex h-full hidden gap-x-6 text-sm">
+    <nav className="md:flex h-full hidden gap-x-6 text-sm text-center">
       {items.map((item) => (
         <NavLink
           key={item.to}

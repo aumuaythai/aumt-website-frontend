@@ -13,15 +13,20 @@ export default function Trainings() {
   const user = auth?.user
 
   if (isLoadingTrainings || !clubConfig?.clubSignupSem || !trainings) {
-    return <Spin />
+    return (
+      <div>
+        Loading trainings
+        <Spin />
+      </div>
+    )
   }
 
   if (!trainings.length) {
     return (
-      <div className="flex flex-col items-center px-6 pt-8">
+      <div className="text-center max-w-lg mx-auto pt-8 px-6">
         <p>Weekly training signups will open on Sundays on this page</p>
-        <p>The current training schedule is:</p>
-        <ul className="text-start list-none">
+        <p className="mt-4">The current training schedule is:</p>
+        <ul className="list-none mt-4">
           <li>
             <b>Tuesday 4:30PM</b> Beginners
           </li>
