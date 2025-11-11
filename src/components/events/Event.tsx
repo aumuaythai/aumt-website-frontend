@@ -1,3 +1,4 @@
+import { useAuth } from '@/context/use-auth'
 import {
   useAddMemberToEvent,
   useEvent,
@@ -13,10 +14,9 @@ import {
 import { Button, Divider, Result, Spin } from 'antd'
 import moment from 'moment'
 import { Link, useParams } from 'react-router'
-import { useAuth } from '../../context/AuthProvider'
-import { AumtCampSignupData, Event } from '../../types'
+import { Event } from '../../types'
 import { RenderMarkdown } from '../utility/RenderMarkdown'
-import EventSignupForm from './CampSignupForm'
+import EventSignupForm from './EventSignupForm'
 
 export default function Event() {
   const { eventId } = useParams()

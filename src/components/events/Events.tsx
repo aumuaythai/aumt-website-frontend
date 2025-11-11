@@ -8,11 +8,11 @@ export default function Events() {
   const currentDate = new Date()
 
   const pastEvents = events
-    ?.filter((e) => e.date < currentDate)
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    ?.filter((e) => e.date.toDate() < currentDate)
+    .sort((a, b) => (a.date.toDate() < b.date.toDate() ? 1 : -1))
   const upcomingEvents = events
-    ?.filter((e) => e.date >= currentDate)
-    .sort((a, b) => (a.date > b.date ? 1 : -1))
+    ?.filter((e) => e.date.toDate() >= currentDate)
+    .sort((a, b) => (a.date.toDate() > b.date.toDate() ? 1 : -1))
 
   if (isLoadingEvents) {
     return (

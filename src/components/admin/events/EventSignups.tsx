@@ -36,13 +36,13 @@ export default function EventSignups() {
 
   if (isLoadingEvent) {
     return (
-      <div className="eventSignupsSpinContainer">
+      <div>
         <Spin />
       </div>
     )
   }
 
-  if (!event || !event.signups) {
+  if (!event?.signups?.members) {
     return <div>No event with signups found</div>
   }
 

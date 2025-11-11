@@ -48,8 +48,8 @@ export const eventSignupSchema = z.object({
 export type EventSignup = z.infer<typeof eventSignupSchema>
 
 export const eventSignupsSchema = z.object({
-  opens: z.date(),
-  closes: z.date(),
+  opens: timestampSchema,
+  closes: timestampSchema,
   limit: z.number().nullable(),
   needAdminConfirm: z.boolean(),
   openToNonMembers: z.boolean(),
@@ -65,11 +65,11 @@ export const eventSchema = z.object({
   description: z
     .string('Invalid description')
     .min(1, 'Description is required'),
-  photoPath: z.string().optional(),
-  date: z.date('Invalid date'),
+  date: timestampSchema,
   location: z.string('Invalid location').min(1, 'Location is required'),
-  locationLink: z.url().optional(),
-  fbLink: z.url().optional(),
+  locationLink: z.url().or(z.literal('')).optional(),
+  fbLink: z.url().or(z.literal('')).optional(),
+  photoPath: z.url().or(z.literal('')).optional(),
   signups: eventSignupsSchema.optional(),
 })
 export type Event = z.infer<typeof eventSchema>

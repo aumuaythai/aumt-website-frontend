@@ -1,8 +1,8 @@
 import MarkdownEditor from '@/components/utility/MarkdownEditor'
 import { cn } from '@/lib/utils'
-import { useCreateEvent, useEvent } from '@/services/events'
+import { useCreateEvent, useEvent, useUpdateEvent } from '@/services/events'
 import type { Event } from '@/types'
-import { eventSchema } from '@/types'
+import { eventSchema, EventSignups } from '@/types'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -14,28 +14,74 @@ import {
   notification,
   Spin,
 } from 'antd'
-import { Controller, FieldErrors, useForm } from 'react-hook-form'
+import { Timestamp } from 'firebase/firestore'
+import { useRef } from 'react'
+import {
+  Controller,
+  FieldErrors,
+  UseControllerProps,
+  useForm,
+} from 'react-hook-form'
 import { FormItem } from 'react-hook-form-antd'
 import { Link, useNavigate, useParams } from 'react-router'
 
 export default function CreateEvent() {
+  const signupsRef = useRef<EventSignups | undefined>(undefined)
+
   const { eventId } = useParams()
   const navigate = useNavigate()
 
   const { data: event, isPending: isLoadingEvent } = useEvent(eventId!)
   const createEvent = useCreateEvent()
+  const updateEvent = useUpdateEvent()
+
+  if (signupsRef.current === undefined && event?.signups) {
+    signupsRef.current = event.signups
+  }
 
   const {
     control,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
     handleSubmit,
     watch,
+    getValues,
+    setValue,
   } = useForm<Event>({
     resolver: zodResolver(eventSchema),
+    values: event,
   })
 
+  function handleSignupsChange(value: boolean) {
+    if (value && !signupsRef.current) {
+      setValue('signups', {
+        opens: Timestamp.now(),
+        closes: Timestamp.now(),
+        openToNonMembers: false,
+        needAdminConfirm: false,
+        isCamp: false,
+        limit: null,
+        members: {},
+        waitlist: {},
+      })
+      return
+    }
+
+    if (value) {
+      setValue('signups', signupsRef.current)
+      return
+    }
+
+    signupsRef.current = getValues('signups')
+    console.log(signupsRef.current)
+    setValue('signups', undefined)
+  }
+
   async function onValid(data: Event) {
-    await createEvent.mutateAsync(data)
+    if (eventId) {
+      await updateEvent.mutateAsync({ eventId, event: data })
+    } else {
+      await createEvent.mutateAsync(data)
+    }
     navigate('/admin/events')
   }
 
@@ -51,6 +97,7 @@ export default function CreateEvent() {
   if (eventId && isLoadingEvent) {
     return (
       <div>
+        Loading event
         <Spin />
       </div>
     )
@@ -64,7 +111,7 @@ export default function CreateEvent() {
         <Link to="/admin/events">
           <ArrowLeftOutlined />
         </Link>
-        <h1 className="text-2xl">Create Event</h1>
+        <h1 className="text-2xl">{eventId ? 'Edit Event' : 'Create Event'}</h1>
       </div>
       <Form layout="vertical" onFinish={handleSubmit(onValid, onInvalid)}>
         <h2 className="mt-4 text-lg">Details</h2>
@@ -72,28 +119,7 @@ export default function CreateEvent() {
           <Input placeholder="Casino Night" />
         </FormItem>
 
-        <label htmlFor="date" className="mb-2 block">
-          Date
-        </label>
-        <Controller
-          name="date"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <>
-              <Input
-                id="date"
-                type="datetime-local"
-                value={field.value?.toISOString().slice(0, -1)}
-                className={cn(
-                  'relative [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:size-full',
-                  error && '!border-red-500'
-                )}
-                onChange={(e) => field.onChange(new Date(e.target.value + 'Z'))}
-              />
-              <div className="text-red-500 !mb-4">{error?.message}</div>
-            </>
-          )}
-        />
+        <TimestampInput name="date" control={control} label="Date" />
         <FormItem control={control} name="urlPath" label="Url Path">
           <Input placeholder="casino-night" />
         </FormItem>
@@ -112,80 +138,25 @@ export default function CreateEvent() {
         </FormItem>
 
         <h2 className="mt-4 text-lg">Signups</h2>
-        <FormItem control={control} name="signups">
-          <Checkbox>Enable Signups</Checkbox>
-        </FormItem>
+        <Checkbox
+          className="!mt-4"
+          checked={!!signups}
+          onChange={(e) => handleSignupsChange(e.target.checked)}
+        >
+          Enable Signups
+        </Checkbox>
 
-        {/* <Controller
-            control={control}
-            name="signups"
-            render={({ field }) => (
-              <Checkbox
-              checked={!!field.value}
-              onChange={(e) =>
-              field.onChange(
-                e.target.checked
-                ? {
-                  opens: undefined,
-                  closes: undefined,
-                  openToNonMembers: false,
-                  needAdminConfirm: false,
-                  isCamp: false,
-                  limit: 30,
-                  }
-                  : null
-                  )
-                  }
-                  >
-                  Enable Signups
-                  </Checkbox>
-                  )}
-                  /> */}
         {signups && (
-          <div>
-            <label htmlFor="signups.opens" className="mb-2 block">
-              Signups Open
-            </label>
-            <Controller
+          <div className="mt-4">
+            <TimestampInput
+              control={control}
               name="signups.opens"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <>
-                  <Input
-                    id="signups.opens"
-                    type="datetime-local"
-                    value={field.value?.toISOString().slice(0, -1)}
-                    className={cn(
-                      'relative [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:size-full',
-                      error && '!border-red-500'
-                    )}
-                    onChange={(e) => field.onChange(new Date(e.target.value))}
-                  />
-                  <div className="text-red-500 !mb-4">{error?.message}</div>
-                </>
-              )}
+              label="Signups Open"
             />
-            <label htmlFor="signups.closes" className="mb-2 block">
-              Signups Close
-            </label>
-            <Controller
-              name="signups.closes"
+            <TimestampInput
               control={control}
-              render={({ field, fieldState: { error } }) => (
-                <>
-                  <Input
-                    id="signups.closes"
-                    type="datetime-local"
-                    value={field.value?.toISOString().slice(0, -1)}
-                    className={cn(
-                      'relative [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:size-full',
-                      error && '!border-red-500'
-                    )}
-                    onChange={(e) => field.onChange(new Date(e.target.value))}
-                  />
-                  <div className="text-red-500 !mb-4">{error?.message}</div>
-                </>
-              )}
+              name="signups.closes"
+              label="Signups Close"
             />
             <FormItem
               control={control}
@@ -195,17 +166,23 @@ export default function CreateEvent() {
               <InputNumber />
             </FormItem>
             <FormItem control={control} name="signups.needAdminConfirm">
-              <Checkbox>Require Admin Approval</Checkbox>
+              <Checkbox checked={signups?.needAdminConfirm}>
+                Require Admin Approval
+              </Checkbox>
             </FormItem>
             <FormItem control={control} name="signups.isCamp">
-              <Checkbox>Include Drivers and Dietary Forms</Checkbox>
+              <Checkbox checked={signups?.isCamp}>
+                Include Drivers and Dietary Forms
+              </Checkbox>
             </FormItem>
             <FormItem control={control} name="signups.openToNonMembers">
-              <Checkbox>Open to Non-Members</Checkbox>
+              <Checkbox checked={signups?.openToNonMembers}>
+                Open to Non-Members
+              </Checkbox>
             </FormItem>
           </div>
         )}
-        <div className="flex gap-x-2.5">
+        <div className="flex gap-x-2.5 mt-4">
           <Button htmlType="submit" type="primary" loading={isSubmitting}>
             Submit Event
           </Button>
@@ -215,5 +192,44 @@ export default function CreateEvent() {
         </div>
       </Form>
     </div>
+  )
+}
+
+function TimestampInput({
+  name,
+  control,
+  label,
+}: UseControllerProps<Event, 'date' | 'signups.opens' | 'signups.closes'> & {
+  label: string
+}) {
+  return (
+    <>
+      <label htmlFor={name} className="mb-2 block">
+        {label}
+      </label>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState: { error } }) => (
+          <>
+            <Input
+              id={name}
+              type="datetime-local"
+              value={field.value?.toDate()?.toISOString().slice(0, -1)}
+              className={cn(
+                'relative [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:size-full',
+                error && '!border-red-500'
+              )}
+              onChange={(e) =>
+                field.onChange(
+                  Timestamp.fromDate(new Date(e.target.value + 'Z'))
+                )
+              }
+            />
+            <div className="text-red-500 !mb-4">{error?.message}</div>
+          </>
+        )}
+      />
+    </>
   )
 }

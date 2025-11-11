@@ -1,5 +1,4 @@
-import { useConfig } from '@/context/ClubConfigProvider'
-import { useUpdateConfig } from '@/services/config'
+import { useConfig, useUpdateConfig } from '@/services/config'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, InputNumber, List, Radio, Spin, Switch } from 'antd'
 import { Controller, useForm } from 'react-hook-form'
@@ -18,7 +17,7 @@ const clubConfigSchema = z.object({
 type ClubConfigForm = z.infer<typeof clubConfigSchema>
 
 export default function ClubSettings() {
-  const clubConfig = useConfig()
+  const { data: clubConfig } = useConfig()
 
   const {
     control,

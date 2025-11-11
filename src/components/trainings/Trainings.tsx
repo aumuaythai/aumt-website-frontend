@@ -1,13 +1,13 @@
-import { useOpenTrainings, useTrainings } from '@/services/trainings'
+import { useAuth } from '@/context/use-auth'
+import { useConfig } from '@/services/config'
+import { useOpenTrainings } from '@/services/trainings'
 import { Divider, Spin } from 'antd'
 import { Link } from 'react-router'
-import { useAuth } from '../../context/AuthProvider'
-import { useConfig } from '../../context/ClubConfigProvider'
 import TrainingForm from './TrainingForm'
 
 export default function Trainings() {
   const auth = useAuth()
-  const clubConfig = useConfig()
+  const { data: clubConfig } = useConfig()
   const { data: trainings, isPending: isLoadingTrainings } = useOpenTrainings()
 
   const user = auth?.user

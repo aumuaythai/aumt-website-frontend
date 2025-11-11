@@ -1,9 +1,9 @@
-import { useConfig } from '@/context/ClubConfigProvider'
+import { useConfig } from '@/services/config'
 import { Button, Divider } from 'antd'
 import { Links } from '../../services/links'
 
 export default function Faq() {
-  const clubConfig = useConfig()
+  const { data: clubConfig } = useConfig()
 
   return (
     <div className="text-left max-w-[1000px] mx-auto px-2.5 pb-[100px]">

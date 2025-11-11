@@ -1,6 +1,6 @@
+import { useAuth } from '@/context/use-auth'
 import { cn } from '@/lib/utils'
 import { NavLink, Outlet } from 'react-router'
-import { useAuth } from '../../context/AuthProvider'
 
 export default function AdminLayout() {
   const auth = useAuth()

@@ -1,13 +1,12 @@
 import eventsImg from '@/assets/photos/Events_Coloured.jpg'
 import landingImg from '@/assets/photos/Landing_Coloured.jpg'
 import trainingsImg from '@/assets/photos/Trainings_Coloured.jpg'
-import { Button } from 'antd'
+import { useConfig } from '@/services/config'
 import { Link } from 'react-router'
-import { useConfig } from '../../context/ClubConfigProvider'
 import { Links } from '../../services/links'
 
 export default function About() {
-  const clubConfig = useConfig()
+  const { data: clubConfig } = useConfig()
   const semesterFee = clubConfig?.semesterOneFee
   const fullYearFee = clubConfig?.fullYearFee
 

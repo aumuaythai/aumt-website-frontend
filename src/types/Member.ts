@@ -88,3 +88,8 @@ export type Member = z.infer<typeof memberSchema>
 export interface AumtMembersObj {
   [uid: string]: Member
 }
+
+export type User = Member & {
+  id: string
+  isAdmin: boolean | undefined
+}

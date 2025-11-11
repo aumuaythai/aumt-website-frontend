@@ -1,6 +1,6 @@
 import PaymentInstructions from '@/components/utility/PaymentInstructions'
-import { useAuth } from '@/context/AuthProvider'
-import { useConfig } from '@/context/ClubConfigProvider'
+import { useAuth } from '@/context/use-auth'
+import { useConfig } from '@/services/config'
 import { useUpdateMember } from '@/services/members'
 import { Member } from '@/types'
 import {
@@ -121,7 +121,7 @@ type SectionProps = {
 
 function MembershipSection({ saving, control, onSave }: SectionProps) {
   const auth = useAuth()
-  const clubConfig = useConfig()
+  const { data: clubConfig } = useConfig()
   const [editing, setEditing] = useState(false)
 
   const user = auth?.user

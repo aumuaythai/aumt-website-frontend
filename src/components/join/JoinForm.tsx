@@ -1,5 +1,5 @@
 import PaymentInstructions from '@/components/utility/PaymentInstructions'
-import { useConfig } from '@/context/ClubConfigProvider'
+import { useConfig } from '@/services/config'
 import { useCreateMember } from '@/services/members'
 import { Member } from '@/types'
 import { ETHNICITIES, memberSchema } from '@/types/Member'
@@ -38,7 +38,7 @@ const joinSchema = memberSchema
 type JoinForm = z.infer<typeof joinSchema>
 
 export default function JoinForm() {
-  const clubConfig = useConfig()
+  const { data: clubConfig } = useConfig()
   const createMember = useCreateMember()
 
   const {

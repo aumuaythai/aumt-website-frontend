@@ -30,7 +30,7 @@ export default function ManageEvents() {
       <div className="flex justify-between">
         <h1 className="text-2xl">Manage Events</h1>
         <Link to="/admin/events/create">
-          <Button type="primary" shape="round" icon={<PlusOutlined />}>
+          <Button type="primary" ghost icon={<PlusOutlined />}>
             Create Event
           </Button>
         </Link>

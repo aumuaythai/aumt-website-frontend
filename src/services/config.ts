@@ -16,12 +16,10 @@ async function updateConfig(config: ClubConfig): Promise<void> {
 }
 
 export function useConfig() {
-  const query = useQuery({
+  return useQuery({
     queryKey: ['config'],
     queryFn: getConfig,
   })
-
-  return query
 }
 
 export function useUpdateConfig() {

@@ -1,6 +1,6 @@
 import PaymentInstructions from '@/components/utility/PaymentInstructions'
-import { useAuth } from '@/context/AuthProvider'
-import { useConfig } from '@/context/ClubConfigProvider'
+import { useAuth } from '@/context/use-auth'
+import { useConfig } from '@/services/config'
 import { CheckCircleFilled } from '@ant-design/icons'
 import { Spin } from 'antd'
 import { Link } from 'react-router'
@@ -8,7 +8,7 @@ import JoinForm from './JoinForm'
 
 export default function Join() {
   const auth = useAuth()
-  const clubConfig = useConfig()
+  const { data: clubConfig } = useConfig()
 
   const user = auth?.user
 
