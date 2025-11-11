@@ -1,3 +1,4 @@
+import '@ant-design/v5-patch-for-react-19'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConfigProvider, Spin } from 'antd'
 import { Suspense, useEffect } from 'react'
@@ -24,9 +25,6 @@ import Join from './components/join/Join'
 import LoginForm from './components/login/LoginForm'
 import Trainings from './components/trainings/Trainings'
 import AuthProvider from './context/AuthProvider'
-
-// @ts-expect-error no types for this package
-import '@ant-design/v5-patch-for-react-19'
 
 const queryClient = new QueryClient()
 
