@@ -1,9 +1,21 @@
-export interface ClubConfig {
-    clubSignupStatus: 'open' | 'closed'
-    clubSignupSem: 'S1' | 'S2' | 'SS'
-    summerSchoolFee: number
-    semesterOneFee: number
-    semesterTwoFee: number
-    fullYearFee: number
-    bankAccountNumber: string
-}
+import z from 'zod'
+import { timestampSchema } from './util'
+
+export const clubConfigSchema = z.object({
+  summerSchoolFee: z.number().positive(),
+  semesterOneFee: z.number().positive(),
+  semesterTwoFee: z.number().positive(),
+  fullYearFee: z.number().positive(),
+  clubSignupSem: z.enum(['S1', 'S2', 'SS']),
+  clubSignupStatus: z.enum(['open', 'closed']),
+  bankAccountNumber: z.string().min(1),
+  schedule: z.array(
+    z.object({
+      name: z.string().min(1),
+    })
+  ),
+  semesterOneDate: timestampSchema,
+  semesterTwoDate: timestampSchema,
+})
+
+export type ClubConfig = z.infer<typeof clubConfigSchema>

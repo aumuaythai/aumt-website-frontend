@@ -1,13 +1,5 @@
-import { isValidMoment } from '@/lib/utils'
-import { Timestamp } from 'firebase/firestore'
-import moment, { Moment } from 'moment'
 import z from 'zod'
-
-const momentSchema = z.custom<Moment>((date) => isValidMoment(date))
-const timestampSchema = z.custom<Timestamp>(
-  (timestamp) => timestamp instanceof Timestamp,
-  'Invalid timestamp'
-)
+import { timestampSchema } from './util'
 
 export interface AumtCampSignupData {
   name?: string
