@@ -28,8 +28,8 @@ export default function Trainings() {
         <p className="mt-4">The current training schedule is:</p>
         <ul className="list-none mt-4">
           {clubConfig.schedule.map((training) => (
-            <li key={training.name}>
-              <span className="font-medium">{training.name}</span>
+            <li key={training.title}>
+              <span className="font-medium">{training.title}</span>
             </li>
           ))}
         </ul>

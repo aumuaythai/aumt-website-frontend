@@ -144,10 +144,21 @@ export default function ClubSettings() {
             <div className="flex gap-x-2 w-full">
               <Controller
                 control={control}
-                name={`schedule.${index}.name`}
+                name={`schedule.${index}.title`}
                 render={({ field: { value, onChange } }) => (
                   <Input
                     placeholder="Training name"
+                    value={value}
+                    onChange={onChange}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name={`schedule.${index}.limit`}
+                render={({ field: { value, onChange } }) => (
+                  <InputNumber
+                    placeholder="Limit"
                     value={value}
                     onChange={onChange}
                   />
@@ -166,7 +177,7 @@ export default function ClubSettings() {
           <Button
             icon={<PlusCircleOutlined />}
             className="block"
-            onClick={() => append({ name: '' })}
+            onClick={() => append({ title: '', limit: 40 })}
           >
             Add Training
           </Button>
@@ -181,7 +192,7 @@ export default function ClubSettings() {
             target="_blank"
             className="flex items-center gap-x-2 !text-black"
           >
-            <h2>Semester Dates </h2>
+            <h2>Semester Dates</h2>
             <ExternalLink className="size-3.5" />
           </a>
         }

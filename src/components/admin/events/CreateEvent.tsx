@@ -1,5 +1,5 @@
+import TimestampInput from '@/components/ui/timestamp-input'
 import MarkdownEditor from '@/components/utility/MarkdownEditor'
-import { cn } from '@/lib/utils'
 import { useCreateEvent, useEvent, useUpdateEvent } from '@/services/events'
 import type { Event } from '@/types'
 import { eventSchema, EventSignups } from '@/types'
@@ -16,12 +16,7 @@ import {
 } from 'antd'
 import { Timestamp } from 'firebase/firestore'
 import { useRef } from 'react'
-import {
-  Controller,
-  FieldErrors,
-  UseControllerProps,
-  useForm,
-} from 'react-hook-form'
+import { FieldErrors, useForm } from 'react-hook-form'
 import { FormItem } from 'react-hook-form-antd'
 import { Link, useNavigate, useParams } from 'react-router'
 
@@ -192,44 +187,5 @@ export default function CreateEvent() {
         </div>
       </Form>
     </div>
-  )
-}
-
-function TimestampInput({
-  name,
-  control,
-  label,
-}: UseControllerProps<Event, 'date' | 'signups.opens' | 'signups.closes'> & {
-  label: string
-}) {
-  return (
-    <>
-      <label htmlFor={name} className="mb-2 block">
-        {label}
-      </label>
-      <Controller
-        name={name}
-        control={control}
-        render={({ field, fieldState: { error } }) => (
-          <>
-            <Input
-              id={name}
-              type="datetime-local"
-              value={field.value?.toDate()?.toISOString().slice(0, -1)}
-              className={cn(
-                'relative [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:size-full',
-                error && '!border-red-500'
-              )}
-              onChange={(e) =>
-                field.onChange(
-                  Timestamp.fromDate(new Date(e.target.value + 'Z'))
-                )
-              }
-            />
-            <div className="text-red-500 !mb-4">{error?.message}</div>
-          </>
-        )}
-      />
-    </>
   )
 }

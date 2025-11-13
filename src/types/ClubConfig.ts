@@ -11,7 +11,8 @@ export const clubConfigSchema = z.object({
   bankAccountNumber: z.string().min(1),
   schedule: z.array(
     z.object({
-      name: z.string().min(1),
+      title: z.string().min(1),
+      limit: z.number().positive(),
     })
   ),
   semesterOneDate: timestampSchema,
