@@ -7,7 +7,7 @@ import {
   ETHNICITIES,
   memberSchema,
   MEMBERSHIP_PERIOD_LONG,
-} from '@/types/Member'
+} from '@/types/member'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
 import { ReactNode, useState } from 'react'

@@ -1,34 +1,6 @@
 import z from 'zod'
 import { timestampSchema } from './util'
 
-export interface AumtCampSignupData {
-  name?: string
-  email?: string
-  phoneNumber?: string
-  ecName?: string
-  ecPhoneNumber?: string
-  ecRelation?: string
-  dietaryRequirements?: string
-  daysStaying?: string
-  medicalInfo?: string
-  hasFirstAid?: boolean
-  driverLicenseClass?: LicenseClasses
-  insuranceDescription?: string
-  carModel?: string
-  seatsInCar?: number
-}
-
-export type TableRow = EventSignup & {
-  key: string
-  displayTime: string
-}
-
-export type LicenseClasses =
-  | 'Full 2+ years'
-  | 'Full < 2 years'
-  | 'Restricted'
-  | 'Other'
-
 export const eventSignupSchema = z.object({
   displayName: z
     .string('Display name is invalid')

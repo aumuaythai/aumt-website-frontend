@@ -1,9 +1,9 @@
 import eventsImg from '@/assets/photos/Events_Coloured.jpg'
 import landingImg from '@/assets/photos/Landing_Coloured.jpg'
 import trainingsImg from '@/assets/photos/Trainings_Coloured.jpg'
+import { LINKS } from '@/lib/links'
 import { useConfig } from '@/services/config'
 import { Link } from 'react-router'
-import { Links } from '../../services/links'
 
 export default function About() {
   const { data: clubConfig } = useConfig()
@@ -185,26 +185,18 @@ export default function About() {
             <h3 className="text-2xl">WANT TO KNOW MORE?</h3>
             <p className="mt-4">
               Check out our <Link to="/faq">FAQ page</Link>, get in touch
-              through
+              through{' '}
               <a href="mailto:uoamuaythai@gmail.com" className="text-blue-600">
-                {' '}
-                uoamuaythai@gmail.com{' '}
-              </a>
-              or&nbsp;
-              <button
-                className="text-blue-600 cursor-pointer"
-                onClick={Links.openAumtInsta}
+                uoamuaythai@gmail.com
+              </a>{' '}
+              or{' '}
+              <a
+                href={LINKS.instagram}
+                target="_blank"
+                className="text-blue-600"
               >
                 Instagram
-              </button>
-              /
-              <button
-                className="text-blue-600 cursor-pointer"
-                onClick={Links.openAumtFb}
-              >
-                Facebook
-              </button>
-              .
+              </a>
             </p>
           </div>
         </section>

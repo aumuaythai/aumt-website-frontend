@@ -1,6 +1,6 @@
+import { LINKS } from '@/lib/links'
 import { useConfig } from '@/services/config'
-import { Button, Divider } from 'antd'
-import { Links } from '../../services/links'
+import { Divider } from 'antd'
 
 export default function Faq() {
   const { data: clubConfig } = useConfig()
@@ -82,27 +82,18 @@ export default function Faq() {
       <div className="mt-5 text-center">
         <h2>Have more questions?</h2>
         <p>
-          Get in touch through
+          Get in touch through{' '}
           <a href="mailto:uoamuaythai@gmail.com" className="!text-[#11388d]">
-            {' '}
-            uoamuaythai@gmail.com{' '}
-          </a>
-          or&nbsp;
-          <Button
+            uoamuaythai@gmail.com
+          </a>{' '}
+          or{' '}
+          <a
+            href={LINKS.instagram}
+            target="_blank"
             className="!text-[#11388d] !p-0 m-0"
-            type="link"
-            onClick={Links.openAumtFb}
-          >
-            Facebook{' '}
-          </Button>
-          /
-          <Button
-            className="!text-[#11388d] !p-0 m-0"
-            type="link"
-            onClick={Links.openAumtInsta}
           >
             Instagram
-          </Button>
+          </a>
           .
         </p>
       </div>

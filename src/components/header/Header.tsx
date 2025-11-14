@@ -1,14 +1,12 @@
 import { useAuth } from '@/context/use-auth'
+import { LINKS } from '@/lib/links'
 import { cn } from '@/lib/utils'
-import FacebookFilled from '@ant-design/icons/FacebookFilled'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import * as Dialog from '@radix-ui/react-dialog'
-import * as Popover from '@radix-ui/react-popover'
 import { Button } from 'antd'
-import { Hamburger, Menu, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Menu, X } from 'lucide-react'
+import { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
-import { Links } from '../../services/links'
 import Logo from '../svg/Logo'
 import UserInfo from './UserInfo'
 
@@ -27,14 +25,6 @@ export default function Header() {
 
   if (auth?.user?.isAdmin) {
     navItems.push({ label: 'Admin', to: '/admin' })
-  }
-
-  const fbClick = () => {
-    Links.openAumtFb()
-  }
-
-  const igClick = () => {
-    Links.openAumtInsta()
   }
 
   return (
@@ -60,18 +50,13 @@ export default function Header() {
           </div>
         )}
         <div className="flex text-lg text-black gap-x-2.5">
-          <button
-            onClick={fbClick}
-            className="cursor-pointer hover:text-gray-500"
-          >
-            <FacebookFilled />
-          </button>
-          <button
-            onClick={igClick}
+          <a
+            href={LINKS.instagram}
+            target="_blank"
             className="cursor-pointer hover:text-gray-500"
           >
             <InstagramFilled />
-          </button>
+          </a>
         </div>
       </div>
     </header>

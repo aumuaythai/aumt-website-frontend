@@ -2,7 +2,7 @@ import PaymentInstructions from '@/components/utility/PaymentInstructions'
 import { useConfig } from '@/services/config'
 import { useCreateMember } from '@/services/members'
 import { Member } from '@/types'
-import { ETHNICITIES, memberSchema } from '@/types/Member'
+import { ETHNICITIES, memberSchema } from '@/types/member'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
