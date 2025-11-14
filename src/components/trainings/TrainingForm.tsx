@@ -7,7 +7,7 @@ import { CheckboxOptionType } from 'antd/lib/checkbox'
 import { FieldErrors, useForm } from 'react-hook-form'
 import { FormItem } from 'react-hook-form-antd'
 import z from 'zod'
-import { RenderMarkdown } from '../utility/RenderMarkdown'
+import { RenderMarkdown } from '../util/RenderMarkdown'
 
 export interface TrainingForm {
   training: TrainingWithId

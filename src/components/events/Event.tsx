@@ -12,10 +12,9 @@ import {
   HomeOutlined,
 } from '@ant-design/icons'
 import { Button, Divider, Result, Spin } from 'antd'
-import moment from 'moment'
 import { Link, useParams } from 'react-router'
 import { Event } from '../../types'
-import { RenderMarkdown } from '../utility/RenderMarkdown'
+import { RenderMarkdown } from '../util/RenderMarkdown'
 import EventSignupForm from './EventSignupForm'
 
 export default function Event() {
@@ -133,7 +132,7 @@ function Signups({ eventId, event }: { eventId: string; event: Event }) {
 
   if (signups.opens?.seconds * 1000 > Date.now()) {
     return (
-      <div>Signups will open {moment(signups.opens).format('MMMM Do')}</div>
+      <div>Signups will open {signups.opens.toDate().toLocaleDateString()}</div>
     )
   }
 

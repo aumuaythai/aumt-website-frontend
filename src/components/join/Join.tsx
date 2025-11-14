@@ -1,4 +1,4 @@
-import PaymentInstructions from '@/components/utility/PaymentInstructions'
+import PaymentInstructions from '@/components/util/PaymentInstructions'
 import { useAuth } from '@/context/use-auth'
 import { useConfig } from '@/services/config'
 import { CheckCircleFilled } from '@ant-design/icons'

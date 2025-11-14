@@ -1,4 +1,4 @@
-import PaymentInstructions from '@/components/utility/PaymentInstructions'
+import PaymentInstructions from '@/components/util/PaymentInstructions'
 import { useConfig } from '@/services/config'
 import { useCreateMember } from '@/services/members'
 import { Member } from '@/types'

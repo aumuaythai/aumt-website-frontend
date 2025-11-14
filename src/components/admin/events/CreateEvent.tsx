@@ -1,5 +1,5 @@
 import TimestampInput from '@/components/ui/timestamp-input'
-import MarkdownEditor from '@/components/utility/MarkdownEditor'
+import MarkdownEditor from '@/components/util/MarkdownEditor'
 import { useCreateEvent, useEvent, useUpdateEvent } from '@/services/events'
 import type { Event } from '@/types'
 import { eventSchema, EventSignups } from '@/types'

@@ -1,7 +1,7 @@
 import { EventWithId } from '@/services/events'
 import { Divider } from 'antd'
 import { Link } from 'react-router'
-import { RenderMarkdown } from '../utility/RenderMarkdown'
+import { RenderMarkdown } from '../util/RenderMarkdown'
 
 interface EventListProps {
   events: EventWithId[]
