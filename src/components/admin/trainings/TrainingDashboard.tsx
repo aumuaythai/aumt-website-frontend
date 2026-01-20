@@ -50,7 +50,7 @@ export default function TrainingDashboard() {
   return (
     <div className="p-4 flex-1 w-full">
       <div className="flex flex-col-reverse lg:flex-row gap-y-2 lg:gap-y-0 items-center justify-between">
-        <div className="flex items-center gap-x-2 w-full">
+        <div className="flex flex-col md:flex-row items-center w-full gap-y-2 md:gap-x-2 md:gap-y-0">
           <Select
             value={selectedTrainingId}
             options={sortedTrainings.map((training) => ({
@@ -61,23 +61,30 @@ export default function TrainingDashboard() {
             onChange={(value) => handleTrainingClick(value as string)}
           />
           {selectedTraining && (
-            <>
-              <Link to={`/admin/trainings/${selectedTraining.id}`}>
-                <Button>Edit</Button>
+            <div className="flex w-full md:w-auto gap-x-2">
+              <Link
+                to={`/admin/trainings/${selectedTraining.id}`}
+                className="w-full"
+              >
+                <Button className="w-full">Edit</Button>
               </Link>
               <Button
+                className="w-full"
                 danger
                 loading={removeTraining.isPending}
                 onClick={handleRemoveTraining}
               >
                 Remove
               </Button>
-              <Link to={`/admin/trainings/${selectedTraining.id}/attendance`}>
-                <Button type="primary" ghost>
+              <Link
+                to={`/admin/trainings/${selectedTraining.id}/attendance`}
+                className="w-full md:w-auto"
+              >
+                <Button type="primary" ghost className="w-full">
                   Attendance
                 </Button>
               </Link>
-            </>
+            </div>
           )}
         </div>
 

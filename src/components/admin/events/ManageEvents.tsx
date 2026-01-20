@@ -26,7 +26,7 @@ export default function ManageEvents() {
   const sortedEvents = events.slice().sort((a, b) => (a.date > b.date ? -1 : 1))
 
   return (
-    <div className="max-w-2xl mx-auto pt-8">
+    <div className="max-w-2xl mx-auto p-4 md:pt-8">
       <div className="flex justify-between">
         <h1 className="text-2xl">Manage Events</h1>
         <Link to="/admin/events/create">

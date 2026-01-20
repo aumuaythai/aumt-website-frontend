@@ -60,7 +60,7 @@ export default function ClubSettings() {
   }
 
   return (
-    <div className="text-left mx-auto pb-10 w-full max-w-2xl pt-8 flex flex-col gap-y-5">
+    <div className="text-left mx-auto pb-10 w-full max-w-2xl p-4 md:pt-8 flex flex-col gap-y-5">
       <h1 className="text-2xl">Club Settings</h1>
 
       <List bordered header={<h2>Memberhip Prices ($)</h2>}>
