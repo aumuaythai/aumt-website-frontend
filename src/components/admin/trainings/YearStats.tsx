@@ -1,4 +1,7 @@
+import { useMemo } from 'react'
 import {
+  CartesianGrid,
+  Label,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -13,32 +16,40 @@ interface YearStatsProps {
 }
 
 export default function YearStats({ trainings }: YearStatsProps) {
-  const now = new Date()
-  const graphData = trainings
-    .filter((t) => t.opens < now)
-    .map((t) => {
-      const total = Object.values(t.sessions).reduce((sum, cur) => {
-        return sum + Object.keys(cur.members).length
-      }, 0)
-      return {
-        week: t.title,
-        total,
-      }
-    })
+  const graphData = useMemo(() => {
+    const now = Date.now()
+    return trainings
+      .filter((t) => t.opens.toMillis() < now)
+      .map((t) => {
+        const total = Object.values(t.sessions).reduce((sum, cur) => {
+          return sum + Object.keys(cur.members).length
+        }, 0)
+        return {
+          week: t.title,
+          total,
+        }
+      })
+  }, [trainings])
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart data={graphData}>
-        <XAxis
-          dataKey="week"
-          tickFormatter={(tick) => tick.substring(0, 6)}
-          domain={['auto', 'auto']}
-          name="Week"
-        />
-        <Tooltip />
-        <YAxis />
-        <Line dataKey="total" />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="overflow-hidden [&_.recharts-surface]:outline-none">
+      <ResponsiveContainer width="100%" height={400}>
+        <LineChart data={graphData} margin={{ top: 10, right: 10, left: 10 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="week" tick={false}>
+            <Label value="Week" position="insideBottom" />
+          </XAxis>
+          <YAxis>
+            <Label value="Total" angle={-90} position="insideLeft" />
+          </YAxis>
+          <Tooltip
+            animationDuration={150}
+            wrapperStyle={{ pointerEvents: 'none', zIndex: 1000 }}
+            allowEscapeViewBox={{ x: false, y: false }}
+          />
+          <Line dataKey="total" animationDuration={300} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   )
 }

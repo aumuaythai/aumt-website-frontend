@@ -100,7 +100,7 @@ export default function TrainingDashboard() {
 
         <div className="mt-8 w-full">
           <h2 className="text-xl">Yearly Stats</h2>
-          {/* <YearStats trainings={sortedTrainings.slice().reverse()} /> */}
+          <YearStats trainings={sortedTrainings.slice().reverse()} />
         </div>
       </div>
     </div>
