@@ -98,11 +98,10 @@ export async function updateMemberSessions(
   const training = snapshot.data() as Training
 
   const sessions = training.sessions
-  Object.values(sessions).forEach((session) => {
-    if (sessionIds.includes(session.sessionId) && !session.members[userId]) {
+  sessions.forEach((session) => {
+    if (!session.members[userId]) {
       session.members[userId] = {
         name: displayName,
-        timeAdded: new Date(),
       }
     } else {
       delete session.members[userId]

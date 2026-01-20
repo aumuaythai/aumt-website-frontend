@@ -25,6 +25,15 @@ async function getMembers() {
   return snapshot.docs.map((doc) => doc.data() as Member)
 }
 
+async function getMembersWithUids() {
+  const snapshot = await getDocs(members)
+  const result: Record<string, Member> = {}
+  for (const doc of snapshot.docs) {
+    result[doc.id] = doc.data() as Member
+  }
+  return result
+}
+
 async function createMember(member: Member, password: string) {
   const user = await createUserWithEmailAndPassword(
     auth,
@@ -59,6 +68,15 @@ export function useMembers() {
   const query = useQuery({
     queryKey: ['members'],
     queryFn: getMembers,
+  })
+
+  return query
+}
+
+export function useMembersWithUids() {
+  const query = useQuery({
+    queryKey: ['membersWithUids'],
+    queryFn: getMembersWithUids,
   })
 
   return query

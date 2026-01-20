@@ -12,7 +12,7 @@ export default function Feedback() {
     )
   }
 
-  const sortedForms = trainings.slice().sort((a, b) => {
+  const sortedTrainings = trainings.slice().sort((a, b) => {
     return a.closes < b.closes ? 1 : -1
   })
 
@@ -21,11 +21,11 @@ export default function Feedback() {
       <h1 className="text-2xl">Feedback</h1>
 
       <ul className="mt-6">
-        {sortedForms.map((form) => {
-          const feedback = form.feedback.reverse()
+        {sortedTrainings.map((training) => {
+          const feedback = training.feedback?.reverse() ?? []
           return (
-            <div key={form.id}>
-              <h3 className="text-base">{form.title}</h3>
+            <div key={training.id}>
+              <h3 className="text-base">{training.title}</h3>
               {feedback.length ? (
                 feedback.map((line, index) => {
                   return <p key={index}>{line}</p>

@@ -21,8 +21,8 @@ export default function TrainingForm({ training }: TrainingForm) {
     sessions: z
       .array(z.string())
       .max(
-        training.signupMaxSessions,
-        'You can only select up to ${props.signupMaxSessions} sessions'
+        training.maxSessions,
+        `You can only select up to ${training.maxSessions} sessions`
       ),
     feedback: z.string().optional(),
   })
@@ -66,27 +66,22 @@ export default function TrainingForm({ training }: TrainingForm) {
   }
 
   const sessions = watch('sessions')
-  const options: CheckboxOptionType[] = Object.values(training.sessions)
-    .sort((a, b) => a.position - b.position)
-    .map((session) => {
-      const isFull = session.limit <= Object.keys(session.members).length
-      const spotsLeft = Math.max(
-        0,
-        session.limit - Object.keys(session.members).length
-      )
-      const isDisabled =
-        isFull ||
-        (!sessions.includes(session.sessionId) &&
-          sessions.length >= training.signupMaxSessions)
+  const options: CheckboxOptionType[] = training.sessions.map((session) => {
+    const isFull = session.limit <= Object.keys(session.members).length
+    const spotsLeft = Math.max(
+      0,
+      session.limit - Object.keys(session.members).length
+    )
+    const isDisabled = isFull || sessions.length >= training.maxSessions
 
-      return {
-        label: session.title,
-        value: session.sessionId,
-        disabled: isDisabled,
-        className:
-          '!p-4 bg-gray-100 border border-gray-200 hover:border-gray-300 transition-colors',
-      }
-    })
+    return {
+      label: session.title,
+      value: session.title,
+      disabled: isDisabled,
+      className:
+        '!p-4 bg-gray-100 border border-gray-200 hover:border-gray-300 transition-colors',
+    }
+  })
 
   const isMutating = updateMemberSessions.isPending
 

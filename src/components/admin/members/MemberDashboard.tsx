@@ -1,6 +1,6 @@
 import { getDisplayName } from '@/lib/utils'
-import { useMembers } from '@/services/members'
-import { PlusOutlined } from '@ant-design/icons'
+import { useMembersWithUids } from '@/services/members'
+import { DownloadOutlined, PlusOutlined } from '@ant-design/icons'
 import { Button, Input, Modal, Spin, Table } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import { useState } from 'react'
@@ -16,7 +16,7 @@ export default function MemberDashboard() {
     null
   )
   const [search, setSearch] = useState('')
-  const { data: members, isPending: isLoadingMembers } = useMembers()
+  const { data: members, isPending: isLoadingMembers } = useMembersWithUids()
 
   if (isLoadingMembers) {
     return (
@@ -45,6 +45,67 @@ export default function MemberDashboard() {
         tableName: name,
       })
     })
+  }
+
+  const exportToCsv = () => {
+    if (!members) return
+
+    const memberEntries = Object.entries(members)
+    if (memberEntries.length === 0) return
+
+    // Define consistent column order
+    const memberKeys: (keyof Member)[] = [
+      'firstName',
+      'lastName',
+      'preferredName',
+      'email',
+      'ethnicity',
+      'gender',
+      'membership',
+      'paymentType',
+      'isReturningMember',
+      'paid',
+      'timeJoinedMs',
+      'upi',
+      'studentId',
+      'isUoAStudent',
+      'initialExperience',
+      'notes',
+      'emergencyContactName',
+      'emergencyContactNumber',
+      'emergencyContactRelationship',
+    ]
+    const headers = ['uid', ...memberKeys]
+
+    // Build CSV rows
+    const csvRows: string[] = []
+    csvRows.push(headers.join(','))
+
+    for (const [uid, member] of memberEntries) {
+      const values: string[] = [`"${uid}"`]
+
+      for (const key of memberKeys) {
+        const value = member[key]
+        if (value === null || value === undefined) {
+          values.push('')
+        } else if (typeof value === 'boolean') {
+          values.push(value ? 'Yes' : 'No')
+        } else {
+          values.push(`"${String(value).replace(/"/g, '""')}"`)
+        }
+      }
+
+      csvRows.push(values.join(','))
+    }
+
+    // Download the CSV
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `members-${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
   }
 
   const columns: TableColumn[] = [
@@ -89,11 +150,16 @@ export default function MemberDashboard() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <Link to="/admin/members/add">
-          <Button type="primary" icon={<PlusOutlined />}>
-            Add Member
+        <div className="flex gap-2">
+          <Button icon={<DownloadOutlined />} onClick={exportToCsv}>
+            Export CSV
           </Button>
-        </Link>
+          <Link to="/admin/members/add">
+            <Button type="primary" icon={<PlusOutlined />}>
+              Add Member
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <Table

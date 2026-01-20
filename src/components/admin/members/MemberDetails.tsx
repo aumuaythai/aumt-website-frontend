@@ -49,6 +49,7 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
   return (
     <div>
       <h1 className="text-xl">{member.tableName}</h1>
+      <span className="text-gray-400 text-xs">ID: {member.key}</span>
       <div className="flex flex-col gap-y-4 mt-4">
         <div className="flex flex-col gap-y-1">
           <h3>Contact</h3>

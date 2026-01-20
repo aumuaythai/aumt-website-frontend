@@ -42,7 +42,11 @@ export default function Header() {
         ) : (
           <div className="flex items-center gap-x-2">
             <Button type="text" className="!py-4 !font-joyride">
-              <Link to={`/login?from=${pathname}`}>Sign In</Link>
+              <Link
+                to={`/login?from=${pathname === '/login' ? '/' : pathname}`}
+              >
+                Sign In
+              </Link>
             </Button>
             <Button className="!py-4 !font-joyride">
               <Link to={`/join`}>Create account</Link>
