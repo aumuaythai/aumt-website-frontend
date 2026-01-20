@@ -2,8 +2,9 @@ import { useAuth } from '@/context/use-auth'
 import { LINKS } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
+import * as Collapsible from '@radix-ui/react-collapsible'
 import * as Dialog from '@radix-ui/react-dialog'
-import { Button } from 'antd'
+import { Button, Divider } from 'antd'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
@@ -22,10 +23,6 @@ export default function Header() {
     { label: 'Weekly Trainings', to: '/trainings' },
     { label: 'Events', to: '/events' },
   ]
-
-  if (auth?.user?.isAdmin) {
-    navItems.push({ label: 'Admin', to: '/admin' })
-  }
 
   return (
     <header className="w-full flex items-center justify-between px-5 font-[Joyride] border-b border-b-[#f0f0f0] h-[50px]">
@@ -76,7 +73,17 @@ function MobileMenu({
   setOpen: (open: boolean) => void
   navItems: { label: string; to: string }[]
 }) {
+  const auth = useAuth()
+
   const mobileNavItems = [...navItems]
+  const adminNavItems = [
+    { label: 'Trainings', to: '/admin' },
+    { label: 'Events', to: '/admin/events' },
+    { label: 'Members', to: '/admin/members' },
+    { label: 'Feedback', to: '/admin/feedback' },
+    { label: 'Settings', to: '/admin/settings' },
+  ]
+
   mobileNavItems.push({ label: 'Account', to: '/account' })
 
   return (
@@ -98,6 +105,7 @@ function MobileMenu({
               <NavLink
                 key={item.to}
                 to={item.to}
+                end
                 className={({ isActive }) =>
                   cn(
                     'font-joyride text-lg py-4 px-6 transition-colors',
@@ -111,6 +119,34 @@ function MobileMenu({
                 {item.label}
               </NavLink>
             ))}
+
+            {auth.user?.isAdmin && (
+              <>
+                <div className="mx-6 h-px mt-8 mb-4 bg-gray-300 flex items-center justify-center">
+                  <span className="bg-white px-2 font-joyride text-sm">
+                    Admin
+                  </span>
+                </div>
+                {adminNavItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end
+                    className={({ isActive }) =>
+                      cn(
+                        'font-joyride py-2.5 px-6 transition-colors',
+                        isActive
+                          ? 'text-blue-900 bg-blue-50'
+                          : 'hover:text-blue-900 hover:bg-blue-50'
+                      )
+                    }
+                    onClick={() => setOpen(false)}
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+              </>
+            )}
           </nav>
         </Dialog.Content>
       </Dialog.Portal>

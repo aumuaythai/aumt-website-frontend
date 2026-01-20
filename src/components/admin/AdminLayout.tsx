@@ -1,5 +1,20 @@
 import { useAuth } from '@/context/use-auth'
 import { cn } from '@/lib/utils'
+import { CalendarOutlined } from '@ant-design/icons'
+import {
+  BicepsFlexed,
+  Calendar,
+  CalendarDays,
+  Cog,
+  Dumbbell,
+  HandFist,
+  MessageCircle,
+  MessageSquare,
+  Settings,
+  User,
+  Users,
+} from 'lucide-react'
+import { ReactNode } from 'react'
 import { NavLink, Outlet } from 'react-router'
 
 export default function AdminLayout() {
@@ -17,17 +32,37 @@ export default function AdminLayout() {
   )
 }
 
-const navItems: { label: string; to: string }[] = [
-  { label: 'Trainings', to: '/admin' },
-  { label: 'Events', to: '/admin/events' },
-  { label: 'Members', to: '/admin/members' },
-  { label: 'Feedback', to: '/admin/feedback' },
-  { label: 'Settings', to: '/admin/settings' },
+const navItems: { label: string; icon: ReactNode; to: string }[] = [
+  {
+    label: 'Trainings',
+    icon: <Dumbbell className="size-4.5" />,
+    to: '/admin',
+  },
+  {
+    label: 'Events',
+    icon: <Calendar className="size-4.5" />,
+    to: '/admin/events',
+  },
+  {
+    label: 'Members',
+    icon: <Users className="size-4.5" />,
+    to: '/admin/members',
+  },
+  {
+    label: 'Feedback',
+    icon: <MessageSquare className="size-4.5" />,
+    to: '/admin/feedback',
+  },
+  {
+    label: 'Settings',
+    icon: <Settings className="size-4.5" />,
+    to: '/admin/settings',
+  },
 ]
 
 function NavMenu() {
   return (
-    <nav className="flex flex-col w-44 border-r border-r-gray-100">
+    <nav className="md:flex hidden flex-col w-44 border-r border-r-gray-100">
       {navItems.map((item) => (
         <NavLink
           key={item.to}
@@ -35,13 +70,14 @@ function NavMenu() {
           end
           className={({ isActive }) =>
             cn(
-              'transition-colors flex items-center font-joyride px-4 py-3 text-sm',
+              'transition-colors flex items-center gap-x-3 font-joyride px-4 py-3 text-sm',
               isActive
                 ? 'text-blue-900 bg-blue-50'
                 : 'hover:text-blue-900 hover:bg-blue-50'
             )
           }
         >
+          {item.icon}
           {item.label}
         </NavLink>
       ))}
