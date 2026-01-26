@@ -9,7 +9,7 @@ import { AuthContext } from './use-auth'
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null)
 
-  const { data: member, isLoading: isLoadingMember } = useMember(authUser?.uid)
+  const { data: member, isPending: isLoadingMember } = useMember(authUser?.uid)
   const { data: isAdmin, isPending: isLoadingAdmin } = useIsAdmin(authUser?.uid)
 
   useEffect(() => {

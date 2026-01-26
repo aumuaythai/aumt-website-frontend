@@ -12,6 +12,7 @@ import {
   Spin,
   Switch,
 } from 'antd'
+import { Timestamp } from 'firebase/firestore'
 import { ExternalLink, MinusCircle } from 'lucide-react'
 import {
   Controller,
@@ -207,7 +208,9 @@ export default function ClubSettings() {
                 type="date"
                 value={value?.toDate().toISOString().split('T')[0]}
                 className="!max-w-40"
-                onChange={(e) => onChange(new Date(e.target.value))}
+                onChange={(e) =>
+                  onChange(Timestamp.fromDate(new Date(e.target.value)))
+                }
               />
             )}
           />
@@ -222,7 +225,9 @@ export default function ClubSettings() {
                 type="date"
                 value={value?.toDate().toISOString().split('T')[0]}
                 className="!max-w-40"
-                onChange={(e) => onChange(new Date(e.target.value))}
+                onChange={(e) =>
+                  onChange(Timestamp.fromDate(new Date(e.target.value)))
+                }
               />
             )}
           />

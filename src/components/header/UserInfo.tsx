@@ -11,10 +11,6 @@ interface UserInfoProps {
 }
 
 export default function UserInfo(props: UserInfoProps) {
-  function handleSignOut() {
-    signOut()
-  }
-
   const items: ItemType[] = [
     {
       key: 'account',
@@ -46,6 +42,10 @@ export default function UserInfo(props: UserInfoProps) {
   ]
 
   const nameText = props.user.preferredName || props.user.firstName
+
+  function handleSignOut() {
+    signOut()
+  }
 
   return (
     <Dropdown

@@ -62,31 +62,31 @@ export default function Join() {
     )
   }
 
-  if (clubConfig.clubSignupStatus === 'closed') {
-    return (
-      <div className="p-6 text-center">
-        Signups are closed until the next semester starts. Follow us on
-        <a
-          href="https://www.instagram.com/aumuaythai/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500"
-        >
-          {' '}
-          Instagram{' '}
-        </a>
-        or
-        <a
-          href="https://www.facebook.com/aumuaythai/"
-          className="text-blue-500"
-        >
-          {' '}
-          Facebook{' '}
-        </a>
-        for announcements.
-      </div>
-    )
-  }
+  // if (clubConfig.clubSignupStatus === 'closed') {
+  //   return (
+  //     <div className="p-6 text-center">
+  //       Signups are closed until the next semester starts. Follow us on
+  //       <a
+  //         href="https://www.instagram.com/aumuaythai/"
+  //         target="_blank"
+  //         rel="noopener noreferrer"
+  //         className="text-blue-500"
+  //       >
+  //         {' '}
+  //         Instagram{' '}
+  //       </a>
+  //       or
+  //       <a
+  //         href="https://www.facebook.com/aumuaythai/"
+  //         className="text-blue-500"
+  //       >
+  //         {' '}
+  //         Facebook{' '}
+  //       </a>
+  //       for announcements.
+  //     </div>
+  //   )
+  // }
 
   return <JoinForm />
 }

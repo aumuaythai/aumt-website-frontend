@@ -45,11 +45,9 @@ export default function Account() {
     handleSubmit,
     formState: { isSubmitting: saving },
   } = useForm<Account>({
-    defaultValues: { ...user },
+    values: user || undefined,
     resolver: zodResolver(accountSchema),
   })
-
-  console.log(auth)
 
   if (auth?.isLoading) {
     return (
@@ -95,7 +93,12 @@ export default function Account() {
     >
       <h1 className="text-2xl font-bold">Account Settings</h1>
 
-      <MembershipSection saving={saving} control={control} onSave={onSave} />
+      <MembershipSection
+        saving={saving}
+        control={control}
+        onSave={onSave}
+        watch={watch}
+      />
       <PersonalSection saving={saving} control={control} onSave={onSave} />
       <UniversitySection
         saving={saving}
@@ -119,13 +122,14 @@ type SectionProps = {
   watch?: UseFormWatch<Account>
 }
 
-function MembershipSection({ saving, control, onSave }: SectionProps) {
+function MembershipSection({ saving, control, onSave, watch }: SectionProps) {
   const auth = useAuth()
   const { data: clubConfig } = useConfig()
   const [editing, setEditing] = useState(false)
 
   const user = auth?.user
   const clubSignupSem = clubConfig?.clubSignupSem
+  const paymentType = watch?.('paymentType')
 
   if (!user || !clubConfig) {
     return (
@@ -208,7 +212,7 @@ function MembershipSection({ saving, control, onSave }: SectionProps) {
         <List.Item>
           <PaymentInstructions
             membershipType={user.membership}
-            paymentType={user.paymentType}
+            paymentType={paymentType || user.paymentType}
             clubConfig={clubConfig}
           />
         </List.Item>
@@ -321,10 +325,10 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
               value={value}
               onChange={onChange}
             >
-              <Radio value={'Male'}>Male</Radio>
-              <Radio value={'Female'}>Female</Radio>
-              <Radio value={'Non-binary'}>Non-binary</Radio>
-              <Radio value={'Prefer not to say'}>Prefer not to say</Radio>
+              <Radio value="Male">Male</Radio>
+              <Radio value="Female">Female</Radio>
+              <Radio value="Non-binary">Non-binary</Radio>
+              <Radio value="Prefer not to say">Prefer not to say</Radio>
             </Radio.Group>
           )}
         />
@@ -368,8 +372,8 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
               buttonStyle="solid"
               onChange={onChange}
             >
-              <Radio.Button value="Yes">Yes</Radio.Button>
-              <Radio.Button value="No">No</Radio.Button>
+              <Radio.Button value={true}>Yes</Radio.Button>
+              <Radio.Button value={false}>No</Radio.Button>
             </Radio.Group>
           )}
         />
@@ -485,25 +489,26 @@ function AccountSection({
   editing: boolean
   children: ReactNode
   setEditing: (editing: boolean) => void
-  onSave: () => void
+  onSave: () => Promise<void>
 }) {
+  async function handleSave() {
+    await onSave()
+    setEditing(false)
+  }
+
   return (
     <List
-      header={title}
+      header={<h2 className="font-inter! font-bold">{title}</h2>}
       footer={
-        <div className="flex">
+        <div className="flex gap-x-2">
           {editing ? (
             <>
               <Button danger type="primary" onClick={() => setEditing(false)}>
                 Cancel
               </Button>
-              {saving ? (
-                <Spin />
-              ) : (
-                <Button type="primary" onClick={onSave}>
-                  Save
-                </Button>
-              )}
+              <Button type="primary" loading={saving} onClick={handleSave}>
+                Save
+              </Button>
             </>
           ) : (
             <Button type="primary" onClick={() => setEditing(true)}>

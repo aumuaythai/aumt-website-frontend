@@ -115,8 +115,8 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
             control={control}
             render={({ field: { value, onChange } }) => (
               <Radio.Group value={value} onChange={onChange}>
-                <Radio.Button value="Yes">Yes</Radio.Button>
-                <Radio.Button value="No">No</Radio.Button>
+                <Radio.Button value={true}>Yes</Radio.Button>
+                <Radio.Button value={false}>No</Radio.Button>
               </Radio.Group>
             )}
           />
@@ -138,8 +138,8 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
             control={control}
             render={({ field: { value, onChange } }) => (
               <Radio.Group value={value} onChange={onChange}>
-                <Radio.Button value="Yes">Yes</Radio.Button>
-                <Radio.Button value="No">No</Radio.Button>
+                <Radio.Button value={true}>Yes</Radio.Button>
+                <Radio.Button value={false}>No</Radio.Button>
               </Radio.Group>
             )}
           />
@@ -152,8 +152,8 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
             control={control}
             render={({ field: { value, onChange } }) => (
               <Radio.Group value={value} onChange={onChange}>
-                <Radio.Button value="Yes">Yes</Radio.Button>
-                <Radio.Button value="No">No</Radio.Button>
+                <Radio.Button value={true}>Yes</Radio.Button>
+                <Radio.Button value={false}>No</Radio.Button>
               </Radio.Group>
             )}
           />

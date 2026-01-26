@@ -24,6 +24,10 @@ export default function Header() {
     { label: 'Events', to: '/events' },
   ]
 
+  if (auth.user?.isAdmin) {
+    navItems.push({ label: 'Admin', to: '/admin' })
+  }
+
   return (
     <header className="w-full flex items-center justify-between px-5 font-[Joyride] border-b border-b-[#f0f0f0] h-[50px]">
       <Link to="/">
@@ -75,7 +79,8 @@ function MobileMenu({
 }) {
   const auth = useAuth()
 
-  const mobileNavItems = [...navItems]
+  const navItemsExceptAdmin = navItems.filter((item) => item.label !== 'Admin')
+  const mobileNavItems = [...navItemsExceptAdmin]
   const adminNavItems = [
     { label: 'Trainings', to: '/admin' },
     { label: 'Events', to: '/admin/events' },

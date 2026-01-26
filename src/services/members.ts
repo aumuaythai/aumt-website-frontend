@@ -61,6 +61,7 @@ export function useMember(userId?: string) {
     queryFn: () => getMember(userId!),
     enabled: !!userId,
   })
+
   return query
 }
 

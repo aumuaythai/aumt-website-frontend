@@ -57,13 +57,13 @@ export default function PaymentInstructions({
           we process your cash payment, you will unlock access to future
           trainings and signup by yourself. Membership is
           {membershipType === 'S1' &&
-            ` $${clubConfig?.semesterOneFee} for the semester or $${clubConfig?.fullYearFee} for the year `}
+            ` $${clubConfig?.semesterOneFee} for the semester or $${clubConfig?.fullYearFee} for the year`}
           {membershipType === 'FY' &&
-            ` $${clubConfig?.fullYearFee} for the year `}
+            ` $${clubConfig?.fullYearFee} for the year`}
           {membershipType === 'S2' &&
-            ` $${clubConfig?.semesterTwoFee} for the semester `}
+            ` $${clubConfig?.semesterTwoFee} for the semester`}
           {membershipType === 'SS' &&
-            ` $${clubConfig?.summerSchoolFee} for summer school `}
+            ` $${clubConfig?.summerSchoolFee} for summer school`}
           .
         </p>
       )}

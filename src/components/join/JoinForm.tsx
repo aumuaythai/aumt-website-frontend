@@ -51,8 +51,8 @@ export default function JoinForm() {
   })
 
   async function handleValid(data: JoinForm) {
-    const password = data.password
-    const member: Member = { ...data, paid: false }
+    const { password, disclaimer, ...memberData } = data
+    const member: Member = { ...memberData, paid: false }
 
     await createMember.mutateAsync({ member, password })
   }
@@ -145,7 +145,7 @@ export default function JoinForm() {
             <Input />
           </FormItem>
           <FormItem control={control} name="ethnicity" label="Ethnicity">
-            <Select>
+            <Select placeholder="Select your ethnicity">
               {ETHNICITIES.map((ethnicity) => (
                 <Select.Option value={ethnicity}>{ethnicity}</Select.Option>
               ))}
