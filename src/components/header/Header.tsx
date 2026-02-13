@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import InstagramFilled from '@ant-design/icons/InstagramFilled'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import * as Dialog from '@radix-ui/react-dialog'
-import { Button, Divider } from 'antd'
+import { Button, Divider, Spin } from 'antd'
 import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
@@ -38,7 +38,9 @@ export default function Header() {
       <MobileMenu open={open} setOpen={setOpen} navItems={navItems} />
 
       <div className="hidden md:flex items-center gap-x-3">
-        {auth.user ? (
+        {auth.isLoading ? (
+          <Spin indicator={<div className="w-4 h-4 bg-black rounded-full" />} />
+        ) : auth.user ? (
           <UserInfo user={auth.user} />
         ) : (
           <div className="flex items-center gap-x-2">
@@ -54,6 +56,7 @@ export default function Header() {
             </Button>
           </div>
         )}
+
         <div className="flex text-lg text-black gap-x-2.5">
           <a
             href={LINKS.instagram}
