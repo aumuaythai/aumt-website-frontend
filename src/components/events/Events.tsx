@@ -1,5 +1,6 @@
 import { useEvents } from '@/services/events'
 import { Spin } from 'antd'
+import LoadingPage from '../LoadingPage'
 import EventsList from './EventsList'
 
 export default function Events() {
@@ -15,11 +16,7 @@ export default function Events() {
     .sort((a, b) => (a.date.toDate() > b.date.toDate() ? 1 : -1))
 
   if (isLoadingEvents) {
-    return (
-      <div>
-        Loading Events <Spin />
-      </div>
-    )
+    return <LoadingPage text="Loading events" />
   }
 
   return (

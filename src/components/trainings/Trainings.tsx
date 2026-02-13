@@ -3,6 +3,7 @@ import { useConfig } from '@/services/config'
 import { useOpenTrainings } from '@/services/trainings'
 import { Divider, Spin } from 'antd'
 import { Link } from 'react-router'
+import LoadingPage from '../LoadingPage'
 import TrainingForm from './TrainingForm'
 
 export default function Trainings() {
@@ -13,23 +14,21 @@ export default function Trainings() {
   const user = auth?.user
 
   if (isLoadingTrainings || !clubConfig?.clubSignupSem || !trainings) {
-    return (
-      <div>
-        Loading trainings
-        <Spin />
-      </div>
-    )
+    return <LoadingPage text="Loading trainings" />
   }
 
   if (!trainings.length) {
     return (
       <div className="text-center max-w-lg mx-auto pt-8 px-6">
-        <p>Weekly training signups will open on Sundays on this page</p>
-        <p className="mt-4">The current training schedule is:</p>
-        <ul className="list-none mt-4">
+        <h1 className="text-xl">Signups closed</h1>
+        <p className="mt-2 text-gray-00">
+          Weekly training signups will open on Sundays on this page
+        </p>
+        <h2 className="mt-8 text-lg">Training schedule</h2>
+        <ul className="list-none mt-2">
           {clubConfig.schedule.map((training) => (
             <li key={training.title}>
-              <span className="font-medium">{training.title}</span>
+              <span>{training.title}</span>
             </li>
           ))}
         </ul>

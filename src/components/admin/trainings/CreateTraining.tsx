@@ -1,4 +1,4 @@
-import TimestampInput from '@/components/ui/timestamp-input'
+import TimestampInput from '@/components/util/timestamp-input'
 import { useConfig } from '@/services/config'
 import { useCreateTraining } from '@/services/trainings'
 import { Session, sessionSchema, trainingSchema } from '@/types'

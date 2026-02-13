@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { signOut } from '@/services/auth'
 import { Member } from '@/types'
 import DownOutlined from '@ant-design/icons/DownOutlined'
@@ -8,9 +9,10 @@ import ResetPasswordLink from './ResetLink'
 
 interface UserInfoProps {
   user: Member
+  isDarkened: boolean
 }
 
-export default function UserInfo(props: UserInfoProps) {
+export default function UserInfo({ user, isDarkened }: UserInfoProps) {
   const items: ItemType[] = [
     {
       key: 'account',
@@ -41,7 +43,7 @@ export default function UserInfo(props: UserInfoProps) {
     },
   ]
 
-  const nameText = props.user.preferredName || props.user.firstName
+  const nameText = user.preferredName || user.firstName
 
   function handleSignOut() {
     signOut()
@@ -53,7 +55,12 @@ export default function UserInfo(props: UserInfoProps) {
       placement="bottomRight"
       trigger={['click', 'hover']}
     >
-      <div className="flex items-center h-full cursor-pointer gap-x-2.5">
+      <div
+        className={cn(
+          'flex items-center h-full text-white cursor-pointer gap-x-2.5',
+          isDarkened && 'text-black'
+        )}
+      >
         <div className="text-sm overflow-hidden text-ellipsis whitespace-nowrap">
           {nameText}
         </div>

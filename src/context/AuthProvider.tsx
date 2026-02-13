@@ -28,7 +28,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading: isLoadingMember || isLoadingAdmin }}
+      value={{
+        user,
+        isLoading: !!authUser?.uid && (isLoadingMember || isLoadingAdmin),
+      }}
     >
       {children}
     </AuthContext.Provider>

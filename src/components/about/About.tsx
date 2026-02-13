@@ -11,7 +11,7 @@ export default function About() {
   const fullYearFee = clubConfig?.fullYearFee
 
   return (
-    <div className="pb-6 text-center">
+    <div className="pb-20 text-center">
       <div className="relative bg-[#14947e] h-[500px] w-full flex-col flex items-center justify-center">
         <img
           src={landingImg}

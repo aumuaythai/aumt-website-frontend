@@ -1,4 +1,3 @@
-import '@ant-design/v5-patch-for-react-19'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConfigProvider, Spin } from 'antd'
 import { lazy, Suspense, useEffect } from 'react'
@@ -8,10 +7,12 @@ import Faq from './components/about/Faq'
 import Gallery from './components/about/Gallery'
 import Account from './components/account/Account'
 import { ErrorBoundary } from './components/error/ErrorBoundary'
+import NotFound from './components/error/NotFound'
 import Event from './components/events/Event'
 import Events from './components/events/Events'
 import Header from './components/header/Header'
 import Join from './components/join/Join'
+import LoadingPage from './components/LoadingPage'
 import LoginForm from './components/login/LoginForm'
 import Trainings from './components/trainings/Trainings'
 import AuthProvider from './context/AuthProvider'
@@ -60,14 +61,7 @@ export default function App() {
                 <Route
                   path="/admin/*"
                   element={
-                    <Suspense
-                      fallback={
-                        <div>
-                          Loading admin
-                          <Spin />
-                        </div>
-                      }
-                    >
+                    <Suspense fallback={<LoadingPage text="Loading admin" />}>
                       <AdminRoutes />
                     </Suspense>
                   }
@@ -78,6 +72,7 @@ export default function App() {
                   path="/penis"
                   element={<img src="./photos/tom.jpg" alt="Tom Haliday" />}
                 />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
           </ErrorBoundary>
