@@ -12,7 +12,7 @@ export default function About() {
 
   return (
     <div className="pb-20 text-center">
-      <div className="relative bg-[#14947e] h-[500px] w-full flex-col flex items-center justify-center">
+      <div className="relative bg-[#14947e] h-[600px] w-full flex-col flex items-center justify-center">
         <img
           src={landingImg}
           alt="Two people training in a Muay Thai gym"

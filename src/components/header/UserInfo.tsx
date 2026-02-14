@@ -2,8 +2,9 @@ import { cn } from '@/lib/utils'
 import { signOut } from '@/services/auth'
 import { Member } from '@/types'
 import DownOutlined from '@ant-design/icons/DownOutlined'
-import { Button, Dropdown } from 'antd'
+import { Dropdown } from 'antd'
 import { ItemType } from 'antd/lib/menu/interface'
+import { LogOutIcon } from 'lucide-react'
 import { Link } from 'react-router'
 import ResetPasswordLink from './ResetLink'
 
@@ -16,19 +17,11 @@ export default function UserInfo({ user, isDarkened }: UserInfoProps) {
   const items: ItemType[] = [
     {
       key: 'account',
-      label: (
-        <Button type="link">
-          <Link to="/account">Account</Link>
-        </Button>
-      ),
+      label: <Link to="/account">Account</Link>,
     },
     {
       key: 'reset-password',
-      label: (
-        <ResetPasswordLink>
-          <Button type="link">Reset Password</Button>
-        </ResetPasswordLink>
-      ),
+      label: <ResetPasswordLink>Reset password</ResetPasswordLink>,
     },
     {
       type: 'divider',
@@ -36,9 +29,13 @@ export default function UserInfo({ user, isDarkened }: UserInfoProps) {
     {
       key: 'sign-out',
       label: (
-        <Button type="link" onClick={handleSignOut}>
+        <button
+          className="text-red-500 flex items-center gap-x-2"
+          onClick={handleSignOut}
+        >
+          <LogOutIcon className="size-4" />
           Sign Out
-        </Button>
+        </button>
       ),
     },
   ]

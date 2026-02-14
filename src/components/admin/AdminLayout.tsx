@@ -70,10 +70,10 @@ function NavMenu() {
           end
           className={({ isActive }) =>
             cn(
-              'transition-colors flex items-center gap-x-3 font-joyride px-4 py-3 text-sm',
+              'transition-colors flex items-center gap-x-3 font-medium px-4 py-3 text-sm',
               isActive
-                ? 'text-blue-900 bg-blue-50'
-                : 'hover:text-blue-900 hover:bg-blue-50'
+                ? 'text-blue-700 bg-blue-50'
+                : 'hover:text-blue-700 text-gray-800 hover:bg-blue-50'
             )
           }
         >
