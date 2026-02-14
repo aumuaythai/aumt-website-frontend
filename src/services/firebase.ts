@@ -1,7 +1,10 @@
 import { getAnalytics } from 'firebase/analytics'
 import { FirebaseOptions, initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
-import { initializeFirestore } from 'firebase/firestore'
+import { connectAuthEmulator, getAuth } from 'firebase/auth'
+import {
+  connectFirestoreEmulator,
+  initializeFirestore,
+} from 'firebase/firestore'
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: import.meta.env.VITE_FB_API_KEY,
@@ -19,3 +22,8 @@ const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = initializeFirestore(app, { ignoreUndefinedProperties: true })
 export const analytics = getAnalytics(app)
+
+if (import.meta.env.DEV) {
+  connectAuthEmulator(auth, 'http://localhost:9099')
+  connectFirestoreEmulator(db, 'localhost', 8080)
+}

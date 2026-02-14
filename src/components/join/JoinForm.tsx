@@ -72,7 +72,7 @@ export default function JoinForm() {
   }
 
   return (
-    <div className="max-w-2xl text-left mx-auto px-6 pt-8 flex flex-col gap-y-4">
+    <div className="max-w-2xl text-left mx-auto px-6 pt-8 pb-12 flex flex-col gap-y-4">
       <div>
         <h1 className="text-2xl">
           Join AUMT - {currentYear}
@@ -80,11 +80,9 @@ export default function JoinForm() {
           {clubSignupSem === 'S2' && ' Semester 2 '}
           {clubSignupSem === 'SS' && ' Summer School '}
         </h1>
-        <p className="mt-2">
-          Welcome to AUMT! We look forward to you being a part of our club.
-          Please fill in the form below to create an account. Your account will
-          enable you to sign up to future training sessions and join events.
-          Please contact us if you have any questions.
+        <p className="mt-2 text-gray-600">
+          Creating an account will allow you to sign up to future training
+          sessions and join events. Please contact us if you have any questions.
         </p>
       </div>
 
@@ -94,7 +92,7 @@ export default function JoinForm() {
         onFinish={handleSubmit(handleValid)}
       >
         <div>
-          <h2 className="text-lg">Agreement</h2>
+          <h2 className="text-lg mb-1">Agreement</h2>
           <p>
             I understand that by filling out and submitting this form, I am
             partaking in the club activities at my own risk and all injuries
@@ -105,12 +103,12 @@ export default function JoinForm() {
             club or training facility.
           </p>
           <FormItem control={control} name="disclaimer">
-            <Checkbox>I have read and understood the above agreement</Checkbox>
+            <Checkbox>I have read and understand the above agreement</Checkbox>
           </FormItem>
         </div>
 
         <div>
-          <h2 className="text-lg">Login Details</h2>
+          <h2 className="text-lg mb-1">Login Details</h2>
           <FormItem control={control} name="email" label="Email">
             <Input type="email" />
           </FormItem>
@@ -120,7 +118,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2 className="text-lg">Personal Details</h2>
+          <h2 className="text-lg mb-1">Personal Details</h2>
           <FormItem
             control={control}
             name="isReturningMember"
@@ -164,7 +162,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2 className="text-lg">University Details</h2>
+          <h2 className="text-lg mb-1">University Details</h2>
           <FormItem
             control={control}
             name="isUoAStudent"
@@ -199,7 +197,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2 className="text-lg">Emergency Contact Details</h2>
+          <h2 className="text-lg mb-1">Emergency Contact Details</h2>
           <FormItem control={control} name="emergencyContactName" label="Name">
             <Input />
           </FormItem>
@@ -220,7 +218,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2 className="text-lg">Muay Thai Experience</h2>
+          <h2 className="text-lg mb-1">Muay Thai Experience</h2>
           <FormItem
             control={control}
             name="initialExperience"
@@ -238,7 +236,7 @@ export default function JoinForm() {
         </div>
 
         <div>
-          <h2 className="text-lg">Membership Payment</h2>
+          <h2 className="text-lg mb-1">Membership Payment</h2>
           <FormItem
             control={control}
             name="membership"
@@ -295,7 +293,7 @@ export default function JoinForm() {
 
         <Form.Item>
           <Button
-            className="mt-5 mb-24"
+            className="mt-5"
             loading={isSubmitting}
             block
             type="primary"
