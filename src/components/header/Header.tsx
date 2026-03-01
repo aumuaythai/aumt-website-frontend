@@ -229,7 +229,6 @@ export default function Header() {
   }
 
   return (
-    // <header className="w-full flex items-center justify-between px-5 border-b border-b-[#f0f0f0] h-[50px]">
     <header
       className={cn(
         'w-full flex items-center fixed top-0 z-50 transition justify-between px-5 border-b border-b-transparent h-[50px]',
@@ -248,7 +247,12 @@ export default function Header() {
       </Link>
 
       <DesktopMenu items={navItems} isDarkened={isDarkened} />
-      <MobileMenu open={open} setOpen={setOpen} navItems={navItems} />
+      <MobileMenu
+        open={open}
+        setOpen={setOpen}
+        navItems={navItems}
+        isDarkened={isDarkened}
+      />
 
       <div className="hidden md:flex items-center gap-x-3">
         {auth.isLoading ? (
@@ -336,10 +340,12 @@ function MobileMenu({
   open,
   setOpen,
   navItems,
+  isDarkened,
 }: {
   open: boolean
   setOpen: (open: boolean) => void
   navItems: { label: string; to: string }[]
+  isDarkened: boolean
 }) {
   const auth = useAuth()
 
@@ -353,11 +359,23 @@ function MobileMenu({
     { label: 'Settings', to: '/admin/settings' },
   ]
 
-  mobileNavItems.push({ label: 'Account', to: '/account' })
+  if (auth.user) {
+    mobileNavItems.push({ label: 'Account', to: '/account' })
+  } else {
+    mobileNavItems.push({ label: 'Sign in', to: '/login' })
+    mobileNavItems.push({ label: 'Create account', to: '/join' })
+  }
 
   return (
     <Dialog.Root modal={false} open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger className="cursor-pointer transition-colors hover:text-slate-600 md:hidden">
+      <Dialog.Trigger
+        className={cn(
+          'cursor-pointer transition md:hidden',
+          isDarkened
+            ? 'text-black hover:text-black/80'
+            : 'text-white hover:text-white/80'
+        )}
+      >
         {open ? <X /> : <Menu />}
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -377,10 +395,10 @@ function MobileMenu({
                 end
                 className={({ isActive }) =>
                   cn(
-                    'font-joyride text-lg py-4 px-6 transition-colors',
+                    'font-medium py-4 px-6 transition-colors',
                     isActive
-                      ? 'text-blue-900 bg-blue-50'
-                      : 'hover:text-blue-900 hover:bg-blue-50'
+                      ? 'text-blue-700 bg-blue-50'
+                      : 'hover:text-blue-700 hover:bg-blue-50'
                   )
                 }
                 onClick={() => setOpen(false)}

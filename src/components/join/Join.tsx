@@ -4,6 +4,7 @@ import { useConfig } from '@/services/config'
 import { CheckCircleFilled } from '@ant-design/icons'
 import { Spin } from 'antd'
 import { Link } from 'react-router'
+import LoadingPage from '../LoadingPage'
 import JoinForm from './JoinForm'
 
 export default function Join() {
@@ -13,7 +14,7 @@ export default function Join() {
   const user = auth?.user
 
   if (!clubConfig) {
-    return <Spin />
+    return <LoadingPage text="Loading signup form" />
   }
 
   if (user) {
@@ -62,31 +63,31 @@ export default function Join() {
     )
   }
 
-  // if (clubConfig.clubSignupStatus === 'closed') {
-  //   return (
-  //     <div className="p-6 text-center">
-  //       Signups are closed until the next semester starts. Follow us on
-  //       <a
-  //         href="https://www.instagram.com/aumuaythai/"
-  //         target="_blank"
-  //         rel="noopener noreferrer"
-  //         className="text-blue-500"
-  //       >
-  //         {' '}
-  //         Instagram{' '}
-  //       </a>
-  //       or
-  //       <a
-  //         href="https://www.facebook.com/aumuaythai/"
-  //         className="text-blue-500"
-  //       >
-  //         {' '}
-  //         Facebook{' '}
-  //       </a>
-  //       for announcements.
-  //     </div>
-  //   )
-  // }
+  if (clubConfig.clubSignupStatus === 'closed') {
+    return (
+      <div className="p-6 text-center">
+        Signups are closed until the next semester starts. Follow us on
+        <a
+          href="https://www.instagram.com/aumuaythai/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500"
+        >
+          {' '}
+          Instagram{' '}
+        </a>
+        or
+        <a
+          href="https://www.facebook.com/aumuaythai/"
+          className="text-blue-500"
+        >
+          {' '}
+          Facebook{' '}
+        </a>
+        for announcements.
+      </div>
+    )
+  }
 
   return <JoinForm />
 }

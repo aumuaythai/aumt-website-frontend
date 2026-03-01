@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, notification, Popconfirm, Radio, Tooltip } from 'antd'
 import { Controller, FieldErrors, useForm } from 'react-hook-form'
 import { copyText } from '../../../lib/utils'
-import { Member, memberSchema } from '../../../types'
+import { Member, memberSchema, requireUoaFields } from '../../../types'
 import type { TableDataLine } from './MemberDashboard'
 
 interface MemberDetailsProps {
@@ -16,7 +16,7 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
   const deleteMember = useDeleteMember()
 
   const { control, handleSubmit, watch } = useForm<Member>({
-    resolver: zodResolver(memberSchema),
+    resolver: zodResolver(memberSchema.superRefine(requireUoaFields)),
     values: { ...member },
   })
 

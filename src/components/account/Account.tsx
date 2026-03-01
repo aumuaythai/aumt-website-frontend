@@ -7,6 +7,7 @@ import {
   ETHNICITIES,
   memberSchema,
   MEMBERSHIP_PERIOD_LONG,
+  requireUoaFields,
 } from '@/types/member'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, List, notification, Radio, Select, Spin } from 'antd'
@@ -21,14 +22,16 @@ import {
 import { useNavigate } from 'react-router'
 import z from 'zod'
 
-const accountSchema = memberSchema.omit({
-  email: true,
-  isReturningMember: true,
-  paid: true,
-  timeJoinedMs: true,
-  initialExperience: true,
-  notes: true,
-})
+const accountSchema = memberSchema
+  .omit({
+    email: true,
+    isReturningMember: true,
+    paid: true,
+    timeJoinedMs: true,
+    initialExperience: true,
+    notes: true,
+  })
+  .superRefine(requireUoaFields)
 
 type Account = z.infer<typeof accountSchema>
 

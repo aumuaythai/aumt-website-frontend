@@ -83,6 +83,28 @@ export const memberSchema = z.object({
   emergencyContactRelationship: z.string('Required').min(1, 'Required'),
 })
 
+export function requireUoaFields(
+  data: { isUoAStudent: boolean; upi?: string; studentId?: string },
+  ctx: z.RefinementCtx
+) {
+  if (data.isUoAStudent) {
+    if (!data.upi) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Required',
+        path: ['upi'],
+      })
+    }
+    if (!data.studentId) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Required',
+        path: ['studentId'],
+      })
+    }
+  }
+}
+
 export type Member = z.infer<typeof memberSchema>
 
 export interface AumtMembersObj {

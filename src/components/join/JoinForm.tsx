@@ -2,22 +2,14 @@ import PaymentInstructions from '@/components/util/PaymentInstructions'
 import { useConfig } from '@/services/config'
 import { useCreateMember } from '@/services/members'
 import { Member } from '@/types'
-import { ETHNICITIES, memberSchema } from '@/types/member'
+import { ETHNICITIES, memberSchema, requireUoaFields } from '@/types/member'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Button,
-  Checkbox,
-  Form,
-  Input,
-  Radio,
-  Select,
-  Spin,
-  Tooltip,
-} from 'antd'
+import { Button, Checkbox, Form, Input, Radio, Select, Tooltip } from 'antd'
 import { useForm } from 'react-hook-form'
 import { FormItem } from 'react-hook-form-antd'
 import z from 'zod'
+import LoadingPage from '../LoadingPage'
 
 const joinSchema = memberSchema
   .omit({
@@ -34,6 +26,7 @@ const joinSchema = memberSchema
       .string('Required')
       .min(8, 'Password must be at least 8 characters long'),
   })
+  .superRefine(requireUoaFields)
 
 type JoinForm = z.infer<typeof joinSchema>
 
@@ -52,6 +45,10 @@ export default function JoinForm() {
 
   async function handleValid(data: JoinForm) {
     const { password, disclaimer, ...memberData } = data
+    if (!memberData.isUoAStudent) {
+      memberData.upi = undefined
+      memberData.studentId = undefined
+    }
     const member: Member = { ...memberData, paid: false }
 
     await createMember.mutateAsync({ member, password })
@@ -64,11 +61,7 @@ export default function JoinForm() {
   const membershipType = watch('membership')
 
   if (!clubConfig) {
-    return (
-      <div>
-        <Spin />
-      </div>
-    )
+    return <LoadingPage text="Loading signup form" />
   }
 
   return (
@@ -80,7 +73,7 @@ export default function JoinForm() {
           {clubSignupSem === 'S2' && ' Semester 2 '}
           {clubSignupSem === 'SS' && ' Summer School '}
         </h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2">
           Creating an account will allow you to sign up to future training
           sessions and join events. Please contact us if you have any questions.
         </p>
