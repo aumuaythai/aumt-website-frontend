@@ -32,7 +32,7 @@ async function addAttendance(
   sessionId: string,
   memberId: string
 ) {
-  updateDoc(doc(attendance, trainingId), { [sessionId]: arrayUnion(memberId) })
+  setDoc(doc(attendance, trainingId), { [sessionId]: arrayUnion(memberId) }, { merge: true })
 }
 
 async function removeAttendance(
