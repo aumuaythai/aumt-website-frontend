@@ -38,12 +38,16 @@ export default function Trainings() {
 
   if (!user) {
     return (
-      <div>
+      <div className="pt-8 px-6 flex flex-col items-center">
         <p>
-          You must <Link to="/login?from=/signups"> log in </Link> to view and
-          sign up!
+          You must{' '}
+          <Link to="/login?from=/trainings" className="text-blue-500">
+            {' '}
+            log in{' '}
+          </Link>{' '}
+          to sign up for trainings
         </p>
-        <h4>Not a member?</h4>
+        <span className="mt-4 font-bold text-xl">Not a member?</span>
         <p>
           <Link to="/join">Join the club!</Link> Club signups are open at the
           beginning of each semester.
