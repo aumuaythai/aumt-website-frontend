@@ -1,29 +1,10 @@
-import z, { number } from 'zod'
+import z from 'zod'
 import { timestampSchema } from './util'
-
-export interface TrainingSession {
-  limit: number
-  title: string
-  sessionId: string
-  trainers: string[]
-  position: number
-  members: {
-    [uid: string]: {
-      name: string
-      timeAdded: Date
-    }
-  }
-  waitlist: {
-    [uid: string]: {
-      name: string
-      timeAdded: Date
-    }
-  }
-}
 
 export const sessionSchema = z.object({
   title: z.string('Invalid session title').min(1, 'Session title is required'),
   limit: z.number('Invalid session limit').min(0, 'Session limit is required'),
+  position: z.number(),
   members: z
     .record(
       z.string(),
@@ -36,24 +17,11 @@ export const sessionSchema = z.object({
 })
 export type Session = z.infer<typeof sessionSchema>
 
-// export type Training = {
-//   sessions: Record<string, TrainingSession>
-//   feedback: string[]
-//   title: string
-//   opens: Date
-//   closes: Date
-//   notes: string
-//   signupMaxSessions: number
-//   openToPublic: boolean
-//   semester: string
-//   paymentLock: boolean
-// }
-
 export const trainingSchema = z.object({
   title: z.string('Invalid title').min(1, 'Title is required'),
   opens: timestampSchema,
   closes: timestampSchema,
-  sessions: z.array(sessionSchema),
+  sessions: z.record(z.string(), sessionSchema),
   openToPublic: z.boolean('Required'),
   notes: z.string(),
   maxSessions: z

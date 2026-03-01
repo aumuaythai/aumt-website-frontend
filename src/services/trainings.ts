@@ -4,7 +4,6 @@ import { notification } from 'antd'
 import {
   collection,
   deleteDoc,
-  deleteField,
   doc,
   getDoc,
   getDocs,
@@ -58,12 +57,12 @@ export async function addMemberToSession(
   userId: string,
   displayName: string,
   trainingId: string,
-  sessionIndex: number
+  sessionId: string
 ) {
   const snapshot = await getDoc(doc(trainings, trainingId))
   const training = snapshot.data() as Training
 
-  training.sessions[sessionIndex].members[userId] = {
+  training.sessions[sessionId].members[userId] = {
     name: displayName,
   }
 
@@ -75,11 +74,11 @@ export async function addMemberToSession(
 export async function removeMemberFromSession(
   userId: string,
   trainingId: string,
-  sessionIndex: number
+  sessionId: string
 ) {
   const snapshot = await getDoc(doc(trainings, trainingId))
   const training = snapshot.data() as Training
-  delete training.sessions[sessionIndex].members[userId]
+  delete training.sessions[sessionId].members[userId]
 
   return await updateDoc(doc(trainings, trainingId), {
     sessions: training.sessions,
@@ -95,9 +94,8 @@ export async function updateMemberSessions(
   const snapshot = await getDoc(doc(trainings, trainingId))
   const training = snapshot.data() as Training
 
-  const sessions = training.sessions
-  sessions.forEach((session) => {
-    if (!session.members[userId]) {
+  Object.entries(training.sessions).forEach(([sessionId, session]) => {
+    if (sessionIds.includes(sessionId)) {
       session.members[userId] = {
         name: displayName,
       }
@@ -107,7 +105,7 @@ export async function updateMemberSessions(
   })
 
   return await updateDoc(doc(trainings, trainingId), {
-    sessions: sessions,
+    sessions: training.sessions,
   })
 }
 
@@ -213,13 +211,13 @@ export function useAddMemberToSession() {
       userId,
       displayName,
       trainingId,
-      sessionIndex,
+      sessionId,
     }: {
       userId: string
       displayName: string
       trainingId: string
-      sessionIndex: number
-    }) => addMemberToSession(userId, displayName, trainingId, sessionIndex),
+      sessionId: string
+    }) => addMemberToSession(userId, displayName, trainingId, sessionId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['trainings'] })
     },
@@ -238,12 +236,12 @@ export function useRemoveMemberFromSession() {
     mutationFn: ({
       userId,
       trainingId,
-      sessionIndex,
+      sessionId,
     }: {
       userId: string
       trainingId: string
-      sessionIndex: number
-    }) => removeMemberFromSession(userId, trainingId, sessionIndex),
+      sessionId: string
+    }) => removeMemberFromSession(userId, trainingId, sessionId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['trainings'] })
     },

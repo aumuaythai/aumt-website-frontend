@@ -13,14 +13,18 @@ type EditSignupsProps = {
 }
 
 export default function EditSignups({ training }: EditSignupsProps) {
-  const items: CollapseProps['items'] = training.sessions.map(
-    (session, index) => ({
-      key: index,
+  const sortedSessions = Object.entries(training.sessions).sort(
+    ([, a], [, b]) => a.position - b.position
+  )
+
+  const items: CollapseProps['items'] = sortedSessions.map(
+    ([sessionId, session]) => ({
+      key: sessionId,
       label: session.title,
       children: (
         <MemberList
           trainingId={training.id}
-          sessionIndex={index}
+          sessionId={sessionId}
           members={session.members}
         />
       ),
@@ -41,11 +45,11 @@ export default function EditSignups({ training }: EditSignupsProps) {
 
 function MemberList({
   trainingId,
-  sessionIndex,
+  sessionId,
   members,
 }: {
   trainingId: string
-  sessionIndex: number
+  sessionId: string
   members: Record<string, { name: string; isAttending?: boolean }>
 }) {
   const [memberName, setMemberName] = useState<string>('')
@@ -64,7 +68,7 @@ function MemberList({
       userId: generateMockUid(),
       displayName: memberName,
       trainingId,
-      sessionIndex,
+      sessionId,
     })
     setMemberName('')
   }
@@ -73,7 +77,7 @@ function MemberList({
     await removeMemberFromSession.mutateAsync({
       userId,
       trainingId,
-      sessionIndex,
+      sessionId,
     })
   }
 

@@ -23,7 +23,7 @@ export const auth = getAuth(app)
 export const db = initializeFirestore(app, { ignoreUndefinedProperties: true })
 export const analytics = getAnalytics(app)
 
-if (import.meta.env.DEV) {
-  connectAuthEmulator(auth, 'http://localhost:9099')
-  connectFirestoreEmulator(db, 'localhost', 8080)
-}
+// if (import.meta.env.DEV) {
+//   connectAuthEmulator(auth, 'http://localhost:9099')
+//   connectFirestoreEmulator(db, 'localhost', 8080)
+// }

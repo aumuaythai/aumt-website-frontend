@@ -36,5 +36,5 @@ interface RenderMarkdownProps {
 }
 
 export function RenderMarkdown({ source }: RenderMarkdownProps) {
-  return <div dangerouslySetInnerHTML={{ __html: marked(source) }}></div>
+  return <div dangerouslySetInnerHTML={{ __html: marked(source || '') }}></div>
 }

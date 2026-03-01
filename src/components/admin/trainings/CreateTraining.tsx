@@ -1,7 +1,7 @@
 import TimestampInput from '@/components/util/timestamp-input'
 import { useConfig } from '@/services/config'
 import { useCreateTraining } from '@/services/trainings'
-import { trainingSchema } from '@/types'
+import { Session, trainingSchema } from '@/types'
 import { ArrowLeftOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -57,10 +57,6 @@ export default function CreateTraining() {
     reset,
   } = useForm<TrainingForm>({
     resolver: zodResolver(trainingFormSchema),
-    // defaultValues: {
-    //   opens: Timestamp.now(),
-    //   closes: Timestamp.now(),
-    // },
   })
 
   const {
@@ -112,13 +108,29 @@ export default function CreateTraining() {
     })
   }
 
+  function generateSessionId(length: number) {
+    const digits = '1234567890qwertyuiopasdfghjklzxcvbnm'
+    let id = ''
+    for (let i = 0; i < length; i++) {
+      id += digits[Math.floor(Math.random() * digits.length)]
+    }
+    return id
+  }
+
   async function onSubmit(data: TrainingForm) {
+    const sessions: Record<string, Session> = {}
+    data.sessions.forEach((session, index) => {
+      sessions[generateSessionId(10)] = {
+        title: session.title,
+        limit: session.limit,
+        position: index,
+        members: {},
+      }
+    })
+
     createTrainingMutation.mutate({
       ...data,
-      sessions: data.sessions.map((session) => ({
-        ...session,
-        members: {},
-      })),
+      sessions,
     })
   }
 

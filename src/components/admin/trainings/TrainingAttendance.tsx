@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 
 export default function TrainingAttendance() {
-  const [sessionIndex, setSessionIndex] = useState<number>(0)
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined)
 
   const { trainingId } = useParams()
   const { data: training, isPending: isLoadingTraining } = useTraining(
@@ -33,11 +33,18 @@ export default function TrainingAttendance() {
     return <div>Training not found</div>
   }
 
-  const session = training.sessions[sessionIndex]
-  const sessionId = String(sessionIndex)
+  const sortedSessions = Object.entries(training.sessions).sort(
+    ([, a], [, b]) => a.position - b.position
+  )
+
+  if (!sessionId && sortedSessions.length > 0) {
+    setSessionId(sortedSessions[0][0])
+  }
+
+  const session = sessionId ? training.sessions[sessionId] : undefined
 
   function handleMemberClick(checked: boolean, memberId: string) {
-    if (!trainingId) {
+    if (!sessionId || !trainingId) {
       return
     }
 
@@ -58,19 +65,19 @@ export default function TrainingAttendance() {
       </div>
 
       <Select
-        value={sessionIndex}
+        value={sessionId}
         size="large"
         className="w-full p-2.5 !my-4 border border-gray-300 rounded-sm text-base bg-gray-100 text-black font-medium"
-        onChange={(value) => setSessionIndex(value)}
+        onChange={(value) => setSessionId(value)}
       >
-        {training.sessions.map((session, index) => (
-          <Select.Option key={index} value={index}>
+        {sortedSessions.map(([id, session]) => (
+          <Select.Option key={id} value={id}>
             {session.title}
           </Select.Option>
         ))}
       </Select>
 
-      {session && (
+      {sessionId && session && (
         <>
           <div className="flex flex-col gap-y-2">
             {Object.keys(session.members)
