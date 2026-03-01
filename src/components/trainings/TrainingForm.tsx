@@ -72,7 +72,8 @@ export default function TrainingForm({ training }: TrainingForm) {
   const options: CheckboxOptionType[] = sortedSessions.map(
     ([sessionId, session]) => {
       const isFull = session.limit <= Object.keys(session.members).length
-      const isDisabled = isFull || sessions.length >= training.maxSessions
+      const isSelected = sessions.includes(sessionId)
+      const isDisabled = isFull || (!isSelected && sessions.length >= training.maxSessions)
 
       return {
         label: session.title,

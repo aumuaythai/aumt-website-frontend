@@ -271,6 +271,8 @@ export function useUpdateMemberSessions() {
     }) => updateMemberSessions(userId, displayName, trainingId, sessionIds),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['trainings'] })
+      await queryClient.invalidateQueries({ queryKey: ['openTrainings'] })
+      notification.success({ message: 'Signup updated' })
     },
     onError: (error) => {
       notification.error({
