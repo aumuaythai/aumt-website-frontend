@@ -29,7 +29,7 @@ export default function TrainingDashboard() {
     })
     .slice()
 
-  if (selectedTrainingId === null && trainings) {
+  if (selectedTrainingId === null && sortedTrainings.length > 0) {
     setSelectedTrainingId(sortedTrainings[0].id)
   }
 

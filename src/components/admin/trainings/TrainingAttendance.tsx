@@ -5,12 +5,12 @@ import {
 } from '@/services/attendance'
 import { useTraining } from '@/services/trainings'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Select, Spin } from 'antd'
-import { useEffect, useState } from 'react'
+import { Checkbox, Select, Spin } from 'antd'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 
 export default function TrainingAttendance() {
-  const [sessionId, setSessionId] = useState<string | undefined>(undefined)
+  const [sessionIndex, setSessionIndex] = useState<number>(0)
 
   const { trainingId } = useParams()
   const { data: training, isPending: isLoadingTraining } = useTraining(
@@ -33,20 +33,11 @@ export default function TrainingAttendance() {
     return <div>Training not found</div>
   }
 
-  if (!sessionId) {
-    const sortedSessions = Object.values(training.sessions).sort(
-      (a, b) => a.position - b.position
-    )
-    setSessionId(sortedSessions[0].sessionId)
-  }
-
-  const session = sessionId ? training.sessions[sessionId] : undefined
-  const sortedSessions = Object.values(training.sessions).sort(
-    (a, b) => a.position - b.position
-  )
+  const session = training.sessions[sessionIndex]
+  const sessionId = String(sessionIndex)
 
   function handleMemberClick(checked: boolean, memberId: string) {
-    if (!sessionId || !trainingId) {
+    if (!trainingId) {
       return
     }
 
@@ -67,19 +58,19 @@ export default function TrainingAttendance() {
       </div>
 
       <Select
-        value={sessionId}
+        value={sessionIndex}
         size="large"
         className="w-full p-2.5 !my-4 border border-gray-300 rounded-sm text-base bg-gray-100 text-black font-medium"
-        onChange={(value) => setSessionId(value)}
+        onChange={(value) => setSessionIndex(value)}
       >
-        {sortedSessions.map((session) => (
-          <Select.Option key={session.sessionId} value={session.sessionId}>
+        {training.sessions.map((session, index) => (
+          <Select.Option key={index} value={index}>
             {session.title}
           </Select.Option>
         ))}
       </Select>
 
-      {sessionId && session && (
+      {session && (
         <>
           <div className="flex flex-col gap-y-2">
             {Object.keys(session.members)

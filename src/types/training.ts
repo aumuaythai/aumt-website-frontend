@@ -24,13 +24,15 @@ export interface TrainingSession {
 export const sessionSchema = z.object({
   title: z.string('Invalid session title').min(1, 'Session title is required'),
   limit: z.number('Invalid session limit').min(0, 'Session limit is required'),
-  members: z.record(
-    z.string(),
-    z.object({
-      name: z.string(),
-      isAttending: z.boolean().optional(),
-    })
-  ),
+  members: z
+    .record(
+      z.string(),
+      z.object({
+        name: z.string(),
+        isAttending: z.boolean().optional(),
+      })
+    )
+    .default({}),
 })
 export type Session = z.infer<typeof sessionSchema>
 

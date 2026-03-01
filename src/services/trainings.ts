@@ -58,30 +58,28 @@ export async function addMemberToSession(
   userId: string,
   displayName: string,
   trainingId: string,
-  sessionId: string
+  sessionIndex: number
 ) {
   const snapshot = await getDoc(doc(trainings, trainingId))
   const training = snapshot.data() as Training
 
-  const sessions = training.sessions
-  sessions[sessionId].members[userId] = {
+  training.sessions[sessionIndex].members[userId] = {
     name: displayName,
-    timeAdded: new Date(),
   }
 
   return await updateDoc(doc(trainings, trainingId), {
-    sessions: sessions,
+    sessions: training.sessions,
   })
 }
 
 export async function removeMemberFromSession(
   userId: string,
   trainingId: string,
-  sessionId: string
+  sessionIndex: number
 ) {
   const snapshot = await getDoc(doc(trainings, trainingId))
   const training = snapshot.data() as Training
-  delete training.sessions[sessionId].members[userId]
+  delete training.sessions[sessionIndex].members[userId]
 
   return await updateDoc(doc(trainings, trainingId), {
     sessions: training.sessions,
@@ -215,13 +213,13 @@ export function useAddMemberToSession() {
       userId,
       displayName,
       trainingId,
-      sessionId,
+      sessionIndex,
     }: {
       userId: string
       displayName: string
       trainingId: string
-      sessionId: string
-    }) => addMemberToSession(userId, displayName, trainingId, sessionId),
+      sessionIndex: number
+    }) => addMemberToSession(userId, displayName, trainingId, sessionIndex),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['trainings'] })
     },
@@ -240,12 +238,12 @@ export function useRemoveMemberFromSession() {
     mutationFn: ({
       userId,
       trainingId,
-      sessionId,
+      sessionIndex,
     }: {
       userId: string
       trainingId: string
-      sessionId: string
-    }) => removeMemberFromSession(userId, trainingId, sessionId),
+      sessionIndex: number
+    }) => removeMemberFromSession(userId, trainingId, sessionIndex),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['trainings'] })
     },

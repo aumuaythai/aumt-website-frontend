@@ -30,7 +30,7 @@ export default function TimestampInput({
               )}
               onChange={(e) =>
                 field.onChange(
-                  Timestamp.fromDate(new Date(e.target.value + 'Z'))
+                  Timestamp.fromDate(new Date(e.target.value))
                 )
               }
             />
@@ -42,7 +42,13 @@ export default function TimestampInput({
   )
 }
 
-function dateToInputFormat(date: Date) {
-  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
-  return local.toISOString().slice(0, -1)
+function dateToInputFormat(date: Date | undefined) {
+  if (!date) return ''
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const y = date.getFullYear()
+  const m = pad(date.getMonth() + 1)
+  const d = pad(date.getDate())
+  const h = pad(date.getHours())
+  const min = pad(date.getMinutes())
+  return `${y}-${m}-${d}T${h}:${min}`
 }

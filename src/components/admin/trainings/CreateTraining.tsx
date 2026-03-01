@@ -1,7 +1,7 @@
 import TimestampInput from '@/components/util/timestamp-input'
 import { useConfig } from '@/services/config'
 import { useCreateTraining } from '@/services/trainings'
-import { Session, sessionSchema, trainingSchema } from '@/types'
+import { trainingSchema } from '@/types'
 import { ArrowLeftOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -34,8 +34,13 @@ const TRAINING_DEFAULT_NOTES = `RULES/ETIQUETTE
 4.    Wipe inside and outside of gear using provided wipes at the end of class.
 5.    Put ALL training gear back in its designated place after use.`
 
+const sessionFormSchema = z.object({
+  title: z.string('Invalid session title').min(1, 'Session title is required'),
+  limit: z.number('Invalid session limit').min(0, 'Session limit is required'),
+})
+
 const trainingFormSchema = trainingSchema.extend({
-  sessions: z.array(sessionSchema), // modify to allow for useFieldArray
+  sessions: z.array(sessionFormSchema),
 })
 type TrainingForm = z.infer<typeof trainingFormSchema>
 
@@ -52,6 +57,10 @@ export default function CreateTraining() {
     reset,
   } = useForm<TrainingForm>({
     resolver: zodResolver(trainingFormSchema),
+    // defaultValues: {
+    //   opens: Timestamp.now(),
+    //   closes: Timestamp.now(),
+    // },
   })
 
   const {
@@ -103,28 +112,13 @@ export default function CreateTraining() {
     })
   }
 
-  function generateSessionId(length: number) {
-    const digits = '1234567890qwertyuiopasdfghjklzxcvbnm'
-    let id = ''
-    for (let i = 0; i < length; i++) {
-      id += digits[Math.floor(Math.random() * digits.length)]
-    }
-    return id
-  }
-
   async function onSubmit(data: TrainingForm) {
-    const sessions: Record<string, Session> = {}
-    data.sessions.forEach((session, index) => {
-      sessions[generateSessionId(10)] = {
-        title: session.title,
-        limit: session.limit,
-        position: index,
-      }
-    })
-
     createTrainingMutation.mutate({
       ...data,
-      sessions,
+      sessions: data.sessions.map((session) => ({
+        ...session,
+        members: {},
+      })),
     })
   }
 

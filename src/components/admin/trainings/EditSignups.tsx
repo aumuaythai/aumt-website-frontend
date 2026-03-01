@@ -13,26 +13,24 @@ type EditSignupsProps = {
 }
 
 export default function EditSignups({ training }: EditSignupsProps) {
-  const sortedSessions = Object.values(training.sessions).sort(
-    (a, b) => a.position - b.position
+  const items: CollapseProps['items'] = training.sessions.map(
+    (session, index) => ({
+      key: index,
+      label: session.title,
+      children: (
+        <MemberList
+          trainingId={training.id}
+          sessionIndex={index}
+          members={session.members}
+        />
+      ),
+      extra: (
+        <span>
+          {Object.keys(session.members).length} / {session.limit}
+        </span>
+      ),
+    })
   )
-
-  const items: CollapseProps['items'] = sortedSessions.map((session) => ({
-    key: session.sessionId,
-    label: session.title,
-    children: (
-      <MemberList
-        trainingId={training.id}
-        sessionId={session.sessionId}
-        members={session.members}
-      />
-    ),
-    extra: (
-      <span>
-        {Object.keys(session.members).length} / {session.limit}
-      </span>
-    ),
-  }))
 
   return (
     <ul className="flex flex-col justify-between items-center mt-2">
@@ -43,12 +41,12 @@ export default function EditSignups({ training }: EditSignupsProps) {
 
 function MemberList({
   trainingId,
-  sessionId,
+  sessionIndex,
   members,
 }: {
   trainingId: string
-  sessionId: string
-  members: { [uid: string]: { name: string; timeAdded: Date } }
+  sessionIndex: number
+  members: Record<string, { name: string; isAttending?: boolean }>
 }) {
   const [memberName, setMemberName] = useState<string>('')
 
@@ -66,7 +64,7 @@ function MemberList({
       userId: generateMockUid(),
       displayName: memberName,
       trainingId,
-      sessionId,
+      sessionIndex,
     })
     setMemberName('')
   }
@@ -75,7 +73,7 @@ function MemberList({
     await removeMemberFromSession.mutateAsync({
       userId,
       trainingId,
-      sessionId,
+      sessionIndex,
     })
   }
 

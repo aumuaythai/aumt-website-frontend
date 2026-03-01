@@ -13,7 +13,7 @@ export type TableColumn = ColumnType<TableDataLine>
 
 export default function MemberDashboard() {
   const [selectedMember, setSelectedMember] = useState<TableDataLine | null>(
-    null
+    null,
   )
   const [search, setSearch] = useState('')
   const { data: members, isPending: isLoadingMembers } = useMembersWithUids()
@@ -136,6 +136,7 @@ export default function MemberDashboard() {
     {
       title: 'Paid',
       dataIndex: 'paid',
+      render: (paid: boolean) => (paid ? 'Yes' : 'No'),
       sorter: (a: TableDataLine, b: TableDataLine) => (a.paid ? 1 : -1),
     },
   ]
@@ -178,7 +179,7 @@ export default function MemberDashboard() {
       <Modal
         open={!!selectedMember}
         footer={null}
-        classNames={{ content: 'max-h-160 overflow-y-auto' }}
+        classNames={{ container: 'max-h-160 overflow-y-auto' }}
         onCancel={() => setSelectedMember(null)}
       >
         {selectedMember && <MemberDetails member={selectedMember} />}
