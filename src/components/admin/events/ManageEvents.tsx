@@ -28,7 +28,7 @@ export default function ManageEvents() {
   return (
     <div className="max-w-2xl mx-auto p-4 md:pt-8">
       <div className="flex justify-between">
-        <h1 className="text-2xl">Manage Events</h1>
+        <h1 className="text-xl sm:text-2xl">Manage Events</h1>
         <Link to="/admin/events/create">
           <Button type="primary" ghost icon={<PlusOutlined />}>
             Create Event
@@ -36,38 +36,32 @@ export default function ManageEvents() {
         </Link>
       </div>
       <ul className="flex flex-col mt-8">
-        {sortedEvents.map((event) => {
-          return (
-            <>
-              <li key={event.id} className="flex gap-x-4 justify-between">
-                <h2>{event.title}</h2>
-                <div className="flex gap-x-2">
-                  {event.signups && (
-                    <Link to={`/admin/events/${event.id}/signups`}>
-                      <Button>View Signups</Button>
-                    </Link>
-                  )}
-                  <Link to={`/admin/events/${event.id}`}>
-                    <Button>Edit</Button>
+        {sortedEvents.map((event) => (
+          <>
+            <li key={event.id} className="flex flex-col gap-2 justify-between">
+              <h2>{event.title}</h2>
+              <div className="flex gap-x-2">
+                {event.signups && (
+                  <Link to={`/admin/events/${event.id}/signups`}>
+                    <Button>View Signups</Button>
                   </Link>
-                  <Popconfirm
-                    title="Confirm Delete Event?"
-                    onConfirm={() => handleRemoveEvent(event.id)}
-                  >
-                    <Button
-                      loading={deleteEvent.isPending}
-                      danger
-                      type="primary"
-                    >
-                      Remove
-                    </Button>
-                  </Popconfirm>
-                </div>
-              </li>
-              <Divider />
-            </>
-          )
-        })}
+                )}
+                <Link to={`/admin/events/${event.id}`}>
+                  <Button>Edit</Button>
+                </Link>
+                <Popconfirm
+                  title="Confirm Delete Event?"
+                  onConfirm={() => handleRemoveEvent(event.id)}
+                >
+                  <Button loading={deleteEvent.isPending} danger type="primary">
+                    Remove
+                  </Button>
+                </Popconfirm>
+              </div>
+            </li>
+            <Divider />
+          </>
+        ))}
       </ul>
     </div>
   )

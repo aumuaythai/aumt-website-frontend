@@ -242,7 +242,7 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
             )}
           />
         </div>
-        <div className="flex gap-x-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             type="primary"
             loading={isMutating}

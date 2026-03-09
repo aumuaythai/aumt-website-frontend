@@ -114,6 +114,8 @@ export default function MemberDashboard() {
       dataIndex: 'tableName',
       defaultSortOrder: 'ascend',
       filterSearch: true,
+      fixed: 'left',
+      width: 180,
       sorter: (a: TableDataLine, b: TableDataLine) =>
         a.tableName.localeCompare(b.tableName),
     },
@@ -142,11 +144,10 @@ export default function MemberDashboard() {
   ]
 
   return (
-    <div className="flex-1 p-4 h-full">
-      <div className="flex justify-between mb-4">
+    <div className="flex-1 p-4 h-full min-w-0">
+      <div className="flex flex-col gap-2 sm:flex-row mb-4">
         <Input
           placeholder="Search names or emails"
-          className="!w-80"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -168,7 +169,7 @@ export default function MemberDashboard() {
         columns={columns}
         bordered
         size="middle"
-        tableLayout="fixed"
+        scroll={{ x: 'max-content' }}
         pagination={{ pageSize: 20 }}
         rowClassName="cursor-pointer"
         onRow={(record) => ({
