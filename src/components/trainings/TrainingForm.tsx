@@ -76,7 +76,8 @@ export default function TrainingForm({ training }: TrainingForm) {
       const isFull = session.limit <= Object.keys(session.members).length
       const isSelected = sessions.includes(sessionId)
       const isDisabled =
-        isFull || (!isSelected && sessions.length >= training.maxSessions)
+        (!isSelected && isFull) ||
+        (!isSelected && sessions.length >= training.maxSessions)
 
       return {
         label: session.title,
