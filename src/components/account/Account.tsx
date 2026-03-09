@@ -21,6 +21,7 @@ import {
 } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import z from 'zod'
+import LoadingPage from '../LoadingPage'
 
 const accountSchema = memberSchema
   .omit({
@@ -37,6 +38,7 @@ type Account = z.infer<typeof accountSchema>
 
 export default function Account() {
   const auth = useAuth()
+  const { data: clubConfig } = useConfig()
   const updateMember = useUpdateMember()
   const navigate = useNavigate()
 
@@ -52,12 +54,10 @@ export default function Account() {
     resolver: zodResolver(accountSchema),
   })
 
-  if (auth?.isLoading) {
-    return (
-      <div>
-        Loading account details <Spin />
-      </div>
-    )
+  console.log(auth)
+
+  if (auth?.isLoading || !clubConfig) {
+    return <LoadingPage text="Loading account details" />
   }
 
   if (!user) {
@@ -135,11 +135,7 @@ function MembershipSection({ saving, control, onSave, watch }: SectionProps) {
   const paymentType = watch?.('paymentType')
 
   if (!user || !clubConfig) {
-    return (
-      <div>
-        Loading account details <Spin />
-      </div>
-    )
+    return null
   }
 
   return (
@@ -231,11 +227,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
   const user = auth?.user
 
   if (!user) {
-    return (
-      <div>
-        Loading account details <Spin />
-      </div>
-    )
+    return null
   }
 
   return (
@@ -341,19 +333,9 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
 }
 
 function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
-  const auth = useAuth()
   const [editing, setEditing] = useState(false)
 
-  const user = auth?.user
   const isUoaStudent = watch?.('isUoAStudent')
-
-  if (!user) {
-    return (
-      <div>
-        Loading account details <Spin />
-      </div>
-    )
-  }
 
   return (
     <AccountSection

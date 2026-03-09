@@ -7,13 +7,15 @@ import { User } from '../types'
 import { AuthContext } from './use-auth'
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [authUser, setAuthUser] = useState<FirebaseUser | null>(null)
+  const [authUser, setAuthUser] = useState<FirebaseUser | null | undefined>(
+    undefined,
+  )
 
   const { data: member, isPending: isLoadingMember } = useMember(authUser?.uid)
   const { data: isAdmin, isPending: isLoadingAdmin } = useIsAdmin(authUser?.uid)
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(setAuthUser)
+    const unsubscribe = auth.onAuthStateChanged((user) => setAuthUser(user))
     return () => unsubscribe()
   }, [])
 
@@ -30,7 +32,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
-        isLoading: !!authUser?.uid && (isLoadingMember || isLoadingAdmin),
+        isLoading:
+          authUser === undefined ||
+          (!!authUser?.uid && (isLoadingMember || isLoadingAdmin)),
       }}
     >
       {children}
