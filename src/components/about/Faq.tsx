@@ -6,9 +6,9 @@ export default function Faq() {
   const { data: clubConfig } = useConfig()
 
   return (
-    <div className="text-left max-w-[1000px] mx-auto px-2.5 pb-[100px]">
+    <div className="text-left max-w-4xl mx-auto p-6 pt-8">
       <h1 className="w-full text-center text-3xl">FAQ</h1>
-      <div className="mx-auto max-w-[800px]" key="trainings">
+      <div>
         <p className="font-bold">Q: When and where are trainings?</p>
         <p>
           A: Find the timetable{' '}
@@ -27,7 +27,8 @@ export default function Faq() {
         />
         <Divider />
       </div>
-      <div className="mx-auto max-w-[800px]" key="membership">
+
+      <div>
         <p className="font-bold">Q: How much is a membership?</p>
         <p>
           A: Memberships are ${clubConfig?.semesterOneFee} for one semester or $
@@ -35,7 +36,8 @@ export default function Faq() {
         </p>
         <Divider />
       </div>
-      <div className="mx-auto max-w-[800px]" key="join">
+
+      <div>
         <p className="font-bold">Q: How do I join the club?</p>
         <p>
           A: You can join anytime throughout the year. Just pay for your
@@ -45,7 +47,8 @@ export default function Faq() {
         </p>
         <Divider />
       </div>
-      <div className="mx-auto max-w-[800px]" key="money">
+
+      <div>
         <p className="font-bold">
           Q: How do we transfer money to AUMT for events or memberships?
         </p>
@@ -58,7 +61,7 @@ export default function Faq() {
         </p>
         <Divider />
       </div>
-      <div className="mx-auto max-w-[800px]" key="bring">
+      <div>
         <p className="font-bold">Q: What do I need to bring?</p>
         <p>
           A: Workout clothes, drink bottle and handwraps (if you have them).
@@ -77,20 +80,21 @@ export default function Faq() {
         </p>
       </div>
 
-      <div className="bg-black w-full h-[5px]" />
-
       <div className="mt-5 text-center">
         <h2>Have more questions?</h2>
         <p>
           Get in touch through{' '}
-          <a href="mailto:uoamuaythai@gmail.com" className="!text-[#11388d]">
+          <a
+            href="mailto:uoamuaythai@gmail.com"
+            className="text-blue-500 hover:text-blue-600"
+          >
             uoamuaythai@gmail.com
           </a>{' '}
           or{' '}
           <a
             href={LINKS.instagram}
             target="_blank"
-            className="!text-[#11388d] !p-0 m-0"
+            className="text-blue-500 hover:text-blue-600"
           >
             Instagram
           </a>
