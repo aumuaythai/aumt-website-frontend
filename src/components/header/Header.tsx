@@ -230,13 +230,21 @@ function MobileMenu({
 }: {
   open: boolean
   setOpen: (open: boolean) => void
-  navItems: { label: string; to: string }[]
+  navItems: NavItem[]
   isDarkened: boolean
 }) {
   const auth = useAuth()
 
   const navItemsExceptAdmin = navItems.filter((item) => item.label !== 'Admin')
-  const mobileNavItems = [...navItemsExceptAdmin]
+  const mobileNavItems: { label: string; to: string }[] = []
+  for (const item of navItemsExceptAdmin) {
+    mobileNavItems.push({ label: item.label, to: item.to })
+    if (item.content) {
+      for (const sub of item.content) {
+        mobileNavItems.push({ label: sub.label, to: sub.to })
+      }
+    }
+  }
   const adminNavItems = [
     { label: 'Trainings', to: '/admin' },
     { label: 'Events', to: '/admin/events' },
