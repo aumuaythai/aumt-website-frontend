@@ -48,6 +48,7 @@ export default function Account() {
     control,
     watch,
     handleSubmit,
+    reset,
     formState: { isSubmitting: saving },
   } = useForm<Account>({
     values: user || undefined,
@@ -100,19 +101,27 @@ export default function Account() {
         saving={saving}
         control={control}
         onSave={onSave}
+        onCancel={reset}
         watch={watch}
       />
-      <PersonalSection saving={saving} control={control} onSave={onSave} />
+      <PersonalSection
+        saving={saving}
+        control={control}
+        onSave={onSave}
+        onCancel={reset}
+      />
       <UniversitySection
         saving={saving}
         control={control}
         watch={watch}
         onSave={onSave}
+        onCancel={reset}
       />
       <EmergencyContactSection
         saving={saving}
         control={control}
         onSave={onSave}
+        onCancel={reset}
       />
     </form>
   )
@@ -122,10 +131,17 @@ type SectionProps = {
   saving: boolean
   control: Control<Account>
   onSave: (e?: React.BaseSyntheticEvent) => Promise<void>
+  onCancel: () => void
   watch?: UseFormWatch<Account>
 }
 
-function MembershipSection({ saving, control, onSave, watch }: SectionProps) {
+function MembershipSection({
+  saving,
+  control,
+  onSave,
+  onCancel,
+  watch,
+}: SectionProps) {
   const auth = useAuth()
   const { data: clubConfig } = useConfig()
   const [editing, setEditing] = useState(false)
@@ -143,6 +159,7 @@ function MembershipSection({ saving, control, onSave, watch }: SectionProps) {
       title="Membership"
       saving={saving}
       onSave={onSave}
+      onCancel={onCancel}
       editing={editing}
       setEditing={setEditing}
     >
@@ -176,7 +193,9 @@ function MembershipSection({ saving, control, onSave, watch }: SectionProps) {
               {clubSignupSem === 'S1' && (
                 <>
                   <Radio.Button value="FY">Full Year</Radio.Button>
-                  <Radio.Button value="S1">Semester 1</Radio.Button>
+                  {!(user.membership === 'FY' && user.paid) && (
+                    <Radio.Button value="S1">Semester 1</Radio.Button>
+                  )}
                 </>
               )}
               {clubSignupSem === 'S2' &&
@@ -188,25 +207,27 @@ function MembershipSection({ saving, control, onSave, watch }: SectionProps) {
         />
       </List.Item>
 
-      <List.Item>
-        <span>Payment type</span>
-        <Controller
-          control={control}
-          name="paymentType"
-          render={({ field: { value, onChange } }) => (
-            <Radio.Group
-              buttonStyle="solid"
-              disabled={!editing}
-              value={value}
-              onChange={onChange}
-            >
-              <Radio.Button value="Bank Transfer">Bank Transfer</Radio.Button>
-              <Radio.Button value="Cash">Cash</Radio.Button>
-              <Radio.Button value="Other">Other</Radio.Button>
-            </Radio.Group>
-          )}
-        />
-      </List.Item>
+      {!user.paid && (
+        <List.Item>
+          <span>Payment type</span>
+          <Controller
+            control={control}
+            name="paymentType"
+            render={({ field: { value, onChange } }) => (
+              <Radio.Group
+                buttonStyle="solid"
+                disabled={!editing}
+                value={value}
+                onChange={onChange}
+              >
+                <Radio.Button value="Bank Transfer">Bank Transfer</Radio.Button>
+                <Radio.Button value="Cash">Cash</Radio.Button>
+                <Radio.Button value="Other">Other</Radio.Button>
+              </Radio.Group>
+            )}
+          />
+        </List.Item>
+      )}
       {!user.paid && (
         <List.Item>
           <PaymentInstructions
@@ -220,7 +241,7 @@ function MembershipSection({ saving, control, onSave, watch }: SectionProps) {
   )
 }
 
-function PersonalSection({ saving, control, onSave }: SectionProps) {
+function PersonalSection({ saving, control, onSave, onCancel }: SectionProps) {
   const auth = useAuth()
   const [editing, setEditing] = useState(false)
 
@@ -237,6 +258,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
       editing={editing}
       setEditing={setEditing}
       onSave={onSave}
+      onCancel={onCancel}
     >
       <List.Item>
         <span>First name</span>
@@ -248,7 +270,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="max-w-[400px]"
+              className="max-w-100"
             />
           )}
         />
@@ -263,7 +285,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="max-w-[400px]"
+              className="max-w-100"
             />
           )}
         />
@@ -278,7 +300,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="max-w-[400px]"
+              className="max-w-100"
             />
           )}
         />
@@ -295,7 +317,7 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
           render={({ field: { value, onChange } }) => (
             <Select
               disabled={!editing}
-              className="flex-1 max-w-[400px]"
+              className="flex-1 max-w-100"
               value={value}
               onChange={onChange}
             >
@@ -332,7 +354,13 @@ function PersonalSection({ saving, control, onSave }: SectionProps) {
   )
 }
 
-function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
+function UniversitySection({
+  saving,
+  control,
+  watch,
+  onSave,
+  onCancel,
+}: SectionProps) {
   const [editing, setEditing] = useState(false)
 
   const isUoaStudent = watch?.('isUoAStudent')
@@ -344,6 +372,7 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
       editing={editing}
       setEditing={setEditing}
       onSave={onSave}
+      onCancel={onCancel}
     >
       <List.Item>
         <span>Are you a student at UoA?</span>
@@ -375,7 +404,7 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
                   disabled={!editing}
                   value={value}
                   onChange={onChange}
-                  className="max-w-[400px]"
+                  className="max-w-100"
                 />
               )}
             />
@@ -390,7 +419,7 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
                   disabled={!editing}
                   value={value}
                   onChange={onChange}
-                  className="max-w-[400px]"
+                  className="max-w-100"
                 />
               )}
             />
@@ -401,7 +430,12 @@ function UniversitySection({ saving, control, watch, onSave }: SectionProps) {
   )
 }
 
-function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
+function EmergencyContactSection({
+  saving,
+  control,
+  onSave,
+  onCancel,
+}: SectionProps) {
   const [editing, setEditing] = useState(false)
 
   return (
@@ -411,6 +445,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
       editing={editing}
       setEditing={setEditing}
       onSave={onSave}
+      onCancel={onCancel}
     >
       <List.Item>
         <span>Name</span>
@@ -422,7 +457,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="max-w-[400px]"
+              className="max-w-100"
             />
           )}
         />
@@ -437,7 +472,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="max-w-[400px]"
+              className="max-w-100"
             />
           )}
         />
@@ -452,7 +487,7 @@ function EmergencyContactSection({ saving, control, onSave }: SectionProps) {
               disabled={!editing}
               value={value}
               onChange={onChange}
-              className="max-w-[400px]"
+              className="max-w-100"
             />
           )}
         />
@@ -468,6 +503,7 @@ function AccountSection({
   children,
   setEditing,
   onSave,
+  onCancel,
 }: {
   title: string
   saving: boolean
@@ -475,9 +511,15 @@ function AccountSection({
   children: ReactNode
   setEditing: (editing: boolean) => void
   onSave: () => Promise<void>
+  onCancel: () => void
 }) {
   async function handleSave() {
     await onSave()
+    setEditing(false)
+  }
+
+  function handleCancel() {
+    onCancel()
     setEditing(false)
   }
 
@@ -488,7 +530,7 @@ function AccountSection({
         <div className="flex gap-x-2">
           {editing ? (
             <>
-              <Button danger type="primary" onClick={() => setEditing(false)}>
+              <Button danger type="primary" onClick={handleCancel}>
                 Cancel
               </Button>
               <Button type="primary" loading={saving} onClick={handleSave}>

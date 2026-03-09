@@ -18,18 +18,16 @@ type NavItem = {
 
 export default function Header() {
   const [open, setOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
   const [isPastHeader, setIsPastHeader] = useState(false)
   const auth = useAuth()
 
   const location = useLocation()
   const pathname = location.pathname
   const isHomePage = pathname === '/'
-  const isDarkened = isPastHeader || !isHomePage
+  const isDarkened = isPastHeader || !isHomePage || open
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0)
       setIsPastHeader(window.scrollY > 600)
     }
     window.addEventListener('scroll', handleScroll)
@@ -56,16 +54,15 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'w-full flex items-center fixed top-0 z-50 transition justify-between px-5 border-b border-b-transparent h-[50px]',
+        'w-full flex items-center fixed top-0 z-50 backdrop-blur-md border-b-white/5 transition justify-between px-5 border-b h-12.5',
         isHomePage ? 'fixed' : 'sticky',
-        isScrolled && 'backdrop-blur-md border-b-white/5',
         isDarkened && 'bg-white/80 border-b-gray-100',
       )}
     >
       <Link to="/">
         <Logo
           className={cn(
-            'w-[100px] text-white transition hover:opacity-80',
+            'w-25 text-white transition hover:opacity-80',
             isDarkened && 'text-black',
           )}
         />
@@ -150,7 +147,7 @@ function DesktopMenu({
       </NavigationMenu.List>
 
       <div className="absolute top-full left-0">
-        <NavigationMenu.Viewport className="mt-2 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-10 data-[state=closed]:animate-out data-[state=closed]:zoom-out-90 data-[state=closed]:fade-out" />
+        <NavigationMenu.Viewport className="mt-3.5 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-top-10 data-[state=closed]:animate-out data-[state=closed]:zoom-out-90 data-[state=closed]:fade-out" />
       </div>
     </NavigationMenu.Root>
   )

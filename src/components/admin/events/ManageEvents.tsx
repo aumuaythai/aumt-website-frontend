@@ -38,7 +38,10 @@ export default function ManageEvents() {
       <ul className="flex flex-col mt-8">
         {sortedEvents.map((event) => (
           <>
-            <li key={event.id} className="flex flex-col gap-2 justify-between">
+            <li
+              key={event.id}
+              className="flex sm:flex-row flex-col gap-2 justify-between"
+            >
               <h2>{event.title}</h2>
               <div className="flex gap-x-2">
                 {event.signups && (
