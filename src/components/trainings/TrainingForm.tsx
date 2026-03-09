@@ -80,11 +80,18 @@ export default function TrainingForm({ training }: TrainingForm) {
         (!isSelected && sessions.length >= training.maxSessions)
 
       return {
-        label: session.title,
+        label: isFull ? (
+          <span className="flex justify-between w-full items-center">
+            <span>{session.title}</span>
+            <span className="text-red-500 font-medium">FULL</span>
+          </span>
+        ) : (
+          session.title
+        ),
         value: sessionId,
         disabled: isDisabled,
         className:
-          '!p-4 bg-gray-100 border border-gray-200 hover:border-gray-300 transition-colors',
+          '!p-4 bg-gray-100 border border-gray-200 hover:border-gray-300 transition-colors w-full [&>span:last-child]:w-full',
       }
     },
   )
@@ -107,21 +114,21 @@ export default function TrainingForm({ training }: TrainingForm) {
         <FormItem control={control} name="sessions">
           <Checkbox.Group
             options={options}
-            className="flex flex-col gap-y-2 w-full !mt-6"
+            className="flex flex-col gap-y-2 w-full mt-6!"
           />
         </FormItem>
         <FormItem
           control={control}
           name="feedback"
           label="Thoughts on last training/feedback? (anonymous)"
-          className="!mt-10"
+          className="mt-10!"
         >
           <Input.TextArea />
         </FormItem>
         <Button
           type="primary"
           htmlType="submit"
-          className="w-full !font-joyride"
+          className="w-full"
           size="large"
           loading={isMutating}
         >
