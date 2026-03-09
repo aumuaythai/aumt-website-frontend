@@ -1,5 +1,6 @@
 import { useAuth } from '@/context/use-auth'
 import { getDisplayName } from '@/lib/utils'
+import { useConfig } from '@/services/config'
 import { TrainingWithId, useUpdateMemberSessions } from '@/services/trainings'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Checkbox, Form, Input } from 'antd'
@@ -16,13 +17,14 @@ export interface TrainingForm {
 export default function TrainingForm({ training }: TrainingForm) {
   const auth = useAuth()
   const updateMemberSessions = useUpdateMemberSessions()
+  const { data: clubConfig } = useConfig()
 
   const signupFormSchema = z.object({
     sessions: z
       .array(z.string())
       .max(
         training.maxSessions,
-        `You can only select up to ${training.maxSessions} sessions`
+        `You can only select up to ${training.maxSessions} sessions`,
       ),
     feedback: z.string().optional(),
   })
@@ -38,7 +40,7 @@ export default function TrainingForm({ training }: TrainingForm) {
       }
 
       return training.sessions[sessionId].members[user.id]
-    }
+    },
   )
 
   const { control, watch, handleSubmit } = useForm<SignupForm>({
@@ -67,13 +69,14 @@ export default function TrainingForm({ training }: TrainingForm) {
 
   const sessions = watch('sessions')
   const sortedSessions = Object.entries(training.sessions).sort(
-    ([, a], [, b]) => a.position - b.position
+    ([, a], [, b]) => a.position - b.position,
   )
   const options: CheckboxOptionType[] = sortedSessions.map(
     ([sessionId, session]) => {
       const isFull = session.limit <= Object.keys(session.members).length
       const isSelected = sessions.includes(sessionId)
-      const isDisabled = isFull || (!isSelected && sessions.length >= training.maxSessions)
+      const isDisabled =
+        isFull || (!isSelected && sessions.length >= training.maxSessions)
 
       return {
         label: session.title,
@@ -82,7 +85,7 @@ export default function TrainingForm({ training }: TrainingForm) {
         className:
           '!p-4 bg-gray-100 border border-gray-200 hover:border-gray-300 transition-colors',
       }
-    }
+    },
   )
 
   const isMutating = updateMemberSessions.isPending
@@ -90,6 +93,10 @@ export default function TrainingForm({ training }: TrainingForm) {
   return (
     <>
       <h2 className="text-xl">{training.title}</h2>
+      <div className="mt-4">
+        AUMT Bank account:{' '}
+        <b className="font-medium">{clubConfig?.bankAccountNumber}</b>
+      </div>
       {training.notes && (
         <div className="text-sm mt-4">
           <RenderMarkdown source={training.notes} />
