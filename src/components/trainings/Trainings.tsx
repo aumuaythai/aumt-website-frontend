@@ -17,7 +17,11 @@ export default function Trainings() {
     return <LoadingPage text="Loading trainings" />
   }
 
-  if (!trainings.length) {
+  const openTrainings = trainings.filter(
+    (training) => training.opens.toDate() <= new Date(),
+  )
+
+  if (!openTrainings.length) {
     return (
       <div className="text-center max-w-lg mx-auto pt-8 px-6">
         <h1 className="text-xl">Signups closed</h1>
@@ -58,21 +62,10 @@ export default function Trainings() {
 
   return (
     <main className="max-w-lg mx-auto pt-8 px-6">
-      {trainings.map((training) => {
-        const isMembershipOutOfDate =
-          (user.membership === 'FY' && training.semester === 'SS') ||
-          (user.membership !== 'FY' && user.membership !== training.semester)
-
-        if (training.openToPublic) {
-          return <TrainingForm training={training} />
-        }
-
+      {openTrainings.map((training) => {
         if (!user.paid && training.paymentLock) {
           return (
-            <div
-              key={training.id}
-              className="max-w-[440px] p-5 mx-auto text-left"
-            >
+            <div key={training.id} className="max-w-110 p-5 mx-auto text-left">
               <h2 className="text-xl">{training.title}</h2>
               <p>
                 Our records show you have not paid the membership fee for this
@@ -91,6 +84,10 @@ export default function Trainings() {
             </div>
           )
         }
+
+        const isMembershipOutOfDate =
+          (user.membership === 'FY' && training.semester === 'SS') ||
+          (user.membership !== 'FY' && user.membership !== training.semester)
 
         if (isMembershipOutOfDate) {
           return (
